@@ -52,6 +52,13 @@ resource "azurerm_kubernetes_cluster" "example" {
     docker_bridge_cidr = "10.200.0.0/16"
   }
 
+  linux_profile {
+    admin_username = "ashish"
+    ssh_key {
+      key_data = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCnmgq5Bdw72IRqJdm6vImQ1A7mTMNmlCYjYZgIZPgkHoQGVepidzk83nvuHMOtQ8W+hxJxrgSyYSP1+7e3giJx8OrcW7pXie7lE/XQjR4HKfJuB0IUqo+m+I5hxNPSRhuilQmPKVqpc7OcHVSVEh7ghG8TWjjCXTSWic0K2p2z3RVzZv79ThtIG561ekWbZjnWBZWxs9A0QTX9ItSRIGyS7yVYzFHSxswKHDFghQrkL9bqbfgMfPE0kcIeHgMOhnjMDXDHdIzTIwZgB9EwMDXXXkyefYXs1EFGHgi5E/bSMVoRj2eVzTL+urFMJOkL3por12cRiX0DLw1pUMDNsU4PBxbUrFbkP/h8bKBSBJbq5Hln8lQlbMUzo4YUPaEFL+Zp4SCJNzg7j9+300956OLJ6Vrd8EAO3yAMdem/cCL3kn8GDgVf1Gvp6j5dRbCv+WJnXfsnTyx4rgF33URDYJGGZgiNVJYnfBAekSEQ7c/6ztVvaDw9UdrXj7XtvxSzk0c= ashish@Ashish-Zbook"
+    }
+  }
+
   identity {
     type = "SystemAssigned"
   }
