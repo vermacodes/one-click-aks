@@ -36,7 +36,7 @@ resource "azurerm_kubernetes_cluster" "example" {
   name                = "cluster"
   location            = azurerm_resource_group.example.location
   resource_group_name = azurerm_resource_group.example.name
-  dns_prefix          = "cluster"
+  dns_prefix          = "cluster-dns"
 
   default_node_pool {
     name       = "default"
@@ -49,7 +49,7 @@ resource "azurerm_kubernetes_cluster" "example" {
     network_plugin = "azure"
     service_cidr = "10.100.0.0/16"
     dns_service_ip = "10.100.0.10"
-    docker_bridge_cidr = "10.200.0.0/16"
+    docker_bridge_cidr = "172.17.0.1/16"
   }
 
   linux_profile {
