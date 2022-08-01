@@ -24,6 +24,36 @@ resource "azurerm_subnet" "kubernetes" {
   virtual_network_name = azurerm_virtual_network.example.name
 }
 
+
+
+resource "azurerm_route_table" "example" {
+  name                          = "route-table"
+  location                      = azurerm_resource_group.example.location
+  resource_group_name           = azurerm_resource_group.example.name
+  disable_bgp_route_propagation = false
+
+  route {
+    name           = "route1"
+    address_prefix = "10.0.0.0/16"
+    next_hop_type  = "VnetLocal"
+  }
+
+  route {
+    name = "internet"
+    address_prefix = "0.0.0.0/0"
+    next_hop_type = "Internet"
+  }
+
+  tags = {
+    environment = "Production"
+  }
+}
+
+resource "azurerm_subnet_route_table_association" "association" {
+  subnet_id      = azurerm_subnet.kubernetes.id
+  route_table_id = azurerm_route_table.example.id
+}
+
 # resource "azurerm_container_registry" "acr" {
 #   name                = "ashisverma"
 #   resource_group_name = azurerm_resource_group.example.name
