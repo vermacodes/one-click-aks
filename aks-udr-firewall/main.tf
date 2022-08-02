@@ -150,7 +150,7 @@ module "firewall" {
 }
 
 module "kubernetes" {
-  source = "../../"
+  source = "github.com/Azure-Terraform/terraform-azurerm-kubernetes.git?ref=v4.2.2"
 
   location            = module.metadata.location
   names               = module.metadata.names
