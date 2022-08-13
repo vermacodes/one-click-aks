@@ -354,7 +354,10 @@ module "kubernetes" {
   outbound_type = "userDefinedRouting"
 
   # Enable/Disable line below to enable/disable authorized ip ranges.
-  api_server_authorized_ip_ranges = {"my_ip" = "${chomp(data.http.my_ip.response_body)}/32"}
+  api_server_authorized_ip_ranges = {
+    "my_ip" = "${chomp(data.http.my_ip.response_body)}/32"
+    "firewall_public_ip" = "${chomp(module.firewall.firewall_public_ip)}/32"
+  }
 
   virtual_network = {
     subnets = {

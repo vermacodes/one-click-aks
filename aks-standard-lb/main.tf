@@ -161,7 +161,7 @@ module "kubernetes" {
   configure_network_role = true
 
   # Enable api server authorized ranges by enabling line below.
-  # api_server_authorized_ip_ranges = {"my_ip" = "${chomp(data.http.my_ip.response_body)}/32"}
+  api_server_authorized_ip_ranges = {"my_ip" = "${chomp(data.http.my_ip.response_body)}/32"}
 
   # outbound_type = "userDefinedRouting"
 
