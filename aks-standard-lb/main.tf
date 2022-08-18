@@ -48,7 +48,7 @@ data "azurerm_subscription" "current" {
 }
 
 resource "random_string" "random" {
-  length  = 12
+  length  = 4
   upper   = false
   number  = false
   special = false
@@ -143,6 +143,7 @@ module "virtual_network" {
 
 module "kubernetes" {
   source = "github.com/Azure-Terraform/terraform-azurerm-kubernetes.git?ref=v4.2.2"
+  //source = "../../azure-terraform/terraform-azurerm-kubernetes/"
 
   location            = module.metadata.location
   names               = module.metadata.names
@@ -161,7 +162,7 @@ module "kubernetes" {
   configure_network_role = true
 
   # Enable api server authorized ranges by enabling line below.
-  api_server_authorized_ip_ranges = {"my_ip" = "${chomp(data.http.my_ip.response_body)}/32"}
+  # api_server_authorized_ip_ranges = {"my_ip" = "${chomp(data.http.my_ip.response_body)}/32"}
 
   # outbound_type = "userDefinedRouting"
 
@@ -232,7 +233,7 @@ resource "helm_release" "nginx" {
 
   set {
     name  = "image"
-    value = "nginx:latest"
+    value = "ingress-nginx/ingress-nginx"
   }
 
   set {

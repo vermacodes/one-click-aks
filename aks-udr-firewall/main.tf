@@ -48,7 +48,7 @@ data "azurerm_subscription" "current" {
 }
 
 resource "random_string" "random" {
-  length  = 12
+  length  = 4
   upper   = false
   number  = false
   special = false
@@ -143,8 +143,8 @@ module "virtual_network" {
 }
 
 module "firewall" {
-  #source              = "github.com/vermacodes/terraform-azurerm-firewall.git?ref=main"
-  source              = "../../azure-terraform/terraform-azurerm-firewall/"
+  source              = "github.com/vermacodes/terraform-azurerm-firewall.git?ref=main"
+  #source              = "../../azure-terraform/terraform-azurerm-firewall/"
   location            = module.metadata.location
   names               = module.metadata.names
   tags                = module.metadata.tags
@@ -333,6 +333,8 @@ module "firewall" {
 }
 
 module "kubernetes" {
+  depends_on = [module.firewall]
+
   source = "github.com/Azure-Terraform/terraform-azurerm-kubernetes.git?ref=v4.2.2"
 
   location            = module.metadata.location
