@@ -2,7 +2,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~>2.67.0"
+      version = "~>2.70.0"
     }
     random = {
       source  = "hashicorp/random"
@@ -43,6 +43,14 @@ provider "helm" {
 data "http" "my_ip" {
   url = "http://ipv4.icanhazip.com"
 }
+
+# Following section gives a real word but it forces name change everytime.
+# super low priority but if time permits this is worth chasing.
+# sticking to random_string for now.
+#
+# data "http" "random" {
+#   url = "https://random-word-api.herokuapp.com/word?length=4"
+# }
 
 data "azurerm_subscription" "current" {
 }
@@ -142,8 +150,8 @@ module "virtual_network" {
 }
 
 module "kubernetes" {
-  source = "github.com/Azure-Terraform/terraform-azurerm-kubernetes.git?ref=v4.2.2"
-  //source = "../../azure-terraform/terraform-azurerm-kubernetes/"
+  //source = "github.com/Azure-Terraform/terraform-azurerm-kubernetes.git?ref=v4.2.2"
+  source = "../../azure-terraform/terraform-azurerm-kubernetes/"
 
   location            = module.metadata.location
   names               = module.metadata.names
@@ -161,10 +169,10 @@ module "kubernetes" {
 
   configure_network_role = true
 
+  private_cluster_enabled = true
+
   # Enable api server authorized ranges by enabling line below.
   # api_server_authorized_ip_ranges = {"my_ip" = "${chomp(data.http.my_ip.response_body)}/32"}
-
-  # outbound_type = "userDefinedRouting"
 
   virtual_network = {
     subnets = {
@@ -206,6 +214,36 @@ module "kubernetes" {
 
 }
 
+module "linux_virtual_machine" {
+  source = "github.com/Azure-Terraform/terraform-azurerm-virtual-machine?ref=v3.0.1"
+
+  resource_group_name = module.resource_group.name
+  location            = module.resource_group.location
+  names               = module.metadata.names
+  tags                = module.metadata.tags
+
+  # Windows or Linux?
+  kernel_type = "linux"
+
+  # Instance Size
+  virtual_machine_size = "Standard_B2s"
+
+  # Operating System Image
+  source_image_publisher = "Canonical"
+  source_image_offer     = "UbuntuServer"
+  source_image_sku       = "18.04-LTS"
+  source_image_version   = "latest"
+
+  # Virtual Network
+  subnet_id         = module.virtual_network.subnets["iaas-public"].id
+  public_ip_enabled = true
+
+  # optional
+  enable_boot_diagnostics = true
+  ultra_ssd_enabled       = false
+  availability_zone       = 1
+}
+
 resource "azurerm_network_security_rule" "ingress_public_allow_nginx" {
   name                        = "AllowNginx"
   priority                    = 100
@@ -224,6 +262,7 @@ resource "azurerm_network_security_rule" "ingress_public_allow_nginx" {
 resource "helm_release" "nginx" {
   depends_on = [module.kubernetes]
   name       = "nginx"
+  # repository = "https://kubernetes.github.io/ingress-nginx"
   chart      = "./helm_chart"
 
   set {
@@ -256,4 +295,16 @@ output "nginx_url" {
 
 output "aks_login" {
   value = "az aks get-credentials --name ${module.kubernetes.name} --resource-group ${module.resource_group.name}"
+}
+
+output "id" {
+  value = module.linux_virtual_machine.virtual_machine_id
+}
+
+output "name" {
+  value = module.linux_virtual_machine.virtual_machine_name
+}
+
+output "vm_admin_login" {
+  value = module.linux_virtual_machine.admin_username
 }
