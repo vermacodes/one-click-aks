@@ -6,3 +6,5 @@ I am not sure about that name, its not easy to name things you know!. Idea is to
 I initially planned to write all TF code in this repo, but quickly realized thats not easy and who doesn't like easy! Thus now using Azure-Terraform modules to create resources.
 
 All contributions are welcome. You know the drill!
+
+## Private AKS with Strandard LB as Egress
