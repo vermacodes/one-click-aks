@@ -35,6 +35,36 @@ module "kubernetes-snet-nsg" {
   depends_on = [azurerm_resource_group.this]
 }
 
+
+# This module sucks. Got time? Fix this.
+#
+# module "kubernetes-routetable" {
+#   source              = "Azure/routetable/azurerm"
+#   resource_group_name = azurerm_resource_group.this.name
+#   route_prefixes      = ["0.0.0.0/0", "10.0.0.0/8"]
+#   route_nexthop_types = ["Internet", "VnetLocal"]
+#   route_names         = ["internet", "VnetLocal"]
+# }
+
+resource "azurerm_route_table" "this" {
+  name                          = "kubernetes-route-table"
+  location                      = azurerm_resource_group.this.location
+  resource_group_name           = azurerm_resource_group.this.name
+  disable_bgp_route_propagation = false
+
+  route {
+    name           = "Internet"
+    address_prefix = "0.0.0.0/0"
+    next_hop_type  = "Internet"
+  }
+
+  route {
+    name           = "VnetLocal"
+    address_prefix = "10.0.0.0/8"
+    next_hop_type  = "VnetLocal"
+  }
+}
+
 module "vnet" {
   source              = "Azure/vnet/azurerm"
   vnet_name           = module.naming.virtual_network.name
@@ -48,6 +78,10 @@ module "vnet" {
     KubernetesSubnet = module.kubernetes-snet-nsg.network_security_group_id
   }
 
-  depends_on = [module.kubernetes-snet-nsg, module.jump-server-snet-nsg]
+  route_tables_ids = {
+    KubernetesSubnet = azurerm_route_table.this.id
+  } 
+
+  depends_on = [module.kubernetes-snet-nsg, module.jump-server-snet-nsg, azurerm_route_table.this]
 }
 
