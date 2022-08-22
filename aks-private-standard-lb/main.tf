@@ -10,8 +10,8 @@ resource "random_string" "random" {
 }
 
 module "naming" {
-  source      = "Azure/naming/azurerm"
-  prefix = [ "${random_string.random.result}" ]
+  source = "Azure/naming/azurerm"
+  prefix = ["${random_string.random.result}"]
 }
 
 resource "azurerm_resource_group" "this" {
@@ -19,18 +19,18 @@ resource "azurerm_resource_group" "this" {
   location = "East US"
 }
 
-module "jump-server-snet-nsg" {
-  source                = "Azure/network-security-group/azurerm"
-  resource_group_name   = azurerm_resource_group.this.name
-  security_group_name   = "jump-server-snet-nsg"
+module "jump_server_snet_nsg" {
+  source              = "Azure/network-security-group/azurerm"
+  resource_group_name = azurerm_resource_group.this.name
+  security_group_name = "jump-server-snet-nsg"
 
   depends_on = [azurerm_resource_group.this]
 }
 
-module "kubernetes-snet-nsg" {
-  source                = "Azure/network-security-group/azurerm"
-  resource_group_name   = azurerm_resource_group.this.name
-  security_group_name   = "kubernetes-snet-nsg"
+module "kubernetes_snet_nsg" {
+  source              = "Azure/network-security-group/azurerm"
+  resource_group_name = azurerm_resource_group.this.name
+  security_group_name = "kubernetes-snet-nsg"
 
   depends_on = [azurerm_resource_group.this]
 }
@@ -74,14 +74,63 @@ module "vnet" {
   subnet_names        = ["AzureFirewallSubnet", "JumpServerSubnet", "KubernetesSubnet"]
 
   nsg_ids = {
-    JumpServerSubnet = module.jump-server-snet-nsg.network_security_group_id
-    KubernetesSubnet = module.kubernetes-snet-nsg.network_security_group_id
+    JumpServerSubnet = module.jump_server_snet_nsg.network_security_group_id
+    KubernetesSubnet = module.kubernetes_snet_nsg.network_security_group_id
   }
 
   route_tables_ids = {
     KubernetesSubnet = azurerm_route_table.this.id
-  } 
+  }
 
-  depends_on = [module.kubernetes-snet-nsg, module.jump-server-snet-nsg, azurerm_route_table.this]
+  depends_on = [
+    module.kubernetes_snet_nsg,
+    module.jump_server_snet_nsg,
+    azurerm_route_table.this
+  ]
 }
 
+module "jumpserver" {
+  source                        = "github.com/Azure/terraform-azurerm-compute?ref=master"
+  resource_group_name           = azurerm_resource_group.this.name
+  vm_hostname                   = "jump-server"
+  remote_port                   = "22"
+  vm_os_simple                  = "UbuntuServer"
+  vnet_subnet_id                = module.vnet.vnet_subnets[1]
+  delete_os_disk_on_termination = true
+  admin_username                = "ashish"
+
+  depends_on = [
+    azurerm_resource_group.this
+  ]
+}
+
+module "aks" {
+  source = "github.com/Azure/terraform-azurerm-aks?ref=master"
+
+  prefix                    = random_string.random.result
+  resource_group_name       = azurerm_resource_group.this.name
+  agents_availability_zones = ["1", "2"]
+  agents_count              = null
+  agents_max_count = 2
+  agents_max_pods  = 100
+  agents_min_count = 1
+  agents_pool_name = "testnodepool"
+  agents_type                             = "VirtualMachineScaleSets"
+  azure_policy_enabled                    = true
+  enable_auto_scaling                     = true
+  http_application_routing_enabled        = true
+  log_analytics_workspace_enabled         = true
+  role_based_access_control_enabled       = true
+  local_account_disabled                  = true
+  net_profile_dns_service_ip              = "10.0.0.10"
+  net_profile_docker_bridge_cidr          = "170.10.0.1/16"
+  net_profile_service_cidr                = "10.0.0.0/16"
+  network_plugin                          = "azure"
+  network_policy                          = "azure"
+  os_disk_size_gb                         = 60
+  private_cluster_enabled                 = true
+  rbac_aad_managed                        = true
+  vnet_subnet_id                          = module.vnet.vnet_subnets[2]
+
+  depends_on = [azurerm_resource_group.this]
+}
