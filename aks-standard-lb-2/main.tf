@@ -89,21 +89,6 @@ module "vnet" {
   ]
 }
 
-module "jumpserver" {
-  source                        = "github.com/Azure/terraform-azurerm-compute?ref=master"
-  resource_group_name           = azurerm_resource_group.this.name
-  vm_hostname                   = "jump-server"
-  remote_port                   = "22"
-  vm_os_simple                  = "UbuntuServer"
-  vnet_subnet_id                = module.vnet.vnet_subnets[1]
-  delete_os_disk_on_termination = true
-  admin_username                = "ashish"
-
-  depends_on = [
-    azurerm_resource_group.this
-  ]
-}
-
 module "aks" {
   source = "github.com/Azure/terraform-azurerm-aks?ref=master"
 
@@ -126,7 +111,7 @@ module "aks" {
   network_plugin                          = "azure"
   network_policy                          = "azure"
   os_disk_size_gb                         = 60
-  private_cluster_enabled                 = true
+  private_cluster_enabled                 = false
   vnet_subnet_id                          = module.vnet.vnet_subnets[2]
 
   depends_on = [azurerm_resource_group.this]
