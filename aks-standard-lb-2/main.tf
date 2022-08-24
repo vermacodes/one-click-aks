@@ -92,27 +92,27 @@ module "vnet" {
 module "aks" {
   source = "github.com/Azure/terraform-azurerm-aks?ref=master"
 
-  prefix                    = random_string.random.result
-  resource_group_name       = azurerm_resource_group.this.name
-  agents_availability_zones = ["1", "2"]
-  agents_count              = null
-  agents_max_count = 2
-  agents_max_pods  = 100
-  agents_min_count = 1
-  agents_pool_name = "testnodepool"
-  agents_type                             = "VirtualMachineScaleSets"
-  azure_policy_enabled                    = true
-  enable_auto_scaling                     = true
-  http_application_routing_enabled        = true
-  log_analytics_workspace_enabled         = true
-  net_profile_dns_service_ip              = "10.0.0.10"
-  net_profile_docker_bridge_cidr          = "170.10.0.1/16"
-  net_profile_service_cidr                = "10.0.0.0/16"
-  network_plugin                          = "azure"
-  network_policy                          = "azure"
-  os_disk_size_gb                         = 60
-  private_cluster_enabled                 = false
-  vnet_subnet_id                          = module.vnet.vnet_subnets[2]
+  prefix                           = random_string.random.result
+  resource_group_name              = azurerm_resource_group.this.name
+  agents_availability_zones        = ["1", "2"]
+  agents_count                     = null
+  agents_max_count                 = 2
+  agents_max_pods                  = 100
+  agents_min_count                 = 1
+  agents_pool_name                 = "testnodepool"
+  agents_type                      = "VirtualMachineScaleSets"
+  azure_policy_enabled             = true
+  enable_auto_scaling              = true
+  http_application_routing_enabled = true
+  log_analytics_workspace_enabled  = true
+  net_profile_dns_service_ip       = "10.0.0.10"
+  net_profile_docker_bridge_cidr   = "170.10.0.1/16"
+  net_profile_service_cidr         = "10.0.0.0/16"
+  network_plugin                   = "azure"
+  network_policy                   = "azure"
+  os_disk_size_gb                  = 60
+  private_cluster_enabled          = false
+  vnet_subnet_id                   = module.vnet.vnet_subnets[2]
 
   depends_on = [azurerm_resource_group.this]
 }
