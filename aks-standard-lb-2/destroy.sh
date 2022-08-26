@@ -8,4 +8,4 @@ if [ $? -ne 0 ]; then
 fi
 
 terraform init
-terraform apply -auto-approve
+terraform destroy -auto-approve
