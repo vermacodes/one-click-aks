@@ -124,9 +124,6 @@ resource "helm_release" "nginx" {
   chart      = "ingress-nginx"
 }
 
-# aks_name output used from aks moudle is not added to the upstream repo yet. Uncomment this change after the PR is merged.
-# PR -> https://github.com/Azure/terraform-azurerm-aks/pull/234
-#
-# output "aks_login" {
-#   value = "az aks get-credentials --name ${module.aks.aks_name} --resource-group ${azurerm_resource_group.this.name}"
-# }
+output "aks_login" {
+  value = "az aks get-credentials --name ${module.aks.aks_name} --resource-group ${azurerm_resource_group.this.name}"
+}
