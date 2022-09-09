@@ -1,10 +1,24 @@
 # One Click AKS
 
 ## Introduction
-I am not sure about that name, its not easy to name things you know!. Idea is to deploy AKS clusters in diffenet ways with minimum efforts possible.
+This project helps you deploy AKS using different patterns using terraform.
 
-I initially planned to write all TF code in this repo, but quickly realized thats not easy and who doesn't like easy! Thus now using Azure-Terraform modules to create resources.
+## Requirements
+- **Linux** At this time you need to use Linux environments. If you are using windows, you can [install WSL by following instructions here](https://docs.microsoft.com/en-us/windows/wsl/install).
+- **Terraform** As we will be using terraform to create resources, you need to [install terraform by following instructions here](https://learn.hashicorp.com/tutorials/terraform/install-cli).
 
-All contributions are welcome. You know the drill!
+## Instructions
+- Clone [the git repository](https://github.com/vermacodes/one-click-aks) in your local system. If you dont have git installed, you can either [install git by following instructions here](https://docs.microsoft.com/en-us/devops/develop/git/install-and-set-up-git) or simply download ZIP of the code and unpack in your local system.
+- You will see two following scripts in project's root directory.
+    - **apply.sh** *This script is used to create the infrastucture*
+    - destroy.sh *This script is used to destroy the infrascture*
+- You can run these scripts in following format
+    - `/bin/bash scriptname.sh pattern-name`
+    - For example, `/bin/bash apply.sh aks-standard-lb-2`
+- Be sure to destroy the infrastucre after you are done with your tests using destroy script.
 
-## Private AKS with Strandard LB as Egress
+## Patterns
+
+|Name|Description|
+------|----------
+aks-standard-lb-2 | This deploys a public aks cluster with standard lb egress type|
