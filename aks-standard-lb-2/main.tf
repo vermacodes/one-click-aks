@@ -94,7 +94,7 @@ module "aks" {
 
   prefix                           = random_string.random.result
   resource_group_name              = azurerm_resource_group.this.name
-  agents_availability_zones        = ["1", "2"]
+  //agents_availability_zones        = ["1", "2"]
   agents_count                     = null
   agents_max_count                 = 2
   agents_max_pods                  = 100
@@ -113,6 +113,9 @@ module "aks" {
   os_disk_size_gb                  = 60
   private_cluster_enabled          = false
   vnet_subnet_id                   = module.vnet.vnet_subnets[2]
+
+  # kubernetes_version               = "1.24.3"
+  # orchestrator_version             = "1.23.12"
 
   depends_on = [azurerm_resource_group.this]
 }
