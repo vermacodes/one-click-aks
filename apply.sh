@@ -1,6 +1,9 @@
 #!/bin/bash
 
 
+# Start at root directory
+cd ../..
+
 # Parameter input validation
 if [ -z "$1" ]; then
     echo "Directory name required. run like, /bin/bash apply.sh <directory-name>"
@@ -8,6 +11,9 @@ if [ -z "$1" ]; then
 fi
 
 cd $1
+
+echo $(pwd)
+
 if [ $? -ne 0 ]; then
     echo "Looks like wrong directory name"
     exit 1
@@ -21,4 +27,5 @@ if [ $? -ne 0 ]; then
 fi
 
 terraform init
-terraform apply -auto-approve
+terraform plan
+#terraform apply -auto-approve

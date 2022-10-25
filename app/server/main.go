@@ -12,8 +12,14 @@ import (
 	"github.com/nbari/violetear"
 )
 
-func apply(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Applying")
+func enableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+}
+
+func test(w http.ResponseWriter, r *http.Request) {
+
+	enableCors(&w)
+	w.WriteHeader(http.StatusOK)
 
 	cmd := exec.Command("/home/ashish/git/one-click-aks/script.sh")
 	rPipe, wPipe, err := os.Pipe()
@@ -30,10 +36,35 @@ func apply(w http.ResponseWriter, r *http.Request) {
 	wPipe.Close()
 }
 
-func destroy(w http.ResponseWriter, r *http.Request) {
+func apply(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+	w.WriteHeader(http.StatusOK)
+
 	fmt.Fprintf(w, "Applying")
 
-	cmd := exec.Command("/home/ashish/git/one-click-aks/destroy.sh", "aks-standard-lb-2")
+	cmd := exec.Command("/home/ashish/git/one-click-aks/apply.sh", "tf")
+	rPipe, wPipe, err := os.Pipe()
+	if err != nil {
+		log.Fatal(err)
+	}
+	cmd.Stdout = wPipe
+	cmd.Stderr = wPipe
+	if err := cmd.Start(); err != nil {
+		log.Fatal(err)
+	}
+	go writeOutput(w, rPipe)
+	cmd.Wait()
+	wPipe.Close()
+}
+
+func destroy(w http.ResponseWriter, r *http.Request) {
+
+	enableCors(&w)
+	w.WriteHeader(http.StatusOK)
+
+	fmt.Fprintf(w, "Destroying")
+
+	cmd := exec.Command("/home/ashish/git/one-click-aks/destroy.sh", "tf")
 	rPipe, wPipe, err := os.Pipe()
 	if err != nil {
 		log.Fatal(err)
@@ -64,43 +95,22 @@ func writeOutput(w http.ResponseWriter, input io.ReadCloser) {
 
 	in := bufio.NewScanner(input)
 	for in.Scan() {
-		fmt.Fprintf(w, "\n", in.Text())
+		fmt.Fprintf(w, "%s\n", in.Text())
 		fmt.Println(in.Text())
 		flusher.Flush()
 	}
 	input.Close()
 }
 
-func welcome(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello Mom!")
-
-	fmt.Println("Endpoint Hit: welcome")
-	cmd := exec.Command("/home/ashish/git/one-click-aks/apply.sh", "aks-standard-lb-2")
-	stdout, _ := cmd.StdoutPipe()
-
-	fmt.Println("Starting command")
-	// if err := cmd.Run(); err != nil {
-	// 	fmt.Println("Something brokedown : ", err)
-	// }
-
-	cmd.Start()
-
-	scanner := bufio.NewScanner(stdout)
-	//scanner.Split(bufio.ScanLines)
-	for scanner.Scan() {
-		m := scanner.Text()
-		fmt.Println(m)
-	}
-
-	//cmd.Wait()
-
-	fmt.Println("Command Ended")
-}
-
 func handleRequests() {
 	router := violetear.New()
 	router.HandleFunc("/apply", apply)
 	router.HandleFunc("/destroy", destroy)
+	router.HandleFunc("/test", test)
+	router.HandleFunc("/loginstatus", validateLogin)
+	router.HandleFunc("/accountlist", accountList)
+	router.HandleFunc("/accountshow", accountShow)
+	router.HandleFunc("/login", accountLogin)
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
 

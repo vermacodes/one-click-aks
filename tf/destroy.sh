@@ -1,17 +1,5 @@
 #!/bin/bash
 
-# Start at root directory.
-cd ../..
-
-# Parameter input validation
-if [ -z "$1" ]
-then
-    echo "Directory name required. run like, /bin/bash apply.sh <directory-name>"
-    exit 1
-fi
-
-cd $1
-
 # Validate if terraform in installed
 dpkg -s terraform &> /dev/null
 
