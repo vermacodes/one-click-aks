@@ -2,7 +2,7 @@
 
 
 # Start at root directory
-cd ../..
+cd $2
 
 # Parameter input validation
 if [ -z "$1" ]; then
@@ -27,5 +27,5 @@ if [ $? -ne 0 ]; then
 fi
 
 terraform init
-terraform plan
-#terraform apply -auto-approve
+#terraform plan
+terraform apply -auto-approve

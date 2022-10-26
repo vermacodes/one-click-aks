@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -11,6 +12,10 @@ import (
 
 	"github.com/nbari/violetear"
 )
+
+type Status struct {
+	Status string `json:"status"`
+}
 
 func enableCors(w *http.ResponseWriter) {
 	(*w).Header().Set("Access-Control-Allow-Origin", "*")
@@ -42,7 +47,7 @@ func apply(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Fprintf(w, "Applying")
 
-	cmd := exec.Command("/home/ashish/git/one-click-aks/apply.sh", "tf")
+	cmd := exec.Command(os.ExpandEnv("$ROOT_DIR")+"/apply.sh", "tf", os.ExpandEnv("$ROOT_DIR"))
 	rPipe, wPipe, err := os.Pipe()
 	if err != nil {
 		log.Fatal(err)
@@ -64,7 +69,7 @@ func destroy(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Fprintf(w, "Destroying")
 
-	cmd := exec.Command("/home/ashish/git/one-click-aks/destroy.sh", "tf")
+	cmd := exec.Command(os.ExpandEnv("$ROOT_DIR")+"/destroy.sh", "tf", os.ExpandEnv("$ROOT_DIR"))
 	rPipe, wPipe, err := os.Pipe()
 	if err != nil {
 		log.Fatal(err)
@@ -102,6 +107,22 @@ func writeOutput(w http.ResponseWriter, input io.ReadCloser) {
 	input.Close()
 }
 
+func status(w http.ResponseWriter, e *http.Request) {
+	enableCors(&w)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+
+	status := Status{}
+	status.Status = "OK"
+
+	statusJson, err := json.Marshal(status)
+	if err != nil {
+		log.Println(err)
+	}
+
+	w.Write(statusJson)
+}
+
 func handleRequests() {
 	router := violetear.New()
 	router.HandleFunc("/apply", apply)
@@ -111,6 +132,8 @@ func handleRequests() {
 	router.HandleFunc("/accountlist", accountList)
 	router.HandleFunc("/accountshow", accountShow)
 	router.HandleFunc("/login", accountLogin)
+	router.HandleFunc("/status", status)
+	router.HandleFunc("/healthz", status)
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
 

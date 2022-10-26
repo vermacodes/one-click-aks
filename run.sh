@@ -4,10 +4,10 @@
 #
 # WebApp runs on port 3000
 # Server runs on port 8080.
+export ROOT_DIR=$(pwd)
+
+cd app/ui
+npm start
 
 cd app/server
-go run . &
-
-cd ../ui
-
-npm start
+go run .

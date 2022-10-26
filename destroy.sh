@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Start at root directory.
-cd ../..
+cd $2
 
 # Parameter input validation
 if [ -z "$1" ]
