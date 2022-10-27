@@ -134,6 +134,10 @@ func handleRequests() {
 	router.HandleFunc("/login", accountLogin)
 	router.HandleFunc("/status", status)
 	router.HandleFunc("/healthz", status)
+	router.HandleFunc("/getstaterg", getResourceGroup)
+	router.HandleFunc("/getstatestorageaccount", getStorageAccount)
+	router.HandleFunc("/createstaterg", createResourceGroup)
+	router.HandleFunc("/createstatestorageaccount", createStorageAccunt)
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
 

@@ -79,11 +79,11 @@ func accountShow(w http.ResponseWriter, e *http.Request) {
 		log.Println("Error Unmarshelling : ", err)
 	}
 
-	accountsJson, err := json.Marshal(account)
+	accountJson, err := json.Marshal(account)
 	if err != nil {
 		log.Println("Error Marshilling : ", err)
 	}
-	w.Write(accountsJson)
+	w.Write(accountJson)
 }
 
 func accountList(w http.ResponseWriter, e *http.Request) {
@@ -123,7 +123,7 @@ func validateLogin(w http.ResponseWriter, e *http.Request) {
 
 	if err != nil {
 		loginStatus.IsLoggedIn = false
-		fmt.Println("Not able to login")
+		log.Println("Validating Login - Not able to run az cli command")
 		log.Println("Error output from comamnd : ", err)
 	}
 

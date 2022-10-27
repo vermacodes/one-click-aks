@@ -1,55 +1,29 @@
-import React, { PureComponent, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Button } from 'react-bootstrap'
-
-interface User {
-    name: string
-    type: string
-}
-
-type UserType = User
-
-interface Tenant {
-    tenantId: string
-}
-
-type TenantType = Tenant[]
-
-interface Account {
-    environmentName: string
-    homeTenantId: string
-    id: string
-    isDefault: string
-    managedByTenants: TenantType
-    name: string
-    state: string
-    tenantId: string
-    user: UserType
-}
-
-interface LoginStatus {
-    isLoggedIn: boolean
-}
+import type { AccountType } from '../dataStructures'
 
 type AccountProps = {
-    logs: string
-    setLogs(arg: string): void
-    prevLogsRef: React.MutableRefObject<string | null | undefined>
+  logs: string
+  setLogs(arg: string): void
+  prevLogsRef: React.MutableRefObject<string | null | undefined>
+  isAuth: boolean
+  setIsAuth(arg: boolean): void
 }
 
 function Account(props: AccountProps) {
-    const [isLoggedIn, setIsLoggedIn] = useState(false)
-    const [currAccount, setCurrAccount] = useState<Account>()
+    //const [isLoggedIn, setIsLoggedIn] = useState(false)
+    const [currAccount, setCurrAccount] = useState<AccountType>()
 
     useEffect(() => {
         getLoginStatus()
     }, [])
 
     useEffect(() => {
-        if(isLoggedIn) {
+        if(props.isAuth) {
             getCurrentAccount()
         }
-    }, [isLoggedIn])
+    }, [props.isAuth])
 
     function getCurrentAccount() {
         axios.get('http://localhost:8080/accountshow').then(response => {
@@ -61,7 +35,7 @@ function Account(props: AccountProps) {
     
     function getLoginStatus() {
         axios.get('http://localhost:8080/loginstatus').then(response => {
-            setIsLoggedIn(response.data.isLoggedIn)
+            props.setIsAuth(response.data.isLoggedIn)
         }).catch(response => {
             console.error(response)
         })
@@ -116,12 +90,12 @@ function Account(props: AccountProps) {
       }
 
     return(
-        <div>
-            {(isLoggedIn)
-                ? <p>{currAccount?.user.name} | {currAccount?.name}</p>
+        <>
+            {(props.isAuth)
+                ? <>{currAccount?.user.name} | {currAccount?.name}</>
                 : <Button variant="link" onClick={loginHandler}>Login</Button>
             }
-        </div>
+        </>
     )
 }
 

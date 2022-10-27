@@ -6,8 +6,8 @@
 # Server runs on port 8080.
 export ROOT_DIR=$(pwd)
 
-cd app/ui
-npm start
-
 cd app/server
-go run .
+go run . &
+
+cd ../ui
+npm start
