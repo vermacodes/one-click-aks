@@ -13,9 +13,6 @@ type StateProps = {
 
 function State(props: StateProps) {
 
-    // const [resourceGroup, setResourceGroup] = useState<ResoureceGroupType>();
-    // const [storageAccount, setStorageAccount] = useState<StorageAccountType>();
-
     useEffect(() => {
         getResourceGroup()
     }, [])
