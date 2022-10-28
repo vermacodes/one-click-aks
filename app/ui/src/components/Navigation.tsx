@@ -30,13 +30,17 @@ function Navigation(props: NavigationProps) {
         <Navbar.Collapse className="justify-content-end">
           <Navbar.Text>
             <Account logs={props.logs} setLogs={props.setLogs} prevLogsRef={props.prevLogsRef} isAuth={props.isAuth} setIsAuth={props.setIsAuth} />
-            {' | '}
-            <State
-              resourceGroup={props.resourceGroup}
-              setResourceGroup={props.setResourceGroup}
-              storageAccount={props.storageAccount}
-              setStorageAccount={props.setStorageAccount}
-            />
+            {props.isAuth &&
+              <>
+                {' | '}
+                < State
+                  resourceGroup={props.resourceGroup}
+                  setResourceGroup={props.setResourceGroup}
+                  storageAccount={props.storageAccount}
+                  setStorageAccount={props.setStorageAccount}
+                />
+              </>
+            }
           </Navbar.Text>
         </Navbar.Collapse>
       </Container>

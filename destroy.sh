@@ -23,5 +23,5 @@ fi
 # thi is needed to delete in nginx ingress deployment before other resources could be destroyed.
 # not sure if there is a better way.
 
-terraform init
+# terraform init
 terraform destroy -auto-approve

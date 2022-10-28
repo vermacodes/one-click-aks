@@ -20,7 +20,7 @@ npm install
 # # Install Azure CLI
 # curl -sL https://aka.ms/InstallAzureCLIDeb | bash
 
-apt-get install azure-cli=2.36.0-1~jammy -y
+# apt-get install azure-cli=2.36.0-1~jammy -y
 
 # # Install Terraform
 # apt-get update && apt-get install -y gnupg software-properties-common

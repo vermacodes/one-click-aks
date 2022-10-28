@@ -47,6 +47,9 @@ apt update
 apt-get install terraform
 terraform --help
 
+# Install GIT
+apt install git -y
+
 # # Run Server
 # chmod +x server
 # export ROOT_DIR="/app"

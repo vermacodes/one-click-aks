@@ -48,3 +48,9 @@ interface StorageAccount {
 }
 
 export type StorageAccountType = StorageAccount
+
+interface BlobContainer {
+    name: string
+}
+
+export type BlobContainerType = BlobContainer

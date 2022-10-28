@@ -1,8 +1,8 @@
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button, OverlayTrigger, Tooltip } from "react-bootstrap";
 
-import type { ResoureceGroupType, StorageAccountType } from '../dataStructures'
+import { BlobContainerType, ResoureceGroupType, StorageAccountType } from '../dataStructures'
 
 type StateProps = {
     resourceGroup: ResoureceGroupType | undefined
@@ -13,6 +13,8 @@ type StateProps = {
 
 function State(props: StateProps) {
 
+    const [container, setContainer] = useState<BlobContainerType>({name: ''})
+
     useEffect(() => {
         getResourceGroup()
     }, [])
@@ -20,6 +22,12 @@ function State(props: StateProps) {
     useEffect(() => {
         getStorageAccount()
     }, [props.resourceGroup])
+
+    useEffect(() =>{
+        if(props.storageAccount?.name !== '' && container.name === ''){
+            createContainer()
+        }
+    }, [props.storageAccount])
 
     function getResourceGroup() {
         axios.get("http://localhost:8080/getstaterg").then(response => {
@@ -49,6 +57,15 @@ function State(props: StateProps) {
     function createStorageAccount() {
         axios.get("http://localhost:8080/createstatestorageaccount").then(response => {
             props.setStorageAccount(response.data)
+            createContainer()
+        }).catch(error => {
+            console.log("Something went wrong : ", error)
+        });
+    }
+
+    function createContainer() {
+        axios.get("http://localhost:8080/createcontainer").then(response => {
+            console.log("Container Created : ", response.data)
         }).catch(error => {
             console.log("Something went wrong : ", error)
         });
@@ -63,8 +80,8 @@ function State(props: StateProps) {
                     placement='bottom'
                     overlay={
                         <Tooltip id={`tooltip-state`}>
-                            <strong>Resourece Group not configured.</strong> This tool uses terraform which requires to store the state.
-                            The state is stored in a storage account in a resource group named 'repro-project'.
+                            <strong>State storage not configured.</strong> This tool uses terraform which requires to store the state.
+                            The state is stored in a blob container named 'tfstate' in a storage account named randomly in a resource group named 'repro-project'.
                             Storage account can have any name, but there must only be one storage account in the resource group.
                         </Tooltip>
                     }

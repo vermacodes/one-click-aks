@@ -47,7 +47,18 @@ func apply(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Fprintf(w, "Applying")
 
-	cmd := exec.Command(os.ExpandEnv("$ROOT_DIR")+"/apply.sh", "tf", os.ExpandEnv("$ROOT_DIR"))
+	setEnvironmentVariable("resource_group_name", "repro-project")
+	setEnvironmentVariable("storage_account_name", getStorageAccountName())
+	setEnvironmentVariable("container_name", "tfstate")
+	setEnvironmentVariable("tf_state_file_name", "terraform.tfstate")
+
+	cmd := exec.Command(os.ExpandEnv("$ROOT_DIR")+"/apply.sh", "tf",
+		os.ExpandEnv("$ROOT_DIR"),
+		os.ExpandEnv("$resource_group_name"),
+		os.ExpandEnv("$storage_account_name"),
+		os.ExpandEnv("$container_name"),
+		os.ExpandEnv("$tf_state_file_name"))
+
 	rPipe, wPipe, err := os.Pipe()
 	if err != nil {
 		log.Fatal(err)
@@ -138,6 +149,8 @@ func handleRequests() {
 	router.HandleFunc("/getstatestorageaccount", getStorageAccount)
 	router.HandleFunc("/createstaterg", createResourceGroup)
 	router.HandleFunc("/createstatestorageaccount", createStorageAccunt)
+	router.HandleFunc("/getcontainer", getContainerApi)
+	router.HandleFunc("/createcontainer", createBlobContainer)
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
 

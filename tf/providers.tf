@@ -22,6 +22,8 @@ terraform {
       source  = "hashicorp/helm"
     }
   }
+
+  backend "azurerm" {}
 }
 
 provider "azurerm" {
