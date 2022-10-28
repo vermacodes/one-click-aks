@@ -1,5 +1,9 @@
 # One Click AKS
 
+***
+Use Release not master branch. Readme update pending.
+***
+
 ## Introduction
 This project helps you deploy AKS using different patterns using terraform.
 
