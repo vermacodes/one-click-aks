@@ -52,7 +52,7 @@ func apply(w http.ResponseWriter, r *http.Request) {
 	setEnvironmentVariable("container_name", "tfstate")
 	setEnvironmentVariable("tf_state_file_name", "terraform.tfstate")
 
-	cmd := exec.Command(os.ExpandEnv("$ROOT_DIR")+"/apply.sh", "tf",
+	cmd := exec.Command(os.ExpandEnv("$ROOT_DIR")+"/scripts/apply.sh", "tf",
 		os.ExpandEnv("$ROOT_DIR"),
 		os.ExpandEnv("$resource_group_name"),
 		os.ExpandEnv("$storage_account_name"),
@@ -80,7 +80,7 @@ func destroy(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Fprintf(w, "Destroying")
 
-	cmd := exec.Command(os.ExpandEnv("$ROOT_DIR")+"/destroy.sh", "tf", os.ExpandEnv("$ROOT_DIR"))
+	cmd := exec.Command(os.ExpandEnv("$ROOT_DIR")+"/scripts/destroy.sh", "tf", os.ExpandEnv("$ROOT_DIR"))
 	rPipe, wPipe, err := os.Pipe()
 	if err != nil {
 		log.Fatal(err)

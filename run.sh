@@ -1,9 +1,7 @@
 #!/bin/bash
 
-# This script starts the web app and the server. Both server and the webapp needs to be exposed to the world outside.
-#
-# WebApp runs on port 3000
-# Server runs on port 8080.
+# This script is for local testing. It starts both server and UI in one go.
+
 export ROOT_DIR=$(pwd)
 
 cd app/server
