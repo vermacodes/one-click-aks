@@ -1,4 +1,3 @@
-import cluster from "cluster"
 import { useEffect, useState } from "react"
 import { Col, Row, Button, Form } from "react-bootstrap"
 import { actionHandler, actionHandlerPost } from "../api/streamLogs"

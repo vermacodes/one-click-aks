@@ -37,5 +37,5 @@ terraform init \
 -backend-config="storage_account_name=$storage_account_name" \
 -backend-config="container_name=$container_name" \
 -backend-config="key=$tf_state_file_name"
-terraform plan
-#terraform apply -auto-approve
+#terraform plan
+terraform apply -auto-approve -refresh=true

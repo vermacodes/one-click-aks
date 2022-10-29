@@ -1,10 +1,18 @@
+import { useEffect, useRef } from "react"
 import { Row, Col } from "react-bootstrap"
+import ScrollableFeed from 'react-scrollable-feed'
 
 type TerminalProps = {
   logs: string
 }
 
 function Terminal(props: TerminalProps) {
+
+  const logEndRef = useRef<null | HTMLDivElement>(null)
+  useEffect(() => {
+    logEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }, [props.logs])
+
   return (
     <Row>
       <Col>
@@ -23,6 +31,7 @@ function Terminal(props: TerminalProps) {
           }}
         >
           <pre dangerouslySetInnerHTML={{ __html: props.logs }} style={{ padding: "10px", whiteSpace: "pre-wrap" }}></pre>
+          <div ref={logEndRef} />
         </div>
       </Col>
     </Row>

@@ -121,12 +121,12 @@ module "aks" {
   depends_on = [azurerm_resource_group.this]
 }
 
-resource "helm_release" "nginx" {
-  depends_on = [module.aks]
-  name       = "nginx"
-  repository = "https://kubernetes.github.io/ingress-nginx"
-  chart      = "ingress-nginx"
-}
+# resource "helm_release" "nginx" {
+#   depends_on = [module.aks]
+#   name       = "nginx"
+#   repository = "https://kubernetes.github.io/ingress-nginx"
+#   chart      = "ingress-nginx"
+# }
 
 output "aks_login" {
   value = "az aks get-credentials --name ${module.aks.aks_name} --resource-group ${azurerm_resource_group.this.name}"
