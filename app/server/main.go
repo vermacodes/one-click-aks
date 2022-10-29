@@ -47,6 +47,7 @@ func handleRequests() {
 
 	router.GET("/test", test)
 	router.POST("/apply", apply)
+	router.POST("/plan", plan)
 	router.GET("/destroy", destroy)
 	router.GET("/status", status)
 	router.GET("/healthz", status)

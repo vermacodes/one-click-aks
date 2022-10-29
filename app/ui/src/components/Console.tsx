@@ -31,6 +31,12 @@ function Console(props: ConsoleProps) {
         props.setLogs("")
         actionHandlerPost('http://localhost:8080/apply', props.prevLogsRef, props.setLogs, streamEndActions, clusterConfig)
     }
+    
+    function planHandler() {
+        setActionInProgress(true) //This is set to 'false' in streamEndActions.
+        props.setLogs("")
+        actionHandlerPost('http://localhost:8080/plan', props.prevLogsRef, props.setLogs, streamEndActions, clusterConfig)
+    }
 
     function destroyHandler() {
         setActionInProgress(true) //This is set to 'false' in streamEndActions.
@@ -75,6 +81,7 @@ function Console(props: ConsoleProps) {
                                 onChange={e => setClusterConfig({networkPlugin: e.currentTarget.value})}
                             />
                         </div>
+                        <Button variant="outline-success" onClick={planHandler} disabled={actionInProgress}>Plan</Button>{' '}
                         <Button variant="outline-primary" onClick={applyHandler} disabled={actionInProgress}>Apply</Button>{' '}
                         <Button variant="outline-danger" onClick={destroyHandler} disabled={actionInProgress}>Destroy</Button>{' '}
                         <Button variant="outline-secondary" onClick={() => props.setLogs("")} disabled={actionInProgress}>Clear Logs</Button>
