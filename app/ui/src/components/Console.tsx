@@ -82,13 +82,6 @@ function Console(props: ConsoleProps) {
                     </Form>
                 </Col>
             </Row>
-            {/* <Row style={{ textAlign: "left" }} className='mt-1'>
-                <Col>
-                    <Button variant="outline-primary" onClick={applyHandler} disabled={actionInProgress}>Create</Button>{' '}
-                    <Button variant="outline-danger" onClick={destroyHandler} disabled={actionInProgress}>Destroy</Button>{' '}
-                    <Button variant="outline-secondary" onClick={() => props.setLogs("")} disabled={actionInProgress}>Clear Logs</Button>
-                </Col>
-            </Row> */}
         </>
     )
 }
