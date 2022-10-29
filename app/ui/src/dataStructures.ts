@@ -54,3 +54,23 @@ interface BlobContainer {
 }
 
 export type BlobContainerType = BlobContainer
+
+interface StateConfiguration {
+    resourceGroup: ResoureceGroupType
+    storageAccount: StorageAccountType
+    blobContainer: BlobContainerType
+}
+
+export type StateConfigurationType = StateConfiguration
+
+interface StateConfigurationStatus {
+    isStateConfigured: boolean
+}
+
+export type StateConfigurationStatusType = StateConfigurationStatus
+
+interface ClusterConfiguration {
+    networkPlugin: string
+}
+
+export type ClusterConfigurationType = ClusterConfiguration

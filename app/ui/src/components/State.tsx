@@ -1,80 +1,42 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Button, OverlayTrigger, Tooltip } from "react-bootstrap";
 
-import { BlobContainerType, ResoureceGroupType, StorageAccountType } from '../dataStructures'
+import { StateConfigurationType } from '../dataStructures'
 
 type StateProps = {
-    resourceGroup: ResoureceGroupType | undefined
-    setResourceGroup(arg: ResoureceGroupType): void
-    storageAccount: StorageAccountType | undefined
-    setStorageAccount(arg: StorageAccountType): void
+    stateStore: StateConfigurationType | undefined
+    setStateStore(args: StateConfigurationType): void
 }
 
 function State(props: StateProps) {
 
-    const [container, setContainer] = useState<BlobContainerType>({name: ''})
-
     useEffect(() => {
-        getResourceGroup()
+        if (props.stateStore === undefined) {
+            getStateStore()
+        }
     }, [])
 
-    useEffect(() => {
-        getStorageAccount()
-    }, [props.resourceGroup])
-
-    useEffect(() =>{
-        if(props.storageAccount?.name !== '' && container.name === ''){
-            createContainer()
-        }
-    }, [props.storageAccount])
-
-    function getResourceGroup() {
-        axios.get("http://localhost:8080/getstaterg").then(response => {
-            props.setResourceGroup(response.data)
+    function getStateStore() {
+        axios.get("http://localhost:8080/getstate").then(response => {
+            props.setStateStore(response.data)
         }).catch(error => {
             console.log("Something went wrong : ", error)
         })
     }
 
-    function getStorageAccount() {
-        axios.get("http://localhost:8080/getstatestorageaccount").then(response => {
-            props.setStorageAccount(response.data)
+    function configureStateStore() {
+        axios.get("http://localhost:8080/configurestate").then(response => {
+            props.setStateStore(response.data)
         }).catch(error => {
             console.log("Something went wrong : ", error)
         })
-    }
-
-    function createResoureceGroup() {
-        axios.get("http://localhost:8080/createstaterg").then(response => {
-            props.setResourceGroup(response.data)
-            createStorageAccount()
-        }).catch(error => {
-            console.log("Something went wrong : ", error)
-        });
-    }
-
-    function createStorageAccount() {
-        axios.get("http://localhost:8080/createstatestorageaccount").then(response => {
-            props.setStorageAccount(response.data)
-            createContainer()
-        }).catch(error => {
-            console.log("Something went wrong : ", error)
-        });
-    }
-
-    function createContainer() {
-        axios.get("http://localhost:8080/createcontainer").then(response => {
-            console.log("Container Created : ", response.data)
-        }).catch(error => {
-            console.log("Something went wrong : ", error)
-        });
     }
 
 
     return (
         <>
-            {!props.storageAccount?.id ?
+            { (props.stateStore?.blobContainer.name !== 'tfstate') ?
                 <OverlayTrigger
                     key='state'
                     placement='bottom'
@@ -86,7 +48,7 @@ function State(props: StateProps) {
                         </Tooltip>
                     }
                 >
-                    <Button href="#" size='sm' variant="link" onClick={() => createResoureceGroup()} style={{ textDecoration: "none" }} className="p-0 m-0">Configure State Storage</Button>
+                    <Button href="#" size='sm' variant="link" onClick={() => configureStateStore()} style={{ textDecoration: "none" }} className="p-0 m-0">Configure State Storage</Button>
                 </OverlayTrigger>
                 :
                 <OverlayTrigger
@@ -98,7 +60,7 @@ function State(props: StateProps) {
                         </Tooltip>
                     }
                 >
-                    <a>{props.storageAccount?.name}</a>
+                    <a>{props.stateStore.storageAccount.name} {props.stateStore.blobContainer.name}</a>
                 </OverlayTrigger>
             }
         </>

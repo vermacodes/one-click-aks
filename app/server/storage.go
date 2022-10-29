@@ -9,6 +9,8 @@ import (
 	"os/exec"
 	"strings"
 	"unsafe"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Properties struct {
@@ -30,39 +32,49 @@ type StorageAccount struct {
 	Name string `json:"name"`
 }
 
-type Container struct {
+type BlobContainer struct {
 	Name string `json:"name"`
 }
 
-func getResourceGroup(w http.ResponseWriter, r *http.Request) {
-
-	enableCors(&w)
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-
-	resourceGroup := ResourceGroup{}
-
-	out, err := exec.Command("bash", "-c", "az group show --name repro-project --output json").Output()
-
-	if err != nil {
-		fmt.Println("Get Resourece Group - Not able to run az cli command")
-		log.Println("Error output from comamnd : ", err)
-	}
-
-	fmt.Println(string(out))
-
-	err = json.Unmarshal(out, &resourceGroup)
-	if err != nil {
-		log.Println("Error Unmarshelling : ", err)
-	}
-
-	resourceGroupJson, err := json.Marshal(resourceGroup)
-	if err != nil {
-		log.Println(err)
-	}
-
-	w.Write(resourceGroupJson)
+type StateConfiguration struct {
+	ResourceGroup  ResourceGroup  `json:"resourceGroup"`
+	StorageAccount StorageAccount `json:"storageAccount"`
+	BlobContainer  BlobContainer  `json:"blobContainer"`
 }
+
+type StateConfigurationStatus struct {
+	IsStateConfigured bool `json:"isStateConfigured"`
+}
+
+// func getResourceGroup(w http.ResponseWriter, r *http.Request) {
+
+// 	enableCors(&w)
+// 	w.Header().Set("Content-Type", "application/json")
+// 	w.WriteHeader(http.StatusOK)
+
+// 	resourceGroup := ResourceGroup{}
+
+// 	out, err := exec.Command("bash", "-c", "az group show --name repro-project --output json").Output()
+
+// 	if err != nil {
+// 		fmt.Println("Get Resourece Group - Not able to run az cli command")
+// 		log.Println("Error output from comamnd : ", err)
+// 	}
+
+// 	fmt.Println(string(out))
+
+// 	err = json.Unmarshal(out, &resourceGroup)
+// 	if err != nil {
+// 		log.Println("Error Unmarshelling : ", err)
+// 	}
+
+// 	resourceGroupJson, err := json.Marshal(resourceGroup)
+// 	if err != nil {
+// 		log.Println(err)
+// 	}
+
+// 	w.Write(resourceGroupJson)
+// }
 
 func getStorageAccountName() string {
 	out, err := exec.Command("bash", "-c", "az storage account list -g repro-project --output tsv --query [].name").Output()
@@ -75,80 +87,80 @@ func getStorageAccountName() string {
 	return strings.TrimSuffix(string(out), "\n")
 }
 
-func getStorageAccount(w http.ResponseWriter, r *http.Request) {
+// func getStorageAccount(w http.ResponseWriter, r *http.Request) {
 
-	enableCors(&w)
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
+// 	enableCors(&w)
+// 	w.Header().Set("Content-Type", "application/json")
+// 	w.WriteHeader(http.StatusOK)
 
-	storageAccount := StorageAccount{}
+// 	storageAccount := StorageAccount{}
 
-	storageAccountName := getStorageAccountName()
+// 	storageAccountName := getStorageAccountName()
 
-	log.Println("Storage Account Name : ", storageAccountName)
-	log.Println("Next command : ", "az storage account show -g repro-project --name "+storageAccountName+" --output json")
+// 	log.Println("Storage Account Name : ", storageAccountName)
+// 	log.Println("Next command : ", "az storage account show -g repro-project --name "+storageAccountName+" --output json")
 
-	out, err := exec.Command("bash", "-c", "az storage account show -g repro-project --name "+storageAccountName+" --output json").Output()
+// 	out, err := exec.Command("bash", "-c", "az storage account show -g repro-project --name "+storageAccountName+" --output json").Output()
 
-	if err != nil {
-		fmt.Println("Show Storage Account - Not able to run az cli command")
-		log.Println("Error output from comamnd : ", err)
-	}
+// 	if err != nil {
+// 		fmt.Println("Show Storage Account - Not able to run az cli command")
+// 		log.Println("Error output from comamnd : ", err)
+// 	}
 
-	fmt.Println(string(out))
+// 	fmt.Println(string(out))
 
-	err = json.Unmarshal(out, &storageAccount)
-	if err != nil {
-		log.Println("Error Unmarshelling : ", err)
-	}
+// 	err = json.Unmarshal(out, &storageAccount)
+// 	if err != nil {
+// 		log.Println("Error Unmarshelling : ", err)
+// 	}
 
-	storageAccountJson, err := json.Marshal(storageAccount)
-	if err != nil {
-		log.Println(err)
-	}
+// 	storageAccountJson, err := json.Marshal(storageAccount)
+// 	if err != nil {
+// 		log.Println(err)
+// 	}
 
-	w.Write(storageAccountJson)
-}
+// 	w.Write(storageAccountJson)
+// }
 
-func createStorageAccunt(w http.ResponseWriter, r *http.Request) {
+// func createStorageAccunt(w http.ResponseWriter, r *http.Request) {
 
-	enableCors(&w)
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
+// 	enableCors(&w)
+// 	w.Header().Set("Content-Type", "application/json")
+// 	w.WriteHeader(http.StatusOK)
 
-	storageAccount := StorageAccount{}
+// 	storageAccount := StorageAccount{}
 
-	storageAccountName := generate(12)
-	log.Println("Storage Account Name : ", storageAccountName)
-	log.Println("Command : ", "az storage account create -g repro-project --name "+storageAccountName+" --kind StorageV2 --sku Standard_LRS --output json")
+// 	storageAccountName := generate(12)
+// 	log.Println("Storage Account Name : ", storageAccountName)
+// 	log.Println("Command : ", "az storage account create -g repro-project --name "+storageAccountName+" --kind StorageV2 --sku Standard_LRS --output json")
 
-	out, err := exec.Command("bash", "-c", "az storage account create -g repro-project --name "+storageAccountName+" --kind StorageV2 --sku Standard_LRS --output json").Output()
+// 	out, err := exec.Command("bash", "-c", "az storage account create -g repro-project --name "+storageAccountName+" --kind StorageV2 --sku Standard_LRS --output json").Output()
 
-	if err != nil {
-		fmt.Println("Create Storage account - Not able to run az cli command")
-		log.Println("Error output from comamnd : ", err)
-	}
+// 	if err != nil {
+// 		fmt.Println("Create Storage account - Not able to run az cli command")
+// 		log.Println("Error output from comamnd : ", err)
+// 	}
 
-	fmt.Println(string(out))
+// 	fmt.Println(string(out))
 
-	err = json.Unmarshal(out, &storageAccount)
-	if err != nil {
-		log.Println("Error Unmarshelling : ", err)
-	}
+// 	err = json.Unmarshal(out, &storageAccount)
+// 	if err != nil {
+// 		log.Println("Error Unmarshelling : ", err)
+// 	}
 
-	storageAccountJson, err := json.Marshal(storageAccount)
-	if err != nil {
-		log.Println(err)
-	}
+// 	storageAccountJson, err := json.Marshal(storageAccount)
+// 	if err != nil {
+// 		log.Println(err)
+// 	}
 
-	w.Write(storageAccountJson)
-}
+// 	w.Write(storageAccountJson)
+// }
 
-func getContainer(storageAccountName string, containerName string) Container {
-	log.Println("Getting Container Details")
+func getBlobContainer(storageAccountName string, containerName string) BlobContainer {
+	log.Println("Getting BlobContainer Details")
 	log.Println("Command : az storage container show -n " + containerName + " --account-name " + storageAccountName + " --output json")
 
-	container := Container{}
+	container := BlobContainer{}
 
 	out, err := exec.Command("bash", "-c", "az storage container show -n "+containerName+" --account-name "+storageAccountName+" --output json").Output()
 
@@ -167,11 +179,133 @@ func getContainer(storageAccountName string, containerName string) Container {
 	return container
 }
 
-func createBlobContainer(w http.ResponseWriter, r *http.Request) {
+// func createBlobContainer(w http.ResponseWriter, r *http.Request) {
 
-	enableCors(&w)
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
+// 	enableCors(&w)
+// 	w.Header().Set("Content-Type", "application/json")
+// 	w.WriteHeader(http.StatusOK)
+
+// 	storageAccountName := getStorageAccountName()
+
+// 	log.Println("Storage Account Name : ", storageAccountName)
+// 	log.Println("Command : ", "az storage container create -n tfstate -g repro-project --account-name "+storageAccountName+" --output tsv --query created")
+
+// 	out, err := exec.Command("bash", "-c", "az storage container create -n tfstate -g repro-project --account-name "+storageAccountName+" --output tsv --query created").Output()
+
+// 	if err != nil {
+// 		fmt.Println("Create Storage account - Not able to run az cli command")
+// 		log.Println("Error output from comamnd : ", err)
+// 	}
+
+// 	if string(out) == "true" {
+// 		log.Println("BlobContainer created.")
+// 	}
+
+// 	container := getBlobContainer(storageAccountName, "tfstate")
+
+// 	containerJson, err := json.Marshal(container)
+// 	if err != nil {
+// 		log.Println(err)
+// 	}
+
+// 	w.Write(containerJson)
+// }
+
+// func getBlobContainerApi(w http.ResponseWriter, r *http.Request) {
+
+// 	enableCors(&w)
+// 	w.Header().Set("Content-Type", "application/json")
+// 	w.WriteHeader(http.StatusOK)
+
+// 	container := getBlobContainer(getStorageAccountName(), "tfstate")
+
+// 	containerJson, err := json.Marshal(container)
+// 	if err != nil {
+// 		log.Println(err)
+// 	}
+
+// 	w.Write(containerJson)
+// }
+
+// func createResourceGroup(w http.ResponseWriter, r *http.Request) {
+// 	enableCors(&w)
+// 	w.Header().Set("Content-Type", "application/json")
+// 	w.WriteHeader(http.StatusOK)
+
+// 	resourceGroup := ResourceGroup{}
+
+// 	out, err := exec.Command("bash", "-c", "az group create -l eastus -n repro-project -o json").Output()
+
+// 	if err != nil {
+// 		fmt.Println("Create Resource Group - Not able to run az cli command")
+// 		log.Println("Error output from comamnd : ", err)
+// 	}
+
+// 	fmt.Println(string(out))
+
+// 	err = json.Unmarshal(out, &resourceGroup)
+// 	if err != nil {
+// 		log.Println("Error Unmarshelling : ", err)
+// 	}
+
+// 	resourceGroupJson, err := json.Marshal(resourceGroup)
+// 	if err != nil {
+// 		log.Println(err)
+// 	}
+
+// 	w.Write(resourceGroupJson)
+// }
+
+func _createResourceGroup() ResourceGroup {
+
+	resourceGroup := ResourceGroup{}
+	log.Println("Create Resource Group")
+	log.Println("Command : az group create -l eastus -n repro-project -o json")
+
+	out, err := exec.Command("bash", "-c", "az group create -l eastus -n repro-project -o json").Output()
+
+	if err != nil {
+		fmt.Println("Create Resourece Group - Not able to run az cli command")
+		log.Println("Error output from comamnd : ", err)
+	}
+
+	err = json.Unmarshal(out, &resourceGroup)
+	if err != nil {
+		log.Println("Error Unmarshelling : ", err)
+	}
+
+	return resourceGroup
+}
+
+func _createStorageAccount() StorageAccount {
+
+	storageAccount := StorageAccount{}
+
+	storageAccountName := getStorageAccountName()
+	if storageAccountName == "" {
+		storageAccountName = generate(12)
+	}
+
+	log.Println("Create Storage Account")
+	log.Println("Storage Account Name : ", storageAccountName)
+	log.Println("Command : ", "az storage account create -g repro-project --name "+storageAccountName+" --kind StorageV2 --sku Standard_LRS --output json")
+
+	out, err := exec.Command("bash", "-c", "az storage account create -g repro-project --name "+storageAccountName+" --kind StorageV2 --sku Standard_LRS --output json").Output()
+
+	if err != nil {
+		fmt.Println("Show Storage Account - Not able to run az cli command")
+		log.Println("Error output from comamnd : ", err)
+	}
+
+	err = json.Unmarshal(out, &storageAccount)
+	if err != nil {
+		log.Println("Error Unmarshelling : ", err)
+	}
+
+	return storageAccount
+}
+
+func _createBlobContainer() BlobContainer {
 
 	storageAccountName := getStorageAccountName()
 
@@ -186,62 +320,105 @@ func createBlobContainer(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if string(out) == "true" {
-		log.Println("Container created.")
+		log.Println("BlobContainer created.")
 	}
 
-	container := getContainer(storageAccountName, "tfstate")
-
-	containerJson, err := json.Marshal(container)
-	if err != nil {
-		log.Println(err)
-	}
-
-	w.Write(containerJson)
+	return getBlobContainer(storageAccountName, "tfstate")
 }
 
-func getContainerApi(w http.ResponseWriter, r *http.Request) {
-
-	enableCors(&w)
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-
-	container := getContainer(getStorageAccountName(), "tfstate")
-
-	containerJson, err := json.Marshal(container)
-	if err != nil {
-		log.Println(err)
-	}
-
-	w.Write(containerJson)
-}
-
-func createResourceGroup(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
+func _getResourceGroup() ResourceGroup {
 
 	resourceGroup := ResourceGroup{}
+	log.Println("Get Resource Group")
+	log.Println("Command : az group show --name repro-project --output json")
 
-	out, err := exec.Command("bash", "-c", "az group create -l eastus -n repro-project -o json").Output()
+	out, err := exec.Command("bash", "-c", "az group show --name repro-project --output json").Output()
 
 	if err != nil {
-		fmt.Println("Create Resource Group - Not able to run az cli command")
+		fmt.Println("Get Resourece Group - Not able to run az cli command")
 		log.Println("Error output from comamnd : ", err)
 	}
-
-	fmt.Println(string(out))
 
 	err = json.Unmarshal(out, &resourceGroup)
 	if err != nil {
 		log.Println("Error Unmarshelling : ", err)
 	}
 
-	resourceGroupJson, err := json.Marshal(resourceGroup)
+	return resourceGroup
+}
+
+func _getStorageAccount() StorageAccount {
+
+	storageAccount := StorageAccount{}
+
+	storageAccountName := getStorageAccountName()
+	log.Println("Get Storage Account")
+	log.Println("Storage Account Name : ", storageAccountName)
+	log.Println("Command : ", "az storage account show -g repro-project --name "+storageAccountName+" --output json")
+
+	out, err := exec.Command("bash", "-c", "az storage account show -g repro-project --name "+storageAccountName+" --output json").Output()
+
 	if err != nil {
-		log.Println(err)
+		fmt.Println("Show Storage Account - Not able to run az cli command")
+		log.Println("Error output from comamnd : ", err)
 	}
 
-	w.Write(resourceGroupJson)
+	err = json.Unmarshal(out, &storageAccount)
+	if err != nil {
+		log.Println("Error Unmarshelling : ", err)
+	}
+
+	return storageAccount
+}
+
+// func isResourceGroupCreated() bool {
+// 	return _getResourceGroup().Name != ""
+// }
+
+// func isStorageAccountCreated() bool {
+// 	return _getStorageAccount().Name != ""
+// }
+
+// func isBlobContainerCreated() bool {
+// 	return (getBlobContainer(_getStorageAccount().Name, "tfstate").Name == "tfstate")
+// }
+
+// func isStateConfigured(w http.ResponseWriter, r *http.Request) {
+// 	enableCors(&w)
+// 	w.Header().Set("Content-Type", "application/json")
+// 	w.WriteHeader(http.StatusOK)
+
+// 	stateConfigurationStatus := StateConfigurationStatus{}
+// 	stateConfigurationStatus.IsStateConfigured = isBlobContainerCreated()
+
+// 	stateConfigurationStatusJson, err := json.Marshal(stateConfigurationStatus)
+// 	if err != nil {
+// 		log.Println(err)
+// 	}
+
+// 	w.Write(stateConfigurationStatusJson)
+// }
+
+func getStateStorageConfiguration(c *gin.Context) {
+
+	stateConfiguration := StateConfiguration{}
+
+	stateConfiguration.ResourceGroup = _getResourceGroup()
+	stateConfiguration.StorageAccount = _getStorageAccount()
+	stateConfiguration.BlobContainer = getBlobContainer(stateConfiguration.StorageAccount.Name, "tfstate")
+
+	c.IndentedJSON(http.StatusOK, stateConfiguration)
+}
+
+func configureStateStorage(c *gin.Context) {
+
+	stateConfiguration := StateConfiguration{}
+
+	stateConfiguration.ResourceGroup = _createResourceGroup()
+	stateConfiguration.StorageAccount = _createStorageAccount()
+	stateConfiguration.BlobContainer = _createBlobContainer()
+
+	c.IndentedJSON(http.StatusOK, stateConfiguration)
 }
 
 var alphabet = []byte("abcdefghijklmnopqrstuvwxyz0123456789")

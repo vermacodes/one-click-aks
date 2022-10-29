@@ -4,7 +4,7 @@ import Navbar from 'react-bootstrap/Navbar'
 import Container from 'react-bootstrap/Container'
 
 import Account from './Account'
-import { ResoureceGroupType, StorageAccountType } from '../dataStructures';
+import { ResoureceGroupType, StateConfigurationType, StorageAccountType } from '../dataStructures';
 import State from './State';
 
 type NavigationProps = {
@@ -13,10 +13,8 @@ type NavigationProps = {
   prevLogsRef: React.MutableRefObject<string | null | undefined>
   isAuth: boolean
   setIsAuth(arg: boolean): void
-  resourceGroup: ResoureceGroupType | undefined
-  setResourceGroup(arg: ResoureceGroupType): void
-  storageAccount: StorageAccountType | undefined
-  setStorageAccount(arg: StorageAccountType): void
+  stateStore: StateConfigurationType | undefined
+  setStateStore(args: StateConfigurationType): void
 }
 
 function Navigation(props: NavigationProps) {
@@ -34,10 +32,8 @@ function Navigation(props: NavigationProps) {
               <>
                 {' | '}
                 < State
-                  resourceGroup={props.resourceGroup}
-                  setResourceGroup={props.setResourceGroup}
-                  storageAccount={props.storageAccount}
-                  setStorageAccount={props.setStorageAccount}
+                  stateStore={props.stateStore}
+                  setStateStore={props.setStateStore}
                 />
               </>
             }

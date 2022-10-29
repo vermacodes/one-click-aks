@@ -10,8 +10,7 @@ ADD /app/ui/package.json ./
 ADD /app/ui/build ./
 ADD /app/server/server ./
 ADD /tf ./tf
-ADD /apply.sh ./
-ADD /destroy.sh ./
+ADD /scripts ./scripts
 
 EXPOSE 3000/tcp
 EXPOSE 8080/tcp

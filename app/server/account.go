@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+
+	"github.com/gin-gonic/gin"
 )
 
 type User struct {
@@ -38,13 +40,14 @@ type LoginMessage struct {
 	LoginMessage string `json:"loginMessage"`
 }
 
-func accountLogin(w http.ResponseWriter, e *http.Request) {
+func accountLogin(c *gin.Context) {
 
-	enableCors(&w)
-	w.Header().Set("Content-Type", "application/json")
+	w := c.Writer
+	header := w.Header()
+	header.Set("Transfer-Encoding", "chunked")
+	header.Set("Content-type", "text/html")
 	w.WriteHeader(http.StatusOK)
-
-	//loginMessage := LoginMessage{}
+	w.(http.Flusher).Flush()
 
 	cmd := exec.Command("bash", "-c", "az login --use-device-code")
 	rPipe, wPipe, err := os.Pipe()
@@ -56,17 +59,13 @@ func accountLogin(w http.ResponseWriter, e *http.Request) {
 	if err := cmd.Start(); err != nil {
 		log.Fatal(err)
 	}
+
 	go writeOutput(w, rPipe)
 	cmd.Wait()
 	wPipe.Close()
 }
 
-func accountShow(w http.ResponseWriter, e *http.Request) {
-
-	enableCors(&w)
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-
+func accountShow(c *gin.Context) {
 	var account Account
 
 	out, err := exec.Command("bash", "-c", "az account show -o json").Output()
@@ -79,47 +78,40 @@ func accountShow(w http.ResponseWriter, e *http.Request) {
 		log.Println("Error Unmarshelling : ", err)
 	}
 
-	accountJson, err := json.Marshal(account)
-	if err != nil {
-		log.Println("Error Marshilling : ", err)
-	}
-	w.Write(accountJson)
+	c.IndentedJSON(http.StatusOK, account)
 }
 
-func accountList(w http.ResponseWriter, e *http.Request) {
+// func accountList(w http.ResponseWriter, e *http.Request) {
 
-	enableCors(&w)
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
+// 	enableCors(&w)
+// 	w.Header().Set("Content-Type", "application/json")
+// 	w.WriteHeader(http.StatusOK)
 
-	var accounts []Account
+// 	var accounts []Account
 
-	out, err := exec.Command("bash", "-c", "az account list -o json").Output()
-	if err != nil {
-		fmt.Println("Not able to get account list : ", err)
-	}
+// 	out, err := exec.Command("bash", "-c", "az account list -o json").Output()
+// 	if err != nil {
+// 		fmt.Println("Not able to get account list : ", err)
+// 	}
 
-	err = json.Unmarshal(out, &accounts)
-	if err != nil {
-		log.Println("Error Unmarshelling : ", err)
-	}
+// 	err = json.Unmarshal(out, &accounts)
+// 	if err != nil {
+// 		log.Println("Error Unmarshelling : ", err)
+// 	}
 
-	accountsJson, err := json.Marshal(accounts)
-	if err != nil {
-		log.Println("Error Marshilling : ", err)
-	}
-	w.Write(accountsJson)
-}
+// 	accountsJson, err := json.Marshal(accounts)
+// 	if err != nil {
+// 		log.Println("Error Marshilling : ", err)
+// 	}
+// 	w.Write(accountsJson)
+// }
 
-func validateLogin(w http.ResponseWriter, e *http.Request) {
-	enableCors(&w)
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
+func validateLogin(c *gin.Context) {
 
 	loginStatus := LoginStatus{}
 	loginStatus.IsLoggedIn = true
 
-	out, err := exec.Command("bash", "-c", "az account show -o json").Output()
+	_, err := exec.Command("bash", "-c", "az account show -o json").Output()
 
 	if err != nil {
 		loginStatus.IsLoggedIn = false
@@ -127,12 +119,5 @@ func validateLogin(w http.ResponseWriter, e *http.Request) {
 		log.Println("Error output from comamnd : ", err)
 	}
 
-	fmt.Println(string(out))
-
-	loginStatusJson, err := json.Marshal(loginStatus)
-	if err != nil {
-		log.Println(err)
-	}
-
-	w.Write(loginStatusJson)
+	c.IndentedJSON(http.StatusOK, loginStatus)
 }
