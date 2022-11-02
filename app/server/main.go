@@ -45,10 +45,9 @@ func handleRequests() {
 	config.AllowOrigins = []string{"http://localhost:3000"}
 	router.Use(cors.New(config))
 
-	router.GET("/test", test)
 	router.POST("/apply", apply)
 	router.POST("/plan", plan)
-	router.GET("/destroy", destroy)
+	router.POST("/destroy", destroy)
 	router.GET("/status", status)
 	router.GET("/healthz", status)
 	router.GET("/accountshow", accountShow)

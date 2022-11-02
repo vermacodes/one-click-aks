@@ -15,13 +15,18 @@ function Account(props: AccountProps) {
     //const [isLoggedIn, setIsLoggedIn] = useState(false)
     const [currAccount, setCurrAccount] = useState<AccountType>()
 
-    useEffect(() => {
-        getLoginStatus()
-    }, [])
+    // useEffect(() => {
+    //     if (!props.isAuth){
+    //       console.log("Trigger")
+    //       getLoginStatus()
+    //     }
+    // }, [])
 
     useEffect(() => {
         if(props.isAuth) {
             getCurrentAccount()
+        } else {
+          getLoginStatus()
         }
     }, [props.isAuth])
 

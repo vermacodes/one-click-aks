@@ -47,6 +47,9 @@ module "kubernetes_snet_nsg" {
 # }
 
 resource "azurerm_route_table" "this" {
+
+  count = var.route_table ? 1 : 0
+
   name                          = "kubernetes-route-table"
   location                      = azurerm_resource_group.this.location
   resource_group_name           = azurerm_resource_group.this.name
@@ -79,8 +82,11 @@ module "vnet" {
     KubernetesSubnet = module.kubernetes_snet_nsg.network_security_group_id
   }
 
+  # route_tables_ids = {
+  #   KubernetesSubnet = azurerm_route_table.this.id
+  # }
   route_tables_ids = {
-    KubernetesSubnet = azurerm_route_table.this.id
+    
   }
 
   depends_on = [
@@ -110,9 +116,9 @@ module "aks" {
   net_profile_docker_bridge_cidr   = "170.10.0.1/16"
   net_profile_service_cidr         = "10.0.0.0/16"
   network_plugin                   = var.network_plugin
-  network_policy                   = "azure"
+  network_policy                   = var.network_policy
   os_disk_size_gb                  = 60
-  private_cluster_enabled          = false
+  private_cluster_enabled          = var.private_cluster_enabled
   vnet_subnet_id                   = module.vnet.vnet_subnets[2]
 
   # kubernetes_version               = "1.24.3"

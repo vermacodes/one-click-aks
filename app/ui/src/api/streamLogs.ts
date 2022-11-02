@@ -1,4 +1,4 @@
-import { ClusterConfigurationType } from "../dataStructures";
+import { TfvarConfigType } from "../dataStructures";
 
 export function actionHandler(url: string, prevLogsRef: React.MutableRefObject<string | null | undefined>, setFunction: any, streamEndActions: any) {
     fetch(url)
@@ -47,11 +47,11 @@ export function actionHandler(url: string, prevLogsRef: React.MutableRefObject<s
 }
 
 
-export function actionHandlerPost(url: string, prevLogsRef: React.MutableRefObject<string | null | undefined>, setFunction: any, streamEndActions: any, clusterConfig: ClusterConfigurationType) {
-    console.log(JSON.stringify(clusterConfig))
+export function actionHandlerPost(url: string, prevLogsRef: React.MutableRefObject<string | null | undefined>, setFunction: any, streamEndActions: any, buildTfConfig: TfvarConfigType) {
+    console.log(JSON.stringify(buildTfConfig))
     fetch(url, {
         method: 'POST',
-        body: JSON.stringify(clusterConfig),
+        body: JSON.stringify(buildTfConfig),
         headers: {
             "Content-type": "application/json"
         }

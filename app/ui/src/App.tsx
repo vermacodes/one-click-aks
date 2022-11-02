@@ -5,9 +5,9 @@ import ThemeProvider from 'react-bootstrap/ThemeProvider'
 import Container from 'react-bootstrap/Container';
 
 import { StateConfigurationType } from './dataStructures'
-import Console from './components/Console';
 import Navigation from './components/Navigation'
 import Terminal from './components/Terminal'
+import Tabbar from './components/Tabbar';
 
 
 function App() {
@@ -39,7 +39,7 @@ function App() {
           setStateStore={setStateStore}
         />
         <Container className='mt-1' fluid='md'>
-          {isAuth && stateStore?.blobContainer.name === 'tfstate' && <Console setLogs={setLogs} prevLogsRef={prevLogsRef} />}
+          {isAuth && stateStore?.blobContainer.name === 'tfstate' && <Tabbar setLogs={setLogs} prevLogsRef={prevLogsRef} />}
           <Terminal logs={logs} />
         </Container>
       </div>

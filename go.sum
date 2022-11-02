@@ -1,3 +1,5 @@
+github.com/Rican7/conjson v0.1.0 h1:8dNZzdy1mzwo9LOideWcOyY3PbKdsJPF7hj31/mrIiw=
+github.com/Rican7/conjson v0.1.0/go.mod h1:CL1oWzzC9Ox36F2ghCPmtNpdW/ZKRunAc4dEoCL4Qyc=
 github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ33E=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

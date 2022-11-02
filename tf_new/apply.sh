@@ -29,15 +29,11 @@ if [ $? -ne 0 ]; then
     echo "Terraform is not installed. Installation Instructions -> https://learn.hashicorp.com/tutorials/terraform/install-cli"
 fi
 
-echo "Printing TF VAR"
-echo "TF_VAR_resource_group : ${TF_VAR_resource_group}"
-echo "TF_VAR_kubernetes_cluster : ${TF_VAR_kubernetes_cluster}"
-
 terraform init \
 -migrate-state \
 -backend-config="resource_group_name=$resource_group_name" \
 -backend-config="storage_account_name=$storage_account_name" \
 -backend-config="container_name=$container_name" \
 -backend-config="key=$tf_state_file_name"
-terraform plan
-#terraform apply -auto-approve -refresh=true
+#terraform plan
+terraform apply -auto-approve -refresh=true

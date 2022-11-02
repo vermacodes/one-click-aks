@@ -70,7 +70,44 @@ interface StateConfigurationStatus {
 export type StateConfigurationStatusType = StateConfigurationStatus
 
 interface ClusterConfiguration {
-    networkPlugin: string
+    networkPlugin: 'azure' | 'kubenet',
+    networkPolicy: 'azure' | 'calico' | 'null'
 }
 
 export type ClusterConfigurationType = ClusterConfiguration
+
+
+interface tfvarResourceGroup {
+    location: string
+}
+
+export type TfvarResourceGroupType = tfvarResourceGroup
+
+interface tfvarVirtualNetwork {
+    addressSpace: string[]
+}
+
+export type TfvarVirtualNetworkType = tfvarVirtualNetwork[]
+
+interface tfvarSubnet {
+    name: string
+    addressPrefixes: string[]
+}
+
+export type TfvarSubnetType = tfvarSubnet[]
+
+interface tfvarKubernetesCluster {
+    networkPlugin: 'azure' | 'kubenet',
+    networkPolicy: 'azure' | 'calico' | 'null'
+}
+
+export type TfvarKubernetesClusterType = tfvarKubernetesCluster
+
+interface TfvarConfig {
+    resourceGroup: TfvarResourceGroupType
+    kubernetesCluster: TfvarKubernetesClusterType
+    virtualNetworks: TfvarVirtualNetworkType
+    subnets: TfvarSubnetType
+}
+
+export type TfvarConfigType = TfvarConfig
