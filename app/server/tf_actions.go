@@ -34,10 +34,16 @@ type TfvarSubnetType struct {
 	AddressPrefixes []string
 }
 
+type TfvarJumpserverType struct {
+	AdminPassword string `json:"adminPassword"`
+	AdminUserName string `json:"adminUsername"`
+}
+
 type TfvarConfigType struct {
 	ResourceGroup     TfvarResourceGroupType     `json:"resourceGroup"`
 	VirtualNetworks   []TfvarVirtualNeworkType   `json:"virtualNetworks"`
 	Subnets           []TfvarSubnetType          `json:"subnets"`
+	Jumpservers       []TfvarJumpserverType      `json:"jumpservers"`
 	KubernetesCluster TfvarKubernetesClusterType `json:"kubernetesCluster"`
 }
 
@@ -71,6 +77,10 @@ func action(c *gin.Context, action string) {
 	// Subnets
 	encoded, _ = json.Marshal(conjson.NewMarshaler(tfConfig.Subnets, transform.ConventionalKeys()))
 	setEnvironmentVariable("TF_VAR_subnets", string(encoded))
+
+	// Jumpserver
+	encoded, _ = json.Marshal(conjson.NewMarshaler(tfConfig.Jumpservers, transform.ConventionalKeys()))
+	setEnvironmentVariable("TF_VAR_jumpservers", string(encoded))
 
 	//Kubernetes Cluster
 	encoded, _ = json.Marshal(conjson.NewMarshaler(tfConfig.KubernetesCluster, transform.ConventionalKeys()))

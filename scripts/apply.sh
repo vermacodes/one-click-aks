@@ -29,6 +29,14 @@ if [ $? -ne 0 ]; then
     echo "Terraform is not installed. Installation Instructions -> https://learn.hashicorp.com/tutorials/terraform/install-cli"
 fi
 
+
+# Printing the TF ENV
+echo "Terraform Environment Variables"
+echo ""
+env | grep "TF_VAR"
+echo ""
+
+
 terraform init \
 -migrate-state \
 -backend-config="resource_group_name=$resource_group_name" \
