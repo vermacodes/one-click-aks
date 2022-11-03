@@ -11,10 +11,6 @@ type Status struct {
 	Status string `json:"status"`
 }
 
-// func enableCors(w *http.ResponseWriter) {
-// 	(*w).Header().Set("Access-Control-Allow-Origin", "*")
-// }
-
 func status(c *gin.Context) {
 
 	status := Status{}
@@ -22,22 +18,6 @@ func status(c *gin.Context) {
 
 	c.IndentedJSON(http.StatusOK, status)
 }
-
-// func handleRequests() {
-// 	router := violetear.New()
-// 	router.HandleFunc("/accountlist", accountList)
-// 	router.HandleFunc("/login", accountLogin)
-// 	router.HandleFunc("/getstaterg", getResourceGroup)
-// 	router.HandleFunc("/getstatestorageaccount", getStorageAccount)
-// 	router.HandleFunc("/createstaterg", createResourceGroup)
-// 	router.HandleFunc("/createstatestorageaccount", createStorageAccunt)
-// 	//router.HandleFunc("/getcontainer", getContainerApi)
-// 	router.HandleFunc("/isstateconfigured", isStateConfigured)
-// 	router.HandleFunc("/getstate", getStateStorageConfiguration)
-// 	router.HandleFunc("/configurestate", configureStateStorage)
-// 	router.HandleFunc("/createcontainer", createBlobContainer)
-// 	log.Fatal(http.ListenAndServe(":8080", router))
-// }
 
 func handleRequests() {
 	router := gin.Default()

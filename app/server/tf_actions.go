@@ -86,7 +86,7 @@ func action(c *gin.Context, action string) {
 	encoded, _ = json.Marshal(conjson.NewMarshaler(tfConfig.KubernetesCluster, transform.ConventionalKeys()))
 	setEnvironmentVariable("TF_VAR_kubernetes_cluster", string(encoded))
 
-	cmd := exec.Command(os.ExpandEnv("$ROOT_DIR")+"/scripts/"+action+".sh", "tf_new",
+	cmd := exec.Command(os.ExpandEnv("$ROOT_DIR")+"/scripts/"+action+".sh", "tf",
 		os.ExpandEnv("$ROOT_DIR"),
 		os.ExpandEnv("$resource_group_name"),
 		os.ExpandEnv("$storage_account_name"),
