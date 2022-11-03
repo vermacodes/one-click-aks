@@ -1,7 +1,7 @@
 import { useEffect, useReducer, useState } from "react"
 import { Col, Row, Button, Form } from "react-bootstrap"
 import { actionHandlerPost } from "../api/streamLogs"
-import { TfvarKubernetesClusterType, TfvarConfigType, TfvarVirtualNetworkType, TfvarSubnetType } from "../dataStructures"
+import { TfvarKubernetesClusterType, TfvarConfigType, TfvarVirtualNetworkType, TfvarSubnetType, TfvarJumpserverType } from "../dataStructures"
 
 type ConsoleProps = {
     setLogs(args: string): void
@@ -29,9 +29,17 @@ const defaultSubnets: TfvarSubnetType = [
     }
 ]
 
+const defaultJumpservers: TfvarJumpserverType = [
+    {
+        adminUsername: "admin",
+        adminPassword: "Password1234!"
+    }
+]
+
 const defaultClusterConfig: TfvarKubernetesClusterType = {
     networkPlugin: 'azure',
     networkPolicy: 'azure',
+    privateClusterEnabled: 'true'
 }
 
 interface ClusterConfigAction {
@@ -70,7 +78,8 @@ function buildTfConfig(clusterConfig: TfvarKubernetesClusterType): TfvarConfigTy
         },
         kubernetesCluster: clusterConfig,
         virtualNetworks: defaultVirtualNetworks,
-        subnets: defaultSubnets
+        subnets: defaultSubnets,
+        jumpservers: defaultJumpservers
     }
 }
 

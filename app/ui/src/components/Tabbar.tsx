@@ -1,6 +1,6 @@
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
-import Console from './Console';
+import ConfigBuilder from './ConfigBuilder';
 import Templates from './Templates';
 
 type TabbarProps = {
@@ -16,7 +16,7 @@ export default function Tabbar(props: TabbarProps) {
       className="mb-3"
     >
       <Tab eventKey="console" title="Console">
-        <Console setLogs={props.setLogs} prevLogsRef={props.prevLogsRef}/>
+        <ConfigBuilder setLogs={props.setLogs} prevLogsRef={props.prevLogsRef}/>
       </Tab>
       <Tab eventKey="templates" title="Templates">
         <Templates />

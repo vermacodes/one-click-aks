@@ -99,15 +99,24 @@ export type TfvarSubnetType = tfvarSubnet[]
 interface tfvarKubernetesCluster {
     networkPlugin: 'azure' | 'kubenet',
     networkPolicy: 'azure' | 'calico' | 'null'
+    privateClusterEnabled: 'true' | 'false'
 }
 
 export type TfvarKubernetesClusterType = tfvarKubernetesCluster
+
+interface tfvarJumpserver {
+    adminUsername: string
+    adminPassword: string
+}
+
+export type TfvarJumpserverType = tfvarJumpserver[]
 
 interface TfvarConfig {
     resourceGroup: TfvarResourceGroupType
     kubernetesCluster: TfvarKubernetesClusterType
     virtualNetworks: TfvarVirtualNetworkType
     subnets: TfvarSubnetType
+    jumpservers: TfvarJumpserverType
 }
 
 export type TfvarConfigType = TfvarConfig

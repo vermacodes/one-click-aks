@@ -1,12 +1,13 @@
-import { useEffect, useRef } from "react"
-import { Row, Col } from "react-bootstrap"
-import ScrollableFeed from 'react-scrollable-feed'
+import { useEffect, useRef, useState } from "react"
+import { Row, Col, Form } from "react-bootstrap"
 
 type TerminalProps = {
   logs: string
 }
 
 function Terminal(props: TerminalProps) {
+
+  const [autoScroll, setAutoScroll] = useState(true)
 
   const logEndRef = useRef<null | HTMLDivElement>(null)
   useEffect(() => {
@@ -16,6 +17,19 @@ function Terminal(props: TerminalProps) {
   return (
     <Row>
       <Col>
+        <div style={{ textAlign: "right" }}>
+          <Form>
+            <Form.Check
+              inline
+              type='switch'
+              label="Auto Scroll"
+              value="autoscroll"
+              id="autoscroll"
+              defaultChecked
+              onChange={() => setAutoScroll(!autoScroll)}
+            />
+          </Form>
+        </div>
         <div
           style={{
             textAlign: "left",
@@ -31,7 +45,7 @@ function Terminal(props: TerminalProps) {
           }}
         >
           <pre dangerouslySetInnerHTML={{ __html: props.logs }} style={{ padding: "10px", whiteSpace: "pre-wrap" }}></pre>
-          <div ref={logEndRef} />
+          {autoScroll && <div ref={logEndRef} />}
         </div>
       </Col>
     </Row>

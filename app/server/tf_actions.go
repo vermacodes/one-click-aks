@@ -22,7 +22,7 @@ type TfvarResourceGroupType struct {
 type TfvarKubernetesClusterType struct {
 	NetworkPlugin         string `json:"networkPlugin"`
 	NetworkPolicy         string `json:"networkPolicy"`
-	PriavteClusterEnabled string `json:"privateClusterEnabled"`
+	PrivateClusterEnabled string `json:"privateClusterEnabled"`
 }
 
 type TfvarVirtualNeworkType struct {
