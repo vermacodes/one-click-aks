@@ -1,5 +1,5 @@
 resource "azurerm_public_ip" "this" {
-  count               = length(var.jumpservers)
+  count               = var.jumpservers == null ? 0 : length(var.jumpservers)
   name                = module.naming.public_ip.name
   resource_group_name = azurerm_resource_group.this.name
   location            = azurerm_resource_group.this.location
@@ -8,7 +8,7 @@ resource "azurerm_public_ip" "this" {
 }
 
 resource "azurerm_network_interface" "this" {
-  count               = length(var.jumpservers)
+  count               = var.jumpservers == null ? 0 : length(var.jumpservers)
   name                = module.naming.network_interface.name
   location            = azurerm_resource_group.this.location
   resource_group_name = azurerm_resource_group.this.name
@@ -22,7 +22,7 @@ resource "azurerm_network_interface" "this" {
 }
 
 resource "azurerm_virtual_machine" "this" {
-  count                            = length(var.jumpservers)
+  count                            = var.jumpservers == null ? 0 : length(var.jumpservers)
   name                             = module.naming.virtual_machine.name
   location                         = azurerm_resource_group.this.location
   resource_group_name              = azurerm_resource_group.this.name

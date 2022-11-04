@@ -98,7 +98,7 @@ function Account(props: AccountProps) {
         <>
             {(props.isAuth)
                 ? <>{currAccount?.user.name} | {currAccount?.name}</>
-                : <Button variant="link" onClick={loginHandler}>Login</Button>
+                : <Button variant="primary" onClick={loginHandler}>Login</Button>
             }
         </>
     )

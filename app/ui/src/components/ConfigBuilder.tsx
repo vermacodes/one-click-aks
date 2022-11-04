@@ -130,7 +130,6 @@ export default function ConfigBuilder(props: ConfigBuilderProps) {
     const [tfvarConfig, tfvarDispatch] = useReducer(tfvarConfigReducer, defaultTfvarConfig)
 
     useEffect(() => {
-        console.log("State changed : ", tfvarConfig)
         !actionInProgress && props.setLogs(JSON.stringify(tfvarConfig, null, 4))
     }, [tfvarConfig])
 

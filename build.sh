@@ -5,7 +5,11 @@
 # WebApp runs on port 3000
 # Server runs on port 8080.
 
-cd app/server
+cd tf
+rm -rf .terraform
+rm .terraform.lock.hcl
+
+cd ../app/server
 
 go build
 

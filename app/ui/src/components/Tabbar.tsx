@@ -11,15 +11,15 @@ type TabbarProps = {
 export default function Tabbar(props: TabbarProps) {
   return (
     <Tabs
-      defaultActiveKey="console"
+      defaultActiveKey="templates"
       id="uncontrolled-tab-example"
       className="mb-3"
     >
-      <Tab eventKey="console" title="Console">
-        <ConfigBuilder setLogs={props.setLogs} prevLogsRef={props.prevLogsRef}/>
-      </Tab>
       <Tab eventKey="templates" title="Templates">
-        <Templates />
+        <Templates setLogs={props.setLogs} prevLogsRef={props.prevLogsRef}/>
+      </Tab>
+      <Tab eventKey="console" title="Builder">
+        <ConfigBuilder setLogs={props.setLogs} prevLogsRef={props.prevLogsRef}/>
       </Tab>
     </Tabs>
   );

@@ -9,7 +9,7 @@ resource "azurerm_kubernetes_cluster" "this" {
     name           = "default"
     node_count     = 1
     vm_size        = "Standard_D2_v2"
-    vnet_subnet_id = length(var.virtual_networks) == 0 ? null : azurerm_subnet.this[2].id
+    vnet_subnet_id = var.virtual_networks == null ? null : length(var.virtual_networks) == 0 ? null : azurerm_subnet.this[2].id
   }
 
   network_profile {
