@@ -6,6 +6,8 @@ import {  TfvarConfigType } from "../dataStructures"
 type ConfigBuilderProps = {
     setLogs(args: string): void
     prevLogsRef: React.MutableRefObject<string | null | undefined>
+    isActionInProgress: boolean
+    setIsActionInProgress(args: boolean): void
 }
 
 interface ClusterConfigAction {
@@ -124,36 +126,34 @@ function tfvarConfigReducer(state: TfvarConfigType, action: ClusterConfigAction)
     return state
 }
 
-export default function ConfigBuilder(props: ConfigBuilderProps) {
-
-    const [actionInProgress, setActionInProgress] = useState<boolean>(false)
+export default function ConfigBuilder({setLogs, prevLogsRef, isActionInProgress, setIsActionInProgress}: ConfigBuilderProps) {
     const [tfvarConfig, tfvarDispatch] = useReducer(tfvarConfigReducer, defaultTfvarConfig)
 
     useEffect(() => {
-        !actionInProgress && props.setLogs(JSON.stringify(tfvarConfig, null, 4))
+        !isActionInProgress && setLogs(JSON.stringify(tfvarConfig, null, 4))
     }, [tfvarConfig])
 
     //This function is called at the end of logs streaming of apply and destory.
     function streamEndActions() {
-        setActionInProgress(false)
+        setIsActionInProgress(false)
     }
 
     function applyHandler() {
-        setActionInProgress(true) //This is set to 'false' in streamEndActions.
-        props.setLogs("")
-        actionHandlerPost('http://localhost:8080/apply', props.prevLogsRef, props.setLogs, streamEndActions, tfvarConfig)
+        setIsActionInProgress(true) //This is set to 'false' in streamEndActions.
+        setLogs("")
+        actionHandlerPost('http://localhost:8080/apply', prevLogsRef, setLogs, streamEndActions, tfvarConfig)
     }
 
     function planHandler() {
-        setActionInProgress(true) //This is set to 'false' in streamEndActions.
-        props.setLogs("")
-        actionHandlerPost('http://localhost:8080/plan', props.prevLogsRef, props.setLogs, streamEndActions, tfvarConfig)
+        setIsActionInProgress(true) //This is set to 'false' in streamEndActions.
+        setLogs("")
+        actionHandlerPost('http://localhost:8080/plan', prevLogsRef, setLogs, streamEndActions, tfvarConfig)
     }
 
     function destroyHandler() {
-        setActionInProgress(true) //This is set to 'false' in streamEndActions.
-        props.setLogs("")
-        actionHandlerPost('http://localhost:8080/destroy', props.prevLogsRef, props.setLogs, streamEndActions, tfvarConfig)
+        setIsActionInProgress(true) //This is set to 'false' in streamEndActions.
+        setLogs("")
+        actionHandlerPost('http://localhost:8080/destroy', prevLogsRef, setLogs, streamEndActions, tfvarConfig)
     }
 
     return (
@@ -220,11 +220,11 @@ export default function ConfigBuilder(props: ConfigBuilderProps) {
                                 onChange={e => tfvarDispatch({ type: 'calico', fieldName: 'networkPolicy', payload: e.currentTarget.value })}
                             />
                         </div>
-                        <Button variant="outline-success" size="sm" onClick={planHandler} disabled={actionInProgress}>Plan</Button>{' '}
-                        <Button variant="outline-primary" size="sm" onClick={applyHandler} disabled={actionInProgress}>Apply</Button>{' '}
-                        <Button variant="outline-danger" size="sm" onClick={destroyHandler} disabled={actionInProgress}>Destroy</Button>{' '}
-                        <Button variant="outline-primary" size="sm" onClick={() => props.setLogs(JSON.stringify(tfvarConfig, null, 4))} disabled={actionInProgress}>Save Template</Button>{' '}
-                        <Button variant="outline-secondary" size="sm" onClick={() => props.setLogs("")} disabled={actionInProgress}>Clear Logs</Button>
+                        <Button variant="outline-success" size="sm" onClick={planHandler} disabled={isActionInProgress}>Plan</Button>{' '}
+                        <Button variant="outline-primary" size="sm" onClick={applyHandler} disabled={isActionInProgress}>Apply</Button>{' '}
+                        <Button variant="outline-danger" size="sm" onClick={destroyHandler} disabled={isActionInProgress}>Destroy</Button>{' '}
+                        <Button variant="outline-primary" size="sm" onClick={() => setLogs(JSON.stringify(tfvarConfig, null, 4))} disabled={isActionInProgress}>Save Template</Button>{' '}
+                        <Button variant="outline-secondary" size="sm" onClick={() => setLogs("")} disabled={isActionInProgress}>Clear Logs</Button>
                     </Form>
                 </Col>
             </Row>

@@ -83,7 +83,7 @@ function buildTfConfig(clusterConfig: TfvarKubernetesClusterType): TfvarConfigTy
     }
 }
 
-function Console(props: ConsoleProps) {
+function Console({setLogs, prevLogsRef}: ConsoleProps) {
 
     const [actionInProgress, setActionInProgress] = useState<boolean>(false)
     const [clusterConfig, dispatch] = useReducer(clusterConfigReducer, defaultClusterConfig)
@@ -99,20 +99,20 @@ function Console(props: ConsoleProps) {
 
     function applyHandler() {
         setActionInProgress(true) //This is set to 'false' in streamEndActions.
-        props.setLogs("")
-        actionHandlerPost('http://localhost:8080/apply', props.prevLogsRef, props.setLogs, streamEndActions, buildTfConfig(clusterConfig))
+        setLogs("")
+        actionHandlerPost('http://localhost:8080/apply', prevLogsRef, setLogs, streamEndActions, buildTfConfig(clusterConfig))
     }
 
     function planHandler() {
         setActionInProgress(true) //This is set to 'false' in streamEndActions.
-        props.setLogs("")
-        actionHandlerPost('http://localhost:8080/plan', props.prevLogsRef, props.setLogs, streamEndActions, buildTfConfig(clusterConfig))
+        setLogs("")
+        actionHandlerPost('http://localhost:8080/plan', prevLogsRef, setLogs, streamEndActions, buildTfConfig(clusterConfig))
     }
 
     function destroyHandler() {
         setActionInProgress(true) //This is set to 'false' in streamEndActions.
-        props.setLogs("")
-        actionHandlerPost('http://localhost:8080/destroy', props.prevLogsRef, props.setLogs, streamEndActions, buildTfConfig(clusterConfig))
+        setLogs("")
+        actionHandlerPost('http://localhost:8080/destroy', prevLogsRef, setLogs, streamEndActions, buildTfConfig(clusterConfig))
     }
 
     return (
@@ -165,7 +165,7 @@ function Console(props: ConsoleProps) {
                         <Button variant="outline-success" onClick={planHandler} disabled={actionInProgress}>Plan</Button>{' '}
                         <Button variant="outline-primary" onClick={applyHandler} disabled={actionInProgress}>Apply</Button>{' '}
                         <Button variant="outline-danger" onClick={destroyHandler} disabled={actionInProgress}>Destroy</Button>{' '}
-                        <Button variant="outline-secondary" onClick={() => props.setLogs("")} disabled={actionInProgress}>Clear Logs</Button>
+                        <Button variant="outline-secondary" onClick={() => setLogs("")} disabled={actionInProgress}>Clear Logs</Button>
                     </Form>
                 </Col>
             </Row>

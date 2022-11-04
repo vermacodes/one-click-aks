@@ -9,17 +9,17 @@ type StateProps = {
     setStateStore(args: StateConfigurationType): void
 }
 
-function State(props: StateProps) {
+function State({stateStore, setStateStore}: StateProps) {
 
     useEffect(() => {
-        if (props.stateStore === undefined) {
+        if (stateStore === undefined) {
             getStateStore()
         }
     }, [])
 
     function getStateStore() {
         axios.get("http://localhost:8080/getstate").then(response => {
-            props.setStateStore(response.data)
+            setStateStore(response.data)
         }).catch(error => {
             console.log("Something went wrong : ", error)
         })
@@ -27,7 +27,7 @@ function State(props: StateProps) {
 
     function configureStateStore() {
         axios.get("http://localhost:8080/configurestate").then(response => {
-            props.setStateStore(response.data)
+            setStateStore(response.data)
         }).catch(error => {
             console.log("Something went wrong : ", error)
         })
@@ -36,7 +36,7 @@ function State(props: StateProps) {
 
     return (
         <>
-            {props.stateStore === undefined ?
+            {stateStore === undefined ?
                 <a><Spinner
                     as="span"
                     animation="grow"
@@ -46,7 +46,7 @@ function State(props: StateProps) {
                 />{' '}Checking storage...</a>
                 :
                 <>
-                    {(props.stateStore?.blobContainer.name !== 'tfstate') ?
+                    {(stateStore?.blobContainer.name !== 'tfstate') ?
                         <OverlayTrigger
                             key='state'
                             placement='bottom'
@@ -71,7 +71,7 @@ function State(props: StateProps) {
                                 </Tooltip>
                             }
                         >
-                            <a>{props.stateStore.storageAccount.name} {props.stateStore.blobContainer.name}</a>
+                            <a>{stateStore.storageAccount.name} {stateStore.blobContainer.name}</a>
                         </OverlayTrigger>
                     }
                 </>

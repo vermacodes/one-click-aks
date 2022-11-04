@@ -14,6 +14,7 @@ function App() {
   // Global State
   const [logs, setLogs] = useState("");
   const [isAuth, setIsAuth] = useState<boolean>(false)
+  const [isActionInProgress, setIsActionInProgress] = useState<boolean>(false)
   const [stateStore, setStateStore] = useState<StateConfigurationType>()
 
   const prevLogsRef = useRef<string | null>()
@@ -29,7 +30,6 @@ function App() {
     >
       <div className="App">
         <Navigation
-          logs={logs}
           setLogs={setLogs}
           prevLogsRef={prevLogsRef}
           isAuth={isAuth}
@@ -38,7 +38,7 @@ function App() {
           setStateStore={setStateStore}
         />
         <Container className='mt-1' fluid='md'>
-          {isAuth && stateStore?.blobContainer.name === 'tfstate' && <Tabbar setLogs={setLogs} prevLogsRef={prevLogsRef} />}
+          {isAuth && stateStore?.blobContainer.name === 'tfstate' && <Tabbar setLogs={setLogs} prevLogsRef={prevLogsRef} isActionInProgress={isActionInProgress} setIsActionInProgress={setIsActionInProgress}/>}
           <Terminal logs={logs} />
         </Container>
       </div>

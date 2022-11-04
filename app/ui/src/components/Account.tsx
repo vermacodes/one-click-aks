@@ -4,31 +4,23 @@ import { Button } from 'react-bootstrap'
 import type { AccountType } from '../dataStructures'
 
 type AccountProps = {
-  logs: string
   setLogs(arg: string): void
   prevLogsRef: React.MutableRefObject<string | null | undefined>
   isAuth: boolean
   setIsAuth(arg: boolean): void
 }
 
-function Account(props: AccountProps) {
-    //const [isLoggedIn, setIsLoggedIn] = useState(false)
+function Account({setLogs, prevLogsRef, isAuth, setIsAuth}: AccountProps) {
+
     const [currAccount, setCurrAccount] = useState<AccountType>()
 
-    // useEffect(() => {
-    //     if (!props.isAuth){
-    //       console.log("Trigger")
-    //       getLoginStatus()
-    //     }
-    // }, [])
-
     useEffect(() => {
-        if(props.isAuth) {
+        if(isAuth) {
             getCurrentAccount()
         } else {
           getLoginStatus()
         }
-    }, [props.isAuth])
+    }, [isAuth])
 
     function getCurrentAccount() {
         axios.get('http://localhost:8080/accountshow').then(response => {
@@ -40,7 +32,7 @@ function Account(props: AccountProps) {
     
     function getLoginStatus() {
         axios.get('http://localhost:8080/loginstatus').then(response => {
-            props.setIsAuth(response.data.isLoggedIn)
+            setIsAuth(response.data.isLoggedIn)
         }).catch(response => {
             console.error(response)
         })
@@ -64,7 +56,7 @@ function Account(props: AccountProps) {
                       console.log('done', done);
                       controller.close();
                       getLoginStatus()
-                      props.setLogs("")
+                      setLogs("")
                       return;
                     }
                     // Get the data and send it to the browser via the controller
@@ -73,7 +65,7 @@ function Account(props: AccountProps) {
                     const decoder = new TextDecoder();
                     var Convert = require('ansi-to-html');
                     var convert = new Convert();
-                    props.setLogs(props.prevLogsRef.current + convert.toHtml(decoder.decode(value)))
+                    setLogs(prevLogsRef.current + convert.toHtml(decoder.decode(value)))
                     push();
                   });
                 }
@@ -96,7 +88,7 @@ function Account(props: AccountProps) {
 
     return(
         <>
-            {(props.isAuth)
+            {(isAuth)
                 ? <>{currAccount?.user.name} | {currAccount?.name}</>
                 : <Button variant="primary" onClick={loginHandler}>Login</Button>
             }

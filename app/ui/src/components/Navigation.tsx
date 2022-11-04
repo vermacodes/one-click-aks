@@ -8,7 +8,6 @@ import { ResoureceGroupType, StateConfigurationType, StorageAccountType } from '
 import State from './State';
 
 type NavigationProps = {
-  logs: string
   setLogs(arg: string): void
   prevLogsRef: React.MutableRefObject<string | null | undefined>
   isAuth: boolean
@@ -17,7 +16,7 @@ type NavigationProps = {
   setStateStore(args: StateConfigurationType): void
 }
 
-function Navigation(props: NavigationProps) {
+function Navigation({setLogs, prevLogsRef, isAuth, setIsAuth, stateStore, setStateStore}: NavigationProps) {
   return (
     <Navbar bg="dark" variant="dark">
       <Container>
@@ -27,13 +26,13 @@ function Navigation(props: NavigationProps) {
         <Navbar.Toggle />
         <Navbar.Collapse className="justify-content-end">
           <Navbar.Text>
-            <Account logs={props.logs} setLogs={props.setLogs} prevLogsRef={props.prevLogsRef} isAuth={props.isAuth} setIsAuth={props.setIsAuth} />
-            {props.isAuth &&
+            <Account setLogs={setLogs} prevLogsRef={prevLogsRef} isAuth={isAuth} setIsAuth={setIsAuth} />
+            {isAuth &&
               <>
                 {' | '}
                 < State
-                  stateStore={props.stateStore}
-                  setStateStore={props.setStateStore}
+                  stateStore={stateStore}
+                  setStateStore={setStateStore}
                 />
               </>
             }

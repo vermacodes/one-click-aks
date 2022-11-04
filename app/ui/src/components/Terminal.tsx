@@ -5,14 +5,14 @@ type TerminalProps = {
   logs: string
 }
 
-function Terminal(props: TerminalProps) {
+function Terminal({logs}: TerminalProps) {
 
   const [autoScroll, setAutoScroll] = useState(true)
 
   const logEndRef = useRef<null | HTMLDivElement>(null)
   useEffect(() => {
     logEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }, [props.logs])
+  }, [logs])
 
   return (
     <Row>
@@ -44,7 +44,7 @@ function Terminal(props: TerminalProps) {
             display: "inline-block"
           }}
         >
-          <pre dangerouslySetInnerHTML={{ __html: props.logs }} style={{ padding: "10px", whiteSpace: "pre-wrap" }}></pre>
+          <pre dangerouslySetInnerHTML={{ __html: logs }} style={{ padding: "10px", whiteSpace: "pre-wrap" }}></pre>
           {autoScroll && <div ref={logEndRef} />}
         </div>
       </Col>
