@@ -120,3 +120,11 @@ interface TfvarConfig {
 }
 
 export type TfvarConfigType = TfvarConfig
+
+
+interface blob {
+    name: string
+    url: string
+}
+
+export type BlobType = blob
