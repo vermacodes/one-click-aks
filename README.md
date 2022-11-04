@@ -1,4 +1,4 @@
-# One Click AKS : Simplest way to deploy AKS Cluster.
+# One Click AKS : Simplest way to deploy Complex AKS Cluster.
 
 Deploying Azure Kubernetes Cluster is really easy. You can create production grade cluster with couple CLI commands. So what this project brings to the table you ask.
 
