@@ -33,3 +33,13 @@ variable "subnets" {
       name             = "KubernetesSubnet"
   }]
 }
+
+variable "nsg" {
+  description = "Network Security Groups"
+  type = list(object({
+    name = string
+  }))
+  default = [ {
+    name = "nsg"
+  }]
+}

@@ -14,5 +14,6 @@ ADD /scripts ./scripts
 
 EXPOSE 3000/tcp
 EXPOSE 8080/tcp
+EXPOSE 443/tcp
 
 ENTRYPOINT [ "/bin/bash", "/app/entrypoint.sh" ]

@@ -49,20 +49,18 @@ const defaultTfvarConfig: TfvarConfigType = {
 function tfvarConfigReducer(state: TfvarConfigType, action: ClusterConfigAction): TfvarConfigType {
     switch (action.type) {
         case 'azureCNI': {
-            const newState = { ...state }
-            const newKubernetesCluster = { ...newState.kubernetesCluster }
-            if (state.kubernetesCluster.networkPolicy === 'null') {
-                newKubernetesCluster.networkPolicy = 'azure'
+
+            let networkPolicy = state.kubernetesCluster.networkPolicy
+            if (networkPolicy === 'null') {
+                networkPolicy = 'azure'
             }
-            // newKubernetesCluster.networkPlugin = 'azure'
-            // newState.kubernetesCluster = newKubernetesCluster
-            // return newState
 
             return {
                 ...state,
                 kubernetesCluster: {
                     ...state.kubernetesCluster,
-                    networkPlugin: 'azure'
+                    networkPlugin: 'azure',
+                    networkPolicy: networkPolicy
                 }
             }
         }

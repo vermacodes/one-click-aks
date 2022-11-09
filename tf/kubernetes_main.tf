@@ -1,5 +1,5 @@
 resource "azurerm_kubernetes_cluster" "this" {
-  name                    = module.naming.resource_group.name
+  name                    = module.naming.kubernetes_cluster.name
   location                = azurerm_resource_group.this.location
   resource_group_name     = azurerm_resource_group.this.name
   dns_prefix              = "aks"
@@ -19,9 +19,5 @@ resource "azurerm_kubernetes_cluster" "this" {
 
   identity {
     type = "SystemAssigned"
-  }
-
-  tags = {
-    Environment = "Production"
   }
 }

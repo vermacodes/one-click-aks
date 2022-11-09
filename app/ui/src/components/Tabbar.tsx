@@ -1,6 +1,7 @@
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import ConfigBuilder from './ConfigBuilder';
+import Learning from './Learning';
 import Templates from './Templates';
 
 type TabbarProps = {
@@ -13,7 +14,7 @@ type TabbarProps = {
 export default function Tabbar({setLogs, prevLogsRef, isActionInProgress, setIsActionInProgress}: TabbarProps) {
   return (
     <Tabs
-      defaultActiveKey="console"
+      defaultActiveKey="templates"
       id="uncontrolled-tab-example"
       className="mb-3"
     >
@@ -22,6 +23,9 @@ export default function Tabbar({setLogs, prevLogsRef, isActionInProgress, setIsA
       </Tab>
       <Tab eventKey="console" title="Builder">
         <ConfigBuilder setLogs={setLogs} prevLogsRef={prevLogsRef} isActionInProgress={isActionInProgress} setIsActionInProgress={setIsActionInProgress}/>
+      </Tab>
+      <Tab eventKey="learn" title="Learning">
+        <Learning setLogs={setLogs} prevLogsRef={prevLogsRef} isActionInProgress={isActionInProgress} setIsActionInProgress={setIsActionInProgress}/>
       </Tab>
     </Tabs>
   );

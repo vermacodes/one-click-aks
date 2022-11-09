@@ -120,6 +120,14 @@ func destroy(c *gin.Context) {
 	action(c, "destroy")
 }
 
+func breakLab(c *gin.Context) {
+	action(c, "break")
+}
+
+func validateLab(c *gin.Context) {
+	action(c, "validate")
+}
+
 func writeOutput(w gin.ResponseWriter, input io.ReadCloser) {
 
 	flusher, ok := w.(http.Flusher)
