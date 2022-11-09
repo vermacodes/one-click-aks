@@ -16,6 +16,8 @@ export default function Templates({setLogs, prevLogsRef, isActionInProgress, set
 
     useEffect(() => {
         getBlobs()
+        setLogs("")
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     function getBlobs() {

@@ -17,6 +17,8 @@ export default function Tabbar({setLogs, prevLogsRef, isActionInProgress, setIsA
       defaultActiveKey="templates"
       id="uncontrolled-tab-example"
       className="mb-3"
+      mountOnEnter
+      unmountOnExit
     >
       <Tab eventKey="templates" title="Templates">
         <Templates setLogs={setLogs} prevLogsRef={prevLogsRef} isActionInProgress={isActionInProgress} setIsActionInProgress={setIsActionInProgress}/>

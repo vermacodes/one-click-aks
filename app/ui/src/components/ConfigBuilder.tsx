@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from "react"
+import { useEffect, useReducer } from "react"
 import { Col, Row, Button, Form } from "react-bootstrap"
 import { actionHandlerPost } from "../api/streamLogs"
 import {  TfvarConfigType } from "../dataStructures"
@@ -137,6 +137,7 @@ export default function ConfigBuilder({setLogs, prevLogsRef, isActionInProgress,
 
     useEffect(() => {
         !isActionInProgress && setLogs(JSON.stringify(tfvarConfig, null, 4))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tfvarConfig])
 
     //This function is called at the end of logs streaming of apply and destory.

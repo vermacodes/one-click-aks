@@ -4,8 +4,9 @@ import Navbar from 'react-bootstrap/Navbar'
 import Container from 'react-bootstrap/Container'
 
 import Account from './Account'
-import { ResoureceGroupType, StateConfigurationType, StorageAccountType } from '../dataStructures';
+import { StateConfigurationType } from '../dataStructures';
 import State from './State';
+import { Button } from 'react-bootstrap';
 
 type NavigationProps = {
   setLogs(arg: string): void
@@ -36,6 +37,8 @@ function Navigation({setLogs, prevLogsRef, isAuth, setIsAuth, stateStore, setSta
                 />
               </>
             }
+            {'  '}
+            <Button size="sm" variant='outline-danger' disabled>Destroy</Button>
           </Navbar.Text>
         </Navbar.Collapse>
       </Container>

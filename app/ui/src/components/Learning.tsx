@@ -41,6 +41,8 @@ export default function Learning({setLogs, prevLogsRef, isActionInProgress, setI
 
     useEffect(() => {
         !isActionInProgress && setLogs(JSON.stringify(defaultTfvarConfig, null, 4))
+        setLogs("")
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     //This function is called at the end of logs streaming of apply and destory.
