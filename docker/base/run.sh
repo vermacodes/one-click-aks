@@ -11,6 +11,7 @@ apt update
 apt install curl -y
 apt install wget -y
 apt install xsel -y
+apt install jq -y
 
 # Install/Configure everything node.
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
@@ -50,6 +51,9 @@ terraform --help
 # Install GIT
 apt install git -y
 
+# Install Helm
+# I've added install hlem in dockerfile directly. Bring it here for good.
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 # # Run Server
 # chmod +x server
 # export ROOT_DIR="/app"

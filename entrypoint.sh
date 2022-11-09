@@ -15,9 +15,6 @@
 # Following peice of code starts the server if it crashes. Health check every 5s
 # TODO: make it resilient so that it doesnt crash at all :)
 
-apt update
-apt install -y jq
-
 chmod +x server
 export ROOT_DIR=$(pwd)
 
@@ -29,5 +26,5 @@ do
         echo "$(date) : App Started."
         ./server
     fi
-    sleep 5s
+    sleep 2s
 done

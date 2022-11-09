@@ -84,9 +84,9 @@ export default function Learning({setLogs, prevLogsRef, isActionInProgress, setI
                         Demo Lab
                     </td>
                     <td>
-                        <Button variant="outline-primary" onClick={() => deployHandler()}>Deploy</Button>{' '}
-                        <Button variant="outline-success" onClick={() => validateHandler()}>Validate</Button>{' '}
-                        <Button variant="outline-danger" onClick={() => destroyHandler()}>Destroy</Button>
+                        <Button size="sm" variant="outline-primary" onClick={() => deployHandler()}>Deploy</Button>{' '}
+                        <Button size="sm" variant="outline-success" onClick={() => validateHandler()}>Validate</Button>{' '}
+                        <Button size="sm" variant="outline-danger" onClick={() => destroyHandler()}>Destroy</Button>
                     </td>
                 </tr>
             </tbody>

@@ -36,12 +36,14 @@ function Terminal({logs}: TerminalProps) {
             height: "500px",
             width: "100%",
             overflow: "auto",
-            border: "1px solid black",
+            border: "1px solid white",
             borderRadius: "2px",
             boxShadow: "0px 0px 2px 1px rgba(0, 0, 0, 0.5)",
             marginTop: "5px",
             padding: "10px",
-            display: "inline-block"
+            display: "inline-block",
+            background: "#1f1f1f",
+            color: "#f2f2f2"
           }}
         >
           <pre dangerouslySetInnerHTML={{ __html: logs }} style={{ padding: "10px", whiteSpace: "pre-wrap" }}></pre>
