@@ -37,8 +37,6 @@ function Navigation({setLogs, prevLogsRef, isAuth, setIsAuth, stateStore, setSta
                 />
               </>
             }
-            {'  '}
-            <Button size="sm" variant='outline-danger' disabled>Destroy</Button>
           </Navbar.Text>
         </Navbar.Collapse>
       </Container>

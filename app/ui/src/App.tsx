@@ -9,6 +9,7 @@ import Terminal from './components/Terminal'
 import Tabbar from './components/Tabbar';
 import axios from 'axios';
 import { Alert, Button, Form } from 'react-bootstrap';
+import Toaster from './components/Toaster';
 
 
 function App() {
@@ -55,8 +56,8 @@ function App() {
               <h1>Server is not running.</h1>
               <h5>Copy and paste following command in your terminal and refresh this page after server is running.</h5>
               <Form className='inline'>
-              <Form.Text><h5>docker run -d -it -p 8080:8080 ashishvermapu/repro</h5></Form.Text>{' '}
-              <Button size='sm' onClick={() => navigator.clipboard.writeText("docker run -d -it -p 8080:8080 ashishvermapu/repro")}>
+              <Form.Text><h5>docker run -d -it -p 3000:3000 -p 8080:8080 ashishvermapu/repro</h5></Form.Text>{' '}
+              <Button size='sm' onClick={() => navigator.clipboard.writeText("docker run -d -it -p 3000:3000 -p 8080:8080 ashishvermapu/repro")}>
                 Copy
               </Button>
               </Form>

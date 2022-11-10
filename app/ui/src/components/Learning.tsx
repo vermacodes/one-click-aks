@@ -40,8 +40,10 @@ const defaultTfvarConfig: TfvarConfigType = {
 export default function Learning({setLogs, prevLogsRef, isActionInProgress, setIsActionInProgress}: LearningProps) {
 
     useEffect(() => {
-        !isActionInProgress && setLogs(JSON.stringify(defaultTfvarConfig, null, 4))
-        setLogs("")
+        if (!isActionInProgress) {
+            setLogs(JSON.stringify(defaultTfvarConfig, null, 4))
+            setLogs("")
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -86,9 +88,9 @@ export default function Learning({setLogs, prevLogsRef, isActionInProgress, setI
                         Demo Lab
                     </td>
                     <td>
-                        <Button size="sm" variant="outline-primary" onClick={() => deployHandler()}>Deploy</Button>{' '}
-                        <Button size="sm" variant="outline-success" onClick={() => validateHandler()}>Validate</Button>{' '}
-                        <Button size="sm" variant="outline-danger" onClick={() => destroyHandler()}>Destroy</Button>
+                        <Button size="sm" variant="outline-primary" onClick={() => deployHandler()} disabled={isActionInProgress}>Deploy</Button>{' '}
+                        <Button size="sm" variant="outline-success" onClick={() => validateHandler()} disabled={isActionInProgress}>Validate</Button>{' '}
+                        <Button size="sm" variant="outline-danger" onClick={() => destroyHandler()} disabled={isActionInProgress}>Destroy</Button>
                     </td>
                 </tr>
             </tbody>
