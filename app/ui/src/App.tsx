@@ -9,8 +9,7 @@ import Terminal from './components/Terminal'
 import Tabbar from './components/Tabbar';
 import axios from 'axios';
 import { Alert, Button, Form } from 'react-bootstrap';
-import Toaster from './components/Toaster';
-
+import LabBuilder from './components/LabBuilder';
 
 function App() {
 
@@ -20,6 +19,7 @@ function App() {
   const [serverStatus, setServerStatus] = useState<boolean>(false)
   const [isActionInProgress, setIsActionInProgress] = useState<boolean>(false)
   const [stateStore, setStateStore] = useState<StateConfigurationType>()
+  const [showLabBuilder, setShowLabBuilder] = useState(false)
 
   const prevLogsRef = useRef<string | null>()
 
@@ -41,7 +41,7 @@ function App() {
       breakpoints={['xxxl', 'xxl', 'xl', 'lg', 'md', 'sm', 'xs', 'xxs']}
       minBreakpoint="xxs"
     >
-      <div className="App">
+      <div>
         <Navigation
           setLogs={setLogs}
           prevLogsRef={prevLogsRef}
@@ -64,7 +64,7 @@ function App() {
             </Alert>
             :
             <>
-              {isAuth && stateStore?.blobContainer.name === 'tfstate' && <Tabbar setLogs={setLogs} prevLogsRef={prevLogsRef} isActionInProgress={isActionInProgress} setIsActionInProgress={setIsActionInProgress} />}
+              {isAuth && stateStore?.blobContainer.name === 'tfstate' && <Tabbar setLogs={setLogs} prevLogsRef={prevLogsRef} isActionInProgress={isActionInProgress} setIsActionInProgress={setIsActionInProgress} showLabBuilder={showLabBuilder} setShowLabBuilder={setShowLabBuilder}/>}
               <Terminal logs={logs} />
             </>
           }

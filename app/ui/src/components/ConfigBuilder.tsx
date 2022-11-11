@@ -2,12 +2,15 @@ import { useEffect, useReducer } from "react"
 import { Col, Row, Button, Form } from "react-bootstrap"
 import { actionHandlerPost } from "../api/streamLogs"
 import {  TfvarConfigType } from "../dataStructures"
+import LabBuilder from "./LabBuilder"
 
 type ConfigBuilderProps = {
     setLogs(args: string): void
     prevLogsRef: React.MutableRefObject<string | null | undefined>
     isActionInProgress: boolean
     setIsActionInProgress(args: boolean): void
+    showLabBuilder: boolean
+    setShowLabBuilder(args: boolean): void
 }
 
 interface ClusterConfigAction {
@@ -132,7 +135,7 @@ function tfvarConfigReducer(state: TfvarConfigType, action: ClusterConfigAction)
     return state
 }
 
-export default function ConfigBuilder({setLogs, prevLogsRef, isActionInProgress, setIsActionInProgress}: ConfigBuilderProps) {
+export default function ConfigBuilder({setLogs, prevLogsRef, isActionInProgress, setIsActionInProgress, showLabBuilder, setShowLabBuilder}: ConfigBuilderProps) {
     const [tfvarConfig, tfvarDispatch] = useReducer(tfvarConfigReducer, defaultTfvarConfig)
 
     useEffect(() => {
@@ -161,6 +164,10 @@ export default function ConfigBuilder({setLogs, prevLogsRef, isActionInProgress,
         setIsActionInProgress(true) //This is set to 'false' in streamEndActions.
         setLogs("")
         actionHandlerPost('http://localhost:8080/destroy', prevLogsRef, setLogs, streamEndActions, tfvarConfig)
+    }
+
+    function handleCreateLab() {
+        setShowLabBuilder(true)
     }
 
     return (
@@ -231,8 +238,13 @@ export default function ConfigBuilder({setLogs, prevLogsRef, isActionInProgress,
                         <Button variant="outline-primary" size="sm" onClick={applyHandler} disabled={isActionInProgress}>Apply</Button>{' '}
                         <Button variant="outline-danger" size="sm" onClick={destroyHandler} disabled={isActionInProgress}>Destroy</Button>{' '}
                         <Button variant="outline-primary" size="sm" onClick={() => setLogs(JSON.stringify(tfvarConfig, null, 4))} disabled={isActionInProgress}>Save Template</Button>{' '}
+                        <Button variant="outline-primary" size="sm" onClick={() => handleCreateLab()} disabled={isActionInProgress}>Create Lab</Button>{' '}
                         <Button variant="outline-secondary" size="sm" onClick={() => setLogs("")} disabled={isActionInProgress}>Clear Logs</Button>
                     </Form>
+                </Col>
+                {/* Following coloumn only contains modal so doesnt have any effect on the UI */}
+                <Col>
+                    <LabBuilder showLabBuilder={showLabBuilder} setShowLabBuilder={setShowLabBuilder} tfvarConfig={tfvarConfig}/>
                 </Col>
             </Row>
         </>

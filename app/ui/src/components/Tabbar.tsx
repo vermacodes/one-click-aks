@@ -9,9 +9,11 @@ type TabbarProps = {
     prevLogsRef: React.MutableRefObject<string | null | undefined>
     isActionInProgress: boolean
     setIsActionInProgress(args: boolean): void
+    showLabBuilder: boolean
+    setShowLabBuilder(args: boolean): void
 }
 
-export default function Tabbar({setLogs, prevLogsRef, isActionInProgress, setIsActionInProgress}: TabbarProps) {
+export default function Tabbar({setLogs, prevLogsRef, isActionInProgress, setIsActionInProgress, showLabBuilder, setShowLabBuilder}: TabbarProps) {
   return (
     <Tabs
       defaultActiveKey="templates"
@@ -24,7 +26,7 @@ export default function Tabbar({setLogs, prevLogsRef, isActionInProgress, setIsA
         <Templates setLogs={setLogs} prevLogsRef={prevLogsRef} isActionInProgress={isActionInProgress} setIsActionInProgress={setIsActionInProgress}/>
       </Tab>
       <Tab eventKey="console" title="Builder">
-        <ConfigBuilder setLogs={setLogs} prevLogsRef={prevLogsRef} isActionInProgress={isActionInProgress} setIsActionInProgress={setIsActionInProgress}/>
+        <ConfigBuilder setLogs={setLogs} prevLogsRef={prevLogsRef} isActionInProgress={isActionInProgress} setIsActionInProgress={setIsActionInProgress} showLabBuilder={showLabBuilder} setShowLabBuilder={setShowLabBuilder}/>
       </Tab>
       <Tab eventKey="learn" title="Learning">
         <Learning setLogs={setLogs} prevLogsRef={prevLogsRef} isActionInProgress={isActionInProgress} setIsActionInProgress={setIsActionInProgress}/>
