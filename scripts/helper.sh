@@ -22,6 +22,15 @@ function get_aks_credentials() {
     change_to_root_dir
 }
 
+function get_kubectl() {
+    log "Checking if kubectl exists"
+    kubectl version
+    if [ $? -ne 0 ]; then
+      log "kubectl not found. installing."
+      az aks install-cli
+    fi
+}
+
 function get_variables_from_tf_output () {
     log "Pulling variables from TF output"
     cd tf
@@ -35,5 +44,6 @@ function init() {
     log "Initializing Environment"
     change_to_root_dir
     get_aks_credentials
+    get_kubectl
     get_variables_from_tf_output
 }

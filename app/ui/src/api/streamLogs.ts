@@ -1,4 +1,4 @@
-import { TfvarConfigType } from "../dataStructures";
+import { BlobType, LabType, TfvarConfigType } from "../dataStructures";
 
 export function actionHandler(url: string, prevLogsRef: React.MutableRefObject<string | null | undefined>, setFunction: any, streamEndActions: any) {
     fetch(url)
@@ -47,11 +47,11 @@ export function actionHandler(url: string, prevLogsRef: React.MutableRefObject<s
 }
 
 
-export function actionHandlerPost(url: string, prevLogsRef: React.MutableRefObject<string | null | undefined>, setFunction: any, streamEndActions: any, buildTfConfig: TfvarConfigType) {
-    console.log(JSON.stringify(buildTfConfig))
+export function actionHandlerPost(url: string, prevLogsRef: React.MutableRefObject<string | null | undefined>, setFunction: any, streamEndActions: any, payload: TfvarConfigType | BlobType) {
+    console.log(JSON.stringify(payload))
     fetch(url, {
         method: 'POST',
-        body: JSON.stringify(buildTfConfig),
+        body: JSON.stringify(payload),
         headers: {
             "Content-type": "application/json"
         }

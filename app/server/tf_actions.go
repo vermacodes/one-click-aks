@@ -120,10 +120,6 @@ func destroy(c *gin.Context) {
 	action(c, "destroy")
 }
 
-func breakLab(c *gin.Context) {
-	action(c, "break")
-}
-
 func validateLab(c *gin.Context) {
 	action(c, "validate")
 }

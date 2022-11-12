@@ -242,6 +242,8 @@ export default function ConfigBuilder({setLogs, prevLogsRef, isActionInProgress,
                         <Button variant="outline-secondary" size="sm" onClick={() => setLogs("")} disabled={isActionInProgress}>Clear Logs</Button>
                     </Form>
                 </Col>
+            </Row>
+            <Row>
                 {/* Following coloumn only contains modal so doesnt have any effect on the UI */}
                 <Col>
                     <LabBuilder showLabBuilder={showLabBuilder} setShowLabBuilder={setShowLabBuilder} tfvarConfig={tfvarConfig}/>

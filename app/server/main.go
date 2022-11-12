@@ -38,6 +38,11 @@ func handleRequests() {
 	router.GET("/getstate", getStateStorageConfiguration)
 	router.GET("/configurestate", configureStateStorage)
 	router.GET("/sharedtemplates", listSharedTemplates)
+	router.POST("/createlab", createLab)
+	router.POST("/deploylab", deployLab)
+	router.POST("/breaklab", breakLab)
+	router.POST("/validate", validate)
+	router.GET("/listlabs", listLabs)
 	router.Run(":8080")
 }
 

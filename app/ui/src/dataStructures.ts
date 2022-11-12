@@ -128,3 +128,10 @@ interface blob {
 }
 
 export type BlobType = blob
+
+export type LabType = {
+    name: string
+    tfvar: TfvarConfigType
+    breakScript: string
+    validateScript: string
+}

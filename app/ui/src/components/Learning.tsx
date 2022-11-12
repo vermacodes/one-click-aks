@@ -1,7 +1,9 @@
-import { useEffect } from "react"
+import axios from "axios"
+import { blob } from "node:stream/consumers"
+import { useEffect, useState } from "react"
 import { Button, Table } from "react-bootstrap"
 import { actionHandlerPost } from "../api/streamLogs"
-import { TfvarConfigType } from "../dataStructures"
+import { BlobType, LabType } from "../dataStructures"
 
 type LearningProps = {
     setLogs(args: string): void
@@ -10,41 +12,21 @@ type LearningProps = {
     setIsActionInProgress(args: boolean): void
 }
 
-const defaultTfvarConfig: TfvarConfigType = {
-    resourceGroup: {
-        location: "East US"
-    },
-    kubernetesCluster: {
-        networkPlugin: 'azure',
-        networkPolicy: 'azure',
-        privateClusterEnabled: 'false'
-    },
-    virtualNetworks: [{
-        addressSpace: ["10.1.0.0/16"]
-    }],
-    subnets: [{
-        addressPrefixes: ["10.1.1.0/24"],
-        name: "AzureFirewallSubnet"
-    },
-    {
-        addressPrefixes: ["10.1.2.0/24"],
-        name: "JumpServerSubnet"
-    },
-    {
-        addressPrefixes: ["10.1.3.0/24"],
-        name: "KubernetesSubnet"
-    }],
-    jumpservers: []
-}
 
-export default function Learning({setLogs, prevLogsRef, isActionInProgress, setIsActionInProgress}: LearningProps) {
+export default function Learning({ setLogs, prevLogsRef, isActionInProgress, setIsActionInProgress }: LearningProps) {
+
+    const [blobs, setBlobs] = useState<BlobType[]>()
+    const [deployedBlob, setDeployedBlob] = useState<BlobType>({
+        name: "",
+        url: ""
+    })
 
     useEffect(() => {
         if (!isActionInProgress) {
-            setLogs(JSON.stringify(defaultTfvarConfig, null, 4))
             setLogs("")
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        getBlobs()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     //This function is called at the end of logs streaming of apply and destory.
@@ -52,48 +34,72 @@ export default function Learning({setLogs, prevLogsRef, isActionInProgress, setI
         setIsActionInProgress(false)
     }
 
-    function deployHandler() {
-        setIsActionInProgress(true) //This is set to 'false' in streamEndActions.
-        setLogs("")
-        actionHandlerPost('http://localhost:8080/lab', prevLogsRef, setLogs, streamEndActions, defaultTfvarConfig)
+    function getBlobs() {
+        axios.get("http://localhost:8080/listlabs").then(response => {
+            console.log(response.data.blob)
+            setBlobs(response.data.blob)
+        }).catch(error => {
+            console.log("Error : ", error)
+        })
     }
 
-    function validateHandler() {
+    function deployHandler(blob: BlobType) {
         setIsActionInProgress(true) //This is set to 'false' in streamEndActions.
         setLogs("")
-        actionHandlerPost('http://localhost:8080/validatelab', prevLogsRef, setLogs, streamEndActions, defaultTfvarConfig)
+        setDeployedBlob(blob)
+        actionHandlerPost('http://localhost:8080/deploylab', prevLogsRef, setLogs, streamEndActions, blob)
     }
 
-    function destroyHandler() {
+    //This function is called after deployHandler streaming ends.
+    function breakHandler(blob: BlobType) {
+        setIsActionInProgress(true)
+        setLogs("")
+        actionHandlerPost('http://localhost:8080/breaklab', prevLogsRef, setLogs, streamEndActions, blob)
+    }
+
+    function validateHandler(blob: BlobType) {
         setIsActionInProgress(true) //This is set to 'false' in streamEndActions.
         setLogs("")
-        actionHandlerPost('http://localhost:8080/destroy', prevLogsRef, setLogs, streamEndActions, defaultTfvarConfig)
+        actionHandlerPost('http://localhost:8080/validatelab', prevLogsRef, setLogs, streamEndActions, blob)
     }
-    
-    return(
-        <Table striped bordered hover size="sm">
-            <thead>
-                <tr>
-                    <th>
-                        Lab Name
-                    </th>
-                    <th>
-                        Actions
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        Demo Lab
-                    </td>
-                    <td>
-                        <Button size="sm" variant="outline-primary" onClick={() => deployHandler()} disabled={isActionInProgress}>Deploy</Button>{' '}
-                        <Button size="sm" variant="outline-success" onClick={() => validateHandler()} disabled={isActionInProgress}>Validate</Button>{' '}
-                        <Button size="sm" variant="outline-danger" onClick={() => destroyHandler()} disabled={isActionInProgress}>Destroy</Button>
-                    </td>
-                </tr>
-            </tbody>
-        </Table>
+
+    function destroyHandler(blob: BlobType) {
+        setIsActionInProgress(true) //This is set to 'false' in streamEndActions.
+        setLogs("")
+        actionHandlerPost('http://localhost:8080/destroy', prevLogsRef, setLogs, streamEndActions, blob)
+    }
+
+    return (
+        <>
+            {blobs &&
+                <Table striped bordered hover size="sm">
+                    <thead>
+                        <tr>
+                            <th>
+                                Lab Name
+                            </th>
+                            <th>
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {blobs.map(blob =>
+                            <tr key={blob.name}>
+                                <td>
+                                    {blob.name}
+                                </td>
+                                <td>
+                                    <Button size="sm" variant="outline-primary" onClick={() => deployHandler(blob)} disabled={isActionInProgress}>Deploy</Button>{' '}
+                                    <Button size="sm" variant="outline-primary" onClick={() => breakHandler(blob)} disabled={isActionInProgress}>Break</Button>{' '}
+                                    <Button size="sm" variant="outline-success" onClick={() => validateHandler(blob)} disabled={isActionInProgress}>Validate</Button>{' '}
+                                    <Button size="sm" variant="outline-danger" onClick={() => destroyHandler(blob)} disabled={isActionInProgress}>Destroy</Button>
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </Table>
+            }
+        </>
     )
 }
