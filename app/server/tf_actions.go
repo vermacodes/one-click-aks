@@ -19,10 +19,17 @@ type TfvarResourceGroupType struct {
 	Location string `json:"location"`
 }
 
+type TfvarDefaultNodePoolType struct {
+	EnableAutoScaling bool `json:"enableAutoScaling"`
+	MinCount          int  `json:"minCount"`
+	MaxCount          int  `json:"maxCount"`
+}
+
 type TfvarKubernetesClusterType struct {
-	NetworkPlugin         string `json:"networkPlugin"`
-	NetworkPolicy         string `json:"networkPolicy"`
-	PrivateClusterEnabled string `json:"privateClusterEnabled"`
+	NetworkPlugin         string                   `json:"networkPlugin"`
+	NetworkPolicy         string                   `json:"networkPolicy"`
+	PrivateClusterEnabled string                   `json:"privateClusterEnabled"`
+	DefaultNodePool       TfvarDefaultNodePoolType `json:"defaultNodePool"`
 }
 
 type TfvarVirtualNeworkType struct {

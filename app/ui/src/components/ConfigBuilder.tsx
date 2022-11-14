@@ -26,7 +26,12 @@ const defaultTfvarConfig: TfvarConfigType = {
     kubernetesCluster: {
         networkPlugin: 'azure',
         networkPolicy: 'azure',
-        privateClusterEnabled: 'true'
+        privateClusterEnabled: 'true',
+        defaultNodePool: {
+            enableAutoScaling: true,
+            minCount: 1,
+            maxCount: 1
+        }
     },
     virtualNetworks: [{
         addressSpace: ["10.1.0.0/16"]
@@ -51,6 +56,18 @@ const defaultTfvarConfig: TfvarConfigType = {
 
 function tfvarConfigReducer(state: TfvarConfigType, action: ClusterConfigAction): TfvarConfigType {
     switch (action.type) {
+        case "autoscaling": {
+            return {
+                ...state,
+                kubernetesCluster: {
+                    ...state.kubernetesCluster,
+                    defaultNodePool: {
+                        ...state.kubernetesCluster.defaultNodePool,
+                        enableAutoScaling: !state.kubernetesCluster.defaultNodePool.enableAutoScaling
+                    }
+                }
+            }
+        }
         case 'azureCNI': {
 
             let networkPolicy = state.kubernetesCluster.networkPolicy
@@ -232,6 +249,16 @@ export default function ConfigBuilder({setLogs, prevLogsRef, isActionInProgress,
                                 checked={'calico' === tfvarConfig.kubernetesCluster.networkPolicy}
                                 disabled={tfvarConfig.kubernetesCluster.networkPlugin === 'kubenet' || tfvarConfig.kubernetesCluster.networkPolicy === 'null'}
                                 onChange={e => tfvarDispatch({ type: 'calico', fieldName: 'networkPolicy', payload: e.currentTarget.value })}
+                            />
+                            <Form.Check
+                                inline
+                                label='Auto Scaling'
+                                name="autoscaling"
+                                type='switch'
+                                id='autoscaling'
+                                value='autoscaling'
+                                checked={tfvarConfig.kubernetesCluster.defaultNodePool.enableAutoScaling}
+                                onChange={e => tfvarDispatch({ type: 'autoscaling', fieldName: 'networkPolicy', payload: e.currentTarget.value })}
                             />
                         </div>
                         <Button variant="outline-success" size="sm" onClick={planHandler} disabled={isActionInProgress}>Plan</Button>{' '}

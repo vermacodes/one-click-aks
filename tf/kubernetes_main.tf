@@ -6,10 +6,13 @@ resource "azurerm_kubernetes_cluster" "this" {
   private_cluster_enabled = var.kubernetes_cluster.private_cluster_enabled
 
   default_node_pool {
-    name           = "default"
-    node_count     = 1
-    vm_size        = "Standard_D2_v2"
-    vnet_subnet_id = var.virtual_networks == null ? null : length(var.virtual_networks) == 0 ? null : azurerm_subnet.this[2].id
+    name                = "default"
+    min_count           = var.kubernetes_cluster.default_node_pool.enable_auto_scaling == false ? null : var.kubernetes_cluster.default_node_pool.min_count
+    max_count           = var.kubernetes_cluster.default_node_pool.enable_auto_scaling == false ? null : var.kubernetes_cluster.default_node_pool.max_count
+    node_count          = var.kubernetes_cluster.default_node_pool.enable_auto_scaling == false ? 1 : null
+    vm_size             = "Standard_D2_v2"
+    enable_auto_scaling = var.kubernetes_cluster.default_node_pool.enable_auto_scaling
+    vnet_subnet_id      = var.virtual_networks == null ? null : length(var.virtual_networks) == 0 ? null : azurerm_subnet.this[2].id
   }
 
   network_profile {

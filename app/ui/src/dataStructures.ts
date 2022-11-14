@@ -96,13 +96,18 @@ interface tfvarSubnet {
 
 export type TfvarSubnetType = tfvarSubnet[]
 
-interface tfvarKubernetesCluster {
+export type TfvarDefaultNodepoolType = {
+    enableAutoScaling: boolean
+    minCount: number
+    maxCount: number
+}
+
+export type TfvarKubernetesClusterType = {
     networkPlugin: 'azure' | 'kubenet',
     networkPolicy: 'azure' | 'calico' | 'null'
     privateClusterEnabled: 'true' | 'false'
+    defaultNodePool: TfvarDefaultNodepoolType
 }
-
-export type TfvarKubernetesClusterType = tfvarKubernetesCluster
 
 interface tfvarJumpserver {
     adminUsername: string
