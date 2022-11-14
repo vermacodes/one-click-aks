@@ -20,15 +20,21 @@ function break_cluster() {
             err "Not able to secure external ip"
             exit 1
         fi
-        kubectl get svc/ingress-nginx-controller -n ingress-basic -o json | jq -r .status.loadBalancer.ingress[0].ip
-        if [[ $? -eq 0 ]]; then
+        EXTERNAL_IP=$(kubectl get svc/ingress-nginx-controller -n ingress-basic -o json | jq -r .status.loadBalancer.ingress[0].ip)
+        if [[ "$EXTERNAL_IP" != "" ]]; then
+            log "External IP : $EXTERNAL_IP"
             break
         fi
         sleep 30s
     done
 
-    log "Getting external IP"
-    EXTERNAL_IP=$(kubectl get svc/ingress-nginx-controller -n ingress-basic -o json | jq -r .status.loadBalancer.ingress[0].ip)
+    # Adding NSG rule
+
+    az network nsg rule create -g $RESOURCE_GROUP --nsg-name $NSG_NAME -n AllowAnyHTTPSInbound --priority 4096 \
+    --source-address-prefixes '*' --source-port-ranges '*' \
+    --destination-address-prefixes $EXTERNAL_IP/32 --destination-port-ranges 443 --access Deny \
+    --protocol Tcp --description "Allow HTTPS" > /dev/null
+
 
     # Policy will create NSG automatically. That will break connection to the ingress controller.
     # This loop waits for that to happen for an hour.
@@ -74,7 +80,7 @@ function break_cluster() {
 
 #Initialize the environment.
 
-$ROOT_DIR/scripts/apply.sh $1 $2 $3 $4 $5 $6
+# $ROOT_DIR/scripts/apply.sh $1 $2 $3 $4 $5 $6
 source $ROOT_DIR/scripts/helper.sh && init
 
 log "Breaking cluster."

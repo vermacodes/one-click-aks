@@ -37,6 +37,7 @@ function get_variables_from_tf_output () {
     CLUSTER_NAME=$(terraform output -raw cluster_name)
     RESOURCE_GROUP=$(terraform output -raw resource_group_name)
     VNET_NAME=$(terraform output -json vnet_name | jq -r .[0])
+    NSG_NAME=$(terraform output -json nsg_name | jq -r .[0])
     change_to_root_dir
 }
 
