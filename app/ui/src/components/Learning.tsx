@@ -93,7 +93,7 @@ export default function Learning({ setLogs, prevLogsRef, isActionInProgress, set
                                     <Button size="sm" variant="outline-primary" onClick={() => deployHandler(blob)} disabled={isActionInProgress}>Deploy</Button>{' '}
                                     <Button size="sm" variant="outline-primary" onClick={() => breakHandler(blob)} disabled={isActionInProgress}>Break</Button>{' '}
                                     <Button size="sm" variant="outline-success" onClick={() => validateHandler(blob)} disabled={isActionInProgress}>Validate</Button>{' '}
-                                    <Button size="sm" variant="outline-danger" onClick={() => destroyHandler(blob)} disabled={isActionInProgress}>Destroy</Button>
+                                    <Button size="sm" variant="outline-danger" onClick={() => destroyHandler(blob)} disabled>Destroy</Button>
                                 </td>
                             </tr>
                         )}
