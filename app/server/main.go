@@ -43,6 +43,8 @@ func handleRequests() {
 	router.POST("/breaklab", breakLab)
 	router.POST("/validate", validate)
 	router.GET("/listlabs", listLabs)
+	router.GET("/actionstatus", getActionStatus)
+	router.POST("/actionstatus", setActionStatus)
 	router.Run(":8080")
 }
 
