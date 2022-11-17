@@ -1,14 +1,14 @@
-import axios from "axios";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { ActionStatusType } from "../dataStructures";
+import { axiosInstance } from "../utils/axios-interceptors";
 
 function getActionStatus() {
-    return axios.get("http://localhost:8080/actionstatus");
+    return axiosInstance.get("actionstatus");
 }
 
 function setActionStatus(actionStatus: ActionStatusType) {
-    return axios.post("http://localhost:8080/actionstatus", actionStatus);
+    return axiosInstance.post("actionstatus", actionStatus);
 }
 
 export function useActionStatus() {

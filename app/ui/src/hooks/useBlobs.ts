@@ -1,8 +1,8 @@
-import axios from "axios";
 import { useQuery } from "react-query";
+import { axiosInstance } from "../utils/axios-interceptors";
 
 function getSharedTemplates() {
-    return axios.get(`http://localhost:8080/sharedtemplates`);
+    return axiosInstance("sharedtemplates");
 }
 
 export function useSharedTemplates() {
@@ -14,7 +14,7 @@ export function useSharedTemplates() {
 }
 
 function getSharedLabs() {
-    return axios.get(`http://localhost:8080/listlabs`);
+    return axiosInstance.get(`listlabs`);
 }
 
 export function useSharedLabs() {

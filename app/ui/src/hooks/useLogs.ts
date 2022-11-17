@@ -1,14 +1,14 @@
-import axios from "axios";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { LogsStreamType } from "../dataStructures";
+import { axiosInstance } from "../utils/axios-interceptors";
 
 function getLogs() {
-    return axios.get("http://localhost:8080/logs");
+    return axiosInstance.get("logs");
 }
 
 function setLogs(log: LogsStreamType) {
-    return axios.post("http://localhost:8080/logs", log);
+    return axiosInstance.post("logs", log);
 }
 
 export function useLogs() {
