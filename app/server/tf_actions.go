@@ -79,6 +79,7 @@ func updateActionStatus(status bool) {
 func endLogsStream() {
 	log.Println("Ending Stream in 5 seconds")
 	time.Sleep(5 * time.Second)
+	appendLogsRedis(fmt.Sprintf("%s\n", "end"))
 	for {
 		currLogsStream := readLogsRedis()
 		currLogs, err := base64.StdEncoding.DecodeString(currLogsStream.Logs)
@@ -201,7 +202,6 @@ func action(c *gin.Context, action string) {
 	cmd.Wait()
 	wPipe.Close()
 	updateActionStatus(false)
-	appendLogsRedis(fmt.Sprintf("%s\n", "end"))
 	if _, err = http.Get("http://localhost:8080/endstream"); err != nil {
 		log.Println("Not able to end stream")
 	}
@@ -224,19 +224,9 @@ func validateLab(c *gin.Context) {
 }
 
 func writeOutput(w gin.ResponseWriter, input io.ReadCloser) {
-
-	// flusher, ok := w.(http.Flusher)
-	// if !ok {
-	// 	http.Error(w, "Streaming not supported", http.StatusInternalServerError)
-	// 	return
-	// }
-
 	in := bufio.NewScanner(input)
 	for in.Scan() {
-		//fmt.Fprintf(w, "%s\n", in.Text())
 		appendLogsRedis(fmt.Sprintf("%s\n", in.Text()))
-		//fmt.Println(in.Text())
-		//flusher.Flush()
 	}
 	input.Close()
 }

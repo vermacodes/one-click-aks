@@ -20,7 +20,7 @@ export function useLogs() {
         },
         onSuccess: (data: LogsStreamType) => {
             if (data.isStreaming) {
-                setRefecthInterval(2000);
+                setRefecthInterval(1000);
             } else {
                 setRefecthInterval(false);
             }

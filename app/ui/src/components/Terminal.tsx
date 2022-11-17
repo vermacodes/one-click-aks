@@ -16,7 +16,7 @@ function Terminal() {
         if (data) {
             var Convert = require("ansi-to-html");
             var convert = new Convert();
-            setLogs(convert.toHtml(atob(data.logs)));
+            setLogs(convert.toHtml(data.logs));
         }
     }, [data]);
 

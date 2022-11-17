@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -70,7 +69,7 @@ func accountShow(c *gin.Context) {
 
 	out, err := exec.Command("bash", "-c", "az account show -o json").Output()
 	if err != nil {
-		fmt.Println("Not able to get account list : ", err)
+		log.Println("Not able to get account list : ", err)
 	}
 
 	err = json.Unmarshal(out, &account)
@@ -80,31 +79,6 @@ func accountShow(c *gin.Context) {
 
 	c.IndentedJSON(http.StatusOK, account)
 }
-
-// func accountList(w http.ResponseWriter, e *http.Request) {
-
-// 	enableCors(&w)
-// 	w.Header().Set("Content-Type", "application/json")
-// 	w.WriteHeader(http.StatusOK)
-
-// 	var accounts []Account
-
-// 	out, err := exec.Command("bash", "-c", "az account list -o json").Output()
-// 	if err != nil {
-// 		fmt.Println("Not able to get account list : ", err)
-// 	}
-
-// 	err = json.Unmarshal(out, &accounts)
-// 	if err != nil {
-// 		log.Println("Error Unmarshelling : ", err)
-// 	}
-
-// 	accountsJson, err := json.Marshal(accounts)
-// 	if err != nil {
-// 		log.Println("Error Marshilling : ", err)
-// 	}
-// 	w.Write(accountsJson)
-// }
 
 func validateLogin(c *gin.Context) {
 

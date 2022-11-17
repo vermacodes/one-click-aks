@@ -165,7 +165,7 @@ export default function ConfigBuilder({ prevLogsRef, showLabBuilder, setShowLabB
     const { mutate: setLogs } = useSetLogs();
 
     useEffect(() => {
-        !inProgress && setLogs({ isStreaming: false, logs: btoa(JSON.stringify(tfvarConfig, null, 4)) });
+        !inProgress && setLogs({ isStreaming: false, logs: JSON.stringify(tfvarConfig, null, 4) });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tfvarConfig]);
 

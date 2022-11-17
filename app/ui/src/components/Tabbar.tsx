@@ -15,7 +15,7 @@ export default function Tabbar({ setLogs, prevLogsRef, showLabBuilder, setShowLa
     return (
         <Tabs defaultActiveKey="templates" id="uncontrolled-tab-example" className="mb-3" mountOnEnter unmountOnExit>
             <Tab eventKey="templates" title="Templates">
-                <Templates setLogs={setLogs} prevLogsRef={prevLogsRef} />
+                <Templates />
             </Tab>
             <Tab eventKey="console" title="Builder">
                 <ConfigBuilder

@@ -3,45 +3,19 @@ import { useEffect, useState } from "react";
 import { Button, Table } from "react-bootstrap";
 import { BlobType } from "../dataStructures";
 import { useActionStatus, useSetActionStatus } from "../hooks/useActionStatus";
+import { useSharedTemplates } from "../hooks/useBlobs";
+import { useSetLogs } from "../hooks/useLogs";
 
-type TemplateProps = {
-    setLogs(args: string): void;
-    prevLogsRef: React.MutableRefObject<string | null | undefined>;
-};
-
-export default function Templates({ setLogs, prevLogsRef }: TemplateProps) {
-    const [blobs, setBlobs] = useState<BlobType[] | undefined>();
+export default function Templates() {
     const { data: inProgress } = useActionStatus();
     const { mutate: setActionStatus } = useSetActionStatus();
-
-    useEffect(() => {
-        getBlobs();
-        if (!inProgress) {
-            setLogs("");
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    function getBlobs() {
-        axios
-            .get("http://localhost:8080/sharedtemplates")
-            .then((response) => {
-                // Ok. if you noted that the its named blob and should be Blobs. I've no idea whose fault is this.
-                // Read more about the API https://learn.microsoft.com/en-us/rest/api/storageservices/list-blobs?tabs=azure-ad#request
-                setBlobs(response.data.blob);
-            })
-            .catch((error) => {
-                console.log("Error : ", error);
-            });
-    }
-
-    //This function is called at the end of logs streaming of apply and destory.
-    function streamEndActions() {}
+    const { mutate: setLogs } = useSetLogs();
+    const { data: blobs } = useSharedTemplates();
 
     function actionHandler(url: string, action: string) {
         axios.get(url).then((response) => {
             setActionStatus({ inProgress: true });
-            setLogs("");
+            setLogs({ isStreaming: true, logs: "" });
             axios(`http://localhost:8080/${action}`, response.data);
         });
     }
@@ -49,7 +23,7 @@ export default function Templates({ setLogs, prevLogsRef }: TemplateProps) {
     function viewHandler(url: string) {
         axios.get(url).then((response) => {
             console.log(response.data);
-            setLogs(JSON.stringify(response.data, null, 4));
+            setLogs({ isStreaming: false, logs: JSON.stringify(response.data, null, 4) });
         });
     }
 
@@ -64,7 +38,7 @@ export default function Templates({ setLogs, prevLogsRef }: TemplateProps) {
                         </tr>
                     </thead>
                     <tbody>
-                        {blobs.map((blob) => (
+                        {blobs.map((blob: any) => (
                             <tr key={blob.name}>
                                 <td>{blob.name}</td>
                                 <td>

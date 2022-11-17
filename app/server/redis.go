@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -64,12 +66,19 @@ func setLogs(c *gin.Context) {
 	if err := c.BindJSON(&logs); err != nil {
 		c.Status(http.StatusInternalServerError)
 	}
+	logs.Logs = base64.StdEncoding.EncodeToString([]byte(string(logs.Logs)))
 	writeLogsRedis(&logs) //Always setting to empty. Fix this.
 	c.Status(http.StatusCreated)
 }
 
 func getLogs(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, readLogsRedis())
+	logs := readLogsRedis()
+	decoded, err := base64.StdEncoding.DecodeString(logs.Logs)
+	if err != nil {
+		log.Println("Error decoding logs in getLogs", err)
+	}
+	logs.Logs = string(decoded)
+	c.IndentedJSON(http.StatusOK, logs)
 }
 
 func endStream(c *gin.Context) {

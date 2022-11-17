@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Button, Table } from "react-bootstrap";
 import { BlobType } from "../dataStructures";
 import { useActionStatus, useSetActionStatus } from "../hooks/useActionStatus";
+import { useSharedLabs } from "../hooks/useBlobs";
 import { useSetLogs } from "../hooks/useLogs";
 
 type LearningProps = {
@@ -11,41 +12,15 @@ type LearningProps = {
 };
 
 export default function Learning({ prevLogsRef }: LearningProps) {
-    const [blobs, setBlobs] = useState<BlobType[]>();
-    const [deployedBlob, setDeployedBlob] = useState<BlobType>({
-        name: "",
-        url: "",
-    });
-
     const { data: inProgress } = useActionStatus();
     const { mutate: setActionStatus } = useSetActionStatus();
     const { mutate: setLogs } = useSetLogs();
-
-    useEffect(() => {
-        getBlobs();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    //This function is called at the end of logs streaming of apply and destory.
-    function streamEndActions() {}
-
-    function getBlobs() {
-        axios
-            .get("http://localhost:8080/listlabs")
-            .then((response) => {
-                console.log(response.data.blob);
-                setBlobs(response.data.blob);
-            })
-            .catch((error) => {
-                console.log("Error : ", error);
-            });
-    }
+    const { data: blobs } = useSharedLabs();
 
     function deployHandler(blob: BlobType) {
         setActionStatus({ inProgress: true });
         setLogs({ isStreaming: true, logs: "" });
-        setDeployedBlob(blob);
-        axios.post("http://localhost:8080/destroy", blob);
+        axios.post("http://localhost:8080/deploylab", blob);
     }
 
     //This function is called after deployHandler streaming ends.
@@ -78,7 +53,7 @@ export default function Learning({ prevLogsRef }: LearningProps) {
                         </tr>
                     </thead>
                     <tbody>
-                        {blobs.map((blob) => (
+                        {blobs.map((blob: any) => (
                             <tr key={blob.name}>
                                 <td>{blob.name}</td>
                                 <td>
@@ -110,7 +85,7 @@ export default function Learning({ prevLogsRef }: LearningProps) {
                                         size="sm"
                                         variant="outline-danger"
                                         onClick={() => destroyHandler(blob)}
-                                        disabled
+                                        disabled={inProgress}
                                     >
                                         Destroy
                                     </Button>

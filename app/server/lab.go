@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"encoding/xml"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -85,24 +84,17 @@ func listLabs(c *gin.Context) {
 	defer res.Body.Close()
 	body, _ := io.ReadAll(res.Body)
 
-	fmt.Println("Body : ", string(body))
-
 	err := xml.Unmarshal(body, &labs)
 	if err != nil {
-		fmt.Println("Error : ", err)
+		log.Println("Error : ", err)
 		c.Status(http.StatusInternalServerError)
 		return
 	}
-
-	jsonString, err := json.Marshal(labs)
 	if err != nil {
-		fmt.Println("Error : ", err)
+		log.Println("Error : ", err)
 		c.Status(http.StatusInternalServerError)
 		return
 	}
-
-	fmt.Println(string(jsonString))
-
 	c.IndentedJSON(http.StatusOK, labs.Blobs)
 }
 
@@ -121,10 +113,6 @@ func deployLab(c *gin.Context) {
 	defer resp.Body.Close()
 
 	bodyBytes, _ := io.ReadAll(resp.Body)
-
-	// Convert response body to string
-	bodyString := string(bodyBytes)
-	fmt.Println("API Response as String:\n" + bodyString)
 
 	// Convert response body to Todo struct
 	var lab LabType
@@ -207,10 +195,6 @@ func breakLab(c *gin.Context) {
 
 	bodyBytes, _ := io.ReadAll(resp.Body)
 
-	// Convert response body to string
-	bodyString := string(bodyBytes)
-	fmt.Println("API Response as String:\n" + bodyString)
-
 	// Convert response body to Todo struct
 	var lab LabType
 	json.Unmarshal(bodyBytes, &lab)
@@ -259,10 +243,6 @@ func validate(c *gin.Context) {
 	defer resp.Body.Close()
 
 	bodyBytes, _ := io.ReadAll(resp.Body)
-
-	// Convert response body to string
-	bodyString := string(bodyBytes)
-	fmt.Println("API Response as String:\n" + bodyString)
 
 	// Convert response body to Todo struct
 	var lab LabType
