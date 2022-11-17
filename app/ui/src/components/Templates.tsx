@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button, Table } from "react-bootstrap";
-import { actionHandlerPost } from "../api/streamLogs";
 import { BlobType } from "../dataStructures";
 import { useActionStatus, useSetActionStatus } from "../hooks/useActionStatus";
 
@@ -43,7 +42,7 @@ export default function Templates({ setLogs, prevLogsRef }: TemplateProps) {
         axios.get(url).then((response) => {
             setActionStatus({ inProgress: true });
             setLogs("");
-            actionHandlerPost(`http://localhost:8080/${action}`, prevLogsRef, setLogs, streamEndActions, response.data);
+            axios(`http://localhost:8080/${action}`, response.data);
         });
     }
 

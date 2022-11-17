@@ -1,6 +1,6 @@
+import axios from "axios";
 import { useEffect, useReducer } from "react";
 import { Col, Row, Button, Form } from "react-bootstrap";
-import { actionHandlerPost } from "../api/streamLogs";
 import { TfvarConfigType } from "../dataStructures";
 import { useActionStatus, useSetActionStatus } from "../hooks/useActionStatus";
 import { useSetLogs } from "../hooks/useLogs";
@@ -169,25 +169,22 @@ export default function ConfigBuilder({ prevLogsRef, showLabBuilder, setShowLabB
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tfvarConfig]);
 
-    //This function is called at the end of logs streaming of apply and destory.
-    function streamEndActions() {}
-
     function applyHandler() {
         setActionStatus({ inProgress: true });
         setLogs({ isStreaming: true, logs: "" });
-        actionHandlerPost("http://localhost:8080/apply", prevLogsRef, setLogs, streamEndActions, tfvarConfig);
+        axios.post("http://localhost:8080/apply", tfvarConfig);
     }
 
     function planHandler() {
         setActionStatus({ inProgress: true });
         setLogs({ isStreaming: true, logs: "" });
-        actionHandlerPost("http://localhost:8080/plan", prevLogsRef, setLogs, streamEndActions, tfvarConfig);
+        axios.post("http://localhost:8080/plan", tfvarConfig);
     }
 
     function destroyHandler() {
         setActionStatus({ inProgress: true });
         setLogs({ isStreaming: true, logs: "" });
-        actionHandlerPost("http://localhost:8080/destroy", prevLogsRef, setLogs, streamEndActions, tfvarConfig);
+        axios.post("http://localhost:8080/destroy", tfvarConfig);
     }
 
     function handleCreateLab() {

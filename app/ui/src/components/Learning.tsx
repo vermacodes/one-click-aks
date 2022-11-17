@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button, Table } from "react-bootstrap";
-import { actionHandlerPost } from "../api/streamLogs";
 import { BlobType } from "../dataStructures";
 import { useActionStatus, useSetActionStatus } from "../hooks/useActionStatus";
 import { useSetLogs } from "../hooks/useLogs";
@@ -23,9 +22,6 @@ export default function Learning({ prevLogsRef }: LearningProps) {
     const { mutate: setLogs } = useSetLogs();
 
     useEffect(() => {
-        // if (!inProgress) {
-        //     setLogs({ isStreaming: true, logs: "" });
-        // }
         getBlobs();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -49,26 +45,26 @@ export default function Learning({ prevLogsRef }: LearningProps) {
         setActionStatus({ inProgress: true });
         setLogs({ isStreaming: true, logs: "" });
         setDeployedBlob(blob);
-        actionHandlerPost("http://localhost:8080/deploylab", prevLogsRef, setLogs, streamEndActions, blob);
+        axios.post("http://localhost:8080/destroy", blob);
     }
 
     //This function is called after deployHandler streaming ends.
     function breakHandler(blob: BlobType) {
         setActionStatus({ inProgress: true });
         setLogs({ isStreaming: true, logs: "" });
-        actionHandlerPost("http://localhost:8080/breaklab", prevLogsRef, setLogs, streamEndActions, blob);
+        axios.post("http://localhost:8080/breaklab", blob);
     }
 
     function validateHandler(blob: BlobType) {
         setActionStatus({ inProgress: true });
         setLogs({ isStreaming: true, logs: "" });
-        actionHandlerPost("http://localhost:8080/validatelab", prevLogsRef, setLogs, streamEndActions, blob);
+        axios.post("http://localhost:8080/validatelab", blob);
     }
 
     function destroyHandler(blob: BlobType) {
         setActionStatus({ inProgress: true });
         setLogs({ isStreaming: true, logs: "" });
-        actionHandlerPost("http://localhost:8080/destroy", prevLogsRef, setLogs, streamEndActions, blob);
+        axios.post("http://localhost:8080/destroy", blob);
     }
 
     return (

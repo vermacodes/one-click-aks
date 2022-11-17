@@ -5,7 +5,6 @@ import { useLogs } from "../hooks/useLogs";
 function Terminal() {
     const [autoScroll, setAutoScroll] = useState(true);
     const [logs, setLogs] = useState<string>("");
-
     const { data } = useLogs();
 
     const logEndRef = useRef<null | HTMLDivElement>(null);

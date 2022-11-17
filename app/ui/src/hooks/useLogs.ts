@@ -19,7 +19,6 @@ export function useLogs() {
             return data.data;
         },
         onSuccess: (data: LogsStreamType) => {
-            console.log(data);
             if (data.isStreaming) {
                 setRefecthInterval(2000);
             } else {
