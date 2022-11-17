@@ -45,6 +45,9 @@ func handleRequests() {
 	router.GET("/listlabs", listLabs)
 	router.GET("/actionstatus", getActionStatus)
 	router.POST("/actionstatus", setActionStatus)
+	router.GET("/logs", getLogs)
+	router.POST("/logs", setLogs)
+	router.GET("/endstream", endStream)
 	router.Run(":8080")
 }
 

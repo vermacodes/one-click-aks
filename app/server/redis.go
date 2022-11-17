@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -38,9 +37,6 @@ func getActionStatus(c *gin.Context) {
 		c.Status(http.StatusInternalServerError)
 		return
 	}
-
-	log.Println(action)
-
 	c.IndentedJSON(http.StatusOK, action)
 }
 
@@ -61,4 +57,22 @@ func setActionStatus(c *gin.Context) {
 
 	rdb.Set(ctx, "ActionStatus", json, 0)
 	c.Status(http.StatusCreated)
+}
+
+func setLogs(c *gin.Context) {
+	logs := LogStreamType{}
+	if err := c.BindJSON(&logs); err != nil {
+		c.Status(http.StatusInternalServerError)
+	}
+	writeLogsRedis(&logs) //Always setting to empty. Fix this.
+	c.Status(http.StatusCreated)
+}
+
+func getLogs(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, readLogsRedis())
+}
+
+func endStream(c *gin.Context) {
+	endLogsStream()
+	c.Status(http.StatusOK)
 }

@@ -55,6 +55,8 @@ func createLab(c *gin.Context) {
 	}
 	cmd.Stdout = wPipe
 	cmd.Stderr = wPipe
+
+	updateActionStatus(true)
 	if err := cmd.Start(); err != nil {
 		log.Fatal(err)
 	}
@@ -62,6 +64,10 @@ func createLab(c *gin.Context) {
 	go writeOutput(w, rPipe)
 	cmd.Wait()
 	wPipe.Close()
+	updateActionStatus(false)
+	if _, err = http.Get("http://localhost:8080/endstream"); err != nil {
+		log.Println("Not able to end stream")
+	}
 }
 
 func listLabs(c *gin.Context) {
@@ -171,6 +177,7 @@ func deployLab(c *gin.Context) {
 	}
 	cmd.Stdout = wPipe
 	cmd.Stderr = wPipe
+	updateActionStatus(true)
 	if err := cmd.Start(); err != nil {
 		log.Fatal(err)
 	}
@@ -178,6 +185,10 @@ func deployLab(c *gin.Context) {
 	go writeOutput(w, rPipe)
 	cmd.Wait()
 	wPipe.Close()
+	updateActionStatus(false)
+	if _, err = http.Get("http://localhost:8080/endstream"); err != nil {
+		log.Println("Not able to end stream")
+	}
 }
 
 func breakLab(c *gin.Context) {
@@ -219,6 +230,7 @@ func breakLab(c *gin.Context) {
 	}
 	cmd.Stdout = wPipe
 	cmd.Stderr = wPipe
+	updateActionStatus(true)
 	if err := cmd.Start(); err != nil {
 		log.Fatal(err)
 	}
@@ -226,6 +238,10 @@ func breakLab(c *gin.Context) {
 	go writeOutput(w, rPipe)
 	cmd.Wait()
 	wPipe.Close()
+	updateActionStatus(false)
+	if _, err = http.Get("http://localhost:8080/endstream"); err != nil {
+		log.Println("Not able to end stream")
+	}
 }
 
 func validate(c *gin.Context) {
@@ -267,6 +283,7 @@ func validate(c *gin.Context) {
 	}
 	cmd.Stdout = wPipe
 	cmd.Stderr = wPipe
+	updateActionStatus(true)
 	if err := cmd.Start(); err != nil {
 		log.Fatal(err)
 	}
@@ -274,5 +291,8 @@ func validate(c *gin.Context) {
 	go writeOutput(w, rPipe)
 	cmd.Wait()
 	wPipe.Close()
-
+	updateActionStatus(false)
+	if _, err = http.Get("http://localhost:8080/endstream"); err != nil {
+		log.Println("Not able to end stream")
+	}
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -9,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"time"
 
 	"github.com/Rican7/conjson"
 	"github.com/Rican7/conjson/transform"
@@ -54,6 +56,89 @@ type TfvarConfigType struct {
 	KubernetesCluster TfvarKubernetesClusterType `json:"kubernetesCluster"`
 }
 
+type LogStreamType struct {
+	IsStreaming bool   `json:"isStreaming"`
+	Logs        string `json:"logs"`
+}
+
+func updateActionStatus(status bool) {
+	rdb := newRedisClient()
+	action := ActionStatus{
+		InProgress: status,
+	}
+
+	json, err := json.Marshal(action)
+	if err != nil {
+		log.Println("Update Action Status Failed", err)
+		return
+	}
+
+	rdb.Set(ctx, "ActionStatus", json, 0)
+}
+
+func endLogsStream() {
+	log.Println("Ending Stream in 5 seconds")
+	time.Sleep(5 * time.Second)
+	for {
+		currLogsStream := readLogsRedis()
+		currLogs, err := base64.StdEncoding.DecodeString(currLogsStream.Logs)
+		if err != nil {
+			log.Println("Error in appendLogRedis")
+			return
+		}
+		newLogsStream := LogStreamType{
+			IsStreaming: false,
+			Logs:        base64.StdEncoding.EncodeToString([]byte(string(currLogs))),
+		}
+
+		writeLogsRedis(&newLogsStream)
+
+		if !readLogsRedis().IsStreaming {
+			break
+		}
+		log.Println("Stream not ended. Will try again in 1 second")
+		time.Sleep(1 * time.Second)
+	}
+}
+
+func appendLogsRedis(logs string) {
+	currLogsStream := readLogsRedis()
+	currLogs, err := base64.StdEncoding.DecodeString(currLogsStream.Logs)
+	if err != nil {
+		log.Println("Error in appendLogRedis")
+		return
+	}
+	newLogsStream := LogStreamType{
+		IsStreaming: currLogsStream.IsStreaming,
+		Logs:        base64.StdEncoding.EncodeToString([]byte(string(currLogs) + logs)),
+	}
+
+	writeLogsRedis(&newLogsStream)
+}
+
+func writeLogsRedis(logs *LogStreamType) {
+	rdb := newRedisClient()
+	json, err := json.Marshal(logs)
+	if err != nil {
+		log.Println("Error Marshal in writeLogsRedis")
+	}
+	rdb.Set(ctx, "Logs", json, 0)
+}
+
+func readLogsRedis() LogStreamType {
+	rdb := newRedisClient()
+	logs := LogStreamType{}
+	val, err := rdb.Get(ctx, "Logs").Result()
+	if err != nil {
+		log.Println("Error : ", err)
+		return logs
+	}
+	if err = json.Unmarshal([]byte(val), &logs); err != nil {
+		log.Println("Error unmarshal logs in readLogsRedis")
+	}
+	return logs
+}
+
 func action(c *gin.Context, action string) {
 
 	var tfConfig TfvarConfigType
@@ -89,7 +174,7 @@ func action(c *gin.Context, action string) {
 	encoded, _ = json.Marshal(conjson.NewMarshaler(tfConfig.Jumpservers, transform.ConventionalKeys()))
 	setEnvironmentVariable("TF_VAR_jumpservers", string(encoded))
 
-	//Kubernetes Cluster
+	// Kubernetes Cluster
 	encoded, _ = json.Marshal(conjson.NewMarshaler(tfConfig.KubernetesCluster, transform.ConventionalKeys()))
 	setEnvironmentVariable("TF_VAR_kubernetes_cluster", string(encoded))
 
@@ -106,6 +191,8 @@ func action(c *gin.Context, action string) {
 	}
 	cmd.Stdout = wPipe
 	cmd.Stderr = wPipe
+
+	updateActionStatus(true)
 	if err := cmd.Start(); err != nil {
 		log.Fatal(err)
 	}
@@ -113,6 +200,11 @@ func action(c *gin.Context, action string) {
 	go writeOutput(w, rPipe)
 	cmd.Wait()
 	wPipe.Close()
+	updateActionStatus(false)
+	appendLogsRedis(fmt.Sprintf("%s\n", "end"))
+	if _, err = http.Get("http://localhost:8080/endstream"); err != nil {
+		log.Println("Not able to end stream")
+	}
 }
 
 func apply(c *gin.Context) {
@@ -133,17 +225,18 @@ func validateLab(c *gin.Context) {
 
 func writeOutput(w gin.ResponseWriter, input io.ReadCloser) {
 
-	flusher, ok := w.(http.Flusher)
-	if !ok {
-		http.Error(w, "Streaming not supported", http.StatusInternalServerError)
-		return
-	}
+	// flusher, ok := w.(http.Flusher)
+	// if !ok {
+	// 	http.Error(w, "Streaming not supported", http.StatusInternalServerError)
+	// 	return
+	// }
 
 	in := bufio.NewScanner(input)
 	for in.Scan() {
-		fmt.Fprintf(w, "%s\n", in.Text())
-		fmt.Println(in.Text())
-		flusher.Flush()
+		//fmt.Fprintf(w, "%s\n", in.Text())
+		appendLogsRedis(fmt.Sprintf("%s\n", in.Text()))
+		//fmt.Println(in.Text())
+		//flusher.Flush()
 	}
 	input.Close()
 }
