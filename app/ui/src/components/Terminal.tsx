@@ -10,6 +10,7 @@ function Terminal() {
     const logEndRef = useRef<null | HTMLDivElement>(null);
     useEffect(() => {
         logEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [logs]);
 
     useEffect(() => {
@@ -18,6 +19,7 @@ function Terminal() {
             var convert = new Convert();
             setLogs(convert.toHtml(data.logs));
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data]);
 
     return (

@@ -1,17 +1,10 @@
-import axios from "axios";
-import { useEffect, useReducer } from "react";
-import { Col, Row, Button, Form } from "react-bootstrap";
+import { useEffect, useReducer, useState } from "react";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import { TfvarConfigType } from "../dataStructures";
 import { useActionStatus, useSetActionStatus } from "../hooks/useActionStatus";
 import { useSetLogs } from "../hooks/useLogs";
+import { axiosInstance } from "../utils/axios-interceptors";
 import LabBuilder from "./LabBuilder";
-
-type ConfigBuilderProps = {
-    setLogs(args: string): void;
-    prevLogsRef: React.MutableRefObject<string | null | undefined>;
-    showLabBuilder: boolean;
-    setShowLabBuilder(args: boolean): void;
-};
 
 interface ClusterConfigAction {
     type: string;
@@ -157,7 +150,8 @@ function tfvarConfigReducer(state: TfvarConfigType, action: ClusterConfigAction)
     return state;
 }
 
-export default function ConfigBuilder({ prevLogsRef, showLabBuilder, setShowLabBuilder }: ConfigBuilderProps) {
+export default function ConfigBuilder() {
+    const [showLabBuilder, setShowLabBuilder] = useState(false);
     const [tfvarConfig, tfvarDispatch] = useReducer(tfvarConfigReducer, defaultTfvarConfig);
 
     const { data: inProgress } = useActionStatus();
@@ -172,19 +166,19 @@ export default function ConfigBuilder({ prevLogsRef, showLabBuilder, setShowLabB
     function applyHandler() {
         setActionStatus({ inProgress: true });
         setLogs({ isStreaming: true, logs: "" });
-        axios.post("http://localhost:8080/apply", tfvarConfig);
+        axiosInstance.post("apply", tfvarConfig);
     }
 
     function planHandler() {
         setActionStatus({ inProgress: true });
         setLogs({ isStreaming: true, logs: "" });
-        axios.post("http://localhost:8080/plan", tfvarConfig);
+        axiosInstance.post("plan", tfvarConfig);
     }
 
     function destroyHandler() {
         setActionStatus({ inProgress: true });
         setLogs({ isStreaming: true, logs: "" });
-        axios.post("http://localhost:8080/destroy", tfvarConfig);
+        axiosInstance.post("destroy", tfvarConfig);
     }
 
     function handleCreateLab() {

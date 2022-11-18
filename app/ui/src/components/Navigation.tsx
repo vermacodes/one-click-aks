@@ -1,30 +1,13 @@
-import React from "react";
-
-import Navbar from "react-bootstrap/Navbar";
 import Container from "react-bootstrap/Container";
+import Navbar from "react-bootstrap/Navbar";
 
+import { useLoginStatus } from "../hooks/useAccount";
 import Account from "./Account";
-import { StateConfigurationType } from "../dataStructures";
 import State from "./State";
-import { Button } from "react-bootstrap";
 
-type NavigationProps = {
-    setLogs(arg: string): void;
-    prevLogsRef: React.MutableRefObject<string | null | undefined>;
-    isAuth: boolean;
-    setIsAuth(arg: boolean): void;
-    stateStore: StateConfigurationType | undefined;
-    setStateStore(args: StateConfigurationType): void;
-};
+function Navigation() {
+    const { data: isAuth } = useLoginStatus();
 
-function Navigation({
-    setLogs,
-    prevLogsRef,
-    isAuth,
-    setIsAuth,
-    stateStore,
-    setStateStore,
-}: NavigationProps) {
     return (
         <Navbar bg="dark" variant="dark">
             <Container>
@@ -34,19 +17,11 @@ function Navigation({
                 <Navbar.Toggle />
                 <Navbar.Collapse className="justify-content-end">
                     <Navbar.Text>
-                        <Account
-                            setLogs={setLogs}
-                            prevLogsRef={prevLogsRef}
-                            isAuth={isAuth}
-                            setIsAuth={setIsAuth}
-                        />
+                        <Account />
                         {isAuth && (
                             <>
                                 {" | "}
-                                <State
-                                    stateStore={stateStore}
-                                    setStateStore={setStateStore}
-                                />
+                                <State />
                             </>
                         )}
                     </Navbar.Text>

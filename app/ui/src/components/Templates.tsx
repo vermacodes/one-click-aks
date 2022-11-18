@@ -1,22 +1,21 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
 import { Button, Table } from "react-bootstrap";
-import { BlobType } from "../dataStructures";
 import { useActionStatus, useSetActionStatus } from "../hooks/useActionStatus";
 import { useSharedTemplates } from "../hooks/useBlobs";
 import { useSetLogs } from "../hooks/useLogs";
+import { axiosInstance } from "../utils/axios-interceptors";
 
 export default function Templates() {
     const { data: inProgress } = useActionStatus();
     const { mutate: setActionStatus } = useSetActionStatus();
     const { mutate: setLogs } = useSetLogs();
-    const { data: blobs } = useSharedTemplates();
+    const { data: blobs, isLoading } = useSharedTemplates();
 
     function actionHandler(url: string, action: string) {
         axios.get(url).then((response) => {
             setActionStatus({ inProgress: true });
             setLogs({ isStreaming: true, logs: "" });
-            axios(`http://localhost:8080/${action}`, response.data);
+            axiosInstance.post(`${action}`, response.data);
         });
     }
 
@@ -25,6 +24,10 @@ export default function Templates() {
             console.log(response.data);
             setLogs({ isStreaming: false, logs: JSON.stringify(response.data, null, 4) });
         });
+    }
+
+    if (isLoading) {
+        return <h4>Loading...</h4>;
     }
 
     return (

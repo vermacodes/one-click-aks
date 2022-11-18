@@ -62,6 +62,10 @@ func accountLogin(c *gin.Context) {
 	go writeOutput(w, rPipe)
 	cmd.Wait()
 	wPipe.Close()
+	updateActionStatus(false)
+	if _, err = http.Get("http://localhost:8080/endstream"); err != nil {
+		log.Println("Not able to end stream")
+	}
 }
 
 func accountShow(c *gin.Context) {

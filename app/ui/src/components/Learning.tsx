@@ -1,17 +1,11 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
 import { Button, Table } from "react-bootstrap";
 import { BlobType } from "../dataStructures";
 import { useActionStatus, useSetActionStatus } from "../hooks/useActionStatus";
 import { useSharedLabs } from "../hooks/useBlobs";
 import { useSetLogs } from "../hooks/useLogs";
+import { axiosInstance } from "../utils/axios-interceptors";
 
-type LearningProps = {
-    setLogs(args: string): void;
-    prevLogsRef: React.MutableRefObject<string | null | undefined>;
-};
-
-export default function Learning({ prevLogsRef }: LearningProps) {
+export default function Learning() {
     const { data: inProgress } = useActionStatus();
     const { mutate: setActionStatus } = useSetActionStatus();
     const { mutate: setLogs } = useSetLogs();
@@ -20,26 +14,26 @@ export default function Learning({ prevLogsRef }: LearningProps) {
     function deployHandler(blob: BlobType) {
         setActionStatus({ inProgress: true });
         setLogs({ isStreaming: true, logs: "" });
-        axios.post("http://localhost:8080/deploylab", blob);
+        axiosInstance.post("deploylab", blob);
     }
 
     //This function is called after deployHandler streaming ends.
     function breakHandler(blob: BlobType) {
         setActionStatus({ inProgress: true });
         setLogs({ isStreaming: true, logs: "" });
-        axios.post("http://localhost:8080/breaklab", blob);
+        axiosInstance.post("breaklab", blob);
     }
 
     function validateHandler(blob: BlobType) {
         setActionStatus({ inProgress: true });
         setLogs({ isStreaming: true, logs: "" });
-        axios.post("http://localhost:8080/validatelab", blob);
+        axiosInstance.post("validatelab", blob);
     }
 
     function destroyHandler(blob: BlobType) {
         setActionStatus({ inProgress: true });
         setLogs({ isStreaming: true, logs: "" });
-        axios.post("http://localhost:8080/destroy", blob);
+        axiosInstance.post("destroy", blob);
     }
 
     return (

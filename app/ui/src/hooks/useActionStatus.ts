@@ -13,7 +13,6 @@ function setActionStatus(actionStatus: ActionStatusType) {
 
 export function useActionStatus() {
     const [refetchInterval, setRefecthInterval] = useState<false | number>(false);
-    const queryClient = useQueryClient();
     return useQuery("get-action-status", getActionStatus, {
         refetchInterval: refetchInterval,
         select: (data) => {
