@@ -46,4 +46,4 @@ terraform init \
 #terraform plan
 terraform apply -auto-approve -refresh=true
 
-# rm -rf .terraform/ .terraform.lock.hcl
+rm -rf .terraform/ .terraform.lock.hcl

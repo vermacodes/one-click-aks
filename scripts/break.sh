@@ -1,5 +1,12 @@
 #!/bin/bash
 
+terraform_directory=$1
+root_directory=$2
+resource_group_name=$3
+storage_account_name=$4
+container_name=$5
+tf_state_file_name=$6
+
 function break_cluster() {
 
     # Deploy Ingress Controller.
@@ -85,3 +92,5 @@ source $ROOT_DIR/scripts/helper.sh && init
 
 log "Breaking cluster."
 break_cluster
+
+rm -rf .terraform/ .terraform.lock.hcl

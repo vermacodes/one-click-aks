@@ -206,6 +206,11 @@ func breakLab(c *gin.Context) {
 	w.WriteHeader(http.StatusOK)
 	w.(http.Flusher).Flush()
 
+	setEnvironmentVariable("resource_group_name", "repro-project")
+	setEnvironmentVariable("storage_account_name", getStorageAccountName())
+	setEnvironmentVariable("container_name", "tfstate")
+	setEnvironmentVariable("tf_state_file_name", "terraform.tfstate")
+
 	cmd := exec.Command("bash", "-c", "echo '"+lab.BreakScript+"' | base64 -d | bash")
 
 	rPipe, wPipe, err := os.Pipe()
