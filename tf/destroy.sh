@@ -38,3 +38,5 @@ terraform init \
 -backend-config="key=$tf_state_file_name"
 
 terraform destroy -auto-approve
+
+rm -rf .terraform/ .terraform.lock.hcl

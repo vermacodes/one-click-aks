@@ -45,3 +45,5 @@ terraform init \
 -backend-config="key=$tf_state_file_name"
 #terraform plan
 terraform apply -auto-approve -refresh=true
+
+# rm -rf .terraform/ .terraform.lock.hcl
