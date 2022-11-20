@@ -15,7 +15,7 @@ resource "azurerm_subnet" "this" {
 }
 
 resource "azurerm_network_security_group" "this" {
-  count               = var.nsg == null ? 0 : length(var.nsg)
+  count               = var.nsg == null || length(var.nsg) == 0 ? 0 : length(var.nsg)
   name                = module.naming.network_security_group.name
   location            = azurerm_resource_group.this.location
   resource_group_name = azurerm_resource_group.this.name
@@ -33,8 +33,40 @@ resource "azurerm_network_security_group" "this" {
   # }
 }
 
-resource "azurerm_subnet_network_security_group_association" "example" {
-  count                     = var.nsg == null ? 0 : var.subnets == null ? 0 : length(var.nsg)
+resource "azurerm_subnet_network_security_group_association" "this" {
+  count                     = var.nsg == null || var.subnets == null || length(var.subnets) == 0 ? 0 : length(var.nsg)
   subnet_id                 = azurerm_subnet.this[2].id
   network_security_group_id = azurerm_network_security_group.this[0].id
+}
+
+resource "azurerm_route_table" "this" {
+  count               = length(var.firewalls) > 0 && length(var.virtual_networks) > 0 ? 1 : 0
+  name                = module.naming.route_table.name
+  location            = azurerm_resource_group.this.location
+  resource_group_name = azurerm_resource_group.this.name
+}
+
+resource "azurerm_route" "vnetlocal" {
+  count               = length(var.firewalls) > 0 && length(var.virtual_networks) > 0 ? 1 : 0
+  name                = "VnetLocal"
+  resource_group_name = azurerm_resource_group.this.name
+  route_table_name    = azurerm_route_table.this[0].name
+  next_hop_type       = "VnetLocal"
+  address_prefix      = "10.1.0.0/16"
+}
+
+resource "azurerm_route" "default" {
+  count                  = length(var.firewalls) > 0 && length(var.virtual_networks) > 0 ? 1 : 0
+  name                   = "Default"
+  resource_group_name    = azurerm_resource_group.this.name
+  route_table_name       = azurerm_route_table.this[0].name
+  next_hop_type          = "VirtualAppliance"
+  address_prefix         = "0.0.0.0/0"
+  next_hop_in_ip_address = "10.1.1.4" # This will always be this IP.
+}
+
+resource "azurerm_subnet_route_table_association" "this" {
+  count          = length(var.firewalls) > 0 && length(var.virtual_networks) > 0 ? 1 : 0
+  subnet_id      = azurerm_subnet.this[2].id
+  route_table_id = azurerm_route_table.this[0].id
 }

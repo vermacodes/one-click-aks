@@ -14,6 +14,8 @@ export function useGetStorageAccount() {
         select: (data) => {
             return data.data;
         },
+        cacheTime: 10000,
+        staleTime: 10000,
     });
 }
 

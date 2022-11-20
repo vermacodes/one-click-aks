@@ -10,6 +10,8 @@ export function useSharedTemplates() {
         select: (data) => {
             return data.data.blob;
         },
+        cacheTime: 10000,
+        staleTime: 10000,
     });
 }
 
@@ -22,5 +24,7 @@ export function useSharedLabs() {
         select: (data) => {
             return data.data.blob;
         },
+        cacheTime: 10000,
+        staleTime: 10000,
     });
 }

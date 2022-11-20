@@ -103,6 +103,7 @@ export type TfvarDefaultNodepoolType = {
 export type TfvarKubernetesClusterType = {
     networkPlugin: "azure" | "kubenet";
     networkPolicy: "azure" | "calico" | "null";
+    outboundType: "loadBalancer" | "userDefinedRouting";
     privateClusterEnabled: "true" | "false";
     defaultNodePool: TfvarDefaultNodepoolType;
 };
@@ -114,12 +115,18 @@ interface tfvarJumpserver {
 
 export type TfvarJumpserverType = tfvarJumpserver[];
 
+export type TfvarFirewallType = {
+    skuName: string;
+    skuTier: string;
+};
+
 interface TfvarConfig {
     resourceGroup: TfvarResourceGroupType;
     kubernetesCluster: TfvarKubernetesClusterType;
     virtualNetworks: TfvarVirtualNetworkType;
     subnets: TfvarSubnetType;
     jumpservers: TfvarJumpserverType;
+    firewalls: TfvarFirewallType[];
 }
 
 export type TfvarConfigType = TfvarConfig;

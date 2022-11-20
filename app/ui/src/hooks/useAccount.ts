@@ -22,6 +22,8 @@ export function useLoginStatus() {
         onSuccess: () => {
             queryClient.invalidateQueries("account");
         },
+        cacheTime: 10000,
+        staleTime: 10000,
     });
 }
 
@@ -44,5 +46,7 @@ export function useAccount() {
         select: (data) => {
             return data.data;
         },
+        cacheTime: 10000,
+        staleTime: 10000,
     });
 }

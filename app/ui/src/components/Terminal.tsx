@@ -4,23 +4,22 @@ import { useLogs } from "../hooks/useLogs";
 
 function Terminal() {
     const [autoScroll, setAutoScroll] = useState(true);
-    const [logs, setLogs] = useState<string>("");
     const { data } = useLogs();
 
     const logEndRef = useRef<null | HTMLDivElement>(null);
     useEffect(() => {
         logEndRef.current?.scrollIntoView({ behavior: "smooth" });
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [logs]);
+    }, [data]);
 
-    useEffect(() => {
+    function updateLogs(): string {
         if (data) {
             var Convert = require("ansi-to-html");
             var convert = new Convert();
-            setLogs(convert.toHtml(data.logs));
+            return convert.toHtml(data.logs);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data]);
+        return "";
+    }
 
     return (
         <Row>
@@ -55,7 +54,7 @@ function Terminal() {
                     }}
                 >
                     <pre
-                        dangerouslySetInnerHTML={{ __html: logs }}
+                        dangerouslySetInnerHTML={{ __html: updateLogs() }}
                         style={{ padding: "10px", whiteSpace: "pre-wrap" }}
                     ></pre>
                     {autoScroll && <div ref={logEndRef} />}

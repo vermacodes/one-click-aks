@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Starting Redis Server
+service redis-server start
+
 # Loading variables to run NVM
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm

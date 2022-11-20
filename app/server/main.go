@@ -48,6 +48,9 @@ func handleRequests() {
 	router.GET("/logs", getLogs)
 	router.POST("/logs", setLogs)
 	router.GET("/endstream", endStream)
+	router.GET("/tfvar", getTfvar)
+	router.POST("/tfvar", setTfvar)
+	router.POST("tfvardefault", setDefaultTfvar)
 	router.Run(":8080")
 }
 

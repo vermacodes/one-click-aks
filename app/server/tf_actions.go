@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -10,55 +9,50 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
-	"time"
 
 	"github.com/Rican7/conjson"
 	"github.com/Rican7/conjson/transform"
 	"github.com/gin-gonic/gin"
 )
 
-type TfvarResourceGroupType struct {
-	Location string `json:"location"`
+type ActionStatus struct {
+	InProgress bool `json:"inProgress"`
 }
 
-type TfvarDefaultNodePoolType struct {
-	EnableAutoScaling bool `json:"enableAutoScaling"`
-	MinCount          int  `json:"minCount"`
-	MaxCount          int  `json:"maxCount"`
+func getActionStatus(c *gin.Context) {
+	rdb := newRedisClient()
+
+	val, err := rdb.Get(ctx, "ActionStatus").Result()
+	if err != nil {
+		c.Status(http.StatusNotFound)
+		return
+	}
+
+	action := ActionStatus{}
+	if err = json.Unmarshal([]byte(val), &action); err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+	c.IndentedJSON(http.StatusOK, action)
 }
 
-type TfvarKubernetesClusterType struct {
-	NetworkPlugin         string                   `json:"networkPlugin"`
-	NetworkPolicy         string                   `json:"networkPolicy"`
-	PrivateClusterEnabled string                   `json:"privateClusterEnabled"`
-	DefaultNodePool       TfvarDefaultNodePoolType `json:"defaultNodePool"`
-}
+func setActionStatus(c *gin.Context) {
+	rdb := newRedisClient()
+	action := ActionStatus{}
 
-type TfvarVirtualNeworkType struct {
-	AddressSpace []string
-}
+	if err := c.BindJSON(&action); err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
 
-type TfvarSubnetType struct {
-	Name            string
-	AddressPrefixes []string
-}
+	json, err := json.Marshal(action)
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
 
-type TfvarJumpserverType struct {
-	AdminPassword string `json:"adminPassword"`
-	AdminUserName string `json:"adminUsername"`
-}
-
-type TfvarConfigType struct {
-	ResourceGroup     TfvarResourceGroupType     `json:"resourceGroup"`
-	VirtualNetworks   []TfvarVirtualNeworkType   `json:"virtualNetworks"`
-	Subnets           []TfvarSubnetType          `json:"subnets"`
-	Jumpservers       []TfvarJumpserverType      `json:"jumpservers"`
-	KubernetesCluster TfvarKubernetesClusterType `json:"kubernetesCluster"`
-}
-
-type LogStreamType struct {
-	IsStreaming bool   `json:"isStreaming"`
-	Logs        string `json:"logs"`
+	rdb.Set(ctx, "ActionStatus", json, 0)
+	c.Status(http.StatusCreated)
 }
 
 func updateActionStatus(status bool) {
@@ -76,70 +70,6 @@ func updateActionStatus(status bool) {
 	rdb.Set(ctx, "ActionStatus", json, 0)
 }
 
-func endLogsStream() {
-	log.Println("Ending Stream in 5 seconds")
-	time.Sleep(5 * time.Second)
-	appendLogsRedis(fmt.Sprintf("%s\n", "end"))
-	for {
-		currLogsStream := readLogsRedis()
-		currLogs, err := base64.StdEncoding.DecodeString(currLogsStream.Logs)
-		if err != nil {
-			log.Println("Error in appendLogRedis")
-			return
-		}
-		newLogsStream := LogStreamType{
-			IsStreaming: false,
-			Logs:        base64.StdEncoding.EncodeToString([]byte(string(currLogs))),
-		}
-
-		writeLogsRedis(&newLogsStream)
-
-		if !readLogsRedis().IsStreaming {
-			break
-		}
-		log.Println("Stream not ended. Will try again in 1 second")
-		time.Sleep(1 * time.Second)
-	}
-}
-
-func appendLogsRedis(logs string) {
-	currLogsStream := readLogsRedis()
-	currLogs, err := base64.StdEncoding.DecodeString(currLogsStream.Logs)
-	if err != nil {
-		log.Println("Error in appendLogRedis")
-		return
-	}
-	newLogsStream := LogStreamType{
-		IsStreaming: currLogsStream.IsStreaming,
-		Logs:        base64.StdEncoding.EncodeToString([]byte(string(currLogs) + logs)),
-	}
-
-	writeLogsRedis(&newLogsStream)
-}
-
-func writeLogsRedis(logs *LogStreamType) {
-	rdb := newRedisClient()
-	json, err := json.Marshal(logs)
-	if err != nil {
-		log.Println("Error Marshal in writeLogsRedis")
-	}
-	rdb.Set(ctx, "Logs", json, 0)
-}
-
-func readLogsRedis() LogStreamType {
-	rdb := newRedisClient()
-	logs := LogStreamType{}
-	val, err := rdb.Get(ctx, "Logs").Result()
-	if err != nil {
-		log.Println("Error : ", err)
-		return logs
-	}
-	if err = json.Unmarshal([]byte(val), &logs); err != nil {
-		log.Println("Error unmarshal logs in readLogsRedis")
-	}
-	return logs
-}
-
 func action(c *gin.Context, action string) {
 
 	var tfConfig TfvarConfigType
@@ -154,6 +84,8 @@ func action(c *gin.Context, action string) {
 	w.WriteHeader(http.StatusOK)
 	w.(http.Flusher).Flush()
 
+	setEnvironmentVariable("terraform_directory", "tf")
+	setEnvironmentVariable("root_directory", os.ExpandEnv("$ROOT_DIR"))
 	setEnvironmentVariable("resource_group_name", "repro-project")
 	setEnvironmentVariable("storage_account_name", getStorageAccountName())
 	setEnvironmentVariable("container_name", "tfstate")
@@ -178,6 +110,10 @@ func action(c *gin.Context, action string) {
 	// Kubernetes Cluster
 	encoded, _ = json.Marshal(conjson.NewMarshaler(tfConfig.KubernetesCluster, transform.ConventionalKeys()))
 	setEnvironmentVariable("TF_VAR_kubernetes_cluster", string(encoded))
+
+	// Firewall
+	encoded, _ = json.Marshal(conjson.NewMarshaler(tfConfig.Firewalls, transform.ConventionalKeys()))
+	setEnvironmentVariable("TF_VAR_firewalls", string(encoded))
 
 	cmd := exec.Command(os.ExpandEnv("$ROOT_DIR")+"/scripts/"+action+".sh", "tf",
 		os.ExpandEnv("$ROOT_DIR"),
