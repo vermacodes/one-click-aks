@@ -22,7 +22,7 @@ func status(c *gin.Context) {
 func handleRequests() {
 	router := gin.Default()
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://localhost:3000", "https://ashisverma.z13.web.core.windows.net", "https://*.azurewebsites.net"}
+	config.AllowOrigins = []string{"http://localhost:3000", "http://localhost:5173", "https://ashisverma.z13.web.core.windows.net", "https://*.azurewebsites.net"}
 	router.Use(cors.New(config))
 
 	router.POST("/apply", apply)
