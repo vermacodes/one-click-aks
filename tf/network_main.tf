@@ -46,24 +46,24 @@ resource "azurerm_route_table" "this" {
   resource_group_name = azurerm_resource_group.this.name
 }
 
-resource "azurerm_route" "vnetlocal" {
-  count               = length(var.firewalls) > 0 && length(var.virtual_networks) > 0 ? 1 : 0
-  name                = "VnetLocal"
-  resource_group_name = azurerm_resource_group.this.name
-  route_table_name    = azurerm_route_table.this[0].name
-  next_hop_type       = "VnetLocal"
-  address_prefix      = "10.1.0.0/16"
-}
-
-# resource "azurerm_route" "default" {
-#   count                  = length(var.firewalls) > 0 && length(var.virtual_networks) > 0 ? 1 : 0
-#   name                   = "Default"
-#   resource_group_name    = azurerm_resource_group.this.name
-#   route_table_name       = azurerm_route_table.this[0].name
-#   next_hop_type          = "VirtualAppliance"
-#   address_prefix         = "0.0.0.0/0"
-#   next_hop_in_ip_address = "10.1.1.4" # This will always be this IP.
+# resource "azurerm_route" "vnetlocal" {
+#   count               = length(var.firewalls) > 0 && length(var.virtual_networks) > 0 ? 1 : 0
+#   name                = "VnetLocal"
+#   resource_group_name = azurerm_resource_group.this.name
+#   route_table_name    = azurerm_route_table.this[0].name
+#   next_hop_type       = "VnetLocal"
+#   address_prefix      = "10.1.0.0/16"
 # }
+
+resource "azurerm_route" "default" {
+  count                  = length(var.firewalls) > 0 && length(var.virtual_networks) > 0 ? 1 : 0
+  name                   = "Default"
+  resource_group_name    = azurerm_resource_group.this.name
+  route_table_name       = azurerm_route_table.this[0].name
+  next_hop_type          = "VirtualAppliance"
+  address_prefix         = "0.0.0.0/0"
+  next_hop_in_ip_address = "10.1.1.4" # This will always be the IP. Trust me.
+}
 
 resource "azurerm_subnet_route_table_association" "this" {
   count          = length(var.firewalls) > 0 && length(var.virtual_networks) > 0 ? 1 : 0
