@@ -1,10 +1,9 @@
 package main
 
 import (
-	"encoding/json"
 	"encoding/xml"
-	"fmt"
 	"io"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -41,23 +40,11 @@ func listSharedTemplates(c *gin.Context) {
 	defer res.Body.Close()
 	body, _ := io.ReadAll(res.Body)
 
-	fmt.Println("Body : ", string(body))
-
 	err := xml.Unmarshal(body, &blobs)
 	if err != nil {
-		fmt.Println("Error : ", err)
+		log.Println("Error : ", err)
 		c.Status(http.StatusInternalServerError)
 		return
 	}
-
-	jsonString, err := json.Marshal(blobs)
-	if err != nil {
-		fmt.Println("Error : ", err)
-		c.Status(http.StatusInternalServerError)
-		return
-	}
-
-	fmt.Println(string(jsonString))
-
 	c.IndentedJSON(http.StatusOK, blobs.Blobs)
 }

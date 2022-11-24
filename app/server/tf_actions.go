@@ -15,43 +15,59 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type TfvarResourceGroupType struct {
-	Location string `json:"location"`
+type ActionStatus struct {
+	InProgress bool `json:"inProgress"`
 }
 
-type TfvarDefaultNodePoolType struct {
-	EnableAutoScaling bool `json:"enableAutoScaling"`
-	MinCount          int  `json:"minCount"`
-	MaxCount          int  `json:"maxCount"`
+func getActionStatus(c *gin.Context) {
+	rdb := newRedisClient()
+
+	val, err := rdb.Get(ctx, "ActionStatus").Result()
+	if err != nil {
+		c.Status(http.StatusNotFound)
+		return
+	}
+
+	action := ActionStatus{}
+	if err = json.Unmarshal([]byte(val), &action); err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+	c.IndentedJSON(http.StatusOK, action)
 }
 
-type TfvarKubernetesClusterType struct {
-	NetworkPlugin         string                   `json:"networkPlugin"`
-	NetworkPolicy         string                   `json:"networkPolicy"`
-	PrivateClusterEnabled string                   `json:"privateClusterEnabled"`
-	DefaultNodePool       TfvarDefaultNodePoolType `json:"defaultNodePool"`
+func setActionStatus(c *gin.Context) {
+	rdb := newRedisClient()
+	action := ActionStatus{}
+
+	if err := c.BindJSON(&action); err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	json, err := json.Marshal(action)
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	rdb.Set(ctx, "ActionStatus", json, 0)
+	c.Status(http.StatusCreated)
 }
 
-type TfvarVirtualNeworkType struct {
-	AddressSpace []string
-}
+func updateActionStatus(status bool) {
+	rdb := newRedisClient()
+	action := ActionStatus{
+		InProgress: status,
+	}
 
-type TfvarSubnetType struct {
-	Name            string
-	AddressPrefixes []string
-}
+	json, err := json.Marshal(action)
+	if err != nil {
+		log.Println("Update Action Status Failed", err)
+		return
+	}
 
-type TfvarJumpserverType struct {
-	AdminPassword string `json:"adminPassword"`
-	AdminUserName string `json:"adminUsername"`
-}
-
-type TfvarConfigType struct {
-	ResourceGroup     TfvarResourceGroupType     `json:"resourceGroup"`
-	VirtualNetworks   []TfvarVirtualNeworkType   `json:"virtualNetworks"`
-	Subnets           []TfvarSubnetType          `json:"subnets"`
-	Jumpservers       []TfvarJumpserverType      `json:"jumpservers"`
-	KubernetesCluster TfvarKubernetesClusterType `json:"kubernetesCluster"`
+	rdb.Set(ctx, "ActionStatus", json, 0)
 }
 
 func action(c *gin.Context, action string) {
@@ -68,6 +84,8 @@ func action(c *gin.Context, action string) {
 	w.WriteHeader(http.StatusOK)
 	w.(http.Flusher).Flush()
 
+	setEnvironmentVariable("terraform_directory", "tf")
+	setEnvironmentVariable("root_directory", os.ExpandEnv("$ROOT_DIR"))
 	setEnvironmentVariable("resource_group_name", "repro-project")
 	setEnvironmentVariable("storage_account_name", getStorageAccountName())
 	setEnvironmentVariable("container_name", "tfstate")
@@ -89,9 +107,13 @@ func action(c *gin.Context, action string) {
 	encoded, _ = json.Marshal(conjson.NewMarshaler(tfConfig.Jumpservers, transform.ConventionalKeys()))
 	setEnvironmentVariable("TF_VAR_jumpservers", string(encoded))
 
-	//Kubernetes Cluster
+	// Kubernetes Cluster
 	encoded, _ = json.Marshal(conjson.NewMarshaler(tfConfig.KubernetesCluster, transform.ConventionalKeys()))
 	setEnvironmentVariable("TF_VAR_kubernetes_cluster", string(encoded))
+
+	// Firewall
+	encoded, _ = json.Marshal(conjson.NewMarshaler(tfConfig.Firewalls, transform.ConventionalKeys()))
+	setEnvironmentVariable("TF_VAR_firewalls", string(encoded))
 
 	cmd := exec.Command(os.ExpandEnv("$ROOT_DIR")+"/scripts/"+action+".sh", "tf",
 		os.ExpandEnv("$ROOT_DIR"),
@@ -106,6 +128,8 @@ func action(c *gin.Context, action string) {
 	}
 	cmd.Stdout = wPipe
 	cmd.Stderr = wPipe
+
+	updateActionStatus(true)
 	if err := cmd.Start(); err != nil {
 		log.Fatal(err)
 	}
@@ -113,6 +137,10 @@ func action(c *gin.Context, action string) {
 	go writeOutput(w, rPipe)
 	cmd.Wait()
 	wPipe.Close()
+	updateActionStatus(false)
+	if _, err = http.Get("http://localhost:8080/endstream"); err != nil {
+		log.Println("Not able to end stream")
+	}
 }
 
 func apply(c *gin.Context) {
@@ -132,18 +160,9 @@ func validateLab(c *gin.Context) {
 }
 
 func writeOutput(w gin.ResponseWriter, input io.ReadCloser) {
-
-	flusher, ok := w.(http.Flusher)
-	if !ok {
-		http.Error(w, "Streaming not supported", http.StatusInternalServerError)
-		return
-	}
-
 	in := bufio.NewScanner(input)
 	for in.Scan() {
-		fmt.Fprintf(w, "%s\n", in.Text())
-		fmt.Println(in.Text())
-		flusher.Flush()
+		appendLogsRedis(fmt.Sprintf("%s\n", in.Text()))
 	}
 	input.Close()
 }

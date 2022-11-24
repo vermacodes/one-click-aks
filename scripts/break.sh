@@ -85,3 +85,5 @@ source $ROOT_DIR/scripts/helper.sh && init
 
 log "Breaking cluster."
 break_cluster
+
+rm -rf .terraform/ .terraform.lock.hcl

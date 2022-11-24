@@ -3,7 +3,6 @@ package main
 import (
 	"crypto/rand"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"os/exec"
@@ -50,7 +49,7 @@ func getStorageAccountName() string {
 	out, err := exec.Command("bash", "-c", "az storage account list -g repro-project --output tsv --query [].name").Output()
 
 	if err != nil {
-		fmt.Println("List Storage Accounts - Not able to run az cli command")
+		log.Println("List Storage Accounts - Not able to run az cli command")
 		log.Println("Error output from comamnd : ", err)
 	}
 
@@ -66,11 +65,11 @@ func getBlobContainer(storageAccountName string, containerName string) BlobConta
 	out, err := exec.Command("bash", "-c", "az storage container show -n "+containerName+" --account-name "+storageAccountName+" --output json").Output()
 
 	if err != nil {
-		fmt.Println("Show Storage Account - Not able to run az cli command")
+		log.Println("Show Storage Account - Not able to run az cli command")
 		log.Println("Error output from comamnd : ", err)
 	}
 
-	fmt.Println(string(out))
+	log.Println(string(out))
 
 	err = json.Unmarshal(out, &container)
 	if err != nil {
@@ -89,7 +88,7 @@ func _createResourceGroup() ResourceGroup {
 	out, err := exec.Command("bash", "-c", "az group create -l eastus -n repro-project -o json").Output()
 
 	if err != nil {
-		fmt.Println("Create Resourece Group - Not able to run az cli command")
+		log.Println("Create Resourece Group - Not able to run az cli command")
 		log.Println("Error output from comamnd : ", err)
 	}
 
@@ -117,7 +116,7 @@ func _createStorageAccount() StorageAccount {
 	out, err := exec.Command("bash", "-c", "az storage account create -g repro-project --name "+storageAccountName+" --kind StorageV2 --sku Standard_LRS --output json").Output()
 
 	if err != nil {
-		fmt.Println("Show Storage Account - Not able to run az cli command")
+		log.Println("Show Storage Account - Not able to run az cli command")
 		log.Println("Error output from comamnd : ", err)
 	}
 
@@ -139,7 +138,7 @@ func _createBlobContainer() BlobContainer {
 	out, err := exec.Command("bash", "-c", "az storage container create -n tfstate -g repro-project --account-name "+storageAccountName+" --output tsv --query created").Output()
 
 	if err != nil {
-		fmt.Println("Create Storage account - Not able to run az cli command")
+		log.Println("Create Storage account - Not able to run az cli command")
 		log.Println("Error output from comamnd : ", err)
 	}
 
@@ -159,7 +158,7 @@ func _getResourceGroup() ResourceGroup {
 	out, err := exec.Command("bash", "-c", "az group show --name repro-project --output json").Output()
 
 	if err != nil {
-		fmt.Println("Get Resourece Group - Not able to run az cli command")
+		log.Println("Get Resourece Group - Not able to run az cli command")
 		log.Println("Error output from comamnd : ", err)
 	}
 
@@ -183,7 +182,7 @@ func _getStorageAccount() StorageAccount {
 	out, err := exec.Command("bash", "-c", "az storage account show -g repro-project --name "+storageAccountName+" --output json").Output()
 
 	if err != nil {
-		fmt.Println("Show Storage Account - Not able to run az cli command")
+		log.Println("Show Storage Account - Not able to run az cli command")
 		log.Println("Error output from comamnd : ", err)
 	}
 

@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"encoding/xml"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -55,6 +54,8 @@ func createLab(c *gin.Context) {
 	}
 	cmd.Stdout = wPipe
 	cmd.Stderr = wPipe
+
+	updateActionStatus(true)
 	if err := cmd.Start(); err != nil {
 		log.Fatal(err)
 	}
@@ -62,6 +63,10 @@ func createLab(c *gin.Context) {
 	go writeOutput(w, rPipe)
 	cmd.Wait()
 	wPipe.Close()
+	updateActionStatus(false)
+	if _, err = http.Get("http://localhost:8080/endstream"); err != nil {
+		log.Println("Not able to end stream")
+	}
 }
 
 func listLabs(c *gin.Context) {
@@ -79,24 +84,17 @@ func listLabs(c *gin.Context) {
 	defer res.Body.Close()
 	body, _ := io.ReadAll(res.Body)
 
-	fmt.Println("Body : ", string(body))
-
 	err := xml.Unmarshal(body, &labs)
 	if err != nil {
-		fmt.Println("Error : ", err)
+		log.Println("Error : ", err)
 		c.Status(http.StatusInternalServerError)
 		return
 	}
-
-	jsonString, err := json.Marshal(labs)
 	if err != nil {
-		fmt.Println("Error : ", err)
+		log.Println("Error : ", err)
 		c.Status(http.StatusInternalServerError)
 		return
 	}
-
-	fmt.Println(string(jsonString))
-
 	c.IndentedJSON(http.StatusOK, labs.Blobs)
 }
 
@@ -115,10 +113,6 @@ func deployLab(c *gin.Context) {
 	defer resp.Body.Close()
 
 	bodyBytes, _ := io.ReadAll(resp.Body)
-
-	// Convert response body to string
-	bodyString := string(bodyBytes)
-	fmt.Println("API Response as String:\n" + bodyString)
 
 	// Convert response body to Todo struct
 	var lab LabType
@@ -171,6 +165,7 @@ func deployLab(c *gin.Context) {
 	}
 	cmd.Stdout = wPipe
 	cmd.Stderr = wPipe
+	updateActionStatus(true)
 	if err := cmd.Start(); err != nil {
 		log.Fatal(err)
 	}
@@ -178,6 +173,10 @@ func deployLab(c *gin.Context) {
 	go writeOutput(w, rPipe)
 	cmd.Wait()
 	wPipe.Close()
+	updateActionStatus(false)
+	if _, err = http.Get("http://localhost:8080/endstream"); err != nil {
+		log.Println("Not able to end stream")
+	}
 }
 
 func breakLab(c *gin.Context) {
@@ -196,10 +195,6 @@ func breakLab(c *gin.Context) {
 
 	bodyBytes, _ := io.ReadAll(resp.Body)
 
-	// Convert response body to string
-	bodyString := string(bodyBytes)
-	fmt.Println("API Response as String:\n" + bodyString)
-
 	// Convert response body to Todo struct
 	var lab LabType
 	json.Unmarshal(bodyBytes, &lab)
@@ -211,6 +206,11 @@ func breakLab(c *gin.Context) {
 	w.WriteHeader(http.StatusOK)
 	w.(http.Flusher).Flush()
 
+	setEnvironmentVariable("resource_group_name", "repro-project")
+	setEnvironmentVariable("storage_account_name", getStorageAccountName())
+	setEnvironmentVariable("container_name", "tfstate")
+	setEnvironmentVariable("tf_state_file_name", "terraform.tfstate")
+
 	cmd := exec.Command("bash", "-c", "echo '"+lab.BreakScript+"' | base64 -d | bash")
 
 	rPipe, wPipe, err := os.Pipe()
@@ -219,6 +219,7 @@ func breakLab(c *gin.Context) {
 	}
 	cmd.Stdout = wPipe
 	cmd.Stderr = wPipe
+	updateActionStatus(true)
 	if err := cmd.Start(); err != nil {
 		log.Fatal(err)
 	}
@@ -226,6 +227,10 @@ func breakLab(c *gin.Context) {
 	go writeOutput(w, rPipe)
 	cmd.Wait()
 	wPipe.Close()
+	updateActionStatus(false)
+	if _, err = http.Get("http://localhost:8080/endstream"); err != nil {
+		log.Println("Not able to end stream")
+	}
 }
 
 func validate(c *gin.Context) {
@@ -243,10 +248,6 @@ func validate(c *gin.Context) {
 	defer resp.Body.Close()
 
 	bodyBytes, _ := io.ReadAll(resp.Body)
-
-	// Convert response body to string
-	bodyString := string(bodyBytes)
-	fmt.Println("API Response as String:\n" + bodyString)
 
 	// Convert response body to Todo struct
 	var lab LabType
@@ -267,6 +268,7 @@ func validate(c *gin.Context) {
 	}
 	cmd.Stdout = wPipe
 	cmd.Stderr = wPipe
+	updateActionStatus(true)
 	if err := cmd.Start(); err != nil {
 		log.Fatal(err)
 	}
@@ -274,5 +276,8 @@ func validate(c *gin.Context) {
 	go writeOutput(w, rPipe)
 	cmd.Wait()
 	wPipe.Close()
-
+	updateActionStatus(false)
+	if _, err = http.Get("http://localhost:8080/endstream"); err != nil {
+		log.Println("Not able to end stream")
+	}
 }

@@ -13,6 +13,11 @@ apt install wget -y
 apt install xsel -y
 apt install jq -y
 
+# Install redis
+add-apt-repository ppa:redislabs/redis
+apt install redis-server -y
+systemctl enable redis-server
+
 # Install/Configure everything node.
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
 

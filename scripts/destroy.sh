@@ -1,12 +1,5 @@
 #!/bin/bash
 
-terraform_directory=$1
-root_directory=$2
-resource_group_name=$3
-storage_account_name=$4
-container_name=$5
-tf_state_file_name=$6
-
 # Start at root directory.
 cd $root_directory
 
@@ -38,3 +31,5 @@ terraform init \
 -backend-config="key=$tf_state_file_name"
 
 terraform destroy -auto-approve
+
+rm -rf .terraform/ .terraform.lock.hcl

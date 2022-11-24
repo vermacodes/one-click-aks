@@ -24,11 +24,23 @@ function get_aks_credentials() {
 
 function get_kubectl() {
     log "Checking if kubectl exists"
-    kubectl version
+    kubectl version > /dev/null 2>&1
     if [ $? -ne 0 ]; then
       log "kubectl not found. installing."
       az aks install-cli
     fi
+}
+
+function tf_init() {
+    log "Pulling variables from TF output"
+    cd tf
+    terraform init \
+    -migrate-state \
+    -backend-config="resource_group_name=$resource_group_name" \
+    -backend-config="storage_account_name=$storage_account_name" \
+    -backend-config="container_name=$container_name" \
+    -backend-config="key=$tf_state_file_name"
+    change_to_root_dir
 }
 
 function get_variables_from_tf_output () {
@@ -44,6 +56,7 @@ function get_variables_from_tf_output () {
 function init() {
     log "Initializing Environment"
     change_to_root_dir
+    tf_init
     get_aks_credentials
     get_kubectl
     get_variables_from_tf_output
