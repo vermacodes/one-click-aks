@@ -32,4 +32,4 @@ terraform init \
 
 terraform destroy -auto-approve
 
-rm -rf .terraform/*.tfstate .terraform.lock.hcl
+# rm -rf .terraform/*.tfstate .terraform.lock.hcl

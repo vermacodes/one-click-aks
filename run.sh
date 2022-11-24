@@ -7,5 +7,5 @@ export ROOT_DIR=$(pwd)
 cd app/server
 go run . &
 
-cd ../ui
+cd ../interface
 npm run dev

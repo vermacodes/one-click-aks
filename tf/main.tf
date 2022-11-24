@@ -11,5 +11,5 @@ resource "random_string" "random" {
 
 module "naming" {
   source = "Azure/naming/azurerm"
-  prefix = ["${random_string.random.result}"]
+  prefix = ["${terraform.workspace}", "${random_string.random.result}"]
 }
