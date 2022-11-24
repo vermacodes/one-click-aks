@@ -137,10 +137,10 @@ func action(c *gin.Context, action string) {
 	go writeOutput(w, rPipe)
 	cmd.Wait()
 	wPipe.Close()
-	updateActionStatus(false)
 	if _, err = http.Get("http://localhost:8080/endstream"); err != nil {
 		log.Println("Not able to end stream")
 	}
+	updateActionStatus(false)
 }
 
 func apply(c *gin.Context) {

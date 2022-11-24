@@ -63,10 +63,10 @@ func createLab(c *gin.Context) {
 	go writeOutput(w, rPipe)
 	cmd.Wait()
 	wPipe.Close()
-	updateActionStatus(false)
 	if _, err = http.Get("http://localhost:8080/endstream"); err != nil {
 		log.Println("Not able to end stream")
 	}
+	updateActionStatus(false)
 }
 
 func listLabs(c *gin.Context) {
@@ -173,10 +173,10 @@ func deployLab(c *gin.Context) {
 	go writeOutput(w, rPipe)
 	cmd.Wait()
 	wPipe.Close()
-	updateActionStatus(false)
 	if _, err = http.Get("http://localhost:8080/endstream"); err != nil {
 		log.Println("Not able to end stream")
 	}
+	updateActionStatus(false)
 }
 
 func breakLab(c *gin.Context) {
@@ -227,10 +227,10 @@ func breakLab(c *gin.Context) {
 	go writeOutput(w, rPipe)
 	cmd.Wait()
 	wPipe.Close()
-	updateActionStatus(false)
 	if _, err = http.Get("http://localhost:8080/endstream"); err != nil {
 		log.Println("Not able to end stream")
 	}
+	updateActionStatus(false)
 }
 
 func validate(c *gin.Context) {
@@ -276,8 +276,8 @@ func validate(c *gin.Context) {
 	go writeOutput(w, rPipe)
 	cmd.Wait()
 	wPipe.Close()
-	updateActionStatus(false)
 	if _, err = http.Get("http://localhost:8080/endstream"); err != nil {
 		log.Println("Not able to end stream")
 	}
+	updateActionStatus(false)
 }
