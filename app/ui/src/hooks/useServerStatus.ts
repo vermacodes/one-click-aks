@@ -6,10 +6,16 @@ function getServerStatus() {
 }
 
 export function useServerStatus() {
+    const queryClient = useQueryClient();
     return useQuery("server-status", getServerStatus, {
         select: (data) => {
             return data.data.status;
         },
+        onError: () => {
+            queryClient.invalidateQueries("login-status");
+        },
+        cacheTime: 1000,
+        staleTime: 1000,
     });
 }
 

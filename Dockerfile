@@ -6,13 +6,10 @@ ADD entrypoint.sh ./
 
 RUN chmod +x ./entrypoint.sh
 
-ADD /app/ui/package.json ./
-ADD /app/ui/build ./
 ADD /app/server/server ./
 ADD /tf ./tf
 ADD /scripts ./scripts
 
-EXPOSE 3000/tcp
 EXPOSE 8080/tcp
 EXPOSE 443/tcp
 

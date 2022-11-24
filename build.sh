@@ -13,16 +13,9 @@ cd ../app/server
 
 go build
 
-cd ../ui
-
-npm run build
-
 cd ../..
 
 docker build -t repro .
 
-cd app/server
+cd ./app/server
 rm server
-
-cd ../ui
-rm -rf ./build

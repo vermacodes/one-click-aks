@@ -1,13 +1,32 @@
-import { QueryClient, QueryClientProvider } from "react-query";
-import Main from "./components/Main";
-
-const queryClient = new QueryClient();
+import { useState } from "react";
+import Navbar from "./components/Navbar";
+import Landing from "./pages/Landing";
+import { Routes, Route } from "react-router-dom";
+import Builder from "./pages/Builder";
+import Templates from "./pages/Templates";
+import Learning from "./pages/Learning";
+import MockCases from "./pages/MockCases";
+import Labs from "./pages/Labs";
 
 function App() {
+    const [darkMode, setDarkMode] = useState<boolean>(true);
+
     return (
-        <QueryClientProvider client={queryClient}>
-            <Main />
-        </QueryClientProvider>
+        <div
+            className={`w-full min-h-screen pb-2 pt-[67px] ${
+                darkMode ? "dark bg-slate-900 text-slate-200" : "bg-slate-100 text-slate-900"
+            }`}
+        >
+            <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
+            <Routes>
+                <Route path="/" element={<Landing />} />
+                <Route path="/builder" element={<Builder />} />
+                <Route path="/templates" element={<Templates />} />
+                <Route path="/learning" element={<Learning />} />
+                <Route path="/labs" element={<Labs />} />
+                <Route path="/mockcases" element={<MockCases />} />
+            </Routes>
+        </div>
     );
 }
 

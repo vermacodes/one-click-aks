@@ -8,4 +8,4 @@ cd app/server
 go run . &
 
 cd ../ui
-npm start
+npm run dev

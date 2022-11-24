@@ -17,13 +17,16 @@ export function useLoginStatus() {
     const queryClient = useQueryClient();
     return useQuery("login-status", getLoginStatus, {
         select: (data) => {
-            return data.data.isLoggedIn;
+            if (data !== undefined) {
+                return data.data.isLoggedIn;
+            }
+            return;
         },
         onSuccess: () => {
             queryClient.invalidateQueries("account");
         },
-        cacheTime: 10000,
-        staleTime: 10000,
+        cacheTime: 5000,
+        staleTime: 5000,
     });
 }
 
@@ -36,6 +39,7 @@ export function useLogin() {
         onSuccess: () => {
             queryClient.invalidateQueries("login-status");
             queryClient.invalidateQueries("get-logs");
+            queryClient.invalidateQueries("get-storage-account");
         },
         enabled: false,
     });

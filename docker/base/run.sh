@@ -10,24 +10,12 @@
 apt update
 apt install curl -y
 apt install wget -y
-apt install xsel -y
 apt install jq -y
 
 # Install redis
 add-apt-repository ppa:redislabs/redis
 apt install redis-server -y
 systemctl enable redis-server
-
-# Install/Configure everything node.
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-nvm install 16
-npm config set legacy-peer-deps true
-npm install
 
 
 # Install Azure CLI
@@ -59,10 +47,3 @@ apt install git -y
 # Install Helm
 # I've added install hlem in dockerfile directly. Bring it here for good.
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-# # Run Server
-# chmod +x server
-# export ROOT_DIR="/app"
-# ./server &
-
-# # Run UI
-# npx serve -s

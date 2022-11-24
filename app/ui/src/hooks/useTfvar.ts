@@ -16,17 +16,16 @@ function setDefaultTfvar() {
 }
 
 export function useTfvar() {
-    const queryClient = useQueryClient();
     return useQuery("get-tfvar", getTfvar, {
         select: (data: AxiosResponse) => {
-            if (data.data === undefined) {
-                setDefaultTfvar();
-                queryClient.invalidateQueries("get-tfvar");
-            }
             return data.data;
         },
-        onError: (error) => {
-            console.log(error);
+        onSuccess: (data) => {
+            if (data === undefined) {
+                setTimeout(() => {
+                    setDefaultTfvar();
+                }, 10000);
+            }
         },
     });
 }

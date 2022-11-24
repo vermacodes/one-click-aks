@@ -16,7 +16,10 @@ export function useActionStatus() {
     return useQuery("get-action-status", getActionStatus, {
         refetchInterval: refetchInterval,
         select: (data) => {
-            return data.data.inProgress;
+            if (data.data !== undefined) {
+                return data.data.inProgress;
+            }
+            return;
         },
         onSuccess: (data: boolean) => {
             if (data) {
