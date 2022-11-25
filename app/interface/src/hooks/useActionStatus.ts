@@ -4,38 +4,38 @@ import { ActionStatusType } from "../dataStructures";
 import { axiosInstance } from "../utils/axios-interceptors";
 
 function getActionStatus() {
-    return axiosInstance.get("actionstatus");
+  return axiosInstance.get("actionstatus");
 }
 
 function setActionStatus(actionStatus: ActionStatusType) {
-    return axiosInstance.post("actionstatus", actionStatus);
+  return axiosInstance.post("actionstatus", actionStatus);
 }
 
 export function useActionStatus() {
-    const [refetchInterval, setRefecthInterval] = useState<false | number>(false);
-    return useQuery("get-action-status", getActionStatus, {
-        refetchInterval: refetchInterval,
-        select: (data) => {
-            if (data.data !== undefined) {
-                return data.data.inProgress;
-            }
-            return;
-        },
-        onSuccess: (data: boolean) => {
-            if (data) {
-                setRefecthInterval(2000);
-            } else {
-                setRefecthInterval(false);
-            }
-        },
-    });
+  const [refetchInterval, setRefecthInterval] = useState<false | number>(false);
+  return useQuery("get-action-status", getActionStatus, {
+    refetchInterval: refetchInterval,
+    select: (data) => {
+      if (data.data !== undefined) {
+        return data.data.inProgress;
+      }
+      return;
+    },
+    onSuccess: (data: boolean) => {
+      if (data) {
+        setRefecthInterval(2000);
+      } else {
+        setRefecthInterval(false);
+      }
+    },
+  });
 }
 
 export function useSetActionStatus() {
-    const queryClient = useQueryClient();
-    return useMutation(setActionStatus, {
-        onSuccess: () => {
-            queryClient.invalidateQueries("get-action-status");
-        },
-    });
+  const queryClient = useQueryClient();
+  return useMutation(setActionStatus, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("get-action-status");
+    },
+  });
 }

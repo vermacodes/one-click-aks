@@ -4,38 +4,38 @@ import { TfvarConfigType } from "../dataStructures";
 import { axiosInstance } from "../utils/axios-interceptors";
 
 function getTfvar() {
-    return axiosInstance.get("tfvar");
+  return axiosInstance.get("tfvar");
 }
 
 function setTfvar(tfvar: TfvarConfigType) {
-    return axiosInstance.post("tfvar", tfvar);
+  return axiosInstance.post("tfvar", tfvar);
 }
 
 function setDefaultTfvar() {
-    return axiosInstance.post("tfvardefault");
+  return axiosInstance.post("tfvardefault");
 }
 
 export function useTfvar() {
-    return useQuery("get-tfvar", getTfvar, {
-        select: (data: AxiosResponse) => {
-            return data.data;
-        },
-        onSuccess: (data) => {
-            if (data === undefined) {
-                setTimeout(() => {
-                    setDefaultTfvar();
-                }, 10000);
-            }
-        },
-    });
+  return useQuery("get-tfvar", getTfvar, {
+    select: (data: AxiosResponse) => {
+      return data.data;
+    },
+    onSuccess: (data) => {
+      if (data === undefined) {
+        setTimeout(() => {
+          setDefaultTfvar();
+        }, 10000);
+      }
+    },
+  });
 }
 
 export function useSetTfvar() {
-    const queryClient = useQueryClient();
-    return useMutation(setTfvar, {
-        onSuccess: () => {
-            queryClient.invalidateQueries("get-tfvar");
-            queryClient.invalidateQueries("get-logs");
-        },
-    });
+  const queryClient = useQueryClient();
+  return useMutation(setTfvar, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("get-tfvar");
+      queryClient.invalidateQueries("get-logs");
+    },
+  });
 }

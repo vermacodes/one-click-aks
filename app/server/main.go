@@ -25,6 +25,7 @@ func handleRequests() {
 	config.AllowOrigins = []string{"http://localhost:3000", "http://localhost:5173", "https://ashisverma.z13.web.core.windows.net", "https://*.azurewebsites.net"}
 	router.Use(cors.New(config))
 
+	router.GET("/tfinit", tfInit)
 	router.POST("/apply", apply)
 	router.POST("/plan", plan)
 	router.POST("/destroy", destroy)
@@ -51,6 +52,10 @@ func handleRequests() {
 	router.GET("/tfvar", getTfvar)
 	router.POST("/tfvar", setTfvar)
 	router.POST("tfvardefault", setDefaultTfvar)
+	router.GET("/workspace", listWorkspaces)
+	router.PUT("/workspace", selectWorkspace)
+	router.DELETE("/workspace", deleteWorkspace)
+	router.POST("/workspace", addWorkspace)
 	router.Run(":8080")
 }
 

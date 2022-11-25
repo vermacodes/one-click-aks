@@ -56,7 +56,7 @@ function get_variables_from_tf_output () {
 function init() {
     log "Initializing Environment"
     change_to_root_dir
-    tf_init
+    # tf_init
     get_aks_credentials
     get_kubectl
     get_variables_from_tf_output

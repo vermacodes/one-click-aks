@@ -152,12 +152,7 @@ func deployLab(c *gin.Context) {
 	encoded, _ = json.Marshal(conjson.NewMarshaler(tfConfig.KubernetesCluster, transform.ConventionalKeys()))
 	setEnvironmentVariable("TF_VAR_kubernetes_cluster", string(encoded))
 
-	cmd := exec.Command(os.ExpandEnv("$ROOT_DIR")+"/scripts/apply.sh", "tf",
-		os.ExpandEnv("$ROOT_DIR"),
-		os.ExpandEnv("$resource_group_name"),
-		os.ExpandEnv("$storage_account_name"),
-		os.ExpandEnv("$container_name"),
-		os.ExpandEnv("$tf_state_file_name"))
+	cmd := exec.Command(os.ExpandEnv("$ROOT_DIR")+"/scripts/terraform.sh", "apply")
 
 	rPipe, wPipe, err := os.Pipe()
 	if err != nil {
