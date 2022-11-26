@@ -7,7 +7,6 @@ import { useSetLogs } from "../../hooks/useLogs";
 import { useTfvar } from "../../hooks/useTfvar";
 import { axiosInstance } from "../../utils/axios-interceptors";
 import {
-  Button,
   dangerButtonClassName,
   primaryButtonClassName,
   secondaryButtonClassName,

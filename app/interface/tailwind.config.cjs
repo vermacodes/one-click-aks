@@ -7,5 +7,7 @@ module.exports = {
       backgroundColor: ["checked"],
     },
   },
-  plugins: [],
+  plugins: [
+    require('tailwind-scrollbar')({ nocompatible: true }),
+  ],
 };

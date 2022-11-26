@@ -40,7 +40,7 @@ export default function Terminal() {
           handleOnChange={handleOnChange}
         />
       </div>
-      <div className="scrollbar mb-5 h-1/2 max-h-[500px] min-h-[500px] overflow-y-auto rounded border border-slate-200 text-sm shadow shadow-slate-400 dark:border-slate-800 dark:shadow-slate-500">
+      <div className="mb-5 h-1/2 max-h-[500px] min-h-[500px] overflow-y-auto rounded border border-slate-200 text-sm shadow shadow-slate-400 scrollbar-thin scrollbar-track-slate-300 scrollbar-thumb-sky-500 scrollbar-track-rounded-full scrollbar-thumb-rounded-full dark:border-slate-800 dark:shadow-slate-500">
         <pre
           dangerouslySetInnerHTML={{ __html: updateLogs() }}
           style={{ padding: "10px", whiteSpace: "pre-wrap" }}
