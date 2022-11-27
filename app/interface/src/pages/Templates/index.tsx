@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import {
   dangerOutlineButtonClassName,
   primaryButtonClassName,
@@ -21,6 +22,7 @@ export default function Templates() {
   const { mutate: setActionStatus } = useSetActionStatus();
   const { mutate: setLogs } = useSetLogs();
   const { data: blobs, isLoading, isError } = useSharedTemplates();
+  const navigate = useNavigate();
 
   function actionHandler(url: string, action: string) {
     axios.get(url).then((response) => {
@@ -31,6 +33,7 @@ export default function Templates() {
   }
 
   function viewHandler(url: string) {
+    navigate("/builder");
     axios.get(url).then((response) => {
       console.log(response.data);
       setLogs({

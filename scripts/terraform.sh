@@ -50,6 +50,11 @@ log "Terraform Environment Variables"
 env | grep "TF_VAR"
 echo ""
 
+# Delete existing if init
+if [[ "$action" == "init" ]]; then
+    rm -rf .terraform*
+fi
+
 init
 
 if [[ "$action" == "plan" ]]; then

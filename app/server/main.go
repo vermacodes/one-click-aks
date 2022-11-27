@@ -34,6 +34,8 @@ func handleRequests() {
 	router.GET("/status", status)
 	router.GET("/healthz", status)
 	router.GET("/accountshow", accountShow)
+	router.GET("/account", getAccounts)
+	router.PUT("/account", putAccount)
 	router.GET("/login", accountLogin)
 	router.GET("/loginstatus", validateLogin)
 	router.GET("/getstate", getStateStorageConfiguration)
@@ -56,6 +58,8 @@ func handleRequests() {
 	router.PUT("/workspace", selectWorkspace)
 	router.DELETE("/workspace", deleteWorkspace)
 	router.POST("/workspace", addWorkspace)
+	router.GET("/preference", getPreference)
+	router.PUT("/preference", putPreference)
 	router.Run(":8080")
 }
 

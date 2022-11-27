@@ -6,9 +6,20 @@
 OPTION=$1
 WORKSPACE=$2
 
+function init() {
+    # Initialize terraform only if not.
+    if [[ ! -f .terraform/terraform.tfstate ]] || [[ ! -f .terraform.lock.hcl ]]; then
+        terraform init \
+        -migrate-state \
+        -backend-config="resource_group_name=$resource_group_name" \
+        -backend-config="storage_account_name=$storage_account_name" \
+        -backend-config="container_name=$container_name" \
+        -backend-config="key=$tf_state_file_name" > /dev/null 2>&1
+    fi
+}
+
 function listWorkspaces() {
 
-    cd ${ROOT_DIR}/tf    
     workspaces=$(terraform workspace list)
     IFS=$'\n'
     list=""
@@ -22,28 +33,26 @@ function listWorkspaces() {
             list="${list},${line}"
         fi
     done
-    cd ${ROOT_DIR}
     printf ${list}
 }
 
 function selectWorkspace() {
-    cd ${ROOT_DIR}/tf    
     terraform workspace select $WORKSPACE
 }
 
-function createWorkspace() {
-    cd ${ROOT_DIR}/tf    
+function createWorkspace() {  
     terraform workspace create $WORKSPACE    
 }
 
 
 # Script starts here.
-cd ${ROOT_DIR}
+cd ${ROOT_DIR}/tf
+
+init
 
 if [[ "$OPTION" == "list" ]]; then
     listWorkspaces
     exit 0
 fi
 
-cd ${ROOT_DIR}/tf
 terraform workspace $OPTION $WORKSPACE

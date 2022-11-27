@@ -12,14 +12,16 @@ export default function JumpServer() {
   const { mutate: setLogs } = useSetLogs();
 
   function handleOnChange() {
-    if (tfvar.jumpservers.length === 0) {
-      tfvar.jumpservers = defaultTfvarConfig.jumpservers;
-    } else {
-      tfvar.jumpservers = [];
+    if (tfvar !== undefined) {
+      if (tfvar.jumpservers.length === 0) {
+        tfvar.jumpservers = defaultTfvarConfig.jumpservers;
+      } else {
+        tfvar.jumpservers = [];
+      }
+      !inProgress &&
+        setLogs({ isStreaming: false, logs: JSON.stringify(tfvar, null, 4) });
+      setTfvar(tfvar);
     }
-    !inProgress &&
-      setLogs({ isStreaming: false, logs: JSON.stringify(tfvar, null, 4) });
-    setTfvar(tfvar);
   }
 
   //const disabled = tfvar.kubernetesCluster.privateClusterEnabled === "false";

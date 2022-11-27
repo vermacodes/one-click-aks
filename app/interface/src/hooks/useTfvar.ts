@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { TfvarConfigType } from "../dataStructures";
 import { axiosInstance } from "../utils/axios-interceptors";
 
-function getTfvar() {
+function getTfvar(): Promise<AxiosResponse<TfvarConfigType>> {
   return axiosInstance.get("tfvar");
 }
 
@@ -17,7 +17,7 @@ function setDefaultTfvar() {
 
 export function useTfvar() {
   return useQuery("get-tfvar", getTfvar, {
-    select: (data: AxiosResponse) => {
+    select: (data) => {
       return data.data;
     },
     onSuccess: (data) => {

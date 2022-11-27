@@ -84,6 +84,50 @@ func accountShow(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, account)
 }
 
+func getAccounts(c *gin.Context) {
+	var accounts []Account
+
+	out, err := exec.Command("bash", "-c", "az account list -o json").Output()
+	if err != nil {
+		log.Println("Not able to get account list : ", err)
+	}
+
+	err = json.Unmarshal(out, &accounts)
+	if err != nil {
+		log.Println("Error Unmarshelling : ", err)
+	}
+
+	c.IndentedJSON(http.StatusOK, accounts)
+}
+
+func putAccount(c *gin.Context) {
+	var account Account
+
+	if err := c.BindJSON(&account); err != nil {
+		log.Println("Not able to bind payload to Account in putAccount ", err)
+		c.Status(http.StatusInternalServerError)
+	}
+
+	_, err := exec.Command("bash", "-c", "az account set --subscription "+account.Id).Output()
+	if err != nil {
+		log.Println("Not able to get account list : ", err)
+	}
+
+	var accounts []Account
+
+	out, err := exec.Command("bash", "-c", "az account list -o json").Output()
+	if err != nil {
+		log.Println("Not able to get account list : ", err)
+	}
+
+	err = json.Unmarshal(out, &accounts)
+	if err != nil {
+		log.Println("Error Unmarshelling : ", err)
+	}
+
+	c.IndentedJSON(http.StatusOK, accounts)
+}
+
 func validateLogin(c *gin.Context) {
 
 	loginStatus := LoginStatus{}

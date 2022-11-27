@@ -1,12 +1,5 @@
 import { useState } from "react";
-import {
-  HiUser,
-  HiServerStack,
-  HiSun,
-  HiMoon,
-  HiCog6Tooth,
-} from "react-icons/hi2";
-import { SiTerraform } from "react-icons/si";
+import { FaServer, FaSun, FaMoon, FaCog, FaUserNinja } from "react-icons/fa";
 import Settings from "../../modals/Settings";
 import { Link, useNavigate } from "react-router-dom";
 import { useServerStatus } from "../../hooks/useServerStatus";
@@ -36,7 +29,7 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
     isError: loginError,
   } = useLoginStatus();
   const { refetch: login } = useLogin();
-  const { data: account } = useAccount();
+  const { data: accounts, isLoading: accountsLoading } = useAccount();
   const { data: storageAccount } = useGetStorageAccount();
   const navigate = useNavigate();
   const { mutate: setLogs } = useSetLogs();
@@ -111,7 +104,7 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
                   }}
                   onClick={() => getServerStatus()}
                 >
-                  <HiServerStack />
+                  <FaServer />
                 </button>
                 <div
                   className={`absolute right-0 z-10 mt-1 w-36 origin-top-right rounded bg-slate-200 p-3 text-slate-900 shadow dark:bg-slate-900 dark:text-slate-100 dark:shadow-slate-300 ${
@@ -127,7 +120,7 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
                 className="items-center justify-center border-b-2 border-transparent py-1 text-2xl hover:border-b-sky-400 hover:text-sky-400"
                 onClick={() => setDarkMode(!darkMode)}
               >
-                {darkMode ? <HiSun /> : <HiMoon />}
+                {darkMode ? <FaSun /> : <FaMoon />}
               </button>
             </li>
             <li>
@@ -140,7 +133,7 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
                 }`}
                 onClick={() => setShowSettingsModal(!showSettingsModal)}
               >
-                <HiCog6Tooth />
+                <FaCog />
               </button>
             </li>
             <li>
@@ -151,14 +144,26 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
                     onMouseEnter={() => setShowUserName(true)}
                     onMouseLeave={() => setShowUserName(false)}
                   >
-                    <HiUser />
+                    <FaUserNinja />
                   </button>
                   <div
                     className={`absolute right-0 z-10 mt-1 w-56 origin-top-right rounded bg-slate-200 p-3 text-slate-900 shadow dark:bg-slate-900 dark:text-slate-100 dark:shadow-slate-300 ${
                       !showUserName && "hidden"
                     }`}
                   >
-                    <p>{account && account.user.name}</p>
+                    {accountsLoading ? (
+                      <p>Loading...</p>
+                    ) : (
+                      <>
+                        {accounts?.map((account) => (
+                          <>
+                            {account.isDefault === true && (
+                              <p>{account.user.name}</p>
+                            )}
+                          </>
+                        ))}
+                      </>
+                    )}
                   </div>
                 </div>
               ) : (

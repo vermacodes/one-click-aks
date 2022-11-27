@@ -27,6 +27,7 @@ export function useConfigureStorageAccount() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries("get-storage-account");
+      queryClient.invalidateQueries("get-preference");
     },
     enabled: false,
   });

@@ -12,16 +12,18 @@ export default function UserDefinedRouting() {
   const { mutate: setLogs } = useSetLogs();
 
   function handleOnChange() {
-    if (tfvar.firewalls.length > 0) {
-      tfvar.kubernetesCluster.outboundType = "loadBalancer";
-      tfvar.firewalls = [];
-    } else {
-      tfvar.kubernetesCluster.outboundType = "userDefinedRouting";
-      tfvar.firewalls = [defaultFirewall];
+    if (tfvar !== undefined) {
+      if (tfvar.firewalls.length > 0) {
+        tfvar.kubernetesCluster.outboundType = "loadBalancer";
+        tfvar.firewalls = [];
+      } else {
+        tfvar.kubernetesCluster.outboundType = "userDefinedRouting";
+        tfvar.firewalls = [defaultFirewall];
+      }
+      !inProgress &&
+        setLogs({ isStreaming: false, logs: JSON.stringify(tfvar, null, 4) });
+      setTfvar(tfvar);
     }
-    !inProgress &&
-      setLogs({ isStreaming: false, logs: JSON.stringify(tfvar, null, 4) });
-    setTfvar(tfvar);
   }
 
   if (tfvar === undefined) {

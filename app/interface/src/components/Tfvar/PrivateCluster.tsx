@@ -11,15 +11,17 @@ export default function PrivateCluster() {
   const { mutate: setLogs } = useSetLogs();
 
   function handleOnChange() {
-    if (tfvar.kubernetesCluster.privateClusterEnabled === "true") {
-      tfvar.kubernetesCluster.privateClusterEnabled = "false";
-      tfvar.jumpservers = [];
-    } else {
-      tfvar.kubernetesCluster.privateClusterEnabled = "true";
+    if (tfvar !== undefined) {
+      if (tfvar.kubernetesCluster.privateClusterEnabled === "true") {
+        tfvar.kubernetesCluster.privateClusterEnabled = "false";
+        tfvar.jumpservers = [];
+      } else {
+        tfvar.kubernetesCluster.privateClusterEnabled = "true";
+      }
+      !inProgress &&
+        setLogs({ isStreaming: false, logs: JSON.stringify(tfvar, null, 4) });
+      setTfvar(tfvar);
     }
-    !inProgress &&
-      setLogs({ isStreaming: false, logs: JSON.stringify(tfvar, null, 4) });
-    setTfvar(tfvar);
   }
 
   if (tfvar === undefined) {

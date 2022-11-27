@@ -135,6 +135,23 @@ func getTfvar(c *gin.Context) {
 		c.Status(http.StatusInternalServerError)
 		return
 	}
+
+	// Inject Azure Region based on Preference
+	// May not be the right way of doing this.
+	preference := getPreferenceFromRedis()
+	if (preference != Preference{}) {
+		tfvar.ResourceGroup.Location = preference.AzureRegion
+	} else {
+		// Get from blob
+		preference = getPreferenceFromBlob()
+		if (preference != Preference{}) {
+			tfvar.ResourceGroup.Location = preference.AzureRegion
+		} else {
+			// Default to East US
+			tfvar.ResourceGroup.Location = "East US"
+		}
+	}
+
 	c.IndentedJSON(http.StatusOK, tfvar)
 }
 

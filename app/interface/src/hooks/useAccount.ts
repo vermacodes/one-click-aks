@@ -1,4 +1,6 @@
-import { useQuery, useQueryClient } from "react-query";
+import axios, { AxiosResponse } from "axios";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { AccountType } from "../dataStructures";
 import { axiosInstance } from "../utils/axios-interceptors";
 
 function getLoginStatus() {
@@ -9,8 +11,12 @@ function login() {
   return axiosInstance.get("login");
 }
 
-function getCurrentAccount() {
-  return axiosInstance.get("accountshow");
+function getAccounts(): Promise<AxiosResponse<AccountType[]>> {
+  return axiosInstance.get("account");
+}
+
+function setAccount(account: AccountType) {
+  return axiosInstance.put("account", account);
 }
 
 export function useLoginStatus() {
@@ -46,11 +52,26 @@ export function useLogin() {
 }
 
 export function useAccount() {
-  return useQuery("account", getCurrentAccount, {
-    select: (data) => {
+  return useQuery("account", getAccounts, {
+    select: (data): AccountType[] => {
       return data.data;
     },
     cacheTime: 10000,
     staleTime: 10000,
+  });
+}
+
+export function useSetAccount() {
+  const queryClient = useQueryClient();
+  return useMutation(setAccount, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("account");
+      queryClient.invalidateQueries("get-storage-account");
+      queryClient.invalidateQueries("get-action-status");
+      queryClient.invalidateQueries("list-terraform-workspaces");
+      queryClient.invalidateQueries("get-preference");
+      queryClient.invalidateQueries("get-tfvar");
+      queryClient.invalidateQueries("get-logs");
+    },
   });
 }

@@ -11,19 +11,17 @@ interface Tenant {
 
 export type TenantType = Tenant[];
 
-interface Account {
+export type AccountType = {
   environmentName: string;
   homeTenantId: string;
   id: string;
-  isDefault: string;
+  isDefault: boolean;
   managedByTenants: TenantType;
   name: string;
   state: string;
   tenantId: string;
   user: UserType;
-}
-
-export type AccountType = Account;
+};
 
 interface Properteis {
   provisioningState: string;
@@ -131,12 +129,10 @@ interface TfvarConfig {
 
 export type TfvarConfigType = TfvarConfig;
 
-interface blob {
+export type BlobType = {
   name: string;
   url: string;
-}
-
-export type BlobType = blob;
+};
 
 export type LabType = {
   name: string;
@@ -157,4 +153,8 @@ export type LogsStreamType = {
 export type TerraformWorkspace = {
   name: string;
   selected: boolean;
+};
+
+export type Preference = {
+  azureRegion: string;
 };

@@ -11,14 +11,16 @@ export default function Calico() {
   const { mutate: setLogs } = useSetLogs();
 
   function handleOnChange() {
-    if ("calico" === tfvar.kubernetesCluster.networkPolicy) {
-      tfvar.kubernetesCluster.networkPolicy = "azure";
-    } else {
-      tfvar.kubernetesCluster.networkPolicy = "calico";
+    if (tfvar !== undefined) {
+      if ("calico" === tfvar.kubernetesCluster.networkPolicy) {
+        tfvar.kubernetesCluster.networkPolicy = "azure";
+      } else {
+        tfvar.kubernetesCluster.networkPolicy = "calico";
+      }
+      !inProgress &&
+        setLogs({ isStreaming: false, logs: JSON.stringify(tfvar, null, 4) });
+      setTfvar(tfvar);
     }
-    !inProgress &&
-      setLogs({ isStreaming: false, logs: JSON.stringify(tfvar, null, 4) });
-    setTfvar(tfvar);
   }
 
   if (tfvar === undefined) {

@@ -1,9 +1,10 @@
+import { AxiosResponse } from "axios";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { LogsStreamType } from "../dataStructures";
 import { axiosInstance } from "../utils/axios-interceptors";
 
-function getLogs() {
+function getLogs(): Promise<AxiosResponse<LogsStreamType>> {
   return axiosInstance.get("logs");
 }
 

@@ -11,14 +11,16 @@ export default function AutoScaling() {
   const { mutate: setLogs } = useSetLogs();
 
   function handleOnChange() {
-    if (tfvar.kubernetesCluster.defaultNodePool.enableAutoScaling) {
-      tfvar.kubernetesCluster.defaultNodePool.enableAutoScaling = false;
-    } else {
-      tfvar.kubernetesCluster.defaultNodePool.enableAutoScaling = true;
+    if (tfvar !== undefined) {
+      if (tfvar.kubernetesCluster.defaultNodePool.enableAutoScaling) {
+        tfvar.kubernetesCluster.defaultNodePool.enableAutoScaling = false;
+      } else {
+        tfvar.kubernetesCluster.defaultNodePool.enableAutoScaling = true;
+      }
+      !inProgress &&
+        setLogs({ isStreaming: false, logs: JSON.stringify(tfvar, null, 4) });
+      setTfvar(tfvar);
     }
-    !inProgress &&
-      setLogs({ isStreaming: false, logs: JSON.stringify(tfvar, null, 4) });
-    setTfvar(tfvar);
   }
 
   if (tfvar === undefined) {

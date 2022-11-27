@@ -57,6 +57,13 @@ func tfInit(c *gin.Context) {
 func listWorkspaces(c *gin.Context) {
 	var workspaces []Workspace
 	//tfInit()
+	setEnvironmentVariable("terraform_directory", "tf")
+	setEnvironmentVariable("root_directory", os.ExpandEnv("$ROOT_DIR"))
+	setEnvironmentVariable("resource_group_name", "repro-project")
+	setEnvironmentVariable("storage_account_name", getStorageAccountName())
+	setEnvironmentVariable("container_name", "tfstate")
+	setEnvironmentVariable("tf_state_file_name", "terraform.tfstate")
+
 	out, err := exec.Command(os.ExpandEnv("$ROOT_DIR")+"/scripts/workspaces.sh", "list").Output()
 	if err != nil {
 		log.Println("Not able to get account list : ", err)

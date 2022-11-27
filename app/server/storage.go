@@ -213,6 +213,9 @@ func configureStateStorage(c *gin.Context) {
 	stateConfiguration.StorageAccount = _createStorageAccount()
 	stateConfiguration.BlobContainer = _createBlobContainer()
 
+	// This configures default preferences.
+	defaultPreference(stateConfiguration.StorageAccount.Name)
+
 	c.IndentedJSON(http.StatusOK, stateConfiguration)
 }
 

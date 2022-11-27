@@ -12,20 +12,22 @@ export default function CustomVnet() {
   const { mutate: setLogs } = useSetLogs();
 
   function handleOnChange() {
-    if (tfvar.virtualNetworks.length === 0) {
-      tfvar.virtualNetworks = defaultTfvarConfig.virtualNetworks;
-      tfvar.subnets = defaultTfvarConfig.subnets;
-    } else {
-      tfvar.virtualNetworks = [];
-      tfvar.subnets = [];
-      tfvar.jumpservers = [];
-      tfvar.firewalls = [];
-      tfvar.kubernetesCluster.privateClusterEnabled = "false";
-      tfvar.kubernetesCluster.outboundType = "loadBalancer";
+    if (tfvar !== undefined) {
+      if (tfvar.virtualNetworks.length === 0) {
+        tfvar.virtualNetworks = defaultTfvarConfig.virtualNetworks;
+        tfvar.subnets = defaultTfvarConfig.subnets;
+      } else {
+        tfvar.virtualNetworks = [];
+        tfvar.subnets = [];
+        tfvar.jumpservers = [];
+        tfvar.firewalls = [];
+        tfvar.kubernetesCluster.privateClusterEnabled = "false";
+        tfvar.kubernetesCluster.outboundType = "loadBalancer";
+      }
+      !inProgress &&
+        setLogs({ isStreaming: false, logs: JSON.stringify(tfvar, null, 4) });
+      setTfvar(tfvar);
     }
-    !inProgress &&
-      setLogs({ isStreaming: false, logs: JSON.stringify(tfvar, null, 4) });
-    setTfvar(tfvar);
   }
 
   if (tfvar === undefined) {
