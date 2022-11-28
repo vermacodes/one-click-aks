@@ -107,7 +107,7 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
                   <FaServer />
                 </button>
                 <div
-                  className={`absolute right-0 z-10 mt-1 w-36 origin-top-right rounded bg-slate-200 p-3 text-slate-900 shadow dark:bg-slate-900 dark:text-slate-100 dark:shadow-slate-300 ${
+                  className={`roundedd absolute right-0 z-10 mt-1 w-36 origin-top-right bg-slate-200 p-3 text-slate-900 shadow dark:bg-slate-900 dark:text-slate-100 dark:shadow-slate-300 ${
                     !showServerStatus && "hidden"
                   }`}
                 >
@@ -147,7 +147,7 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
                     <FaUserNinja />
                   </button>
                   <div
-                    className={`absolute right-0 z-10 mt-1 w-56 origin-top-right rounded bg-slate-200 p-3 text-slate-900 shadow dark:bg-slate-900 dark:text-slate-100 dark:shadow-slate-300 ${
+                    className={`roundedd absolute right-0 z-10 mt-1 w-56 origin-top-right bg-slate-200 p-3 text-slate-900 shadow dark:bg-slate-900 dark:text-slate-100 dark:shadow-slate-300 ${
                       !showUserName && "hidden"
                     }`}
                   >
@@ -168,7 +168,7 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
                 </div>
               ) : (
                 <button
-                  className="text-bold rounded-2xl bg-sky-500 py-1 px-5 text-white hover:bg-sky-700"
+                  className="text-bold roundedd-2xl bg-sky-500 py-1 px-5 text-white hover:bg-sky-700"
                   onClick={() => handleLogin()}
                 >
                   Login

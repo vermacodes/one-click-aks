@@ -37,7 +37,7 @@ function Modal({ showModal, setShowModal }: ModalProps) {
       }}
     >
       <div
-        className=" my-20 w-3/4 space-y-2 divide-y divide-slate-300 rounded bg-slate-100 p-5 dark:divide-slate-700 dark:bg-slate-900"
+        className=" roundedd my-20 w-3/4 space-y-2 divide-y divide-slate-300 bg-slate-100 p-5 dark:divide-slate-700 dark:bg-slate-900"
         onClick={(e) => {
           e.stopPropagation();
           setWorkspaceMenu(false);

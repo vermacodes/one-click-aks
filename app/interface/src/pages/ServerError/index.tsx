@@ -23,7 +23,7 @@ export default function ServerError() {
       </p>
 
       <div
-        className={`inline-flex justify-between  space-x-5 rounded-xl border-2 bg-slate-300 py-2 px-6 dark:bg-slate-700 ${
+        className={`roundedd-xl inline-flex  justify-between space-x-5 border-2 bg-slate-300 py-2 px-6 dark:bg-slate-700 ${
           copy
             ? "border-green-500 bg-green-200 dark:bg-green-700"
             : "border-slate-700 dark:border-slate-200"

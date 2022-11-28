@@ -34,7 +34,7 @@ export default function AzureRegion({ regionEdit, setRegionEdit }: Props) {
       <div
         className={`${
           regionEdit && "hidden"
-        } flex w-96 items-center justify-between rounded border border-slate-500 p-2`}
+        } roundedd flex w-96 items-center justify-between border border-slate-500 p-2`}
         onDoubleClick={(e) => {
           setRegionEdit(true);
           preference && setAzureRegion(preference?.azureRegion);
@@ -52,7 +52,7 @@ export default function AzureRegion({ regionEdit, setRegionEdit }: Props) {
       <div
         className={`${
           !regionEdit && "hidden"
-        } flex w-96 items-center justify-between space-x-2 rounded border border-slate-500`}
+        } roundedd flex w-96 items-center justify-between space-x-2 border border-slate-500`}
         onClick={(e) => e.stopPropagation()}
       >
         <input

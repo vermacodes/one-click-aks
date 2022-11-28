@@ -25,7 +25,7 @@ export default function Button({
 }: Props) {
   return (
     <button
-      className={`text-bold rounded border-2 px-4 py-[2px] ${
+      className={`text-bold roundedd border-2 px-4 py-[2px] ${
         variant === "primary" &&
         " border-sky-500 bg-sky-500 text-white disabled:border-slate-400 disabled:bg-slate-400 hover:border-sky-700 hover:bg-sky-700 disabled:hover:border-slate-400 disabled:hover:bg-slate-400 dark:disabled:border-slate-800 dark:disabled:bg-slate-800 dark:disabled:text-slate-500 "
       } ${

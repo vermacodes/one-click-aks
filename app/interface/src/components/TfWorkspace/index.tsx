@@ -53,7 +53,7 @@ export default function TfWorkspace({
             <div
               className={` ${add && "hidden"} ${
                 actionStatus && "text-slate-500"
-              } flex w-96 items-center justify-between rounded border border-slate-500 p-2`}
+              } roundedd flex w-96 items-center justify-between border border-slate-500 p-2`}
               onClick={(e) => {
                 if (!actionStatus) {
                   setWorkspaceMenu(!workspaceMenu);
@@ -89,7 +89,7 @@ export default function TfWorkspace({
             <div
               className={`${
                 !add && "hidden"
-              } flex w-96 items-center justify-between rounded border border-slate-500`}
+              } roundedd flex w-96 items-center justify-between border border-slate-500`}
             >
               <input
                 type="text"
@@ -102,14 +102,14 @@ export default function TfWorkspace({
             <div
               className={`absolute right-0 mt-2 h-56 w-96 origin-top-right overflow-y-auto scrollbar overflow-x-hidden ${
                 !workspaceMenu && "hidden"
-              } items-center space-y-2 rounded border border-slate-500 bg-slate-100 p-2 dark:bg-slate-800`}
+              } roundedd items-center space-y-2 border border-slate-500 bg-slate-100 p-2 dark:bg-slate-800`}
             >
               {workspaces?.map(
                 (workspace) =>
                   !workspace.selected && (
                     <div className="flex justify-between space-x-1">
                       <div
-                        className="w-full items-center rounded p-2 hover:bg-sky-500 hover:text-slate-100 "
+                        className="roundedd w-full items-center p-2 hover:bg-sky-500 hover:text-slate-100 "
                         onClick={() => selectWorkspace(workspace)}
                       >
                         {workspace.name}
