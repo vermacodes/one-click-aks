@@ -30,7 +30,7 @@ export default function Settings({ showModal, setShowModal }: SettingsProps) {
       }}
     >
       <div
-        className=" my-20 w-3/4 space-y-2 divide-y divide-slate-300 rounded bg-slate-100 p-5 dark:divide-slate-700 dark:bg-slate-900"
+        className=" my-20 w-3/4 space-y-2 divide-y divide-slate-300 overflow-auto rounded bg-slate-100 p-5 scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-sky-500 dark:divide-slate-700 dark:bg-slate-900"
         onClick={(e) => {
           e.stopPropagation();
           setSubscriptionMenu(false);
@@ -54,11 +54,11 @@ export default function Settings({ showModal, setShowModal }: SettingsProps) {
           setSubscriptionMenu={setSubscriptionMenu}
         />
         <AzureRegion regionEdit={regionEdit} setRegionEdit={setRegionEdit} />
-        <TfInit />
+        {/* <TfInit />
         <TfWorkspace
           workspaceMenu={workspaceMenu}
           setWorkspaceMenu={setWorkspaceMenu}
-        />
+        /> */}
       </div>
     </div>
   );

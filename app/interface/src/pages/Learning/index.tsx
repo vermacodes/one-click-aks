@@ -1,3 +1,4 @@
+import Button from "../../components/Button";
 import Terminal from "../../components/Terminal";
 import { BlobType } from "../../dataStructures";
 import {
@@ -69,34 +70,34 @@ export default function Learning() {
                   {blob.name}
                 </td>
                 <td className="border-collapse space-x-2 border border-slate-500 py-1 px-4 text-center">
-                  <button
-                    className="text-bold rounded-2xl bg-slate-500 py-1 px-5 text-white hover:bg-slate-700 disabled:bg-slate-300"
+                  <Button
+                    variant="primary"
                     onClick={() => deployHandler(blob)}
                     disabled={inProgress}
                   >
                     Deploy
-                  </button>{" "}
-                  <button
-                    className="text-bold rounded-2xl bg-green-500 py-1 px-5 text-white hover:bg-green-700 disabled:bg-slate-300"
+                  </Button>{" "}
+                  <Button
+                    variant="secondary"
                     onClick={() => breakHandler(blob)}
                     disabled={inProgress}
                   >
                     Break
-                  </button>{" "}
-                  <button
-                    className="text-bold rounded-2xl bg-sky-500 py-1 px-5 text-white hover:bg-sky-700 disabled:bg-slate-300"
+                  </Button>{" "}
+                  <Button
+                    variant="success"
                     onClick={() => validateHandler(blob)}
                     disabled={inProgress}
                   >
                     Validate
-                  </button>{" "}
-                  <button
-                    className="text-bold rounded-2xl bg-red-500 py-1 px-5 text-white hover:bg-red-700 disabled:bg-slate-300"
+                  </Button>{" "}
+                  <Button
+                    variant="danger"
                     onClick={() => destroyHandler(blob)}
                     disabled={inProgress}
                   >
                     Destroy
-                  </button>
+                  </Button>
                 </td>
               </tr>
             ))}

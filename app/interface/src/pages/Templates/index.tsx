@@ -1,12 +1,6 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import {
-  dangerOutlineButtonClassName,
-  primaryButtonClassName,
-  primaryOutlineButtonClassName,
-  secondaryOutlineButtonClassName,
-  successOutlineButtonClassName,
-} from "../../components/Button";
+import Button from "../../components/Button";
 import Terminal from "../../components/Terminal";
 import {
   useActionStatus,
@@ -70,34 +64,34 @@ export default function Templates() {
                   {blob.name}
                 </td>
                 <td className="space-x-2 border border-slate-500 py-1 px-4 text-center">
-                  <button
-                    className={secondaryOutlineButtonClassName}
+                  <Button
+                    variant="secondary-outline"
                     onClick={() => viewHandler(blob.url)}
                     disabled={inProgress}
                   >
                     View
-                  </button>
-                  <button
-                    className={successOutlineButtonClassName}
+                  </Button>
+                  <Button
+                    variant="success-outline"
                     onClick={() => actionHandler(blob.url, "plan")}
                     disabled={inProgress}
                   >
                     Plan
-                  </button>
-                  <button
-                    className={primaryOutlineButtonClassName}
+                  </Button>
+                  <Button
+                    variant="primary-outline"
                     onClick={() => actionHandler(blob.url, "apply")}
                     disabled={inProgress}
                   >
                     Apply
-                  </button>
-                  <button
-                    className={dangerOutlineButtonClassName}
+                  </Button>
+                  <Button
+                    variant="danger-outline"
                     onClick={() => actionHandler(blob.url, "destroy")}
                     disabled={inProgress}
                   >
                     Destroy
-                  </button>
+                  </Button>
                 </td>
               </tr>
             ))}

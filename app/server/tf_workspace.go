@@ -98,12 +98,16 @@ func selectWorkspace(c *gin.Context) {
 	var workspace Workspace
 
 	if err := c.BindJSON(&workspace); err != nil {
+		log.Println("not able to bind json in selectWorkspace")
+		c.Status(http.StatusInternalServerError)
 		return
 	}
 
 	_, err := exec.Command(os.ExpandEnv("$ROOT_DIR")+"/scripts/workspaces.sh", "select", workspace.Name).Output()
 	if err != nil {
 		log.Println("Not able select workspace : ", err)
+		c.Status(http.StatusInternalServerError)
+		return
 	}
 	c.Status(http.StatusCreated)
 }
@@ -112,12 +116,16 @@ func deleteWorkspace(c *gin.Context) {
 	var workspace Workspace
 
 	if err := c.BindJSON(&workspace); err != nil {
+		log.Println("Not able to bind JSON deleteWorkspace", err)
+		c.String(http.StatusInternalServerError, "Not able to bind JSON deleteWorkspace")
 		return
 	}
 
 	_, err := exec.Command(os.ExpandEnv("$ROOT_DIR")+"/scripts/workspaces.sh", "delete", workspace.Name).Output()
 	if err != nil {
-		log.Println("Not able select workspace : ", err)
+		log.Println("Not able delete workspace : ", err)
+		c.Status(http.StatusInternalServerError)
+		return
 	}
 	c.Status(http.StatusNoContent)
 }
@@ -126,12 +134,34 @@ func addWorkspace(c *gin.Context) {
 	var workspace Workspace
 
 	if err := c.BindJSON(&workspace); err != nil {
+		log.Println("Not able to bind JSON addWorksapce", err)
+		c.Status(http.StatusInternalServerError)
 		return
 	}
 
 	_, err := exec.Command(os.ExpandEnv("$ROOT_DIR")+"/scripts/workspaces.sh", "new", workspace.Name).Output()
 	if err != nil {
-		log.Println("Not able select workspace : ", err)
+		log.Println("Not able add workspace : ", err)
+		c.Status(http.StatusInternalServerError)
+		return
 	}
 	c.Status(http.StatusCreated)
+}
+
+func listResoureces(c *gin.Context) {
+
+	//tfInit()
+	setEnvironmentVariable("terraform_directory", "tf")
+	setEnvironmentVariable("root_directory", os.ExpandEnv("$ROOT_DIR"))
+	setEnvironmentVariable("resource_group_name", "repro-project")
+	setEnvironmentVariable("storage_account_name", getStorageAccountName())
+	setEnvironmentVariable("container_name", "tfstate")
+	setEnvironmentVariable("tf_state_file_name", "terraform.tfstate")
+
+	out, err := exec.Command("bash", "-c", "cd "+os.ExpandEnv("$ROOT_DIR")+"/tf; terraform state list").Output()
+	if err != nil {
+		log.Println("Not able to list resources in state : ", err)
+	}
+
+	c.String(http.StatusOK, string(out))
 }

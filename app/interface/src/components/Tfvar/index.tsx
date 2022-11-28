@@ -6,12 +6,7 @@ import {
 import { useSetLogs } from "../../hooks/useLogs";
 import { useTfvar } from "../../hooks/useTfvar";
 import { axiosInstance } from "../../utils/axios-interceptors";
-import {
-  dangerButtonClassName,
-  primaryButtonClassName,
-  secondaryButtonClassName,
-  successButtonClassName,
-} from "../Button";
+import Button from "../Button";
 import AutoScaling from "./AutoScaling";
 import AzureCNI from "./AzureCNI";
 import Calico from "./Calico";
@@ -62,41 +57,25 @@ export default function Tfvar() {
         <UserDefinedRouting />
       </div>
       <div className="mt-4 flex space-x-2">
-        <button
-          className={successButtonClassName}
-          onClick={planHandler}
-          disabled={inProgress}
-        >
+        <Button variant="success" onClick={planHandler} disabled={inProgress}>
           Plan
-        </button>
-        <button
-          className={primaryButtonClassName}
-          onClick={applyHandler}
-          disabled={inProgress}
-        >
+        </Button>
+        <Button variant="primary" onClick={applyHandler} disabled={inProgress}>
           Apply
-        </button>
-        <button
-          className={dangerButtonClassName}
-          onClick={destroyHandler}
-          disabled={inProgress}
-        >
+        </Button>
+        <Button variant="danger" onClick={destroyHandler} disabled={inProgress}>
           Destroy
-        </button>
-        <button
-          className={secondaryButtonClassName}
-          onClick={destroyHandler}
-          disabled={true}
-        >
+        </Button>
+        <Button variant="secondary" onClick={destroyHandler} disabled={true}>
           Create Lab
-        </button>
-        <button
-          className={secondaryButtonClassName}
+        </Button>
+        <Button
+          variant="secondary"
           onClick={() => setLogs({ isStreaming: false, logs: "" })}
           disabled={inProgress}
         >
           Clear Logs
-        </button>
+        </Button>
       </div>
     </>
   );

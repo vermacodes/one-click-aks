@@ -103,7 +103,7 @@ func setPreference(preference Preference, accountName string) bool {
 
 	_, err = exec.Command("bash", "-c", "echo '"+string(out)+"' | az storage blob upload --data @- -c tfstate -n preference.json --account-name "+accountName+" --overwrite").Output()
 	if err != nil {
-		log.Println("Error creating default preferences", err)
+		log.Println("Error creating preferences", err)
 		return false
 	}
 

@@ -60,6 +60,7 @@ func handleRequests() {
 	router.POST("/workspace", addWorkspace)
 	router.GET("/preference", getPreference)
 	router.PUT("/preference", putPreference)
+	router.GET("/resources", listResoureces)
 	router.Run(":8080")
 }
 

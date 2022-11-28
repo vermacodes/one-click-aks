@@ -21,13 +21,18 @@ function deleteWorkspace(workspace: TerraformWorkspace) {
   return axiosInstance.delete("workspace", { data: workspace });
 }
 
+function getResoureces(): Promise<AxiosResponse<string>> {
+  return axiosInstance.get("resources");
+}
+
 export function useTerraformWorkspace() {
+  const queryClient = useQueryClient();
   return useQuery("list-terraform-workspaces", terraformWorkspaceList, {
     select: (data): TerraformWorkspace[] => {
       return data.data;
     },
     onSuccess: (data) => {
-      console.log("Workspace :", data);
+      queryClient.invalidateQueries("get-resources");
     },
     staleTime: 6000000,
     cacheTime: 6000000,
@@ -39,14 +44,13 @@ export function useAddWorkspace() {
   return useMutation(addWorkspace, {
     onSuccess: () => {
       queryClient.invalidateQueries("list-terraform-workspaces");
+      queryClient.invalidateQueries("get-resources");
     },
     onMutate: async (newWorkspace: TerraformWorkspace) => {
       await queryClient.cancelQueries("list-terraform-workspaces");
       const prevWorkspaces: AxiosResponse<TerraformWorkspace[]> | undefined =
         queryClient.getQueryData("list-terraform-workspaces");
       if (prevWorkspaces !== undefined) {
-        console.log("Expected", [...prevWorkspaces.data, newWorkspace]);
-
         prevWorkspaces.data.forEach((workspace) => {
           workspace.selected = false;
         });
@@ -64,6 +68,7 @@ export function useAddWorkspace() {
         context?.prevWorkspaces
       );
       queryClient.invalidateQueries("list-terraform-workspaces");
+      queryClient.invalidateQueries("get-resources");
     },
   });
 }
@@ -73,14 +78,13 @@ export function useSelectWorkspace() {
   return useMutation(selectWorkspace, {
     onSuccess: () => {
       queryClient.invalidateQueries("list-terraform-workspaces");
+      queryClient.invalidateQueries("get-resources");
     },
     onMutate: async (selectedWorkspace: TerraformWorkspace) => {
       await queryClient.cancelQueries("list-terraform-workspaces");
       const prevWorkspaces: AxiosResponse<TerraformWorkspace[]> | undefined =
         queryClient.getQueryData("list-terraform-workspaces");
       if (prevWorkspaces !== undefined) {
-        console.log("Expected", [...prevWorkspaces.data, selectedWorkspace]);
-
         prevWorkspaces.data.forEach((workspace) => {
           if (workspace.name === selectedWorkspace.name) {
             workspace.selected = true;
@@ -102,6 +106,7 @@ export function useSelectWorkspace() {
         context?.prevWorkspaces
       );
       queryClient.invalidateQueries("list-terraform-workspaces");
+      queryClient.invalidateQueries("get-resources");
     },
   });
 }
@@ -111,6 +116,15 @@ export function useDeleteWorkspace() {
   return useMutation(deleteWorkspace, {
     onSuccess: () => {
       queryClient.invalidateQueries("list-terraform-workspaces");
+      queryClient.invalidateQueries("get-resources");
+    },
+  });
+}
+
+export function useGetResources() {
+  return useQuery("get-resources", getResoureces, {
+    select: (data): string => {
+      return data.data;
     },
   });
 }

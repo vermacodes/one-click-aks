@@ -41,6 +41,11 @@ function destroy() {
     terraform destroy -auto-approve
 }
 
+function list() {
+    log "Listing"
+    terraform state list
+}
+
 ##
 ## Script starts here.
 ##

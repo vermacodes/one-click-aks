@@ -1,15 +1,8 @@
 import { useState } from "react";
 import { MdClose } from "react-icons/md";
 import { SiTerraform } from "react-icons/si";
-import { primaryButtonClassName } from "../../components/Button";
 import TfInit from "../../components/TfInit";
 import TfWorkspace from "../../components/TfWorkspace";
-import {
-  useActionStatus,
-  useSetActionStatus,
-} from "../../hooks/useActionStatus";
-import { useSetLogs } from "../../hooks/useLogs";
-import { axiosInstance } from "../../utils/axios-interceptors";
 
 export default function Terraform() {
   const [showModal, setShowModal] = useState<boolean>(false);

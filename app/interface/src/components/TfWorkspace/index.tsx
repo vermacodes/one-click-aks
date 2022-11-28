@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FaChevronDown, FaTrash } from "react-icons/fa";
+import { useActionStatus } from "../../hooks/useActionStatus";
 import {
   useAddWorkspace,
   useDeleteWorkspace,
@@ -28,13 +29,14 @@ export default function TfWorkspace({
   const { mutate: selectWorkspace } = useSelectWorkspace();
   const { mutate: deleteWorkspace } = useDeleteWorkspace();
   const { mutate: addWorkspace } = useAddWorkspace();
+  const { data: actionStatus } = useActionStatus();
 
   function handleAddWorkspace(event: React.ChangeEvent<HTMLInputElement>) {
     setNewWorkSpaceName(event.target.value);
   }
 
   return (
-    <div>
+    <div className="space-y-2">
       <div className="flex items-center justify-between py-2">
         <h2 className="text-lg">Workspaces</h2>
         <div
@@ -43,11 +45,13 @@ export default function TfWorkspace({
         >
           <div className="relative inline-block text-left">
             <div
-              className={` ${
-                add && "hidden"
+              className={` ${add && "hidden"} ${
+                actionStatus && "text-slate-500"
               } flex w-96 items-center justify-between rounded border border-slate-500 p-2`}
               onClick={(e) => {
-                setWorkspaceMenu(!workspaceMenu);
+                if (!actionStatus) {
+                  setWorkspaceMenu(!workspaceMenu);
+                }
                 e.stopPropagation();
               }}
             >
@@ -132,24 +136,28 @@ export default function TfWorkspace({
               add
                 ? "border-green-700 bg-green-500 text-slate-100 hover:bg-green-700"
                 : "border-slate-500 hover:border-sky-500 hover:bg-sky-500"
-            }`}
+            } disabled:text-slate-500 disabled:hover:border-slate-500 disabled:hover:bg-inherit disabled:hover:text-slate-500`}
             onClick={() => {
               add && addWorkspace({ name: newWorkSpaceName, selected: true });
               setAdd(!add);
               setNewWorkSpaceName("");
             }}
+            disabled={actionStatus}
           >
             {add ? "Add" : "Add Workspace"}
           </button>
         </div>
       </div>
-      {/* <div className="flex justify-end">
-        <TfResources />
-      </div> */}
       <div className="flex justify-end">
-        <p className="w-2/4 text-right text-xs text-slate-700 dark:text-slate-300">
-          If you see no workspaces listed. Thats probably becaue terraform is
+        <TfResources />
+      </div>
+      <div className="flex flex-col">
+        <p className="text-xs text-slate-700 dark:text-slate-300">
+          - If you see no workspaces listed. Thats probably becaue terraform is
           not yet initialized. This will populate once terraform is initialized.
+        </p>
+        <p className="text-xs text-slate-700 dark:text-slate-300">
+          - Deleting a workspace also destroys all resources in the workspace.
         </p>
       </div>
     </div>

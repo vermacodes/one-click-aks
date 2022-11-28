@@ -1,4 +1,4 @@
-import { primaryButtonClassName } from "../../components/Button";
+import Button from "../Button";
 import {
   useActionStatus,
   useSetActionStatus,
@@ -23,18 +23,14 @@ export default function TfInit({}: Props) {
     <div>
       <div className="flex items-center justify-between py-2">
         <h2 className="text-lg">Initialize Terraform</h2>
-        <button
-          className={primaryButtonClassName}
-          onClick={initHandler}
-          disabled={inProgress}
-        >
+        <Button variant="primary" onClick={initHandler} disabled={inProgress}>
           Terraform Init
-        </button>
+        </Button>
       </div>
-      <div className="flex justify-end">
-        <p className="w-1/4 text-right text-xs text-slate-700 dark:text-slate-300">
-          Terraform is auto initialized after login. But if you see issues, use
-          this to initialize again.
+      <div className="flex flex-col">
+        <p className="text-xs text-slate-700 dark:text-slate-300">
+          - Terraform is auto initialized after login. But if you see issues,
+          use this to initialize again.
         </p>
         <p className="text-xs text-slate-700 dark:text-slate-300"></p>
       </div>
