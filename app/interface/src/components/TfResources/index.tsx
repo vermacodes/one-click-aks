@@ -6,6 +6,7 @@ import {
 } from "../../hooks/useActionStatus";
 import { useSetLogs } from "../../hooks/useLogs";
 import {
+  useAddWorkspace,
   useDeleteWorkspace,
   useGetResources,
   useSelectWorkspace,
@@ -22,10 +23,12 @@ export default function TfResources({}: Props) {
   const { data: resources, isFetching: fetchingResources } = useGetResources();
   const { mutate: setActionStatus } = useSetActionStatus();
   const { mutate: setLogs } = useSetLogs();
-  const { data: workspaces } = useTerraformWorkspace();
-  const { mutate: deleteWorkspace } = useDeleteWorkspace();
-  const { mutate: selectWorkspace } = useSelectWorkspace();
-  const queryClient = useQueryClient();
+  const { data: workspaces, isFetching: fetchingWorkspaces } =
+    useTerraformWorkspace();
+  const { mutate: deleteWorkspace, isLoading: deletingWorkspace } =
+    useDeleteWorkspace();
+  const { isLoading: selectingWorkspace } = useSelectWorkspace();
+  const { isLoading: addingWorkspace } = useAddWorkspace();
 
   function destroyHandler() {
     setActionStatus({ inProgress: true });
@@ -69,23 +72,20 @@ export default function TfResources({}: Props) {
     }
     workspaces?.forEach((workspace) => {
       if (workspace.name === "default" && workspace.selected === true) {
-        console.log("reached here");
         returned = true;
       }
     });
-    console.log("reached here too.");
     return returned;
   }
-
-  console.log(fetchingResources);
-
   return (
     <div className="w-1/2 justify-between space-y-4 rounded border border-slate-500 py-2">
-      <div className="scroll-y-auto scroll-x-hidden h-48 rounded px-2 scrollbar-thin">
-        {fetchingResources ? (
-          <pre className="text-slate-500">
-            Fetching resources. Please wait...
-          </pre>
+      <div className="h-48 rounded px-2 overflow-x-hidden scrollbar-thin scrollbar-track-slate-400 scrollbar-thumb-sky-500 scrollbar-track-rounded-full scrollbar-thumb-rounded-full">
+        {fetchingResources ||
+        selectingWorkspace ||
+        deletingWorkspace ||
+        addingWorkspace ||
+        fetchingWorkspaces ? (
+          <pre className="text-slate-500">Please wait...</pre>
         ) : (
           <>
             {actionStatus ? (

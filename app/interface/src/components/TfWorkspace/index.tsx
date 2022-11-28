@@ -7,6 +7,7 @@ import {
   useSelectWorkspace,
   useTerraformWorkspace,
 } from "../../hooks/useTfActions";
+import Button from "../Button";
 import TfResources from "../TfResources";
 
 type TfWorkspaceProps = {
@@ -24,16 +25,21 @@ export default function TfWorkspace({
     data: workspaces,
     refetch: refetchWorkspaces,
     isLoading: gettingWorkspaces,
+    isFetching: fetchingWorkspaces,
     isError: workspaceError,
   } = useTerraformWorkspace();
-  const { mutate: selectWorkspace } = useSelectWorkspace();
-  const { mutate: deleteWorkspace } = useDeleteWorkspace();
-  const { mutate: addWorkspace } = useAddWorkspace();
+  const { mutate: selectWorkspace, isLoading: selectingWorkspace } =
+    useSelectWorkspace();
+  const { isLoading: deletingWorkspace } = useDeleteWorkspace();
+  const { mutate: addWorkspace, isLoading: addingWorkspace } =
+    useAddWorkspace();
   const { data: actionStatus } = useActionStatus();
 
   function handleAddWorkspace(event: React.ChangeEvent<HTMLInputElement>) {
     setNewWorkSpaceName(event.target.value);
   }
+
+  console.log(selectingWorkspace);
 
   return (
     <div className="space-y-2">
@@ -60,8 +66,12 @@ export default function TfWorkspace({
                 <p>default</p>
               ) : (
                 <>
-                  {gettingWorkspaces ? (
-                    <p>Loading...</p>
+                  {gettingWorkspaces ||
+                  selectingWorkspace ||
+                  deletingWorkspace ||
+                  addingWorkspace ||
+                  fetchingWorkspaces ? (
+                    <p>Please wait...</p>
                   ) : (
                     <>
                       {workspaces?.map(
@@ -104,48 +114,45 @@ export default function TfWorkspace({
                       >
                         {workspace.name}
                       </div>
-                      {workspace.name !== "default" && (
-                        <button
-                          className="items-center rounded py-2 px-4 hover:bg-red-500 hover:text-slate-100 disabled:hover:bg-slate-500"
-                          onClick={() => deleteWorkspace(workspace)}
-                          disabled={workspace.name === "default"}
-                        >
-                          <FaTrash />
-                        </button>
-                      )}
                     </div>
                   )
               )}
             </div>
           </div>
-          {add && (
-            <button
-              className={`rounded border border-red-700 py-2 px-4 hover:bg-red-700 hover:text-slate-100 ${
-                add && "bg-red-500 text-slate-100"
-              }`}
+          {add ? (
+            <>
+              <Button
+                variant="danger"
+                onClick={() => {
+                  setAdd(!add);
+                  setNewWorkSpaceName("");
+                }}
+              >
+                Nah
+              </Button>
+              <Button
+                variant="success"
+                onClick={() => {
+                  addWorkspace({ name: newWorkSpaceName, selected: true });
+                  setAdd(!add);
+                  setNewWorkSpaceName("");
+                }}
+              >
+                Add
+              </Button>
+            </>
+          ) : (
+            <Button
+              variant="primary-outline"
+              disabled={actionStatus}
               onClick={() => {
                 setAdd(!add);
                 setNewWorkSpaceName("");
               }}
             >
-              Nah.
-            </button>
+              Add Workspace
+            </Button>
           )}
-          <button
-            className={`rounded border py-2 px-4  hover:text-slate-100 ${
-              add
-                ? "border-green-700 bg-green-500 text-slate-100 hover:bg-green-700"
-                : "border-slate-500 hover:border-sky-500 hover:bg-sky-500"
-            } disabled:text-slate-500 disabled:hover:border-slate-500 disabled:hover:bg-inherit disabled:hover:text-slate-500`}
-            onClick={() => {
-              add && addWorkspace({ name: newWorkSpaceName, selected: true });
-              setAdd(!add);
-              setNewWorkSpaceName("");
-            }}
-            disabled={actionStatus}
-          >
-            {add ? "Add" : "Add Workspace"}
-          </button>
         </div>
       </div>
       <div className="flex justify-end">
