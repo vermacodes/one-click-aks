@@ -1,104 +1,76 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
-import Terminal from "../../components/Terminal";
-import {
-  useActionStatus,
-  useSetActionStatus,
-} from "../../hooks/useActionStatus";
+import TemplateCard from "../../components/TemplateCard";
+import { TfvarConfigType } from "../../dataStructures";
+import { useActionStatus } from "../../hooks/useActionStatus";
 import { useSharedTemplates } from "../../hooks/useBlobs";
 import { useSetLogs } from "../../hooks/useLogs";
-import { axiosInstance } from "../../utils/axios-interceptors";
-import ServerError from "../ServerError";
+import { useSetTfvar } from "../../hooks/useTfvar";
 
 export default function Templates() {
+  const { data: blobs, isLoading } = useSharedTemplates();
+
+  const { mutate: setTfvar } = useSetTfvar();
   const { data: inProgress } = useActionStatus();
-  const { mutate: setActionStatus } = useSetActionStatus();
   const { mutate: setLogs } = useSetLogs();
-  const { data: blobs, isLoading, isError } = useSharedTemplates();
+
   const navigate = useNavigate();
 
-  function actionHandler(url: string, action: string) {
-    axios.get(url).then((response) => {
-      setActionStatus({ inProgress: true });
-      setLogs({ isStreaming: true, logs: "" });
-      axiosInstance.post(`${action}`, response.data);
-    });
-  }
+  var tfvar: TfvarConfigType;
 
-  function viewHandler(url: string) {
-    navigate("/builder");
-    axios.get(url).then((response) => {
-      console.log(response.data);
-      setLogs({
-        isStreaming: false,
-        logs: JSON.stringify(response.data, null, 4),
-      });
-    });
+  function hanldeOnClick(url: string) {
+    if (!inProgress) {
+      axios
+        .get(url, {
+          headers: {
+            "Cache-Control": "no-cache",
+          },
+        })
+        .then((response: AxiosResponse<TfvarConfigType>) => {
+          console.log(response.data);
+          setLogs({
+            isStreaming: false,
+            logs: JSON.stringify(response.data, null, 4),
+          });
+          tfvar = { ...response.data, firewalls: [...response.data.firewalls] };
+          console.log(tfvar);
+          console.log(url);
+          setTfvar(response.data);
+          navigate("/builder");
+        });
+    }
   }
 
   if (isLoading) {
-    return <div className="my-3 mx-20 mb-2">Loading...</div>;
-  }
-
-  if (isError) {
-    return <ServerError />;
+    return (
+      <div className="my-3 mx-20 mb-2 flex space-x-4">
+        <p className="text-4xl">Loading...</p>
+      </div>
+    );
   }
 
   return (
-    <div className="my-3 mx-20 mb-2">
-      {blobs !== undefined && (
-        <table className="table-flex mb-4 w-full rounded border border-slate-500">
-          <thead>
-            <tr>
-              <th className="border border-slate-500 py-1 px-4">
-                Template Name
-              </th>
-              <th className="border border-slate-500 py-1 px-4">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {blobs.map((blob: any) => (
-              <tr key={blob.name}>
-                <td className="border border-slate-500 py-1 px-4 ">
-                  {blob.name}
-                </td>
-                <td className="space-x-2 border border-slate-500 py-1 px-4 text-center">
+    <div className="my-3 mx-20 mb-2 flex space-x-4">
+      <div className="grid w-screen grid-cols-3 gap-4">
+        {blobs !== undefined &&
+          blobs.map((blob: any) => (
+            <TemplateCard key={blob.name}>
+              <div className="flex h-full flex-col justify-between space-y-4">
+                <p className="break-all">{blob.name}</p>
+
+                <div className="flex justify-end space-x-4">
                   <Button
-                    variant="secondary-outline"
-                    onClick={() => viewHandler(blob.url)}
-                    disabled={inProgress}
+                    variant="primary"
+                    onClick={() => hanldeOnClick(blob.url)}
                   >
-                    View
+                    Load to Builder
                   </Button>
-                  <Button
-                    variant="success-outline"
-                    onClick={() => actionHandler(blob.url, "plan")}
-                    disabled={inProgress}
-                  >
-                    Plan
-                  </Button>
-                  <Button
-                    variant="primary-outline"
-                    onClick={() => actionHandler(blob.url, "apply")}
-                    disabled={inProgress}
-                  >
-                    Apply
-                  </Button>
-                  <Button
-                    variant="danger-outline"
-                    onClick={() => actionHandler(blob.url, "destroy")}
-                    disabled={inProgress}
-                  >
-                    Destroy
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-      <Terminal />
+                </div>
+              </div>
+            </TemplateCard>
+          ))}
+      </div>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import Button from "../../components/Button";
+import TemplateCard from "../../components/TemplateCard";
 import Terminal from "../../components/Terminal";
 import { BlobType } from "../../dataStructures";
 import {
@@ -51,25 +52,14 @@ export default function Learning() {
 
   return (
     <div className="my-3 mx-20 mb-2">
-      {blobs && (
-        <table className="table-flex mb-4 w-full border-collapse border border-slate-500">
-          <thead>
-            <tr>
-              <th className="border-collapse border border-slate-500 py-1 px-4">
-                Template Name
-              </th>
-              <th className="border-collapse border border-slate-500 py-1 px-4">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {blobs.map((blob: any) => (
-              <tr key={blob.name}>
-                <td className="border-collapse border border-slate-500 py-1 px-4 ">
-                  {blob.name}
-                </td>
-                <td className="border-collapse space-x-2 border border-slate-500 py-1 px-4 text-center">
+      <div className="mb-2">
+        {blobs &&
+          blobs.map((blob: any) => (
+            <TemplateCard key={blob.name}>
+              <div className="flex h-full flex-col justify-between space-y-4">
+                <p className="break-all">{blob.name}</p>
+
+                <div className="flex justify-end space-x-4">
                   <Button
                     variant="primary"
                     onClick={() => deployHandler(blob)}
@@ -98,12 +88,11 @@ export default function Learning() {
                   >
                     Destroy
                   </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+                </div>
+              </div>
+            </TemplateCard>
+          ))}
+      </div>
       <Terminal />
     </div>
   );

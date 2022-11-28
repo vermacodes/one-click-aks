@@ -1,5 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import { useNavigate } from "react-router-dom";
+import Button from "../../components/Button";
+import TemplateCard from "../../components/TemplateCard";
 import { TfvarConfigType } from "../../dataStructures";
 import { useActionStatus } from "../../hooks/useActionStatus";
 import { useSharedTemplates } from "../../hooks/useBlobs";
@@ -50,16 +52,23 @@ export default function MockCases() {
 
   return (
     <div className="my-3 mx-20 mb-2 flex space-x-4">
-      <div className="grid w-screen grid-cols-4 gap-4">
+      <div className="grid w-screen grid-cols-3 gap-4">
         {blobs !== undefined &&
           blobs.map((blob: any) => (
-            <div
-              key={blob.name}
-              className="h-44 rounded bg-slate-200 p-4 shadow shadow-slate-300 hover:border hover:border-slate-500 hover:shadow-lg dark:bg-slate-800 dark:shadow-slate-700"
-              onClick={() => hanldeOnClick(blob.url)}
-            >
-              <p className="break-all">{blob.name}</p>
-            </div>
+            <TemplateCard key={blob.name}>
+              <div className="flex h-full flex-col justify-between space-y-4">
+                <p className="break-all">{blob.name}</p>
+
+                <div className="flex justify-end space-x-4">
+                  <Button
+                    variant="primary"
+                    onClick={() => hanldeOnClick(blob.url)}
+                  >
+                    Load to Builder
+                  </Button>
+                </div>
+              </div>
+            </TemplateCard>
           ))}
       </div>
     </div>
