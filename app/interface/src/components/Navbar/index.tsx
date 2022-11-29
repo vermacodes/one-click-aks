@@ -48,7 +48,7 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
           </h1>
         </Link>
         <div className="flex divide-x divide-slate-300 align-middle  dark:divide-slate-700">
-          <ul className="flex space-x-3 px-5 align-middle">
+          <ul className="flex gap-x-3 px-5 align-middle">
             <li>
               <Link to={"/builder"}>
                 <button className="border-b-2 border-transparent py-1 hover:border-b-2 hover:border-b-sky-400 hover:text-sky-400 ">
@@ -85,7 +85,7 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
               </Link>
             </li>
           </ul>
-          <ul className="flex space-x-4 pl-5">
+          <ul className="flex gap-x-4 pl-5">
             <li>
               <Terraform />
             </li>

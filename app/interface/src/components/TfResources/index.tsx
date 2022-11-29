@@ -78,7 +78,7 @@ export default function TfResources({}: Props) {
     return returned;
   }
   return (
-    <div className="roundedd w-1/2 justify-between space-y-4 border border-slate-500 py-2">
+    <div className="roundedd w-1/2 justify-between gap-y-4 border border-slate-500 py-2">
       <div className="roundedd scrollbar-track-roundedd-full scrollbar-thumb-roundedd-full h-48 px-2 overflow-x-hidden scrollbar-thin scrollbar-track-slate-400 scrollbar-thumb-sky-500">
         {fetchingResources ||
         selectingWorkspace ||
@@ -102,7 +102,7 @@ export default function TfResources({}: Props) {
           </>
         )}
       </div>
-      <div className="flex w-full justify-between space-x-4 px-2">
+      <div className="flex w-full justify-between gap-x-4 px-2">
         <Button
           variant="danger-outline"
           //disabled

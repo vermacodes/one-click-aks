@@ -42,11 +42,11 @@ export default function TfWorkspace({
   console.log(selectingWorkspace);
 
   return (
-    <div className="space-y-2">
+    <div className="gap-y-2">
       <div className="flex items-center justify-between py-2">
         <h2 className="text-lg">Workspaces</h2>
         <div
-          className="flex w-1/2 justify-between space-x-4"
+          className="flex w-1/2 justify-between gap-x-4"
           onDoubleClick={() => refetchWorkspaces}
         >
           <div className="relative inline-block text-left">
@@ -102,12 +102,12 @@ export default function TfWorkspace({
             <div
               className={`absolute right-0 mt-2 h-56 w-96 origin-top-right overflow-y-auto scrollbar overflow-x-hidden ${
                 !workspaceMenu && "hidden"
-              } roundedd items-center space-y-2 border border-slate-500 bg-slate-100 p-2 dark:bg-slate-800`}
+              } roundedd items-center gap-y-2 border border-slate-500 bg-slate-100 p-2 dark:bg-slate-800`}
             >
               {workspaces?.map(
                 (workspace) =>
                   !workspace.selected && (
-                    <div className="flex justify-between space-x-1">
+                    <div className="flex justify-between gap-x-1">
                       <div
                         className="roundedd w-full items-center p-2 hover:bg-sky-500 hover:text-slate-100 "
                         onClick={() => selectWorkspace(workspace)}

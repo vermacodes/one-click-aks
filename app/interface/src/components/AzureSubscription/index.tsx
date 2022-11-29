@@ -20,7 +20,7 @@ export default function AzureSubscription({
 
   return (
     <div>
-      <div className="w-100 flex items-center justify-between space-x-2 space-x-reverse py-2">
+      <div className="w-100 gap-x-reverse flex items-center justify-between gap-x-2 py-2">
         <h2 className="text-lg">Azure Subscription</h2>
         <div className="relative inline-block text-left">
           <div
@@ -46,7 +46,7 @@ export default function AzureSubscription({
           <div
             className={`absolute right-0 z-10 mt-2 h-56 w-96 origin-top-right overflow-y-auto scrollbar overflow-x-hidden ${
               !subscriptionMenu && "hidden"
-            } roundedd items-center space-y-2 border bg-slate-100 p-2 dark:bg-slate-800`}
+            } roundedd items-center gap-y-2 border bg-slate-100 p-2 dark:bg-slate-800`}
           >
             {accountsLoading ? (
               <p>Loading...</p>

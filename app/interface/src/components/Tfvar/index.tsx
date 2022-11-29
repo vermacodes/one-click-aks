@@ -5,6 +5,7 @@ import {
 } from "../../hooks/useActionStatus";
 import { useSetLogs } from "../../hooks/useLogs";
 import { useTfvar } from "../../hooks/useTfvar";
+import LabBuilder from "../../modals/LabBuilder";
 import { axiosInstance } from "../../utils/axios-interceptors";
 import Button from "../Button";
 import AutoScaling from "./AutoScaling";
@@ -47,7 +48,7 @@ export default function Tfvar() {
 
   return (
     <>
-      <div className="flex space-x-2">
+      <div className="flex gap-x-2">
         <CustomVnet />
         <PrivateCluster />
         <JumpServer />
@@ -56,7 +57,7 @@ export default function Tfvar() {
         <AutoScaling />
         <UserDefinedRouting />
       </div>
-      <div className="mt-4 flex space-x-2">
+      <div className="mt-4 flex gap-x-2">
         <Button variant="success" onClick={planHandler} disabled={inProgress}>
           Plan
         </Button>
@@ -66,9 +67,10 @@ export default function Tfvar() {
         <Button variant="danger" onClick={destroyHandler} disabled={inProgress}>
           Destroy
         </Button>
-        <Button variant="secondary" onClick={destroyHandler} disabled={true}>
+        {/* <Button variant="secondary" onClick={destroyHandler} disabled={true}>
           Create Lab
-        </Button>
+        </Button> */}
+        <LabBuilder />
         <Button
           variant="secondary"
           onClick={() => setLogs({ isStreaming: false, logs: "" })}

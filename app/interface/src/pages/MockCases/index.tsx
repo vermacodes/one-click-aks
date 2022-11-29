@@ -44,22 +44,22 @@ export default function MockCases() {
 
   if (isLoading) {
     return (
-      <div className="my-3 mx-20 mb-2 flex space-x-4">
+      <div className="my-3 mx-20 mb-2 flex gap-x-4">
         <p className="text-4xl">Loading...</p>
       </div>
     );
   }
 
   return (
-    <div className="my-3 mx-20 mb-2 flex space-x-4">
+    <div className="my-3 mx-20 mb-2 flex gap-x-4">
       <div className="grid w-screen grid-cols-3 gap-4">
         {blobs !== undefined &&
           blobs.map((blob: any) => (
             <TemplateCard key={blob.name}>
-              <div className="flex h-full flex-col justify-between space-y-4">
+              <div className="flex h-full flex-col justify-between gap-y-4">
                 <p className="break-all">{blob.name}</p>
 
-                <div className="flex justify-end space-x-4">
+                <div className="flex justify-end gap-x-4">
                   <Button
                     variant="primary"
                     onClick={() => hanldeOnClick(blob.url)}

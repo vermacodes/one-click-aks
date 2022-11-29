@@ -156,3 +156,18 @@ export type TerraformWorkspace = {
 export type Preference = {
   azureRegion: string;
 };
+
+export type Lab = {
+  name: string;
+  description: string;
+  tags: string[];
+  template: TfvarConfigType | undefined;
+  breakScript: string;
+  validateScript: string;
+  message: string;
+  type: string;
+  createdby: string;
+  createdon: string;
+  updatedby: string;
+  updatedon: string;
+};

@@ -20,7 +20,7 @@ export default function StorageAccount({}: Props) {
 
   return (
     <div>
-      <div className="w-100 flex items-center justify-between space-x-2 space-x-reverse py-2">
+      <div className="w-100 gap-x-reverse flex items-center justify-between gap-x-2 py-2">
         <h2 className="text-lg">Storage Account</h2>
         {storageAccount && storageAccount.storageAccount.name !== "" ? (
           <p>{storageAccount.storageAccount.name}</p>

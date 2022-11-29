@@ -56,10 +56,10 @@ export default function Learning() {
         {blobs &&
           blobs.map((blob: any) => (
             <TemplateCard key={blob.name}>
-              <div className="flex h-full flex-col justify-between space-y-4">
+              <div className="flex h-full flex-col justify-between gap-y-4">
                 <p className="break-all">{blob.name}</p>
 
-                <div className="flex justify-end space-x-4">
+                <div className="flex justify-end gap-x-4">
                   <Button
                     variant="primary"
                     onClick={() => deployHandler(blob)}

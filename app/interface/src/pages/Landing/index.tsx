@@ -13,18 +13,18 @@ export default function Landing() {
     }, 3000);
   }
   return (
-    <div className="space-y-10 px-20">
+    <div className="gap-y-10 px-20">
       <h1 className="py-10 text-8xl font-bold">Head start your lab repros.</h1>
-      <p className="text-3xl text-slate-500">
+      <p className="pb-20 text-3xl text-slate-500">
         All you need to do is install docker and run our server locally on your
         machine or run it in cloud and configure endpoint.
       </p>
-      <div className="flex space-x-10">
+      <div className="flex gap-x-10">
         <button className="roundedd-full border-2 border-transparent bg-sky-500 py-2 px-10 text-2xl text-white hover:border-2 hover:border-sky-500 hover:bg-inherit hover:text-sky-500">
           Learn More
         </button>
         <div
-          className={`roundedd-xl flex  justify-between space-x-5 border-2 bg-slate-300 py-2 px-6 dark:bg-slate-700 ${
+          className={`roundedd-xl flex  justify-between gap-x-5 border-2 bg-slate-300 py-2 px-6 dark:bg-slate-700 ${
             copy
               ? "border-green-500 bg-green-200 dark:bg-green-700"
               : "border-slate-700 dark:border-slate-200"

@@ -29,7 +29,7 @@ export default function AzureRegion({ regionEdit, setRegionEdit }: Props) {
   }
 
   return (
-    <div className="w-100 flex items-center justify-between space-x-2 space-x-reverse py-2">
+    <div className="w-100 gap-x-reverse flex items-center justify-between gap-x-2 py-2">
       <h2 className="text-lg">Azure Region</h2>
       <div
         className={`${
@@ -52,7 +52,7 @@ export default function AzureRegion({ regionEdit, setRegionEdit }: Props) {
       <div
         className={`${
           !regionEdit && "hidden"
-        } roundedd flex w-96 items-center justify-between space-x-2 border border-slate-500`}
+        } roundedd flex w-96 items-center justify-between gap-x-2 border border-slate-500`}
         onClick={(e) => e.stopPropagation()}
       >
         <input
