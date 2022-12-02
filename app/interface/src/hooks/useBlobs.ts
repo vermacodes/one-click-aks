@@ -1,30 +1,95 @@
-import { useQuery } from "react-query";
+import { AxiosResponse } from "axios";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { Lab } from "../dataStructures";
 import { axiosInstance } from "../utils/axios-interceptors";
 
-function getSharedTemplates() {
-  return axiosInstance("sharedtemplates");
+function getSharedMockCases(): Promise<AxiosResponse<Lab[]>> {
+  return axiosInstance("labs/mockcases");
+}
+
+export function useSharedMockCases() {
+  return useQuery("shared-mockcases", getSharedMockCases, {
+    select: (data): Lab[] => {
+      return data.data;
+    },
+    cacheTime: Infinity,
+    staleTime: Infinity,
+  });
+}
+
+function getTempalates(): Promise<AxiosResponse<Lab[]>> {
+  return axiosInstance("labs/mytemplates");
+}
+
+export function useTemplates() {
+  return useQuery("mytemplates", getTempalates, {
+    select: (data): Lab[] => {
+      return data.data;
+    },
+    cacheTime: Infinity,
+    staleTime: Infinity,
+  });
+}
+
+function getSharedTemplates(): Promise<AxiosResponse<Lab[]>> {
+  return axiosInstance("labs/sharedtemplates");
 }
 
 export function useSharedTemplates() {
   return useQuery("shared-templates", getSharedTemplates, {
-    select: (data) => {
-      return data.data.blob;
+    select: (data): Lab[] => {
+      return data.data;
     },
-    cacheTime: 10000,
-    staleTime: 10000,
+    cacheTime: Infinity,
+    staleTime: Infinity,
   });
 }
 
-function getSharedLabs() {
-  return axiosInstance.get(`listlabs`);
+function getSharedLabs(): Promise<AxiosResponse<Lab[]>> {
+  return axiosInstance.get("labs/labs");
 }
 
 export function useSharedLabs() {
   return useQuery("shared-labs", getSharedLabs, {
-    select: (data) => {
-      return data.data.blob;
+    select: (data): Lab[] => {
+      return data.data;
     },
-    cacheTime: 10000,
-    staleTime: 10000,
+    cacheTime: Infinity,
+    staleTime: Infinity,
+  });
+}
+
+function createLab(lab: Lab): Promise<AxiosResponse<Lab[]>> {
+  return axiosInstance.post("createlab", lab);
+}
+
+// TODO: Optimistic updates
+// ?: Will it make sense to seperate create and update functions? Right now server is handling updates.
+export function useCreateLab() {
+  const queryClient = useQueryClient();
+  return useMutation(createLab, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("mytemplates");
+      queryClient.invalidateQueries("shared-templates");
+      queryClient.invalidateQueries("shared-mockcases");
+      queryClient.invalidateQueries("shared-labs");
+    },
+  });
+}
+
+function deleteLab(lab: Lab) {
+  return axiosInstance.delete("labs", { data: lab });
+}
+
+// TODO: Optimistic updates
+export function useDeleteLab() {
+  const queryClient = useQueryClient();
+  return useMutation(deleteLab, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("mytemplates");
+      queryClient.invalidateQueries("shared-templates");
+      queryClient.invalidateQueries("shared-mockcases");
+      queryClient.invalidateQueries("shared-labs");
+    },
   });
 }

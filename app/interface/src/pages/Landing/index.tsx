@@ -20,11 +20,11 @@ export default function Landing() {
         machine or run it in cloud and configure endpoint.
       </p>
       <div className="flex gap-x-10">
-        <button className="roundedd-full border-2 border-transparent bg-sky-500 py-2 px-10 text-2xl text-white hover:border-2 hover:border-sky-500 hover:bg-inherit hover:text-sky-500">
+        <button className="rounded-full border-2 border-transparent bg-sky-500 py-2 px-10 text-2xl text-white hover:border-2 hover:border-sky-500 hover:bg-inherit hover:text-sky-500">
           Learn More
         </button>
         <div
-          className={`roundedd-xl flex  justify-between gap-x-5 border-2 bg-slate-300 py-2 px-6 dark:bg-slate-700 ${
+          className={`flex justify-between  gap-x-5 rounded-xl border-2 bg-slate-300 py-2 px-6 dark:bg-slate-700 ${
             copy
               ? "border-green-500 bg-green-200 dark:bg-green-700"
               : "border-slate-700 dark:border-slate-200"

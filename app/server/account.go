@@ -68,7 +68,25 @@ func accountLogin(c *gin.Context) {
 	updateActionStatus(false)
 }
 
-func accountShow(c *gin.Context) {
+func accountShow() (Account, error) {
+	account := Account{}
+
+	out, err := exec.Command("bash", "-c", "az account show -o json").Output()
+	if err != nil {
+		log.Println("Not able to get account list : ", err)
+		return account, err
+	}
+
+	err = json.Unmarshal(out, &account)
+	if err != nil {
+		log.Println("Error Unmarshelling : ", err)
+		return account, err
+	}
+
+	return account, nil
+}
+
+func accountShowApi(c *gin.Context) {
 	var account Account
 
 	out, err := exec.Command("bash", "-c", "az account show -o json").Output()

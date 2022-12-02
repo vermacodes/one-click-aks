@@ -17,12 +17,12 @@ export default function Checkbox({
     <div className="flex items-center gap-x-2">
       <label
         htmlFor={id}
-        className={`flex h-4 w-8 rounded-full transition-all duration-100 hover:cursor-pointer ${
+        className={`flex h-4 w-8 items-center rounded-full transition-all duration-100 hover:cursor-pointer ${
           checked ? "bg-sky-500" : "bg-slate-500"
         } ${
           disabled && "bg-slate-300 hover:cursor-not-allowed dark:bg-slate-800"
         }
-             `}
+      `}
       >
         <input
           type="checkbox"

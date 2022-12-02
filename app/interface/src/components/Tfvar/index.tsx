@@ -67,10 +67,7 @@ export default function Tfvar() {
         <Button variant="danger" onClick={destroyHandler} disabled={inProgress}>
           Destroy
         </Button>
-        {/* <Button variant="secondary" onClick={destroyHandler} disabled={true}>
-          Create Lab
-        </Button> */}
-        <LabBuilder />
+        <LabBuilder variant="secondary">Save</LabBuilder>
         <Button
           variant="secondary"
           onClick={() => setLogs({ isStreaming: false, logs: "" })}

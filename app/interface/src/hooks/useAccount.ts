@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { AccountType } from "../dataStructures";
+import { AccountType, Privildge } from "../dataStructures";
 import { axiosInstance } from "../utils/axios-interceptors";
 
 function getLoginStatus() {
@@ -72,6 +72,30 @@ export function useSetAccount() {
       queryClient.invalidateQueries("get-preference");
       queryClient.invalidateQueries("get-tfvar");
       queryClient.invalidateQueries("get-logs");
+    },
+  });
+}
+
+function getCurrentAccount(): Promise<AxiosResponse<AccountType>> {
+  return axiosInstance.get("accountshow");
+}
+
+export function useGetCurrentAccount() {
+  return useQuery("current-account", getCurrentAccount, {
+    select: (data): AccountType => {
+      return data.data;
+    },
+  });
+}
+
+function getPrivilege(): Promise<AxiosResponse<Privildge>> {
+  return axiosInstance.get(`privilege`);
+}
+
+export function useGetPriviledge() {
+  return useQuery("privilege", getPrivilege, {
+    select: (data): Privildge => {
+      return data.data;
     },
   });
 }

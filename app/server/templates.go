@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"encoding/xml"
 	"io"
 	"log"
@@ -46,5 +47,26 @@ func listSharedTemplates(c *gin.Context) {
 		c.Status(http.StatusInternalServerError)
 		return
 	}
-	c.IndentedJSON(http.StatusOK, blobs.Blobs)
+
+	_labs := []LabType{}
+
+	for _, element := range blobs.Blobs.Blob {
+		resp, err := http.Get(element.Url)
+		if err != nil {
+			log.Println("Error : ", err)
+			continue
+		}
+
+		defer resp.Body.Close()
+
+		bodyBytes, _ := io.ReadAll(resp.Body)
+
+		// Convert response body to Todo struct
+		var lab LabType
+		json.Unmarshal(bodyBytes, &lab)
+
+		_labs = append(_labs, lab)
+	}
+
+	c.IndentedJSON(http.StatusOK, _labs)
 }

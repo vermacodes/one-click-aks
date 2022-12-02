@@ -24,7 +24,7 @@ export default function AzureSubscription({
         <h2 className="text-lg">Azure Subscription</h2>
         <div className="relative inline-block text-left">
           <div
-            className="roundedd flex w-96 items-center justify-between border border-slate-500 p-2"
+            className="flex w-96 items-center justify-between rounded border border-slate-500 p-2"
             onClick={(e) => {
               setSubscriptionMenu(!subscriptionMenu);
               e.stopPropagation();
@@ -44,9 +44,9 @@ export default function AzureSubscription({
             </p>
           </div>
           <div
-            className={`absolute right-0 z-10 mt-2 h-56 w-96 origin-top-right overflow-y-auto scrollbar overflow-x-hidden ${
+            className={`absolute right-0 z-10 mt-2 h-56 w-96 origin-top-right overflow-y-auto overflow-x-hidden scrollbar ${
               !subscriptionMenu && "hidden"
-            } roundedd items-center gap-y-2 border bg-slate-100 p-2 dark:bg-slate-800`}
+            } items-center gap-y-2 rounded border bg-slate-100 p-2 dark:bg-slate-800`}
           >
             {accountsLoading ? (
               <p>Loading...</p>
@@ -56,7 +56,7 @@ export default function AzureSubscription({
                   <>
                     {account.isDefault !== true && (
                       <div
-                        className="roundedd items-center p-2 hover:bg-sky-500 hover:text-slate-100"
+                        className="items-center rounded p-2 hover:bg-sky-500 hover:text-slate-100"
                         onClick={() => setAccount(account)}
                       >
                         {account.name}

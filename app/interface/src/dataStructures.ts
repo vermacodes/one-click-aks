@@ -158,6 +158,7 @@ export type Preference = {
 };
 
 export type Lab = {
+  id: string;
   name: string;
   description: string;
   tags: string[];
@@ -170,4 +171,18 @@ export type Lab = {
   createdon: string;
   updatedby: string;
   updatedon: string;
+};
+
+export type Assignment = {
+  id: string;
+  user: string;
+  labId: string;
+  labName: string;
+  status: string;
+};
+
+export type Privildge = {
+  user: string;
+  isAdmin: boolean;
+  isMentor: boolean;
 };

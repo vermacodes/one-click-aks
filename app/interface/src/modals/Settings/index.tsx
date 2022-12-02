@@ -2,6 +2,8 @@ import { useState } from "react";
 import { MdClose } from "react-icons/md";
 import AzureRegion from "../../components/AzureRegion";
 import AzureSubscription from "../../components/AzureSubscription";
+import EndLogStream from "../../components/EndLogStream";
+import ResetActionStatus from "../../components/ResetActionStatus";
 import StorageAccount from "../../components/StorageAccount";
 import TfInit from "../../components/TfInit";
 import TfWorkspace from "../../components/TfWorkspace";
@@ -30,7 +32,7 @@ export default function Settings({ showModal, setShowModal }: SettingsProps) {
       }}
     >
       <div
-        className=" roundedd my-20 w-3/4 gap-y-2 divide-y divide-slate-300 overflow-auto bg-slate-100 p-5 scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-sky-500 dark:divide-slate-700 dark:bg-slate-900"
+        className=" my-20 w-3/4 gap-y-2 divide-y divide-slate-300 overflow-auto rounded bg-slate-100 p-5 scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-sky-500 dark:divide-slate-700 dark:bg-slate-900"
         onClick={(e) => {
           e.stopPropagation();
           setSubscriptionMenu(false);
@@ -47,7 +49,10 @@ export default function Settings({ showModal, setShowModal }: SettingsProps) {
             <MdClose className="text-3xl" />
           </button>
         </div>
-
+        <div className="flex">
+          <ResetActionStatus />
+          <EndLogStream />
+        </div>
         <StorageAccount />
         <AzureSubscription
           subscriptionMenu={subscriptionMenu}

@@ -1,45 +1,54 @@
-import axios, { AxiosResponse } from "axios";
+import { useState } from "react";
+import { FaArrowRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
 import TemplateCard from "../../components/TemplateCard";
-import { TfvarConfigType } from "../../dataStructures";
-import { useActionStatus } from "../../hooks/useActionStatus";
-import { useSharedTemplates } from "../../hooks/useBlobs";
+import Terminal from "../../components/Terminal";
+import { Lab, TfvarConfigType } from "../../dataStructures";
+import {
+  useActionStatus,
+  useSetActionStatus,
+} from "../../hooks/useActionStatus";
+import { useDeleteLab, useSharedMockCases } from "../../hooks/useBlobs";
 import { useSetLogs } from "../../hooks/useLogs";
 import { useSetTfvar } from "../../hooks/useTfvar";
+import LabBuilder from "../../modals/LabBuilder";
+import { axiosInstance } from "../../utils/axios-interceptors";
 
 export default function MockCases() {
-  const { data: blobs, isLoading, isError } = useSharedTemplates();
+  const [more, setMore] = useState<string>("");
+  const { data: labs, isLoading, isError } = useSharedMockCases();
 
   const { mutate: setTfvar } = useSetTfvar();
   const { data: inProgress } = useActionStatus();
+  const { mutate: setActionStatus } = useSetActionStatus();
   const { mutate: setLogs } = useSetLogs();
+  const { mutate: deleteLab } = useDeleteLab();
 
   const navigate = useNavigate();
 
   var tfvar: TfvarConfigType;
 
-  function hanldeOnClick(url: string) {
-    if (!inProgress) {
-      axios
-        .get(url, {
-          headers: {
-            "Cache-Control": "no-cache",
-          },
-        })
-        .then((response: AxiosResponse<TfvarConfigType>) => {
-          console.log(response.data);
-          setLogs({
-            isStreaming: false,
-            logs: JSON.stringify(response.data, null, 4),
-          });
-          tfvar = { ...response.data, firewalls: [...response.data.firewalls] };
-          console.log(tfvar);
-          console.log(url);
-          setTfvar(response.data);
-          navigate("/builder");
-        });
+  function handleShowMore(lab: Lab) {
+    console.log("Lab : ", lab);
+    console.log("More : ", more);
+    if (more !== lab.id) {
+      setMore(lab.id);
+    } else {
+      setMore("");
     }
+  }
+
+  function handleTerraformAction(lab: Lab, action: string) {
+    setActionStatus({ inProgress: true });
+    setLogs({ isStreaming: true, logs: "" });
+    axiosInstance.post(`${action}`, lab.template);
+  }
+
+  function handleLabAction(lab: Lab, action: string) {
+    setActionStatus({ inProgress: true });
+    setLogs({ isStreaming: true, logs: "" });
+    axiosInstance.post(`labs/${action}/${lab.type}/${lab.id}`);
   }
 
   if (isLoading) {
@@ -51,26 +60,90 @@ export default function MockCases() {
   }
 
   return (
-    <div className="my-3 mx-20 mb-2 flex gap-x-4">
-      <div className="grid w-screen grid-cols-3 gap-4">
-        {blobs !== undefined &&
-          blobs.map((blob: any) => (
-            <TemplateCard key={blob.name}>
+    <div className="my-3 mx-20 mb-2 flex flex-col gap-x-4">
+      <p className="my-2 mb-6 border-b-2 border-slate-500 py-4 text-4xl">
+        Mock Cases
+      </p>
+      <div className="w-7/8 grid grid-cols-3 gap-4">
+        {labs !== undefined &&
+          labs.map((lab: Lab) => (
+            <TemplateCard key={lab.name}>
               <div className="flex h-full flex-col justify-between gap-y-4">
-                <p className="break-all">{blob.name}</p>
-
-                <div className="flex justify-end gap-x-4">
+                <p className="break-all border-b border-slate-500 py-2 text-xl">
+                  {lab.name}
+                </p>
+                <p className="break-all text-sm">{lab.description}</p>
+                <div className="flex flex-auto space-x-1 border-b border-slate-500 pb-4">
+                  {lab.tags &&
+                    lab.tags.map((tag) => (
+                      <span className="border border-slate-500 px-3 text-xs">
+                        {tag}
+                      </span>
+                    ))}
+                </div>
+                <div className="flex flex-wrap justify-end gap-1">
                   <Button
-                    variant="primary"
-                    onClick={() => hanldeOnClick(blob.url)}
+                    variant="primary-outline"
+                    onClick={() => handleTerraformAction(lab, "apply")}
+                    disabled={inProgress}
                   >
-                    Load to Builder
+                    Deploy
                   </Button>
+                  <Button
+                    variant="secondary-outline"
+                    onClick={() => handleLabAction(lab, "break")}
+                    disabled={inProgress}
+                  >
+                    Break
+                  </Button>
+                  <Button
+                    variant="success-outline"
+                    onClick={() => handleLabAction(lab, "validate")}
+                    disabled={inProgress}
+                  >
+                    Validate
+                  </Button>
+                  <Button
+                    variant="danger-outline"
+                    onClick={() => handleTerraformAction(lab, "destroy")}
+                    disabled={inProgress}
+                  >
+                    Destroy
+                  </Button>
+                  <Button
+                    variant="primary-outline"
+                    onClick={() => handleShowMore(lab)}
+                  >
+                    <div
+                      className={` ${
+                        lab.id === more ? "rotate-90" : ""
+                      } transition-transform duration-500`}
+                    >
+                      <FaArrowRight />
+                    </div>
+                  </Button>
+
+                  <div
+                    className={`${
+                      lab.id === more ? "max-h-40" : "max-h-0"
+                    } flex flex-wrap justify-end gap-1 gap-x-1 overflow-hidden transition-all duration-500`}
+                  >
+                    <Button
+                      variant="danger-outline"
+                      onClick={() => deleteLab(lab)}
+                    >
+                      Delete
+                    </Button>
+                    <LabBuilder lab={lab} variant="secondary-outline">
+                      Edit
+                    </LabBuilder>
+                  </div>
                 </div>
               </div>
             </TemplateCard>
           ))}
       </div>
+      <Terminal />
     </div>
   );
 }

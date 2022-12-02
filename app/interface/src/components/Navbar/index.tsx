@@ -3,7 +3,12 @@ import { FaServer, FaSun, FaMoon, FaCog, FaUserNinja } from "react-icons/fa";
 import Settings from "../../modals/Settings";
 import { Link, useNavigate } from "react-router-dom";
 import { useServerStatus } from "../../hooks/useServerStatus";
-import { useAccount, useLogin, useLoginStatus } from "../../hooks/useAccount";
+import {
+  useAccount,
+  useGetPriviledge,
+  useLogin,
+  useLoginStatus,
+} from "../../hooks/useAccount";
 import { useGetStorageAccount } from "../../hooks/useStorageAccount";
 import { useSetLogs } from "../../hooks/useLogs";
 import Terraform from "../../modals/Terraform";
@@ -33,6 +38,7 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
   const { data: storageAccount } = useGetStorageAccount();
   const navigate = useNavigate();
   const { mutate: setLogs } = useSetLogs();
+  const { data: priviledge } = useGetPriviledge();
 
   function handleLogin() {
     navigate("/builder");
@@ -70,20 +76,31 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
                 </button>
               </Link>
             </li>
-            <li>
-              <Link to={"/labs"}>
-                <button className="border-b-2 border-transparent py-1 hover:border-b-2 hover:border-b-sky-400 hover:text-sky-400">
-                  Labs
-                </button>
-              </Link>
-            </li>
-            <li>
-              <Link to={"/mockcases"}>
-                <button className="border-b-2 border-transparent py-1 hover:border-b-2 hover:border-b-sky-400 hover:text-sky-400">
-                  Mock Cases
-                </button>
-              </Link>
-            </li>
+            {priviledge && (priviledge.isAdmin || priviledge.isMentor) && (
+              <>
+                <li>
+                  <Link to={"/labs"}>
+                    <button className="border-b-2 border-transparent py-1 hover:border-b-2 hover:border-b-sky-400 hover:text-sky-400">
+                      Labs
+                    </button>
+                  </Link>
+                </li>
+                <li>
+                  <Link to={"/mockcases"}>
+                    <button className="border-b-2 border-transparent py-1 hover:border-b-2 hover:border-b-sky-400 hover:text-sky-400">
+                      Mock Cases
+                    </button>
+                  </Link>
+                </li>
+                <li>
+                  <Link to={"/assignments"}>
+                    <button className="border-b-2 border-transparent py-1 hover:border-b-2 hover:border-b-sky-400 hover:text-sky-400">
+                      Assignments
+                    </button>
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
           <ul className="flex gap-x-4 pl-5">
             <li>
@@ -107,7 +124,7 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
                   <FaServer />
                 </button>
                 <div
-                  className={`roundedd absolute right-0 z-10 mt-1 w-36 origin-top-right bg-slate-200 p-3 text-slate-900 shadow dark:bg-slate-900 dark:text-slate-100 dark:shadow-slate-300 ${
+                  className={`absolute right-0 z-10 mt-1 w-36 origin-top-right rounded bg-slate-200 p-3 text-slate-900 shadow dark:bg-slate-900 dark:text-slate-100 dark:shadow-slate-300 ${
                     !showServerStatus && "hidden"
                   }`}
                 >
@@ -147,7 +164,7 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
                     <FaUserNinja />
                   </button>
                   <div
-                    className={`roundedd absolute right-0 z-10 mt-1 w-56 origin-top-right bg-slate-200 p-3 text-slate-900 shadow dark:bg-slate-900 dark:text-slate-100 dark:shadow-slate-300 ${
+                    className={`absolute right-0 z-10 mt-1 w-56 origin-top-right rounded bg-slate-200 p-3 text-slate-900 shadow dark:bg-slate-900 dark:text-slate-100 dark:shadow-slate-300 ${
                       !showUserName && "hidden"
                     }`}
                   >
@@ -168,7 +185,7 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
                 </div>
               ) : (
                 <button
-                  className="text-bold roundedd-2xl bg-sky-500 py-1 px-5 text-white hover:bg-sky-700"
+                  className="text-bold rounded-2xl bg-sky-500 py-1 px-5 text-white hover:bg-sky-700"
                   onClick={() => handleLogin()}
                 >
                   Login
