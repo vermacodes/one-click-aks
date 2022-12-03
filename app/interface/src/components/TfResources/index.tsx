@@ -23,8 +23,11 @@ export default function TfResources({}: Props) {
   const { data: resources, isFetching: fetchingResources } = useGetResources();
   const { mutate: setActionStatus } = useSetActionStatus();
   const { mutate: setLogs } = useSetLogs();
-  const { data: workspaces, isFetching: fetchingWorkspaces } =
-    useTerraformWorkspace();
+  const {
+    data: workspaces,
+    isFetching: fetchingWorkspaces,
+    isLoading: gettingWorkspaces,
+  } = useTerraformWorkspace();
   const { mutate: deleteWorkspace, isLoading: deletingWorkspace } =
     useDeleteWorkspace();
   const { isLoading: selectingWorkspace } = useSelectWorkspace();
@@ -81,6 +84,7 @@ export default function TfResources({}: Props) {
     <div className="w-1/2 justify-between gap-y-4 rounded border border-slate-500 py-2">
       <div className="h-48 overflow-x-hidden rounded px-2 scrollbar-thin scrollbar-track-slate-400 scrollbar-thumb-sky-500 scrollbar-track-rounded-full scrollbar-thumb-rounded-full">
         {fetchingResources ||
+        gettingWorkspaces ||
         selectingWorkspace ||
         deletingWorkspace ||
         addingWorkspace ||
@@ -106,7 +110,16 @@ export default function TfResources({}: Props) {
         <Button
           variant="danger-outline"
           //disabled
-          disabled={actionStatus || isDefaultSelected(workspaces)}
+          disabled={
+            actionStatus ||
+            fetchingResources ||
+            gettingWorkspaces ||
+            selectingWorkspace ||
+            deletingWorkspace ||
+            addingWorkspace ||
+            fetchingWorkspaces ||
+            isDefaultSelected(workspaces)
+          }
           onClick={() => destroyAndDeleteHandler()}
         >
           Delete Workspace

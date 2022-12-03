@@ -82,7 +82,7 @@ export function useSelectWorkspace() {
   return useMutation(selectWorkspace, {
     onSuccess: () => {
       queryClient.invalidateQueries("list-terraform-workspaces");
-      queryClient.invalidateQueries("get-resources");
+      //queryClient.invalidateQueries("get-resources");
     },
     //
     // Following section does optimistic updates. But they are not very cool when it comes to updating workspaces.

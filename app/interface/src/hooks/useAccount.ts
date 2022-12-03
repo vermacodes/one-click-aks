@@ -46,6 +46,7 @@ export function useLogin() {
       queryClient.invalidateQueries("login-status");
       queryClient.invalidateQueries("get-logs");
       queryClient.invalidateQueries("get-storage-account");
+      queryClient.invalidateQueries("privilege");
     },
     enabled: false,
   });

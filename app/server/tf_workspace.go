@@ -96,9 +96,10 @@ func listWorkspaces(c *gin.Context) {
 
 func selectWorkspace(c *gin.Context) {
 	var workspace Workspace
-
+	updateActionStatus(true)
 	if err := c.BindJSON(&workspace); err != nil {
 		log.Println("not able to bind json in selectWorkspace")
+		updateActionStatus(false)
 		c.Status(http.StatusInternalServerError)
 		return
 	}
@@ -106,9 +107,11 @@ func selectWorkspace(c *gin.Context) {
 	_, err := exec.Command(os.ExpandEnv("$ROOT_DIR")+"/scripts/workspaces.sh", "select", workspace.Name).Output()
 	if err != nil {
 		log.Println("Not able select workspace : ", err)
+		updateActionStatus(false)
 		c.Status(http.StatusInternalServerError)
 		return
 	}
+	updateActionStatus(false)
 	c.Status(http.StatusCreated)
 }
 

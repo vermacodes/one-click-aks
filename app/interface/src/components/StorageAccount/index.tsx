@@ -9,6 +9,7 @@ export default function StorageAccount({}: Props) {
   const {
     data: storageAccount,
     isLoading: getStorageAccountLoading,
+    isFetching: fetchingStorageAccount,
     isError: getStorageAccountError,
   } = useGetStorageAccount();
 
@@ -22,16 +23,24 @@ export default function StorageAccount({}: Props) {
     <div>
       <div className="w-100 gap-x-reverse flex items-center justify-between gap-x-2 py-2">
         <h2 className="text-lg">Storage Account</h2>
-        {storageAccount && storageAccount.storageAccount.name !== "" ? (
-          <p>{storageAccount.storageAccount.name}</p>
+        {fetchingStorageAccount ||
+        storageAccount === undefined ||
+        storageAccount.storageAccount.name === "" ? (
+          <p>Please wait..</p>
         ) : (
-          <Button
-            variant="primary"
-            onClick={() => configureStorageAccount()}
-            disabled={configureStorageAccountLoading}
-          >
-            {configureStorageAccountLoading ? "Working..." : "Configure"}
-          </Button>
+          <>
+            {storageAccount && storageAccount.storageAccount.name !== "" ? (
+              <p>{storageAccount.storageAccount.name}</p>
+            ) : (
+              <Button
+                variant="primary"
+                onClick={() => configureStorageAccount()}
+                disabled={configureStorageAccountLoading}
+              >
+                {configureStorageAccountLoading ? "Working..." : "Configure"}
+              </Button>
+            )}
+          </>
         )}
       </div>
       <div className="flex flex-col">

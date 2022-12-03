@@ -1,9 +1,13 @@
 import { useState } from "react";
 import { FaChevronDown, FaTrash } from "react-icons/fa";
-import { useActionStatus } from "../../hooks/useActionStatus";
+import {
+  useActionStatus,
+  useSetActionStatus,
+} from "../../hooks/useActionStatus";
 import {
   useAddWorkspace,
   useDeleteWorkspace,
+  useGetResources,
   useSelectWorkspace,
   useTerraformWorkspace,
 } from "../../hooks/useTfActions";
@@ -28,12 +32,14 @@ export default function TfWorkspace({
     isFetching: fetchingWorkspaces,
     isError: workspaceError,
   } = useTerraformWorkspace();
+  const { isFetching: fetchingResources } = useGetResources();
   const { mutate: selectWorkspace, isLoading: selectingWorkspace } =
     useSelectWorkspace();
   const { isLoading: deletingWorkspace } = useDeleteWorkspace();
   const { mutate: addWorkspace, isLoading: addingWorkspace } =
     useAddWorkspace();
   const { data: actionStatus } = useActionStatus();
+  const { mutate: setActionStatus } = useSetActionStatus();
 
   function handleAddWorkspace(event: React.ChangeEvent<HTMLInputElement>) {
     setNewWorkSpaceName(event.target.value);
@@ -52,10 +58,27 @@ export default function TfWorkspace({
           <div className="relative inline-block text-left">
             <div
               className={` ${add && "hidden"} ${
-                actionStatus && "text-slate-500"
+                (actionStatus ||
+                  gettingWorkspaces ||
+                  selectingWorkspace ||
+                  deletingWorkspace ||
+                  addingWorkspace ||
+                  fetchingWorkspaces ||
+                  fetchingResources) &&
+                "text-slate-500"
               } flex w-96 items-center justify-between rounded border border-slate-500 p-2`}
               onClick={(e) => {
-                if (!actionStatus) {
+                if (
+                  !(
+                    actionStatus ||
+                    gettingWorkspaces ||
+                    selectingWorkspace ||
+                    deletingWorkspace ||
+                    addingWorkspace ||
+                    fetchingWorkspaces ||
+                    fetchingResources
+                  )
+                ) {
                   setWorkspaceMenu(!workspaceMenu);
                 }
                 e.stopPropagation();
@@ -70,7 +93,8 @@ export default function TfWorkspace({
                   selectingWorkspace ||
                   deletingWorkspace ||
                   addingWorkspace ||
-                  fetchingWorkspaces ? (
+                  fetchingWorkspaces ||
+                  fetchingResources ? (
                     <p>Please wait...</p>
                   ) : (
                     <>
@@ -110,7 +134,10 @@ export default function TfWorkspace({
                     <div className="flex justify-between gap-x-1">
                       <div
                         className="w-full items-center rounded p-2 hover:bg-sky-500 hover:text-slate-100 "
-                        onClick={() => selectWorkspace(workspace)}
+                        onClick={() => {
+                          setActionStatus({ inProgress: true });
+                          selectWorkspace(workspace);
+                        }}
                       >
                         {workspace.name}
                       </div>
@@ -144,7 +171,15 @@ export default function TfWorkspace({
           ) : (
             <Button
               variant="primary-outline"
-              disabled={actionStatus}
+              disabled={
+                actionStatus ||
+                gettingWorkspaces ||
+                selectingWorkspace ||
+                deletingWorkspace ||
+                addingWorkspace ||
+                fetchingWorkspaces ||
+                fetchingResources
+              }
               onClick={() => {
                 setAdd(!add);
                 setNewWorkSpaceName("");

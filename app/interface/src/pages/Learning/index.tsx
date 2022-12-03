@@ -86,7 +86,7 @@ export default function Learning() {
       </div>
       {labs?.length === 0 ? (
         <p className="text-3xl">
-          Ah!, No labs for you. I think you are already learned 😃
+          Ah! No labs for you. I think you are already learned 😃
         </p>
       ) : (
         <Terminal />

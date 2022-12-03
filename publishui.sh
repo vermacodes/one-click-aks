@@ -11,4 +11,10 @@ export NVM_DIR="$HOME/.nvm"
 
 cd app/interface 
 
-nvm use v18.12.1 lts/hydrogen && npm run build && cd dist && az storage blob upload-batch -d '$web' --account-name ashisverma -s "." --overwrite
+if [[ "$1" == "" ]]; then
+    sa="ashisverma"
+else
+    sa=$1
+fi
+
+nvm use v18.12.1 lts/hydrogen && npm run build && cd dist && az storage blob upload-batch -d '$web' --account-name ${sa} -s "." --overwrite

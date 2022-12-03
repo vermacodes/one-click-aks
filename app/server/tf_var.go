@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -143,13 +144,17 @@ func getTfvar(c *gin.Context) {
 		tfvar.ResourceGroup.Location = preference.AzureRegion
 	} else {
 		// Get from blob
+		log.Println("Preference not found in redis. getting from blob.")
 		preference = getPreferenceFromBlob()
 		if (preference != Preference{}) {
 			tfvar.ResourceGroup.Location = preference.AzureRegion
 		} else {
 			// Default to East US
+			log.Println("Preference not found in blob, defaulting to East US")
 			tfvar.ResourceGroup.Location = "East US"
 		}
+		// Put in redis.
+		putPreferenceInRedis(preference)
 	}
 
 	c.IndentedJSON(http.StatusOK, tfvar)
