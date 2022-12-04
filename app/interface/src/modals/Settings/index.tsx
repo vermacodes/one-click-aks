@@ -49,10 +49,6 @@ export default function Settings({ showModal, setShowModal }: SettingsProps) {
             <MdClose className="text-3xl" />
           </button>
         </div>
-        <div className="flex">
-          <ResetActionStatus />
-          <EndLogStream />
-        </div>
         <StorageAccount />
         <AzureSubscription
           subscriptionMenu={subscriptionMenu}
@@ -64,6 +60,10 @@ export default function Settings({ showModal, setShowModal }: SettingsProps) {
           workspaceMenu={workspaceMenu}
           setWorkspaceMenu={setWorkspaceMenu}
         /> */}
+
+        <div className="flex">
+          <ResetActionStatus />
+        </div>
       </div>
     </div>
   );

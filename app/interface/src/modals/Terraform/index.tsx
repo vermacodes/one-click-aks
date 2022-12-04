@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { MdClose } from "react-icons/md";
 import { SiTerraform } from "react-icons/si";
+import ResetActionStatus from "../../components/ResetActionStatus";
 import TfInit from "../../components/TfInit";
 import TfWorkspace from "../../components/TfWorkspace";
 
@@ -37,7 +38,7 @@ function Modal({ showModal, setShowModal }: ModalProps) {
       }}
     >
       <div
-        className=" my-20 w-3/4 gap-y-2 divide-y divide-slate-300 rounded bg-slate-100 p-5 dark:divide-slate-700 dark:bg-slate-900"
+        className=" my-20 w-3/4 gap-y-2 divide-y divide-slate-300 overflow-y-auto overflow-x-hidden rounded bg-slate-100 p-5 scrollbar-thin scrollbar-track-slate-300 scrollbar-thumb-sky-500 dark:divide-slate-700 dark:bg-slate-900"
         onClick={(e) => {
           e.stopPropagation();
           setWorkspaceMenu(false);
@@ -57,6 +58,9 @@ function Modal({ showModal, setShowModal }: ModalProps) {
           workspaceMenu={workspaceMenu}
           setWorkspaceMenu={setWorkspaceMenu}
         />
+        <div className="flex">
+          <ResetActionStatus />
+        </div>
       </div>
     </div>
   );

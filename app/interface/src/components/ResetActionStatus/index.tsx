@@ -16,7 +16,7 @@ export default function ResetActionStatus({}: Props) {
             .then(() => axiosInstance.get("endstream"))
         }
       >
-        Reset Action Status
+        Stop Runaway Action
       </Button>
       <p className="text-xs">
         Reset the action status if you think server is gone crazy. This can

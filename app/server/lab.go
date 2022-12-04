@@ -176,12 +176,17 @@ func getPublicLabs(c *gin.Context, labType string) {
 
 	req.Header.Add("Accept", "application/json")
 
-	res, _ := http.DefaultClient.Do(req)
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Println("Not able to execute http request", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
 
 	defer res.Body.Close()
 	body, _ := io.ReadAll(res.Body)
 
-	err := xml.Unmarshal(body, &labs)
+	err = xml.Unmarshal(body, &labs)
 	if err != nil {
 		log.Println("Error : ", err)
 		c.Status(http.StatusInternalServerError)
@@ -222,12 +227,16 @@ func listLabs(labType string) ([]LabType, error) {
 
 	req.Header.Add("Accept", "application/json")
 
-	res, _ := http.DefaultClient.Do(req)
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Println("Not able to execute http request", err)
+		return _labs, err
+	}
 
 	defer res.Body.Close()
 	body, _ := io.ReadAll(res.Body)
 
-	err := xml.Unmarshal(body, &labs)
+	err = xml.Unmarshal(body, &labs)
 	if err != nil {
 		log.Println("Error : ", err)
 		return _labs, err
@@ -292,7 +301,12 @@ func listLabsApi(c *gin.Context) {
 
 	req.Header.Add("Accept", "application/json")
 
-	res, _ := http.DefaultClient.Do(req)
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Println("Not able to execute http request", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
 
 	defer res.Body.Close()
 	body, _ := io.ReadAll(res.Body)

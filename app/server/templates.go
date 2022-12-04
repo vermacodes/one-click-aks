@@ -36,12 +36,17 @@ func listSharedTemplates(c *gin.Context) {
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("User-Agent", "Thunder Client (https://www.thunderclient.com)")
 
-	res, _ := http.DefaultClient.Do(req)
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Println("Not able to execute http request", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
 
 	defer res.Body.Close()
 	body, _ := io.ReadAll(res.Body)
 
-	err := xml.Unmarshal(body, &blobs)
+	err = xml.Unmarshal(body, &blobs)
 	if err != nil {
 		log.Println("Error : ", err)
 		c.Status(http.StatusInternalServerError)
