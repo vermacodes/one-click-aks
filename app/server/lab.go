@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"sync"
 
 	"github.com/Rican7/conjson"
 	"github.com/Rican7/conjson/transform"
@@ -139,22 +140,47 @@ func getLabs(c *gin.Context) {
 		}
 
 		labs := []LabType{}
-		for index, blob := range blobs {
-			log.Println("Lab ", index, blob.Name)
-			out, err = exec.Command("bash", "-c", "az storage blob download -c labs -n "+blob.Name+" --account-name "+getStorageAccountName()+" --file /tmp/file > /dev/null 2>&1 && cat /tmp/file && rm /tmp/file").Output()
-			if err != nil {
-				log.Println("Error getting preferences from storage exec command failed", err)
-				continue
-			}
 
-			lab := LabType{}
-			if err = json.Unmarshal(out, &lab); err != nil {
-				log.Println("Error reading blob", err)
-				continue
+		// Implements go routines and channels.
+		// The channel is reading labs on channel.
+		wgReader := sync.WaitGroup{}
+		ch := make(chan LabType)
+		wgReader.Add(1)
+		go func() {
+			for lab := range ch {
+				labs = append(labs, lab)
 			}
-			labs = append(labs, lab)
+			wgReader.Done()
+		}()
+
+		// Reads the blobs in parallel.
+		wgWriter := sync.WaitGroup{}
+		for index, blob := range blobs {
+			wgWriter.Add(1)
+			go func(index int, blobName string) {
+				log.Println("Lab ", index, blobName)
+				out, err = exec.Command("bash", "-c", "az storage blob download -c labs -n "+blobName+" --account-name "+getStorageAccountName()+" --file /tmp/"+blobName+" > /dev/null 2>&1 && cat /tmp/"+blobName+" && rm /tmp/"+blobName).Output()
+				if err != nil {
+					log.Println("Error getting template from storage exec command failed", err)
+					wgWriter.Done()
+					return
+				}
+
+				lab := LabType{}
+				if err = json.Unmarshal(out, &lab); err != nil {
+					log.Println("Error reading blob", err)
+					wgWriter.Done()
+					return
+				}
+				ch <- lab
+				wgWriter.Done()
+			}(index, blob.Name)
 		}
-		c.IndentedJSON(http.StatusOK, labs)
+
+		wgWriter.Wait()                     // Wait for all writes.
+		close(ch)                           // Close channel.
+		wgReader.Wait()                     // Wait for all reads
+		c.IndentedJSON(http.StatusOK, labs) // Respond.
 		return
 	}
 

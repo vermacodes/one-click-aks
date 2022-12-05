@@ -59,7 +59,7 @@ func putPreference(c *gin.Context) {
 }
 
 func getPreferenceFromBlob() Preference {
-	out, err := exec.Command("bash", "-c", "az storage blob download -c tfstate -n preference.json --account-name "+getStorageAccountName()+" --file /tmp/file > /dev/null 2>&1 && cat /tmp/file && rm /tmp/file").Output()
+	out, err := exec.Command("bash", "-c", "az storage blob download -c tfstate -n preference.json --account-name "+getStorageAccountName()+" --file /tmp/preference > /dev/null 2>&1 && cat /tmp/preference && rm /tmp/preference").Output()
 	if err != nil {
 		log.Println("Error getting preferences from storage exec command failed", err)
 		return Preference{}

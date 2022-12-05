@@ -26,8 +26,8 @@ export function useTemplates() {
     select: (data): Lab[] => {
       return data.data;
     },
-    cacheTime: Infinity,
-    staleTime: Infinity,
+    // cacheTime: Infinity,
+    // staleTime: Infinity,
   });
 }
 
