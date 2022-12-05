@@ -1,6 +1,7 @@
 variable "kubernetes_cluster" {
   description = "AKS Cluster Object"
   type = object({
+    kubernetes_version      = string
     network_plugin          = string
     network_policy          = string
     outbound_type           = string
