@@ -11,6 +11,7 @@ import Button from "../Button";
 import AutoScaling from "./AutoScaling";
 import AzureCNI from "./AzureCNI";
 import Calico from "./Calico";
+import ContainerRegistry from "./ContainerRegistry";
 import CustomVnet from "./CustomVnet";
 import JumpServer from "./JumpServer";
 import KubernetesVersion from "./KubernetesVersion";
@@ -62,6 +63,7 @@ export default function Tfvar() {
         <Calico />
         <AutoScaling />
         <UserDefinedRouting />
+        <ContainerRegistry />
       </div>
       <div className="mt-4 flex gap-x-2">
         <Button variant="success" onClick={planHandler} disabled={inProgress}>

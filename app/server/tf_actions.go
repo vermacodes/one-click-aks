@@ -115,6 +115,10 @@ func action(c *gin.Context, action string) {
 	encoded, _ = json.Marshal(conjson.NewMarshaler(tfConfig.Firewalls, transform.ConventionalKeys()))
 	setEnvironmentVariable("TF_VAR_firewalls", string(encoded))
 
+	// Continer Registry
+	encoded, _ = json.Marshal(conjson.NewMarshaler(tfConfig.ContainerRegistries, transform.ConventionalKeys()))
+	setEnvironmentVariable("TF_VAR_container_registries", string(encoded))
+
 	cmd := exec.Command(os.ExpandEnv("$ROOT_DIR")+"/scripts/terraform.sh", action)
 
 	rPipe, wPipe, err := os.Pipe()

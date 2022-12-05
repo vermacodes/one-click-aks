@@ -1,9 +1,15 @@
-import { TfvarConfigType, TfvarFirewallType } from "../../dataStructures";
+import {
+  TfvarConfigType,
+  TfvarContainerRegistryType,
+  TfvarFirewallType,
+} from "../../dataStructures";
 
 export const defaultFirewall: TfvarFirewallType = {
   skuName: "AZFW_VNet",
   skuTier: "Standard",
 };
+
+export const defaultContainerRegistry: TfvarContainerRegistryType = {};
 
 export const defaultTfvarConfig: TfvarConfigType = {
   resourceGroup: {
@@ -47,4 +53,5 @@ export const defaultTfvarConfig: TfvarConfigType = {
     },
   ],
   firewalls: [],
+  containerRegistries: [],
 };

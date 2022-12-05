@@ -119,6 +119,8 @@ export type TfvarFirewallType = {
   skuTier: string;
 };
 
+export type TfvarContainerRegistryType = {};
+
 export type TfvarConfigType = {
   resourceGroup: TfvarResourceGroupType;
   kubernetesCluster: TfvarKubernetesClusterType;
@@ -126,6 +128,7 @@ export type TfvarConfigType = {
   subnets: TfvarSubnetType;
   jumpservers: TfvarJumpserverType;
   firewalls: TfvarFirewallType[];
+  containerRegistries: TfvarContainerRegistryType[];
 };
 
 export type BlobType = {
