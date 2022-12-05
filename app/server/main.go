@@ -56,7 +56,7 @@ func handleRequests() {
 	router.PUT("/workspace", selectWorkspace)
 	router.DELETE("/workspace", deleteWorkspace)
 	router.POST("/workspace", addWorkspace)
-	router.GET("/preference", getPreference)
+	router.GET("/preference", getPreferenceController)
 	router.PUT("/preference", putPreference)
 	router.GET("/resources", listResoureces)
 	router.POST("/labs", createLab)
@@ -69,6 +69,7 @@ func handleRequests() {
 	router.GET("/userassignedlabs", listUserAssignedLabsApi)
 	router.DELETE("/assignment/:assignmentId", deleteAssignment)
 	router.GET("/privilege", getPrivilegesApi)
+	router.GET("/kubernetesorchestrators", getKubernetesOrchestratorController)
 	router.Run(":8080")
 }
 

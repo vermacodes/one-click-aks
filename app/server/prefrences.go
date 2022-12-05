@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 	"os/exec"
@@ -72,19 +73,26 @@ func getPreferenceFromBlob() Preference {
 	return preference
 }
 
-func getPreference(c *gin.Context) {
+func getPreferenceService() (Preference, error) {
 
 	// First look for it in Redis.
 	preference := getPreferenceFromRedis()
 	if (Preference{} != preference) {
-		c.IndentedJSON(http.StatusOK, preference)
-		return
+		return preference, nil
 	}
 
 	log.Println("Preference not found in redis. Checking storage now")
 	// Get from blob if not found in Redis.
 	preference = getPreferenceFromBlob()
 	if (Preference{} == preference) {
+		return preference, errors.New("Not able to get preference")
+	}
+	return preference, nil
+}
+
+func getPreferenceController(c *gin.Context) {
+	preference, err := getPreferenceService()
+	if err != nil {
 		c.Status(http.StatusInternalServerError)
 		return
 	}

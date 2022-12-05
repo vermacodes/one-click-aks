@@ -19,6 +19,7 @@ type TfvarDefaultNodePoolType struct {
 }
 
 type TfvarKubernetesClusterType struct {
+	KubernetesVersion     string                   `json:"kubernetesVersion"`
 	NetworkPlugin         string                   `json:"networkPlugin"`
 	NetworkPolicy         string                   `json:"networkPolicy"`
 	OutboundType          string                   `json:"outboundType"`
@@ -65,6 +66,7 @@ var defaultNodePool = TfvarDefaultNodePoolType{
 }
 
 var defaultKubernetesCluster = TfvarKubernetesClusterType{
+	KubernetesVersion:     getDefaultKubernetesOrchestratorHelper().OrchestratorVersion,
 	NetworkPlugin:         "kubenet",
 	NetworkPolicy:         "null",
 	OutboundType:          "loadBalancer",

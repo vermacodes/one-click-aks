@@ -13,11 +13,13 @@ import AzureCNI from "./AzureCNI";
 import Calico from "./Calico";
 import CustomVnet from "./CustomVnet";
 import JumpServer from "./JumpServer";
+import KubernetesVersion from "./KubernetesVersion";
 import PrivateCluster from "./PrivateCluster";
 import UserDefinedRouting from "./UserDefinedRouting";
 
 export default function Tfvar() {
   const [showLabBuilder, setShowLabBuilder] = useState(false);
+  const [versionMenu, setVersionMenu] = useState<boolean>(false);
 
   const { data: inProgress } = useActionStatus();
   const { mutate: setActionStatus } = useSetActionStatus();
@@ -47,8 +49,12 @@ export default function Tfvar() {
   }
 
   return (
-    <>
+    <div onClick={() => setVersionMenu(false)}>
       <div className="flex gap-x-2">
+        <KubernetesVersion
+          versionMenu={versionMenu}
+          setVersionMenu={setVersionMenu}
+        />
         <CustomVnet />
         <PrivateCluster />
         <JumpServer />
@@ -76,6 +82,6 @@ export default function Tfvar() {
           Clear Logs
         </Button>
       </div>
-    </>
+    </div>
   );
 }

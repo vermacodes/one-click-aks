@@ -99,6 +99,7 @@ export type TfvarDefaultNodepoolType = {
 };
 
 export type TfvarKubernetesClusterType = {
+  kubernetesVersion: string;
   networkPlugin: "azure" | "kubenet";
   networkPolicy: "azure" | "calico" | "null";
   outboundType: "loadBalancer" | "userDefinedRouting";
@@ -185,4 +186,29 @@ export type Privildge = {
   user: string;
   isAdmin: boolean;
   isMentor: boolean;
+};
+
+export type KubernetesOrchestrators = {
+  id: string;
+  name: string;
+  orchestrators: Orchestrator[];
+  type: string;
+};
+
+export type Orchestrator = {
+  default: boolean | null;
+  isPreview: boolean | null;
+  orchestratorType: OrchestratorType;
+  orchestratorVersion: string;
+  upgrades: Upgrade[] | null;
+};
+
+export type OrchestratorType = {
+  Kubernetes: "Kubernetes";
+};
+
+export type Upgrade = {
+  isPreview: boolean | null;
+  orchestratorType: OrchestratorType;
+  orchestratorVersion: string;
 };
