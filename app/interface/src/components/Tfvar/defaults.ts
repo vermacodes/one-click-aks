@@ -10,6 +10,7 @@ export const defaultTfvarConfig: TfvarConfigType = {
     location: "East US",
   },
   kubernetesCluster: {
+    kubernetesVersion: "",
     networkPlugin: "azure",
     networkPolicy: "azure",
     outboundType: "loadBalancer",
