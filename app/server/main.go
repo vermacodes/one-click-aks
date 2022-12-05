@@ -51,7 +51,7 @@ func handleRequests() {
 	router.GET("/endstream", endStream)
 	router.GET("/tfvar", getTfvar)
 	router.POST("/tfvar", setTfvar)
-	router.POST("tfvardefault", setDefaultTfvar)
+	router.POST("/tfvardefault", setDefaultTfvar)
 	router.GET("/workspace", listWorkspaces)
 	router.PUT("/workspace", selectWorkspace)
 	router.DELETE("/workspace", deleteWorkspace)

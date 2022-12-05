@@ -46,13 +46,17 @@ type TfvarFirewallType struct {
 	SkuTier string `json:"skuTier"`
 }
 
+type ContainerRegistryType struct {
+}
+
 type TfvarConfigType struct {
-	ResourceGroup     TfvarResourceGroupType     `json:"resourceGroup"`
-	VirtualNetworks   []TfvarVirtualNeworkType   `json:"virtualNetworks"`
-	Subnets           []TfvarSubnetType          `json:"subnets"`
-	Jumpservers       []TfvarJumpserverType      `json:"jumpservers"`
-	KubernetesCluster TfvarKubernetesClusterType `json:"kubernetesCluster"`
-	Firewalls         []TfvarFirewallType        `json:"firewalls"`
+	ResourceGroup       TfvarResourceGroupType     `json:"resourceGroup"`
+	VirtualNetworks     []TfvarVirtualNeworkType   `json:"virtualNetworks"`
+	Subnets             []TfvarSubnetType          `json:"subnets"`
+	Jumpservers         []TfvarJumpserverType      `json:"jumpservers"`
+	KubernetesCluster   TfvarKubernetesClusterType `json:"kubernetesCluster"`
+	Firewalls           []TfvarFirewallType        `json:"firewalls"`
+	ContainerRegistries []ContainerRegistryType    `json:"containerRegistries"`
 }
 
 var defaultResourceGroup = TfvarResourceGroupType{
@@ -103,13 +107,16 @@ var defaultFirewall = TfvarFirewallType{
 	SkuTier: "Standard",
 }
 
+var defaultContainerRegistry = ContainerRegistryType{}
+
 var defautlTfvar = TfvarConfigType{
-	ResourceGroup:     defaultResourceGroup,
-	KubernetesCluster: defaultKubernetesCluster,
-	VirtualNetworks:   []TfvarVirtualNeworkType{},
-	Subnets:           []TfvarSubnetType{},
-	Jumpservers:       []TfvarJumpserverType{},
-	Firewalls:         []TfvarFirewallType{},
+	ResourceGroup:       defaultResourceGroup,
+	KubernetesCluster:   defaultKubernetesCluster,
+	VirtualNetworks:     []TfvarVirtualNeworkType{},
+	Subnets:             []TfvarSubnetType{},
+	Jumpservers:         []TfvarJumpserverType{},
+	Firewalls:           []TfvarFirewallType{},
+	ContainerRegistries: []ContainerRegistryType{},
 }
 
 func setDefaultTfvar(c *gin.Context) {
