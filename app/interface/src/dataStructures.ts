@@ -92,6 +92,8 @@ interface tfvarSubnet {
 
 export type TfvarSubnetType = tfvarSubnet[];
 
+export type TfvarNetworkSecurityGroupType = {};
+
 export type TfvarDefaultNodepoolType = {
   enableAutoScaling: boolean;
   minCount: number;
@@ -126,6 +128,7 @@ export type TfvarConfigType = {
   kubernetesCluster: TfvarKubernetesClusterType;
   virtualNetworks: TfvarVirtualNetworkType;
   subnets: TfvarSubnetType;
+  networkSecurityGroups: TfvarNetworkSecurityGroupType[];
   jumpservers: TfvarJumpserverType;
   firewalls: TfvarFirewallType[];
   containerRegistries: TfvarContainerRegistryType[];

@@ -46,6 +46,7 @@ export const defaultTfvarConfig: TfvarConfigType = {
       name: "KubernetesSubnet",
     },
   ],
+  networkSecurityGroups: [{}],
   jumpservers: [
     {
       adminUsername: "aksadmin",

@@ -12,3 +12,8 @@ output "cluster_version" {
   value       = azurerm_kubernetes_cluster.this.kubernetes_version
   description = "AKS Cluster Name"
 }
+
+output "cluster_msi_id" {
+  value       = azurerm_kubernetes_cluster.this.identity[0].principal_id
+  description = "The Principal ID associated with this Managed Service Identity"
+}

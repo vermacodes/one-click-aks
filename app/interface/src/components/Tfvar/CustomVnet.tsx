@@ -16,9 +16,11 @@ export default function CustomVnet() {
       if (tfvar.virtualNetworks.length === 0) {
         tfvar.virtualNetworks = defaultTfvarConfig.virtualNetworks;
         tfvar.subnets = defaultTfvarConfig.subnets;
+        tfvar.networkSecurityGroups = defaultTfvarConfig.networkSecurityGroups;
       } else {
         tfvar.virtualNetworks = [];
         tfvar.subnets = [];
+        tfvar.networkSecurityGroups = [];
         tfvar.jumpservers = [];
         tfvar.firewalls = [];
         tfvar.kubernetesCluster.privateClusterEnabled = "false";

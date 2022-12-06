@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"reflect"
 
 	"github.com/Rican7/conjson"
 	"github.com/Rican7/conjson/transform"
@@ -91,33 +92,17 @@ func action(c *gin.Context, action string) {
 	setEnvironmentVariable("container_name", "tfstate")
 	setEnvironmentVariable("tf_state_file_name", "terraform.tfstate")
 
-	// Resource Group
-	encoded, _ := json.Marshal(conjson.NewMarshaler(tfConfig.ResourceGroup, transform.ConventionalKeys()))
-	setEnvironmentVariable("TF_VAR_resource_group", string(encoded))
+	t := reflect.TypeOf(tfConfig)
+	// Loop over the fields in the struct.
+	for i := 0; i < t.NumField(); i++ {
+		// Get the field and its value at the current index.
+		field := reflect.TypeOf(tfConfig).Field(i)
+		value := reflect.ValueOf(tfConfig).Field(i)
 
-	// Virtual Network
-	encoded, _ = json.Marshal(conjson.NewMarshaler(tfConfig.VirtualNetworks, transform.ConventionalKeys()))
-	setEnvironmentVariable("TF_VAR_virtual_networks", string(encoded))
-
-	// Subnets
-	encoded, _ = json.Marshal(conjson.NewMarshaler(tfConfig.Subnets, transform.ConventionalKeys()))
-	setEnvironmentVariable("TF_VAR_subnets", string(encoded))
-
-	// Jumpserver
-	encoded, _ = json.Marshal(conjson.NewMarshaler(tfConfig.Jumpservers, transform.ConventionalKeys()))
-	setEnvironmentVariable("TF_VAR_jumpservers", string(encoded))
-
-	// Kubernetes Cluster
-	encoded, _ = json.Marshal(conjson.NewMarshaler(tfConfig.KubernetesCluster, transform.ConventionalKeys()))
-	setEnvironmentVariable("TF_VAR_kubernetes_cluster", string(encoded))
-
-	// Firewall
-	encoded, _ = json.Marshal(conjson.NewMarshaler(tfConfig.Firewalls, transform.ConventionalKeys()))
-	setEnvironmentVariable("TF_VAR_firewalls", string(encoded))
-
-	// Continer Registry
-	encoded, _ = json.Marshal(conjson.NewMarshaler(tfConfig.ContainerRegistries, transform.ConventionalKeys()))
-	setEnvironmentVariable("TF_VAR_container_registries", string(encoded))
+		// Set the evironment variable of resource.
+		encoded, _ := json.Marshal(conjson.NewMarshaler(value.Interface(), transform.ConventionalKeys()))
+		setEnvironmentVariable("TF_VAR_"+camelToConventional(field.Name), string(encoded))
+	}
 
 	cmd := exec.Command(os.ExpandEnv("$ROOT_DIR")+"/scripts/terraform.sh", action)
 

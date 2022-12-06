@@ -46,10 +46,15 @@ function tf_init() {
 function get_variables_from_tf_output () {
     log "Pulling variables from TF output"
     cd tf
+    AKS_LOGIN=$(terraform output -raw aks_login)
     CLUSTER_NAME=$(terraform output -raw cluster_name)
+    CLUSTER_VERSION=$(terraform output -raw cluster_version)
     RESOURCE_GROUP=$(terraform output -raw resource_group_name)
-    VNET_NAME=$(terraform output -json vnet_name | jq -r .[0])
-    NSG_NAME=$(terraform output -json nsg_name | jq -r .[0])
+    VNET_NAME=$(terraform output -json vnet_name)
+    NSG_NAME=$(terraform output -json nsg_name)
+    ACR_NAME=$(terraform output -json acr_name)
+    FIREWALL_PRIVATE_IP=$(terraform output -json firewall_private_ip)
+    LOCATION=$(terraform output -json resource_group_location)
     change_to_root_dir
 }
 

@@ -15,7 +15,7 @@ resource "azurerm_subnet" "this" {
 }
 
 resource "azurerm_network_security_group" "this" {
-  count               = var.nsg == null || length(var.nsg) == 0 ? 0 : length(var.nsg)
+  count               = var.network_security_groups == null || length(var.network_security_groups) == 0 ? 0 : length(var.network_security_groups)
   name                = module.naming.network_security_group.name
   location            = azurerm_resource_group.this.location
   resource_group_name = azurerm_resource_group.this.name
@@ -34,7 +34,7 @@ resource "azurerm_network_security_group" "this" {
 }
 
 resource "azurerm_subnet_network_security_group_association" "this" {
-  count                     = var.nsg == null || var.subnets == null || length(var.subnets) == 0 ? 0 : length(var.nsg)
+  count                     = var.network_security_groups == null || var.subnets == null || length(var.subnets) == 0 ? 0 : length(var.network_security_groups)
   subnet_id                 = azurerm_subnet.this[2].id
   network_security_group_id = azurerm_network_security_group.this[0].id
 }

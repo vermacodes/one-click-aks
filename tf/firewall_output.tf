@@ -1,3 +1,3 @@
-output "firewall_public_ip" {
-  value = [[for firewall in azurerm_firewall.this : [[for ip in firewall.ip_configuration : ip.name]]]]
+output "firewall_private_ip" {
+  value = length(var.firewalls) == 0 ? "" : azurerm_firewall.this[0].ip_configuration[0].private_ip_address
 }
