@@ -32,7 +32,9 @@ export default function KubernetesVersion({
   }
 
   return (
-    <div className="relative inline-block text-left">
+    // TODO : This is bug. if version menu is open and you also open a modal, lets say terraform settings. then version menu will be on top.
+    // TODO : Fix this.
+    <div className={`${versionMenu ? "relative" : ""} inline-block text-left`}>
       <div
         className={`${
           (actionStatus || isLoading || isFetching) && "text-slate-500"
