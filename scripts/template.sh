@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
-# This is a template to generate break and validate scripts. 
+# This is a template to generate extend and validate scripts. 
 # 
-# All that is needed is to modify either validate() or break() functions in this script.
+# All that is needed is to modify either validate() or extend() functions in this script.
+# To apply YAMLs you can crate functions and use formal like this. https://stackoverflow.com/a/54364063/2353460
 #
 # Environmetn Variables that this script has access to.
 # 01.   Azure Container Regitry Name
@@ -41,13 +42,21 @@
 #           Name: VNET_NAME
 #           Type: string
 #           Expected Values: "" | "vnet_name"
+# 09.   Cluster Managed Service Identity ID
+#           Name: CLUSTER_MSI_ID
+#           Type: string
+#           Expected Values: "" | "cluster_msi_id"
+# 09.   Kubelet Managed Service Identity ID
+#           Name: KUBELET_MSI_ID
+#           Type: string
+#           Expected Values: "" | "kubelet_msi_id"
 
 function validate() {
     # Add your code here for validation
 }
 
-function break_cluster() {
-    # Add your code here for break_cluster.
+function extend() {
+    # Add your code here for extend.
 }
 
 ##

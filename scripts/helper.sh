@@ -50,11 +50,13 @@ function get_variables_from_tf_output () {
     CLUSTER_NAME=$(terraform output -raw cluster_name)
     CLUSTER_VERSION=$(terraform output -raw cluster_version)
     RESOURCE_GROUP=$(terraform output -raw resource_group_name)
-    VNET_NAME=$(terraform output -json vnet_name)
-    NSG_NAME=$(terraform output -json nsg_name)
-    ACR_NAME=$(terraform output -json acr_name)
-    FIREWALL_PRIVATE_IP=$(terraform output -json firewall_private_ip)
-    LOCATION=$(terraform output -json resource_group_location)
+    VNET_NAME=$(terraform output -raw vnet_name)
+    NSG_NAME=$(terraform output -raw nsg_name)
+    ACR_NAME=$(terraform output -raw acr_name)
+    FIREWALL_PRIVATE_IP=$(terraform output -raw firewall_private_ip)
+    LOCATION=$(terraform output -raw resource_group_location)
+    CLUSTER_MSI_ID=$(terraform output -raw cluster_msi_id)
+    KUBELET_MSI_ID=$(terraform output -raw kubelet_msi_id)
     change_to_root_dir
 }
 

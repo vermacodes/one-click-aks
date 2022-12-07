@@ -22,7 +22,7 @@ type LabType struct {
 	Description    string          `json:"description"`
 	Tags           []string        `json:"tags"`
 	Template       TfvarConfigType `json:"template"`
-	BreakScript    string          `json:"breakScript"`
+	ExtendScript   string          `json:"extendScript"`
 	ValidateScript string          `json:"validateScript"`
 	Message        string          `json:"message"`
 	Type           string          `json:"type"`
@@ -475,8 +475,8 @@ func labAction(c *gin.Context) {
 
 	labAction := c.Param("labaction")
 	var cmd *exec.Cmd
-	if labAction == "break" {
-		cmd = exec.Command("bash", "-c", "echo '"+lab.BreakScript+"' | base64 -d | bash")
+	if labAction == "extend" {
+		cmd = exec.Command("bash", "-c", "echo '"+lab.ExtendScript+"' | base64 -d | bash")
 	} else if labAction == "validate" {
 		cmd = exec.Command("bash", "-c", "echo '"+lab.ValidateScript+"' | base64 -d | bash")
 	} else {

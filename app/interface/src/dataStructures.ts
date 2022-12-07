@@ -142,7 +142,7 @@ export type BlobType = {
 export type LabType = {
   name: string;
   tfvar: TfvarConfigType;
-  breakScript: string;
+  extendScript: string;
   validateScript: string;
 };
 
@@ -170,7 +170,7 @@ export type Lab = {
   description: string;
   tags: string[];
   template: TfvarConfigType | undefined;
-  breakScript: string;
+  extendScript: string;
   validateScript: string;
   message: string;
   type: string;

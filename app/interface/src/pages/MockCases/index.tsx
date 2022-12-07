@@ -91,10 +91,10 @@ export default function MockCases() {
                   </Button>
                   <Button
                     variant="secondary-outline"
-                    onClick={() => handleLabAction(lab, "break")}
+                    onClick={() => handleLabAction(lab, "extend")}
                     disabled={inProgress}
                   >
-                    Break
+                    Extend
                   </Button>
                   <Button
                     variant="success-outline"

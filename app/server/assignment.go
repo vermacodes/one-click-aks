@@ -120,7 +120,7 @@ func listUserAssignedLabsApi(c *gin.Context) {
 			if assignment.LabId == lab.Id {
 				if assignment.User == account.User.Name {
 					//Values redacted.
-					lab.BreakScript = ""
+					lab.ExtendScript = ""
 					lab.ValidateScript = ""
 					userAssignedLabs = append(userAssignedLabs, lab)
 					break

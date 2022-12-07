@@ -14,7 +14,7 @@ output "cluster_version" {
 }
 
 output "cluster_msi_id" {
-  value       = azurerm_kubernetes_cluster.this.identity[0].principal_id
+  value       = azurerm_user_assigned_identity.ccp_identity.id
   description = "The Principal ID associated with this Managed Service Identity"
 }
 

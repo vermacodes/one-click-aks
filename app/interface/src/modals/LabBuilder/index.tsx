@@ -51,7 +51,7 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
     tags: [""],
     type: "template",
     template: tfvar,
-    breakScript: "",
+    extendScript: "",
     validateScript: "",
     message: "",
     createdby: "",
@@ -163,14 +163,14 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
               </select>
             </div>
             <div className={`my-4 ${lab.type === "template" && "hidden"}`}>
-              <label htmlFor="breakscript">Break Script</label>
+              <label htmlFor="extendscript">Extend Script</label>
               <textarea
-                id="breakscript"
-                value={atob(lab.breakScript)}
+                id="extendscript"
+                value={atob(lab.extendScript)}
                 className="px h-60 w-full border border-slate-500 bg-inherit p-2 py-2 font-mono text-sm scrollbar-thin scrollbar-track-slate-300 scrollbar-thumb-sky-500 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500 hover:bg-slate-200 dark:hover:bg-slate-700"
-                placeholder="Script to break the cluster."
+                placeholder="Script to extend the cluster."
                 onChange={(event) => {
-                  setLab({ ...lab, breakScript: btoa(event.target.value) });
+                  setLab({ ...lab, extendScript: btoa(event.target.value) });
                 }}
               />
             </div>
