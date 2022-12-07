@@ -127,22 +127,22 @@ var defautlTfvar = TfvarConfigType{
 	ContainerRegistries:   []ContainerRegistryType{},
 }
 
-func setDefaultTfvarService() error {
+func setDefaultTfvarService() (TfvarConfigType, error) {
 	rdb := newRedisClient()
 
 	defautlTfvar.KubernetesCluster.KubernetesVersion = getDefaultKubernetesOrchestratorHelper().OrchestratorVersion
 	json, err := json.Marshal(defautlTfvar)
 	if err != nil {
 		log.Println("Not able to Marshal default tfvar to json []byte")
-		return errors.New("not able to marshal default tfvar to json []byte")
+		return defautlTfvar, errors.New("not able to marshal default tfvar to json []byte")
 	}
 
 	rdb.Set(ctx, "tfvar", json, 0)
-	return nil
+	return defautlTfvar, nil
 }
 
 func setDefaultTfvar(c *gin.Context) {
-	if err := setDefaultTfvarService(); err != nil {
+	if _, err := setDefaultTfvarService(); err != nil {
 		c.Status(http.StatusInternalServerError)
 		return
 	}
@@ -160,14 +160,24 @@ func getTfvarService() (TfvarConfigType, error) {
 	}
 
 	val, err := rdb.Get(ctx, "tfvar").Result()
-	if err != nil {
-		log.Println("Not able to find tfvar in Redis", err)
-		return tfvar, err
-	}
 
-	if err = json.Unmarshal([]byte(val), &tfvar); err != nil {
-		log.Println("Not able to Unmarshal tfvar in redis to object", err)
-		return tfvar, err
+	// tfvar is set to a default state as soon as the user login is done. If something bad were to
+	// happen to the redis and if we lose the tfvar value and its no found in redis.
+	// That would a error we need to handle. To handle that,
+	// we set that tfvar back to its default state.
+	if err != nil {
+		log.Println("Not able to find tfvar in Redis. Sending default.", err)
+		tfvar, err = setDefaultTfvarService()
+		log.Println("Reached here ", tfvar)
+		if err != nil {
+			log.Println("Not able to set default tfvar", err)
+			return tfvar, err
+		}
+	} else { // Unmarshal value to tfvar only if it was found in redis. Else no need.
+		if err = json.Unmarshal([]byte(val), &tfvar); err != nil {
+			log.Println("Not able to Unmarshal tfvar in redis to object", err)
+			return tfvar, err
+		}
 	}
 
 	// Inject Azure Region based on Preference

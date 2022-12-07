@@ -7,7 +7,7 @@ func onAuthDefaults() {
 	if !loginStatus.IsLoggedIn {
 		return
 	}
-	if err := setDefaultTfvarService(); err != nil {
+	if _, err := setDefaultTfvarService(); err != nil {
 		log.Println("Not able to set default tfvar")
 		return
 	}
