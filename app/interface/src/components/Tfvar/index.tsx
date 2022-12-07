@@ -51,7 +51,7 @@ export default function Tfvar() {
 
   return (
     <div onClick={() => setVersionMenu(false)}>
-      <div className="flex gap-x-2">
+      <div className="flex flex-wrap gap-x-2 gap-y-2">
         <KubernetesVersion
           versionMenu={versionMenu}
           setVersionMenu={setVersionMenu}

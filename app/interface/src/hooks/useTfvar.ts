@@ -22,9 +22,9 @@ export function useTfvar() {
     },
     onSuccess: (data) => {
       if (data === undefined) {
-        setTimeout(() => {
-          setDefaultTfvar();
-        }, 10000);
+        // setTimeout(() => {
+        //   setDefaultTfvar();
+        // }, 10000);
       }
     },
   });

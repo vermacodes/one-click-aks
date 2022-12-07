@@ -59,8 +59,6 @@ export default function Labs() {
   }
 
   function handleShowMore(lab: Lab) {
-    console.log("Lab : ", lab);
-    console.log("More : ", more);
     if (more !== lab.id) {
       setMore(lab.id);
     } else {
@@ -142,20 +140,23 @@ export default function Labs() {
                         )}
                       </div>
                     </Button>
+                    <Button
+                      variant="primary-outline"
+                      onClick={() => handleShowMore(lab)}
+                    >
+                      <div
+                        className={` ${
+                          lab.id === more ? "rotate-90" : ""
+                        } transition-transform duration-500`}
+                      >
+                        <FaArrowRight />
+                      </div>
+                    </Button>
                   </div>
-                  <Button
-                    variant="primary-outline"
-                    onClick={() => handleShowMore(lab)}
-                  >
-                    <div className="flex items-center justify-center gap-x-4">
-                      More options
-                      <FaArrowRight />
-                    </div>
-                  </Button>
                   <div
                     className={`${
-                      lab.id === more ? "max-h-50" : "max-h-0"
-                    } transition-transformation flex flex-col gap-1 gap-x-1 overflow-hidden duration-500`}
+                      lab.id === more ? "max-h-40" : "max-h-0"
+                    } flex flex-wrap justify-end gap-1 gap-x-1 overflow-hidden transition-all duration-500`}
                   >
                     <Button
                       variant="primary-outline"

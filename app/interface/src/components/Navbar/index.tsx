@@ -88,7 +88,7 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
                 <li>
                   <Link to={"/mockcases"}>
                     <button className="border-b-2 border-transparent py-1 hover:border-b-2 hover:border-b-sky-400 hover:text-sky-400">
-                      Mock Cases
+                      Mocks
                     </button>
                   </Link>
                 </li>
