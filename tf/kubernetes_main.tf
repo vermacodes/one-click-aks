@@ -1,3 +1,21 @@
+resource "azurerm_user_assigned_identity" "kubelet_identity" {
+  name                = "${module.naming.user_assigned_identity.name}-kubelet"
+  resource_group_name = azurerm_resource_group.this.name
+  location            = azurerm_resource_group.this.location
+}
+
+resource "azurerm_user_assigned_identity" "ccp_identity" {
+  name                = "${module.naming.user_assigned_identity.name}-ccp"
+  resource_group_name = azurerm_resource_group.this.name
+  location            = azurerm_resource_group.this.location
+}
+
+resource "azurerm_role_assignment" "identity_operator" {
+  principal_id         = azurerm_user_assigned_identity.ccp_identity.principal_id
+  scope                = azurerm_resource_group.this.id
+  role_definition_name = "Managed Identity Operator"
+}
+
 resource "azurerm_kubernetes_cluster" "this" {
   name                    = module.naming.kubernetes_cluster.name
   location                = azurerm_resource_group.this.location
@@ -23,12 +41,20 @@ resource "azurerm_kubernetes_cluster" "this" {
   }
 
   identity {
-    type = "SystemAssigned"
+    type         = "UserAssigned"
+    identity_ids = [azurerm_user_assigned_identity.ccp_identity.id]
+  }
+
+  kubelet_identity {
+    client_id                 = azurerm_user_assigned_identity.kubelet_identity.client_id
+    object_id                 = azurerm_user_assigned_identity.kubelet_identity.principal_id # Principal ID and Object ID are same.
+    user_assigned_identity_id = azurerm_user_assigned_identity.kubelet_identity.id
   }
 
   depends_on = [
     azurerm_subnet_route_table_association.this,
     azurerm_firewall_application_rule_collection.app_rules_collection,
-    azurerm_firewall_network_rule_collection.network_rules_collection
+    azurerm_firewall_network_rule_collection.network_rules_collection,
+    azurerm_role_assignment.identity_operator
   ]
 }

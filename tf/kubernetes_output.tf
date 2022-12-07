@@ -17,3 +17,8 @@ output "cluster_msi_id" {
   value       = azurerm_kubernetes_cluster.this.identity[0].principal_id
   description = "The Principal ID associated with this Managed Service Identity"
 }
+
+output "kubelet_msi_id" {
+  value       = azurerm_user_assigned_identity.kubelet_identity.id
+  description = "ID of User assigned Identity for kubelet"
+}
