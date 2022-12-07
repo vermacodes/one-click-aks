@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 
@@ -74,7 +75,7 @@ var defaultNodePool = TfvarDefaultNodePoolType{
 }
 
 var defaultKubernetesCluster = TfvarKubernetesClusterType{
-	KubernetesVersion:     getDefaultKubernetesOrchestratorHelper().OrchestratorVersion,
+	KubernetesVersion:     "",
 	NetworkPlugin:         "kubenet",
 	NetworkPolicy:         "null",
 	OutboundType:          "loadBalancer",
@@ -86,7 +87,7 @@ var defaultVirtualNetwork = TfvarVirtualNeworkType{
 	AddressSpace: []string{"10.1.0.0/16"},
 }
 
-var defaultNetworkSecurityGroup = TfvarNetworkSecurityGroupType{}
+//var defaultNetworkSecurityGroup = TfvarNetworkSecurityGroupType{}
 
 var defaultAzureFirewallSubnet = TfvarSubnetType{
 	Name:            "AzureFirewallSubnet",
@@ -113,7 +114,7 @@ var defaultFirewall = TfvarFirewallType{
 	SkuTier: "Standard",
 }
 
-var defaultContainerRegistry = ContainerRegistryType{}
+//var defaultContainerRegistry = ContainerRegistryType{}
 
 var defautlTfvar = TfvarConfigType{
 	ResourceGroup:         defaultResourceGroup,
@@ -126,31 +127,47 @@ var defautlTfvar = TfvarConfigType{
 	ContainerRegistries:   []ContainerRegistryType{},
 }
 
-func setDefaultTfvar(c *gin.Context) {
+func setDefaultTfvarService() error {
 	rdb := newRedisClient()
+
+	defautlTfvar.KubernetesCluster.KubernetesVersion = getDefaultKubernetesOrchestratorHelper().OrchestratorVersion
 	json, err := json.Marshal(defautlTfvar)
 	if err != nil {
-		c.Status(http.StatusInternalServerError)
-		return
+		log.Println("Not able to Marshal default tfvar to json []byte")
+		return errors.New("not able to marshal default tfvar to json []byte")
 	}
 
 	rdb.Set(ctx, "tfvar", json, 0)
+	return nil
+}
+
+func setDefaultTfvar(c *gin.Context) {
+	if err := setDefaultTfvarService(); err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
 	c.Status(http.StatusCreated)
 }
 
-func getTfvar(c *gin.Context) {
+func getTfvarService() (TfvarConfigType, error) {
+
 	rdb := newRedisClient()
+	tfvar := TfvarConfigType{}
+
+	loginStatus := validateLoginService()
+	if !loginStatus.IsLoggedIn {
+		return tfvar, errors.New("403")
+	}
 
 	val, err := rdb.Get(ctx, "tfvar").Result()
 	if err != nil {
-		c.Status(http.StatusNotFound)
-		return
+		log.Println("Not able to find tfvar in Redis", err)
+		return tfvar, err
 	}
 
-	tfvar := TfvarConfigType{}
 	if err = json.Unmarshal([]byte(val), &tfvar); err != nil {
-		c.Status(http.StatusInternalServerError)
-		return
+		log.Println("Not able to Unmarshal tfvar in redis to object", err)
+		return tfvar, err
 	}
 
 	// Inject Azure Region based on Preference
@@ -173,6 +190,19 @@ func getTfvar(c *gin.Context) {
 		putPreferenceInRedis(preference)
 	}
 
+	return tfvar, nil
+}
+
+func getTfvar(c *gin.Context) {
+	tfvar, err := getTfvarService()
+	if err != nil {
+		if err.Error() == "403" {
+			c.Status(http.StatusUnauthorized)
+		} else {
+			c.Status(http.StatusInternalServerError)
+		}
+		return
+	}
 	c.IndentedJSON(http.StatusOK, tfvar)
 }
 

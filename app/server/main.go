@@ -36,7 +36,7 @@ func handleRequests() {
 	router.GET("/account", getAccounts)
 	router.PUT("/account", putAccount)
 	router.GET("/login", accountLogin)
-	router.GET("/loginstatus", validateLogin)
+	router.GET("/loginstatus", validateLoginController)
 	router.GET("/getstate", getStateStorageConfiguration)
 	router.GET("/configurestate", configureStateStorage)
 	router.GET("/sharedtemplates", listSharedTemplates)

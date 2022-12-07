@@ -34,7 +34,7 @@ func getDefaultKubernetesOrchestratorService(location string) (Orchestrator, err
 	kubernetesOrchestrator, err := getKubernetesOrchestratorService(location)
 	if err != nil {
 		// TODO: Not sure how to recover here.
-		return orchestrator, errors.New("Not able to get default Version")
+		return orchestrator, errors.New("not able to get default nersion")
 		//panic(err)
 	}
 	for _, orchestrator := range kubernetesOrchestrator.Orchestrators {
@@ -42,7 +42,7 @@ func getDefaultKubernetesOrchestratorService(location string) (Orchestrator, err
 			return orchestrator, nil
 		}
 	}
-	return orchestrator, errors.New("Not able to get default Version")
+	return orchestrator, errors.New("not able to get default nersion")
 }
 
 func getKubernetesOrchestratorService(location string) (KubernetesOrchestrator, error) {
@@ -83,7 +83,6 @@ func getKubernetesOrchestratorController(c *gin.Context) {
 
 // Helper function to get the deafult version in prefered region.
 func getDefaultKubernetesOrchestratorHelper() Orchestrator {
-	orchestrator := Orchestrator{}
 	azureRegion := "East US"
 	preference, err := getPreferenceService()
 	if err != nil {
@@ -93,7 +92,7 @@ func getDefaultKubernetesOrchestratorHelper() Orchestrator {
 		azureRegion = preference.AzureRegion
 	}
 
-	orchestrator, err = getDefaultKubernetesOrchestratorService(azureRegion)
+	orchestrator, err := getDefaultKubernetesOrchestratorService(azureRegion)
 	if err != nil {
 		log.Println("Not able to get default orchestrator", err)
 		return orchestrator
