@@ -34,7 +34,11 @@ export default function ContainerRegistry() {
   }
 
   var checked: boolean = true;
-  if (tfvar && tfvar.containerRegistries.length === 0) {
+  if (
+    tfvar &&
+    tfvar.containerRegistries !== null &&
+    tfvar.containerRegistries.length === 0
+  ) {
     checked = false;
   }
 

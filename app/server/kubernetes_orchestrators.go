@@ -34,7 +34,8 @@ func getDefaultKubernetesOrchestratorService(location string) (Orchestrator, err
 	kubernetesOrchestrator, err := getKubernetesOrchestratorService(location)
 	if err != nil {
 		// TODO: Not sure how to recover here.
-		panic(err)
+		return orchestrator, errors.New("Not able to get default Version")
+		//panic(err)
 	}
 	for _, orchestrator := range kubernetesOrchestrator.Orchestrators {
 		if orchestrator.Default != nil {
