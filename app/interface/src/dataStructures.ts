@@ -218,3 +218,11 @@ export type Upgrade = {
   orchestratorType: OrchestratorType;
   orchestratorVersion: string;
 };
+
+export type ServerStatus = {
+  status: "" | "OK";
+};
+
+export type LoginStatus = {
+  isLoggedIn: boolean;
+};

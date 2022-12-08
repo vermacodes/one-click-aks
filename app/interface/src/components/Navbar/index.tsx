@@ -110,7 +110,8 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
               <div className="relative inline-block text-left">
                 <button
                   className={`items-center justify-center border-b-2 border-transparent py-1 text-2xl hover:border-b-sky-400 hover:text-sky-400 ${
-                    isError && "animate-bounce text-red-500"
+                    serverStatus?.status !== "OK" &&
+                    "animate-bounce text-red-500"
                   }`}
                   onMouseEnter={() => {
                     setShowServerStatus(true);
@@ -128,7 +129,11 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
                     !showServerStatus && "hidden"
                   }`}
                 >
-                  <p>{isError ? "Server is not live." : "Server is live"}</p>
+                  <p>
+                    {serverStatus?.status !== "OK"
+                      ? "Server is not live."
+                      : "Server is live"}
+                  </p>
                 </div>
               </div>
             </li>

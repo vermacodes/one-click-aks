@@ -1,9 +1,9 @@
 import { AxiosResponse } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { AccountType, Privildge } from "../dataStructures";
+import { AccountType, LoginStatus, Privildge } from "../dataStructures";
 import { axiosInstance } from "../utils/axios-interceptors";
 
-function getLoginStatus() {
+function getLoginStatus(): Promise<AxiosResponse<LoginStatus>> {
   return axiosInstance.get("loginstatus");
 }
 
@@ -22,7 +22,7 @@ function setAccount(account: AccountType) {
 export function useLoginStatus() {
   const queryClient = useQueryClient();
   return useQuery("login-status", getLoginStatus, {
-    select: (data) => {
+    select: (data): boolean | undefined => {
       if (data !== undefined) {
         return data.data.isLoggedIn;
       }

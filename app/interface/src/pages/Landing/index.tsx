@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { MdOutlineContentCopy, MdDoneOutline } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 export default function Landing() {
   const [copy, setCopy] = useState<boolean>(false);
@@ -20,9 +21,11 @@ export default function Landing() {
         machine or run it in cloud and configure endpoint.
       </p>
       <div className="flex gap-x-10">
-        <button className="rounded-full border-2 border-transparent bg-sky-500 py-2 px-10 text-2xl text-white hover:border-2 hover:border-sky-500 hover:bg-inherit hover:text-sky-500">
-          Learn More
-        </button>
+        <Link to={"/start"}>
+          <button className="rounded-full border-2 border-transparent bg-sky-500 py-2 px-10 text-2xl text-white hover:border-2 hover:border-sky-500 hover:bg-inherit hover:text-sky-500">
+            Get Started
+          </button>
+        </Link>
         <div
           className={`flex justify-between  gap-x-5 rounded-xl border-2 bg-slate-300 py-2 px-6 dark:bg-slate-700 ${
             copy
