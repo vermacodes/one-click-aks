@@ -85,7 +85,7 @@ func getPreferenceService() (Preference, error) {
 	// Get from blob if not found in Redis.
 	preference = getPreferenceFromBlob()
 	if (Preference{} == preference) {
-		return preference, errors.New("Not able to get preference")
+		return preference, errors.New("not able to get preference")
 	}
 	return preference, nil
 }

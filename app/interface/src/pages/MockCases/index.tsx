@@ -30,8 +30,6 @@ export default function MockCases() {
   var tfvar: TfvarConfigType;
 
   function handleShowMore(lab: Lab) {
-    console.log("Lab : ", lab);
-    console.log("More : ", more);
     if (more !== lab.id) {
       setMore(lab.id);
     } else {
@@ -81,7 +79,7 @@ export default function MockCases() {
                       </span>
                     ))}
                 </div>
-                <div className="flex flex-wrap justify-end gap-1">
+                <div className="flex flex-row justify-end gap-1">
                   <Button
                     variant="primary-outline"
                     onClick={() => handleTerraformAction(lab, "apply")}
@@ -95,13 +93,6 @@ export default function MockCases() {
                     disabled={inProgress}
                   >
                     Extend
-                  </Button>
-                  <Button
-                    variant="success-outline"
-                    onClick={() => handleLabAction(lab, "validate")}
-                    disabled={inProgress}
-                  >
-                    Validate
                   </Button>
                   <Button
                     variant="danger-outline"
@@ -122,22 +113,29 @@ export default function MockCases() {
                       <FaArrowRight />
                     </div>
                   </Button>
+                </div>
 
-                  <div
-                    className={`${
-                      lab.id === more ? "max-h-40" : "max-h-0"
-                    } flex flex-wrap justify-end gap-1 gap-x-1 overflow-hidden transition-all duration-500`}
+                <div
+                  className={`${
+                    lab.id === more ? "max-h-40" : "max-h-0"
+                  } flex flex-wrap justify-end gap-1 gap-x-1 overflow-hidden transition-all duration-500`}
+                >
+                  <Button
+                    variant="success-outline"
+                    onClick={() => handleLabAction(lab, "validate")}
+                    disabled={inProgress}
                   >
-                    <Button
-                      variant="danger-outline"
-                      onClick={() => deleteLab(lab)}
-                    >
-                      Delete
-                    </Button>
-                    <LabBuilder lab={lab} variant="secondary-outline">
-                      Edit
-                    </LabBuilder>
-                  </div>
+                    Validate
+                  </Button>
+                  <Button
+                    variant="danger-outline"
+                    onClick={() => deleteLab(lab)}
+                  >
+                    Delete
+                  </Button>
+                  <LabBuilder lab={lab} variant="secondary-outline">
+                    Edit
+                  </LabBuilder>
                 </div>
               </div>
             </TemplateCard>

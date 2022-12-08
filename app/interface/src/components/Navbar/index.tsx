@@ -88,7 +88,7 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
                 <li>
                   <Link to={"/mockcases"}>
                     <button className="border-b-2 border-transparent py-1 hover:border-b-2 hover:border-b-sky-400 hover:text-sky-400">
-                      Mock Cases
+                      Mocks
                     </button>
                   </Link>
                 </li>
@@ -110,7 +110,7 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
               <div className="relative inline-block text-left">
                 <button
                   className={`items-center justify-center border-b-2 border-transparent py-1 text-2xl hover:border-b-sky-400 hover:text-sky-400 ${
-                    isError && "text-red-500"
+                    isError && "animate-bounce text-red-500"
                   }`}
                   onMouseEnter={() => {
                     setShowServerStatus(true);
@@ -185,7 +185,9 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
                 </div>
               ) : (
                 <button
-                  className="text-bold rounded-2xl bg-sky-500 py-1 px-5 text-white hover:bg-sky-700"
+                  className={`${
+                    !isError && "animate-bounce"
+                  } text-bold rounded-2xl bg-sky-500 py-1 px-5 text-white hover:bg-sky-700`}
                   onClick={() => handleLogin()}
                 >
                   Login

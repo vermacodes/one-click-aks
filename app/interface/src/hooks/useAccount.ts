@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { AccountType, Privildge } from "../dataStructures";
 import { axiosInstance } from "../utils/axios-interceptors";
@@ -47,6 +47,7 @@ export function useLogin() {
       queryClient.invalidateQueries("get-logs");
       queryClient.invalidateQueries("get-storage-account");
       queryClient.invalidateQueries("privilege");
+      queryClient.invalidateQueries("get-tfvar");
     },
     enabled: false,
   });

@@ -65,6 +65,7 @@ func accountLogin(c *gin.Context) {
 	if _, err = http.Get("http://localhost:8080/endstream"); err != nil {
 		log.Println("Not able to end stream")
 	}
+	onAuthDefaults()
 	updateActionStatus(false)
 }
 
@@ -146,12 +147,12 @@ func putAccount(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, accounts)
 }
 
-func validateLogin(c *gin.Context) {
+func validateLoginService() LoginStatus {
 
 	loginStatus := LoginStatus{}
 	loginStatus.IsLoggedIn = true
 
-	_, err := exec.Command("bash", "-c", "az account show -o json").Output()
+	_, err := exec.Command("bash", "-c", "az account get-access-token -o json").Output()
 
 	if err != nil {
 		loginStatus.IsLoggedIn = false
@@ -159,5 +160,9 @@ func validateLogin(c *gin.Context) {
 		log.Println("Error output from comamnd : ", err)
 	}
 
-	c.IndentedJSON(http.StatusOK, loginStatus)
+	return loginStatus
+}
+
+func validateLoginController(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, validateLoginService())
 }
