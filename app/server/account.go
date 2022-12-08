@@ -152,7 +152,7 @@ func validateLoginService() LoginStatus {
 	loginStatus := LoginStatus{}
 	loginStatus.IsLoggedIn = true
 
-	_, err := exec.Command("bash", "-c", "az account show -o json").Output()
+	_, err := exec.Command("bash", "-c", "az account get-access-token -o json").Output()
 
 	if err != nil {
 		loginStatus.IsLoggedIn = false
