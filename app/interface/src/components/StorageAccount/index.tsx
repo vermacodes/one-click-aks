@@ -23,9 +23,7 @@ export default function StorageAccount({}: Props) {
     <div>
       <div className="w-100 gap-x-reverse flex items-center justify-between gap-x-2 py-2">
         <h2 className="text-lg">Storage Account</h2>
-        {fetchingStorageAccount ||
-        storageAccount === undefined ||
-        storageAccount.storageAccount.name === "" ? (
+        {fetchingStorageAccount || storageAccount === undefined ? (
           <p>Please wait..</p>
         ) : (
           <>
