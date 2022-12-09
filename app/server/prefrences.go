@@ -62,6 +62,13 @@ func putPreference(c *gin.Context) {
 func getPreferenceFromBlob() Preference {
 	out, err := exec.Command("bash", "-c", "az storage blob download -c tfstate -n preference.json --account-name "+getStorageAccountName()+" --file /tmp/preference > /dev/null 2>&1 && cat /tmp/preference && rm /tmp/preference").Output()
 	if err != nil {
+		// Error exit status 3 means that the preference was not in storage acccount.
+		// This can happen for many reasons.
+		// If thats what happened, then set default preference and return that.
+		if err.Error() == "exit status 3" {
+			log.Println("Preference not found in storage. Setting to default.")
+			return defaultPreference("tfstate")
+		}
 		log.Println("Error getting preferences from storage exec command failed", err)
 		return Preference{}
 	}
@@ -124,9 +131,10 @@ func setPreference(preference Preference, accountName string) bool {
 	return true
 }
 
-func defaultPreference(accountName string) {
+func defaultPreference(accountName string) Preference {
 	var preference = Preference{
 		AzureRegion: "East US",
 	}
 	setPreference(preference, accountName)
+	return preference
 }
