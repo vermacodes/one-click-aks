@@ -1,5 +1,6 @@
 import { AxiosResponse } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import Tfvar from "../components/Tfvar";
 import { TfvarConfigType } from "../dataStructures";
 import { axiosInstance } from "../utils/axios-interceptors";
 
@@ -34,6 +35,18 @@ export function useSetTfvar() {
   const queryClient = useQueryClient();
   return useMutation(setTfvar, {
     onSuccess: () => {
+      queryClient.invalidateQueries("get-tfvar");
+      queryClient.invalidateQueries("get-logs");
+    },
+    onMutate: async (newTfvar: TfvarConfigType) => {
+      await queryClient.cancelQueries("get-tfvar");
+      const prevTfvar: AxiosResponse<TfvarConfigType> | undefined =
+        queryClient.getQueryData("get-tfvar");
+      queryClient.setQueryData("get-tfvar", { data: newTfvar });
+      return { prevTfvar, newTfvar };
+    },
+    onError: (error, newTfvar, context) => {
+      queryClient.setQueryData("get-tfvar", context?.prevTfvar);
       queryClient.invalidateQueries("get-tfvar");
       queryClient.invalidateQueries("get-logs");
     },

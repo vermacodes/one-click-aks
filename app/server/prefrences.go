@@ -87,6 +87,9 @@ func getPreferenceService() (Preference, error) {
 	if (Preference{} == preference) {
 		return preference, errors.New("not able to get preference")
 	}
+
+	// Putting preference in redis as its not there.
+	putPreferenceInRedis(preference)
 	return preference, nil
 }
 

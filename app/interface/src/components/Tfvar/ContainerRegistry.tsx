@@ -13,10 +13,8 @@ export default function ContainerRegistry() {
   function handleOnChange() {
     if (tfvar !== undefined) {
       if (tfvar.containerRegistries.length > 0) {
-        tfvar.kubernetesCluster.outboundType = "loadBalancer";
         tfvar.containerRegistries = [];
       } else {
-        tfvar.kubernetesCluster.outboundType = "userDefinedRouting";
         tfvar.containerRegistries = [defaultContainerRegistry];
       }
       !inProgress &&
