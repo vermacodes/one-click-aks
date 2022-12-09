@@ -31,7 +31,7 @@ export default function Login({ section, setSection }: Props) {
     <div className="flex flex-col items-center space-y-4">
       <p className="text-3xl text-slate-500">
         Now that the server is up and running 👍. You need to login 🔐 to Azure
-        CLI running in the docker contianer to be able to do stuff. Hit "Login"
+        CLI running in the docker container to be able to do stuff. Hit "Login"
         button below and follow instructions in terminal that will pop up. Did I
         mention 'Please be patient' ⌛?
       </p>

@@ -128,14 +128,14 @@ func _createStorageAccount() StorageAccount {
 	return storageAccount
 }
 
-func _createBlobContainer() BlobContainer {
+func _createBlobContainer(containerName string) BlobContainer {
 
 	storageAccountName := getStorageAccountName()
 
 	log.Println("Storage Account Name : ", storageAccountName)
-	log.Println("Command : ", "az storage container create -n tfstate -g repro-project --account-name "+storageAccountName+" --output tsv --query created")
+	log.Println("Command : ", "az storage container create -n "+containerName+" -g repro-project --account-name "+storageAccountName+" --output tsv --query created")
 
-	out, err := exec.Command("bash", "-c", "az storage container create -n tfstate -g repro-project --account-name "+storageAccountName+" --output tsv --query created").Output()
+	out, err := exec.Command("bash", "-c", "az storage container create -n "+containerName+" -g repro-project --account-name "+storageAccountName+" --output tsv --query created").Output()
 
 	if err != nil {
 		log.Println("Create Storage account - Not able to run az cli command")
@@ -146,7 +146,7 @@ func _createBlobContainer() BlobContainer {
 		log.Println("BlobContainer created.")
 	}
 
-	return getBlobContainer(storageAccountName, "tfstate")
+	return getBlobContainer(storageAccountName, containerName)
 }
 
 func _getResourceGroup() ResourceGroup {
@@ -211,7 +211,8 @@ func configureStateStorage(c *gin.Context) {
 
 	stateConfiguration.ResourceGroup = _createResourceGroup()
 	stateConfiguration.StorageAccount = _createStorageAccount()
-	stateConfiguration.BlobContainer = _createBlobContainer()
+	stateConfiguration.BlobContainer = _createBlobContainer("tfstate")
+	_ = _createBlobContainer("labs") // Create container for labs but I dont care about output.
 
 	// This configures default preferences.
 	defaultPreference(stateConfiguration.StorageAccount.Name)
