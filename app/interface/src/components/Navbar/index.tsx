@@ -111,7 +111,7 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
                 <button
                   className={`items-center justify-center border-b-2 border-transparent py-1 text-2xl hover:border-b-sky-400 hover:text-sky-400 ${
                     serverStatus?.status !== "OK" &&
-                    "animate-bounce text-red-500"
+                    "animate-bounced text-red-500"
                   }`}
                   onMouseEnter={() => {
                     setShowServerStatus(true);
@@ -151,7 +151,7 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
                   isLogin &&
                   storageAccount &&
                   storageAccount.storageAccount.name === "" &&
-                  "animate-bounce"
+                  "animate-bounced"
                 }`}
                 onClick={() => setShowSettingsModal(!showSettingsModal)}
               >
@@ -191,7 +191,7 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
               ) : (
                 <button
                   className={`${
-                    !isError && "animate-bounce"
+                    !isError && "animate-bounced"
                   } text-bold rounded-2xl bg-sky-500 py-1 px-5 text-white hover:bg-sky-700`}
                   onClick={() => handleLogin()}
                 >

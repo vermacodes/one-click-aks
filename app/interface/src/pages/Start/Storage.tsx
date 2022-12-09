@@ -25,7 +25,8 @@ export default function Storage({ section, setSection }: Props) {
     <div>
       <p className="text-3xl text-slate-500">
         Great 👏. Storage is setup now. Hit 'Finish' to go to Builder and start
-        building 🏗️ stuff.
+        building 🏗️ stuff. Head over to settings ⚙️ to see other configurations.
+        Bye bye 👋
       </p>
     </div>
   );
@@ -71,7 +72,7 @@ export default function Storage({ section, setSection }: Props) {
           ? storageIsSetup
           : storageIsNotSetup}
         <div className="flex justify-between">
-          <Button variant="primary" onClick={() => setSection("login")}>
+          <Button variant="primary" onClick={() => setSection("subscription")}>
             {"< Previous"}
           </Button>
           <Link to={"/builder"}>

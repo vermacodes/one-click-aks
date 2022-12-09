@@ -27,8 +27,9 @@ export default function Server({ section, setSection }: Props) {
         machine 💻.
       </p>
       <p className="text-3xl text-slate-500">
-        Copy the command below and run in your favourite CLI and come back to
-        this page.
+        How to install docker? I dont know.. ask Internet. After you've done
+        that, copy the command below and run in your favourite CLI and come back
+        to this page.
       </p>
       <div
         className={`flex justify-between  gap-x-5 rounded-xl border-2 bg-slate-300 py-2 px-6 dark:bg-slate-700 ${
