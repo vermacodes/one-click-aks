@@ -62,7 +62,10 @@ export default function Login({ section, setSection }: Props) {
           <Button
             variant="primary"
             disabled={!(loginStatus.data !== undefined && loginStatus.data)}
-            onClick={() => setSection("subscription")}
+            onClick={() => {
+              setLogs({ isStreaming: false, logs: "" });
+              setSection("subscription");
+            }}
           >
             {"Next >"}
           </Button>

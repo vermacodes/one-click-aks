@@ -81,7 +81,9 @@ export default function Storage({ section, setSection }: Props) {
               disabled={
                 storageAccount && storageAccount.storageAccount.name === ""
               }
-              onClick={() => setSection("server")}
+              onClick={() => {
+                setSection("server");
+              }}
             >
               {"Finish"}
             </Button>
