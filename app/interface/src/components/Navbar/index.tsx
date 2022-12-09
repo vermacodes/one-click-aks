@@ -12,6 +12,7 @@ import {
 import { useGetStorageAccount } from "../../hooks/useStorageAccount";
 import { useSetLogs } from "../../hooks/useLogs";
 import Terraform from "../../modals/Terraform";
+import CurrentTerraformWorkspace from "../CurrentTerraformWorkspace";
 
 type NavbarProps = {
   darkMode: boolean;
@@ -103,6 +104,9 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
             )}
           </ul>
           <ul className="flex gap-x-4 pl-5">
+            <li>
+              <CurrentTerraformWorkspace />
+            </li>
             <li>
               <Terraform />
             </li>
