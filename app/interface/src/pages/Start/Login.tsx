@@ -3,6 +3,7 @@ import Button from "../../components/Button";
 import Terminal from "../../components/Terminal";
 import { useLogin, useLoginStatus } from "../../hooks/useAccount";
 import { useSetLogs } from "../../hooks/useLogs";
+import { useTfvar } from "../../hooks/useTfvar";
 
 type Props = { section: string; setSection(args: string): void };
 
@@ -11,6 +12,7 @@ export default function Login({ section, setSection }: Props) {
   const loginStatus = useLoginStatus();
   const { refetch: login, isLoading: loginLoading } = useLogin();
   const { mutate: setLogs } = useSetLogs();
+  const { data: tfvar } = useTfvar();
 
   function handleLogin() {
     setShowTerminal(true);
@@ -63,7 +65,10 @@ export default function Login({ section, setSection }: Props) {
             variant="primary"
             disabled={!(loginStatus.data !== undefined && loginStatus.data)}
             onClick={() => {
-              setLogs({ isStreaming: false, logs: "" });
+              setLogs({
+                isStreaming: false,
+                logs: JSON.stringify(tfvar, null, 4),
+              });
               setSection("subscription");
             }}
           >
