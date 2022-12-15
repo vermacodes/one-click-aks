@@ -154,6 +154,7 @@ func getTfvarService() (TfvarConfigType, error) {
 	rdb := newRedisClient()
 	tfvar := TfvarConfigType{}
 
+	// TODO: validating login on each tfvar get is huge overhead. Needs workaround.
 	loginStatus := validateLoginService()
 	if !loginStatus.IsLoggedIn {
 		return tfvar, errors.New("403")
