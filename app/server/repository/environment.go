@@ -1,13 +1,14 @@
-package main
+package repository
 
 import (
-	"log"
 	"os"
+
+	"golang.org/x/exp/slog"
 )
 
 func setEnvironmentVariable(key string, value string) {
 	err := os.Setenv(key, value)
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("not able to set environment variable", err)
 	}
 }
