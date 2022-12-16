@@ -21,5 +21,15 @@ func main() {
 	handler.NewWorkspaceHandler(router, workspaceService)
 	handler.NewStorageAccountHandler(router, storageAccountService)
 
+	logStreamRepository := repository.NewLogStreamRepository()
+	logStreamService := service.NewLogStreamService(logStreamRepository)
+
+	actionStatusRepository := repository.NewActionStatusRepository()
+	actionStatusService := service.NewActionStatusService(actionStatusRepository)
+
+	authRepository := repository.NewAuthRepository()
+	authService := service.NewAuthService(authRepository, logStreamService, actionStatusService)
+	handler.NewAuthHandler(router, authService)
+
 	router.Run()
 }
