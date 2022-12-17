@@ -34,10 +34,9 @@ func (a *authService) Login() (entity.LoginStatus, error) {
 	// GO routine that takes care of running command and moving logs to redis.
 	go func(input io.ReadCloser) {
 		in := bufio.NewScanner(input)
-		logStream, err := a.logStreamService.GetLogs()
-		if err != nil {
-			slog.Error("not able to get existing logs. Resetting", err)
-			logStream.Logs = ""
+		logStream := entity.LogStream{
+			Logs:        "",
+			IsStreaming: true,
 		}
 		for in.Scan() {
 			logStream.Logs = logStream.Logs + fmt.Sprintf("%s\n", in.Text()) // Appening 'end' to signal stream end.

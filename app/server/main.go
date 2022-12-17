@@ -14,18 +14,21 @@ func main() {
 	tfvarService := service.NewTfvarService(tfvarRepository)
 	handler.NewTfvarHandler(router, tfvarService)
 
-	workspaceRepository := repository.NewTfWorkspaceRepository()
 	storageAccountRepository := repository.NewStorageAccountRepository()
 	storageAccountService := service.NewStorageAccountService(storageAccountRepository)
+	handler.NewStorageAccountHandler(router, storageAccountService)
+
+	workspaceRepository := repository.NewTfWorkspaceRepository()
 	workspaceService := service.NewWorksapceService(workspaceRepository, storageAccountService)
 	handler.NewWorkspaceHandler(router, workspaceService)
-	handler.NewStorageAccountHandler(router, storageAccountService)
 
 	logStreamRepository := repository.NewLogStreamRepository()
 	logStreamService := service.NewLogStreamService(logStreamRepository)
+	handler.NewLogStreamHandler(router, logStreamService)
 
 	actionStatusRepository := repository.NewActionStatusRepository()
 	actionStatusService := service.NewActionStatusService(actionStatusRepository)
+	handler.NewActionStatusHanlder(*router, actionStatusService)
 
 	authRepository := repository.NewAuthRepository()
 	authService := service.NewAuthService(authRepository, logStreamService, actionStatusService)
