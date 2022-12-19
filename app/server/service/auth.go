@@ -191,6 +191,34 @@ func (a *authService) SetAccount(account entity.Account) error {
 	return nil
 }
 
+func (a *authService) GetPriveledges() (entity.Priviledge, error) {
+	privilegde := entity.Priviledge{}
+
+	account, err := a.GetAccount()
+	if err != nil {
+		slog.Error("not able to get current account", err)
+		return privilegde, err
+	}
+
+	isAdmin, err := a.authRepository.IsAdmin(account.User.Name)
+	if err != nil {
+		slog.Error("not able to get admin status", err)
+		return privilegde, err
+	}
+
+	isMentor, err := a.authRepository.IsMentor(account.User.Name)
+	if err != nil {
+		slog.Error("not able to get mentor status", err)
+		return privilegde, err
+	}
+
+	privilegde.User = account.User.Name
+	privilegde.IsAdmin = isAdmin
+	privilegde.IsMentor = isMentor
+
+	return privilegde, nil
+}
+
 func helperIsTokenValid(accessToken entity.AccessToken) (entity.LoginStatus, error) {
 	loginStatus := entity.LoginStatus{}
 

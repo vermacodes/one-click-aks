@@ -79,3 +79,20 @@ func (a *authRepository) DeleteAccountFromRedis() error {
 func (a *authRepository) DeleteAccountsFromRedis() error {
 	return deleteRedis("accounts")
 }
+
+func (a *authRepository) IsAdmin(user string) (bool, error) {
+	return helperContains([]string{"ashisverma@microsoft.com", "evalan@microsoft.com", "amargherio@microsoft.com", "eric.lucier@microsoft.com"}, user)
+}
+
+func (a *authRepository) IsMentor(user string) (bool, error) {
+	return helperContains([]string{"ashisverma@microsoft.com", "evalan@microsoft.com", "amargherio@microsoft.com", "eric.lucier@microsoft.com"}, user)
+}
+
+func helperContains(s []string, str string) (bool, error) {
+	for _, v := range s {
+		if v == str {
+			return true, nil
+		}
+	}
+	return false, nil
+}

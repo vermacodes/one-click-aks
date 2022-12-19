@@ -21,7 +21,13 @@ func (t *tfvarService) Get() (entity.TfvarConfigType, error) {
 	tfvar := entity.TfvarConfigType{}
 	val, err := t.tfvarRepo.Get()
 	if err != nil {
-		slog.Info("not able to get tfvar from redis", err)
+		slog.Info("not able to get tfvar from redis. setting default", err)
+
+		tfvar, err := t.Put(defaultTfvar())
+		if err != nil {
+			slog.Error("not able to put default tfvar", err)
+		}
+
 		return tfvar, nil
 	}
 
@@ -45,4 +51,38 @@ func (t *tfvarService) Put(tfvar entity.TfvarConfigType) (entity.TfvarConfigType
 	}
 
 	return tfvar, nil
+}
+
+func defaultTfvar() entity.TfvarConfigType {
+	var defaultResourceGroup = entity.TfvarResourceGroupType{
+		Location: "East US",
+	}
+
+	var defaultNodePool = entity.TfvarDefaultNodePoolType{
+		EnableAutoScaling: false,
+		MinCount:          1,
+		MaxCount:          1,
+	}
+
+	var defaultKubernetesCluster = entity.TfvarKubernetesClusterType{
+		KubernetesVersion:     "",
+		NetworkPlugin:         "kubenet",
+		NetworkPolicy:         "null",
+		OutboundType:          "loadBalancer",
+		PrivateClusterEnabled: "false",
+		DefaultNodePool:       defaultNodePool,
+	}
+
+	var defautlTfvar = entity.TfvarConfigType{
+		ResourceGroup:         defaultResourceGroup,
+		KubernetesCluster:     defaultKubernetesCluster,
+		VirtualNetworks:       []entity.TfvarVirtualNeworkType{},
+		NetworkSecurityGroups: []entity.TfvarNetworkSecurityGroupType{},
+		Subnets:               []entity.TfvarSubnetType{},
+		Jumpservers:           []entity.TfvarJumpserverType{},
+		Firewalls:             []entity.TfvarFirewallType{},
+		ContainerRegistries:   []entity.ContainerRegistryType{},
+	}
+
+	return defautlTfvar
 }

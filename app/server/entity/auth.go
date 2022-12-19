@@ -42,12 +42,19 @@ type AccessToken struct {
 	TokenType    string `json:"tokenType"`
 }
 
+type Priviledge struct {
+	User     string `json:"user"`
+	IsAdmin  bool   `json:"isAdmin"`
+	IsMentor bool   `json:"isMentor"`
+}
+
 type AuthService interface {
 	Login() (LoginStatus, error)
 	GetLoginStatus() (LoginStatus, error)
 	GetAccount() (Account, error)
 	GetAccounts() ([]Account, error)
 	SetAccount(account Account) error
+	GetPriveledges() (Priviledge, error)
 }
 
 type AuthRepository interface {
@@ -69,4 +76,7 @@ type AuthRepository interface {
 	SetAccount(accountId string) error
 	DeleteAccountFromRedis() error
 	DeleteAccountsFromRedis() error
+
+	IsAdmin(string) (bool, error)
+	IsMentor(string) (bool, error)
 }

@@ -8,7 +8,7 @@ function getActionStatus() {
 }
 
 function setActionStatus(actionStatus: ActionStatusType) {
-  return axiosInstance.post("actionstatus", actionStatus);
+  return axiosInstance.put("actionstatus", actionStatus);
 }
 
 export function useActionStatus() {

@@ -9,11 +9,7 @@ function getTfvar(): Promise<AxiosResponse<TfvarConfigType>> {
 }
 
 function setTfvar(tfvar: TfvarConfigType) {
-  return axiosInstance.post("tfvar", tfvar);
-}
-
-function setDefaultTfvar() {
-  return axiosInstance.post("tfvardefault");
+  return axiosInstance.put("tfvar", tfvar);
 }
 
 export function useTfvar() {

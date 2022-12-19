@@ -1,15 +1,34 @@
 package main
 
 import (
+	"net/http"
+
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/vermacodes/one-click-aks/app/server/handler"
 	"github.com/vermacodes/one-click-aks/app/server/repository"
 	"github.com/vermacodes/one-click-aks/app/server/service"
 )
 
+type Status struct {
+	Status string `json:"status"`
+}
+
+func status(c *gin.Context) {
+
+	status := Status{}
+	status.Status = "OK"
+
+	c.IndentedJSON(http.StatusOK, status)
+}
+
 func main() {
 	router := gin.Default()
 	router.SetTrustedProxies(nil)
+
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"http://localhost:3000", "http://localhost:5173", "https://ashisverma.z13.web.core.windows.net", "https://*.azurewebsites.net"}
+	router.Use(cors.New(config))
 
 	tfvarRepository := repository.NewRedisTfvarRepository()
 	tfvarService := service.NewTfvarService(tfvarRepository)
@@ -35,5 +54,10 @@ func main() {
 	authService := service.NewAuthService(authRepository, logStreamService, actionStatusService)
 	handler.NewAuthHandler(router, authService)
 
+	prefRepository := repository.NewPreferenceRepository()
+	prefService := service.NewPreferenceService(prefRepository, storageAccountService)
+	handler.NewPreferenceHandler(router, prefService)
+
+	router.GET("/status", status)
 	router.Run()
 }

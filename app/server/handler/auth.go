@@ -22,6 +22,7 @@ func NewAuthHandler(r *gin.Engine, service entity.AuthService) {
 	r.GET("/account", handler.GetAccount)
 	r.GET("/accounts", handler.GetAccounts)
 	r.PUT("/account", handler.SetAccount)
+	r.GET("/privilege", handler.GetPrivileges)
 }
 
 func (a *authHandler) Login(c *gin.Context) {
@@ -78,4 +79,13 @@ func (a *authHandler) SetAccount(c *gin.Context) {
 	}
 
 	c.Status(http.StatusOK)
+}
+
+func (a *authHandler) GetPrivileges(c *gin.Context) {
+	privilege, err := a.authService.GetPriveledges()
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+	c.IndentedJSON(http.StatusOK, privilege)
 }

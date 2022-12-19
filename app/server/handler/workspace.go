@@ -21,6 +21,7 @@ func NewWorkspaceHandler(r *gin.Engine, service entity.WorkspaceService) {
 	r.POST("/workspace", handler.AddWorkspace)
 	r.PUT("/workspace", handler.SelectWorkspace)
 	r.DELETE("/workspace", handler.DeleteWorkspace)
+	r.GET("/resources", handler.GetResources)
 }
 
 func (w *WorkspaceHandler) ListWorkspaces(c *gin.Context) {
@@ -81,4 +82,14 @@ func (w *WorkspaceHandler) DeleteWorkspace(c *gin.Context) {
 		return
 	}
 	c.Status(http.StatusNoContent)
+}
+
+func (w *WorkspaceHandler) GetResources(c *gin.Context) {
+	resources, err := w.WorkspaceService.Resources()
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.String(http.StatusOK, resources)
 }

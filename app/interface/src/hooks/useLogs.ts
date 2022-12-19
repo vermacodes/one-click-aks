@@ -9,7 +9,7 @@ function getLogs(): Promise<AxiosResponse<LogsStreamType>> {
 }
 
 function setLogs(log: LogsStreamType) {
-  return axiosInstance.post("logs", log);
+  return axiosInstance.put("logs", log);
 }
 
 export function useLogs() {

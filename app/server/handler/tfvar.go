@@ -18,7 +18,7 @@ func NewTfvarHandler(r *gin.Engine, service entity.TfvarService) {
 	}
 
 	r.GET("/tfvar", handler.GetTfvar)
-	r.POST("tfvar", handler.SetTfvar)
+	r.PUT("tfvar", handler.SetTfvar)
 }
 
 func (t *TfvarHandler) GetTfvar(c *gin.Context) {

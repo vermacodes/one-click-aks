@@ -4,15 +4,15 @@ import { AccountType, LoginStatus, Privildge } from "../dataStructures";
 import { axiosInstance } from "../utils/axios-interceptors";
 
 function getLoginStatus(): Promise<AxiosResponse<LoginStatus>> {
-  return axiosInstance.get("loginstatus");
-}
-
-function login() {
   return axiosInstance.get("login");
 }
 
+function login() {
+  return axiosInstance.post("login");
+}
+
 function getAccounts(): Promise<AxiosResponse<AccountType[]>> {
-  return axiosInstance.get("account");
+  return axiosInstance.get("accounts");
 }
 
 function setAccount(account: AccountType) {
@@ -79,7 +79,7 @@ export function useSetAccount() {
 }
 
 function getCurrentAccount(): Promise<AxiosResponse<AccountType>> {
-  return axiosInstance.get("accountshow");
+  return axiosInstance.get("account");
 }
 
 export function useGetCurrentAccount() {
