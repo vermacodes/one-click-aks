@@ -9,6 +9,7 @@ import (
 
 func main() {
 	router := gin.Default()
+	router.SetTrustedProxies(nil)
 
 	tfvarRepository := repository.NewRedisTfvarRepository()
 	tfvarService := service.NewTfvarService(tfvarRepository)

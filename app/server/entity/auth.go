@@ -34,18 +34,39 @@ type LoginMessage struct {
 	LoginMessage string `json:"loginMessage"`
 }
 
+type AccessToken struct {
+	AccessToken  string `json:"accessToken"`
+	ExpiresOn    string `json:"expiresOn"`
+	Subscription string `json:"subscription"`
+	Tenant       string `json:"tenant"`
+	TokenType    string `json:"tokenType"`
+}
+
 type AuthService interface {
 	Login() (LoginStatus, error)
-	// LoginStatus() (LoginStatus, error)
-	// GetAccount() (Account, error)
-	// GetAccounts() ([]Account, error)
-	// SetAccount(account Account)
+	GetLoginStatus() (LoginStatus, error)
+	GetAccount() (Account, error)
+	GetAccounts() ([]Account, error)
+	SetAccount(account Account) error
 }
 
 type AuthRepository interface {
 	Login() (*exec.Cmd, *os.File, *os.File, error)
-	// LoginStatus() error
-	// GetAccount() (string, error)
-	// GetAccounts() (string, error)
-	// SetAccount(accountId string) error
+
+	GetLoginStatus() (string, error)
+	GetLoginStatusFromRedis() (string, error)
+	SetLoginStatusInRedis(string) error
+	// DeleteLoginStatusFromRedis() error
+
+	GetAccount() (string, error)
+	GetAccountFromRedis() (string, error)
+	SetAccountInRedis(val string) error
+
+	GetAccounts() (string, error)
+	GetAccountsFromRedis() (string, error)
+	SetAccountsInRedis(val string) error
+
+	SetAccount(accountId string) error
+	DeleteAccountFromRedis() error
+	DeleteAccountsFromRedis() error
 }
