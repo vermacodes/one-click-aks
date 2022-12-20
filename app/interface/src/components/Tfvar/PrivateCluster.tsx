@@ -1,5 +1,6 @@
 import { TfvarConfigType } from "../../dataStructures";
 import { useActionStatus } from "../../hooks/useActionStatus";
+import { useLab, useSetLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
 import { useSetTfvar, useTfvar } from "../../hooks/useTfvar";
 import Checkbox from "../Checkbox";
@@ -9,22 +10,33 @@ export default function PrivateCluster() {
   const { mutate: setTfvar } = useSetTfvar();
   const { data: inProgress } = useActionStatus();
   const { mutate: setLogs } = useSetLogs();
+  const {
+    data: lab,
+    isLoading: labIsLoading,
+    isFetching: labIsFetching,
+  } = useLab();
+  const { mutate: setLab } = useSetLab();
 
   function handleOnChange() {
-    if (tfvar !== undefined) {
-      if (tfvar.kubernetesCluster.privateClusterEnabled === "true") {
-        tfvar.kubernetesCluster.privateClusterEnabled = "false";
-        tfvar.jumpservers = [];
-      } else {
-        tfvar.kubernetesCluster.privateClusterEnabled = "true";
+    if (lab !== undefined) {
+      if (lab.template !== undefined) {
+        if (lab.template.kubernetesCluster.privateClusterEnabled === "true") {
+          lab.template.kubernetesCluster.privateClusterEnabled = "false";
+          lab.template.jumpservers = [];
+        } else {
+          lab.template.kubernetesCluster.privateClusterEnabled = "true";
+        }
+        !inProgress &&
+          setLogs({
+            isStreaming: false,
+            logs: JSON.stringify(lab.template, null, 4),
+          });
+        setLab(lab);
       }
-      !inProgress &&
-        setLogs({ isStreaming: false, logs: JSON.stringify(tfvar, null, 4) });
-      setTfvar(tfvar);
     }
   }
 
-  if (tfvar === undefined) {
+  if (lab === undefined || lab.template === undefined) {
     return <></>;
   }
 
@@ -36,8 +48,8 @@ export default function PrivateCluster() {
     <Checkbox
       id="toogle-privatecluster"
       label="Private Cluster"
-      checked={tfvar.kubernetesCluster.privateClusterEnabled === "true"}
-      disabled={tfvar.virtualNetworks.length === 0}
+      checked={lab.template.kubernetesCluster.privateClusterEnabled === "true"}
+      disabled={lab.template.virtualNetworks.length === 0}
       handleOnChange={handleOnChange}
     />
   );

@@ -32,7 +32,7 @@ export default function Tfvar() {
   function applyHandler() {
     setActionStatus({ inProgress: true });
     setLogs({ isStreaming: true, logs: "" });
-    axiosInstance.post("apply", tfvar);
+    axiosInstance.post("apply", lab);
   }
 
   function planHandler() {
@@ -44,7 +44,7 @@ export default function Tfvar() {
   function destroyHandler() {
     setActionStatus({ inProgress: true });
     setLogs({ isStreaming: true, logs: "" });
-    axiosInstance.post("destroy", tfvar);
+    axiosInstance.post("destroy", lab);
   }
 
   function handleCreateLab() {
