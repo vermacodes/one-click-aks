@@ -60,10 +60,14 @@ type LabService interface {
 	// and logs are streamed.
 	Validate() error
 
+	// Public Labs
+	// Includes = sharedlabs, labexercises, mockcases.
 	GetPublicLabs(typeOfLab string) ([]LabType, error)
 	AddPublicLab(LabType) error
 	DeletePublicLab(LabType) error
 
+	// Private Labs
+	// Includes labs that are saved in your own subscription.
 	GetMyLabs() ([]LabType, error)
 	AddMyLab(LabType) error
 	DeleteMyLab(lab LabType) error
