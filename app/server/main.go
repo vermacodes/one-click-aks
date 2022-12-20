@@ -58,6 +58,10 @@ func main() {
 	prefService := service.NewPreferenceService(prefRepository, storageAccountService)
 	handler.NewPreferenceHandler(router, prefService)
 
+	labRepository := repository.NewLabRespository()
+	labService := service.NewLabService(labRepository, logStreamService, actionStatusService, tfvarService, storageAccountService)
+	handler.NewLabHandler(router, labService)
+
 	router.GET("/status", status)
 	router.Run()
 }

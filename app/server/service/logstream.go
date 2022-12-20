@@ -34,6 +34,18 @@ func (l *logStreamService) GetLogs() (entity.LogStream, error) {
 	logStreamString, err := l.logStreamRepository.GetLogsFromRedis()
 	if err != nil {
 		slog.Error("not able to get logs from redis", err)
+
+		// Default to empty.
+		defaultLogStream := entity.LogStream{
+			IsStreaming: false,
+			Logs:        "",
+		}
+
+		if err := l.SetLogs(defaultLogStream); err != nil {
+			slog.Error("not able to set defualt log stream", err)
+		}
+
+		return defaultLogStream, nil
 	}
 
 	logStream, err := helperStringToLogStream(logStreamString)

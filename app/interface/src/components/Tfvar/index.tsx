@@ -3,6 +3,7 @@ import {
   useActionStatus,
   useSetActionStatus,
 } from "../../hooks/useActionStatus";
+import { useLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
 import { useTfvar } from "../../hooks/useTfvar";
 import LabBuilder from "../../modals/LabBuilder";
@@ -26,6 +27,7 @@ export default function Tfvar() {
   const { mutate: setActionStatus } = useSetActionStatus();
   const { mutate: setLogs } = useSetLogs();
   const { data: tfvar } = useTfvar();
+  const { data: lab } = useLab();
 
   function applyHandler() {
     setActionStatus({ inProgress: true });
@@ -36,7 +38,7 @@ export default function Tfvar() {
   function planHandler() {
     setActionStatus({ inProgress: true });
     setLogs({ isStreaming: true, logs: "" });
-    axiosInstance.post("plan", tfvar);
+    axiosInstance.post("plan", lab);
   }
 
   function destroyHandler() {

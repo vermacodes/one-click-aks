@@ -22,7 +22,17 @@ func (a *actionStatusService) GetActionStatus() (entity.ActionStatus, error) {
 	val, err := a.actionStatusRepository.GetActionStatus()
 	if err != nil {
 		slog.Error("action status not found in redis", err)
-		return actionStatus, err
+
+		// Reset to default.
+		defaultActionStatus := entity.ActionStatus{
+			InProgress: false,
+		}
+
+		if err := a.SetActionStatus(defaultActionStatus); err != nil {
+			slog.Error("not able to set default action status in redis.", err)
+		}
+
+		return defaultActionStatus, nil
 	}
 
 	if err = json.Unmarshal([]byte(val), &actionStatus); err != nil {

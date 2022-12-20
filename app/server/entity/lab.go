@@ -27,6 +27,8 @@ type BlobType struct {
 }
 
 type LabService interface {
+	GetLabFromRedis() (LabType, error)
+	SetLabInRedis(LabType) error
 	// Streams logs
 	Plan(LabType) error
 
@@ -45,5 +47,7 @@ type LabService interface {
 }
 
 type LabRepository interface {
+	GetLabFromRedis() (string, error)
+	SetLabInRedis(string) error
 	TerraformAction(TfvarConfigType, string, string) (*exec.Cmd, *os.File, *os.File, error)
 }

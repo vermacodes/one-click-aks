@@ -18,6 +18,14 @@ func NewLabRespository() entity.LabRepository {
 	return &labRepository{}
 }
 
+func (l *labRepository) GetLabFromRedis() (string, error) {
+	return getRedis("lab")
+}
+
+func (l *labRepository) SetLabInRedis(val string) error {
+	return setRedis("lab", val)
+}
+
 func (l *labRepository) TerraformAction(tfvar entity.TfvarConfigType, action string, storageAccountName string) (*exec.Cmd, *os.File, *os.File, error) {
 
 	setEnvironmentVariable("terraform_directory", "tf")
