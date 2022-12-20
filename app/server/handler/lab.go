@@ -17,8 +17,13 @@ func NewLabHandler(r *gin.Engine, labService entity.LabService) {
 	}
 
 	r.POST("/plan", handler.Plan)
+	r.POST("/apply", handler.Apply)
+	r.POST("/destroy", handler.Destroy)
 	r.GET("/lab", handler.GetLabFromRedis)
 	r.PUT("/lab", handler.SetLabInRedis)
+	r.POST("/lab", handler.AddLab)
+	r.GET("/lab/public/:typeOfLab", handler.GetPublicLabs)
+	r.GET("/lab/my", handler.GetMyLabs)
 }
 
 func (l *labHandler) GetLabFromRedis(c *gin.Context) {
@@ -62,4 +67,80 @@ func (l *labHandler) Plan(c *gin.Context) {
 	w.(http.Flusher).Flush()
 
 	l.labService.Plan(lab)
+}
+
+func (l *labHandler) Apply(c *gin.Context) {
+	lab := entity.LabType{}
+	if err := c.Bind(&lab); err != nil {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	w := c.Writer
+	header := w.Header()
+	header.Set("Transfer-Encoding", "chunked")
+	header.Set("Content-type", "text/html")
+	w.WriteHeader(http.StatusOK)
+	w.(http.Flusher).Flush()
+
+	l.labService.Apply(lab)
+}
+
+func (l *labHandler) Destroy(c *gin.Context) {
+	lab := entity.LabType{}
+	if err := c.Bind(&lab); err != nil {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	w := c.Writer
+	header := w.Header()
+	header.Set("Transfer-Encoding", "chunked")
+	header.Set("Content-type", "text/html")
+	w.WriteHeader(http.StatusOK)
+	w.(http.Flusher).Flush()
+
+	l.labService.Destroy(lab)
+}
+
+func (l *labHandler) GetPublicLabs(c *gin.Context) {
+	typeOfLab := c.Param("typeOfLab")
+	labs, err := l.labService.GetPublicLabs(typeOfLab)
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, labs)
+}
+
+func (l *labHandler) GetMyLabs(c *gin.Context) {
+	labs, err := l.labService.GetMyLabs()
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, labs)
+}
+
+func (l *labHandler) AddLab(c *gin.Context) {
+	lab := entity.LabType{}
+	if err := c.Bind(&lab); err != nil {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	switch typeOfLab := lab.Type; typeOfLab {
+	case "template":
+		if err := l.labService.AddMyLab(lab); err != nil {
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+	default:
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	c.Status(http.StatusCreated)
 }

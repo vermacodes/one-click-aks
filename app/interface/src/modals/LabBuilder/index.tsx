@@ -4,6 +4,7 @@ import Button from "../../components/Button";
 import { Lab } from "../../dataStructures";
 import { useGetPriviledge } from "../../hooks/useAccount";
 import { useCreateLab } from "../../hooks/useBlobs";
+import { useLab } from "../../hooks/useLab";
 import { useTfvar } from "../../hooks/useTfvar";
 import { axiosInstance } from "../../utils/axios-interceptors";
 
@@ -41,7 +42,7 @@ type ModalProps = {
 };
 
 function Modal({ _lab, showModal, setShowModal }: ModalProps) {
-  const { data: tfvar, refetch } = useTfvar();
+  const { data: labInMemory, refetch } = useLab();
   const { mutate: createLab, isLoading: creatingLab } = useCreateLab();
   const { data: priviledge } = useGetPriviledge();
   const [lab, setLab] = useState<Lab>({
@@ -50,7 +51,7 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
     description: "",
     tags: [""],
     type: "template",
-    template: tfvar,
+    template: labInMemory?.template,
     extendScript: "",
     validateScript: "",
     message: "",
@@ -67,12 +68,12 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
   }, []);
 
   useEffect(() => {
-    if (tfvar !== undefined && _lab == undefined) {
-      setLab({ ...lab, template: tfvar });
+    if (labInMemory !== undefined && _lab == undefined) {
+      setLab({ ...labInMemory });
     } else {
       refetch;
     }
-  }, [tfvar]);
+  }, [labInMemory]);
 
   if (!showModal) return null;
   return (
@@ -145,6 +146,18 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
             placeholder="This field will auto populate."
           />
         </div>
+        <div className={`my-4`}>
+          <label htmlFor="extendscript">Extend Script</label>
+          <textarea
+            id="extendscript"
+            value={atob(lab.extendScript)}
+            className="px h-60 w-full border border-slate-500 bg-inherit p-2 py-2 font-mono text-sm scrollbar-thin scrollbar-track-slate-300 scrollbar-thumb-sky-500 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500 hover:bg-slate-200 dark:hover:bg-slate-700"
+            placeholder="Script to extend the cluster."
+            onChange={(event) => {
+              setLab({ ...lab, extendScript: btoa(event.target.value) });
+            }}
+          />
+        </div>
         {priviledge && (priviledge.isAdmin || priviledge.isMentor) && (
           <>
             <div className="my-4">
@@ -161,18 +174,6 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
                 <option value={"lab"}>Lab Exercise</option>
                 <option value={"mockcase"}>Mock Case</option>
               </select>
-            </div>
-            <div className={`my-4 ${lab.type === "template" && "hidden"}`}>
-              <label htmlFor="extendscript">Extend Script</label>
-              <textarea
-                id="extendscript"
-                value={atob(lab.extendScript)}
-                className="px h-60 w-full border border-slate-500 bg-inherit p-2 py-2 font-mono text-sm scrollbar-thin scrollbar-track-slate-300 scrollbar-thumb-sky-500 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500 hover:bg-slate-200 dark:hover:bg-slate-700"
-                placeholder="Script to extend the cluster."
-                onChange={(event) => {
-                  setLab({ ...lab, extendScript: btoa(event.target.value) });
-                }}
-              />
             </div>
             <div className={`my-4 ${lab.type === "template" && "hidden"}`}>
               <label htmlFor="validatescript">Validate Script</label>

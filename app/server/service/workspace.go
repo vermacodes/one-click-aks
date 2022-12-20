@@ -106,6 +106,7 @@ func (w *workspaceService) Resources() (string, error) {
 // this is a hleper function which takes a string (output from the commmand)
 // and converts to a list of workspaces.
 func helperStringToWorkspaces(val string) []entity.Workspace {
+	slog.Info("workspaces -> " + val)
 	workspaces := []entity.Workspace{}
 	sliceOut := strings.Split(string(val), ",")
 	for _, v := range sliceOut {

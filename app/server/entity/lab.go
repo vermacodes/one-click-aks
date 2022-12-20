@@ -5,6 +5,21 @@ import (
 	"os/exec"
 )
 
+type Blob struct {
+	Name string `xml:"Name" json:"name"`
+	Url  string `xml:"Url" json:"url"`
+}
+
+// Ok. if you noted that the its named blob and should be Blobs. I've no idea whose fault is this.
+// Read more about the API https://learn.microsoft.com/en-us/rest/api/storageservices/list-blobs?tabs=azure-ad#request
+type Blobs struct {
+	Blob []Blob `xml:"Blob" json:"blob"`
+}
+
+type EnumerationResults struct {
+	Blobs Blobs `xml:"Blobs" json:"blobs"`
+}
+
 type LabType struct {
 	Id             string          `json:"id"`
 	Name           string          `json:"name"`
@@ -44,10 +59,24 @@ type LabService interface {
 	// runs against selected workspace. This doesnt send any response body
 	// and logs are streamed.
 	Validate() error
+
+	GetPublicLabs(typeOfLab string) ([]LabType, error)
+	GetMyLabs() ([]LabType, error)
+	AddMyLab(LabType) error
 }
 
 type LabRepository interface {
 	GetLabFromRedis() (string, error)
 	SetLabInRedis(string) error
 	TerraformAction(TfvarConfigType, string, string) (*exec.Cmd, *os.File, *os.File, error)
+
+	GetEnumerationResults(typeOfLab string) (EnumerationResults, error)
+	GetBlob(url string) (LabType, error)
+
+	GetMyLabsFromRedis() (string, error)
+	GetMyLabsFromStorageAccount(string) (string, error)
+	GetMyLabFromStorageAccount(string, string) (string, error)
+
+	AddMyLab(storageAccountName string, labId string, lab string) error
+	DeleteLabsFromRedis() error
 }

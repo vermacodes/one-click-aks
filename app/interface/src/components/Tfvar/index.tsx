@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQueryClient } from "react-query";
 import {
   useActionStatus,
   useSetActionStatus,
@@ -28,21 +29,35 @@ export default function Tfvar() {
   const { mutate: setLogs } = useSetLogs();
   const { data: tfvar } = useTfvar();
   const { data: lab } = useLab();
+  const queryClient = useQueryClient();
 
   function applyHandler() {
-    setActionStatus({ inProgress: true });
+    // TODO: Is this the best way to do this? If not, fix.
+    queryClient.setQueryData("get-action-status", { inProgress: true });
+    setTimeout(() => {
+      queryClient.invalidateQueries("get-action-status");
+    }, 50);
+
     setLogs({ isStreaming: true, logs: "" });
     axiosInstance.post("apply", lab);
   }
 
   function planHandler() {
-    setActionStatus({ inProgress: true });
+    queryClient.setQueryData("get-action-status", { inProgress: true });
+    setTimeout(() => {
+      queryClient.invalidateQueries("get-action-status");
+    }, 50);
+
     setLogs({ isStreaming: true, logs: "" });
     axiosInstance.post("plan", lab);
   }
 
   function destroyHandler() {
-    setActionStatus({ inProgress: true });
+    queryClient.setQueryData("get-action-status", { inProgress: true });
+    setTimeout(() => {
+      queryClient.invalidateQueries("get-action-status");
+    }, 50);
+
     setLogs({ isStreaming: true, logs: "" });
     axiosInstance.post("destroy", lab);
   }

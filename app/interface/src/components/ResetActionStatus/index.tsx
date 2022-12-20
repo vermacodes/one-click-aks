@@ -13,7 +13,7 @@ export default function ResetActionStatus({}: Props) {
             .put("actionstatus", {
               inProgress: false,
             })
-            .then(() => axiosInstance.get("endstream"))
+            .then(() => axiosInstance.put("logs/endstream"))
         }
       >
         Stop Runaway Action
