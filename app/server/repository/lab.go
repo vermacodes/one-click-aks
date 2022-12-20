@@ -91,7 +91,7 @@ func (l *labRepository) GetEnumerationResults(typeOfLab string) (entity.Enumerat
 	return er, nil
 }
 
-func (l *labRepository) GetBlob(url string) (entity.LabType, error) {
+func (l *labRepository) GetLab(url string) (entity.LabType, error) {
 	lab := entity.LabType{}
 	resp, err := http.Get(url)
 	if err != nil {
@@ -107,6 +107,16 @@ func (l *labRepository) GetBlob(url string) (entity.LabType, error) {
 	}
 
 	return lab, nil
+}
+
+func (l *labRepository) AddLab(labId string, lab string, typeOfLab string) error {
+	_, err := exec.Command("bash", "-c", "echo '"+lab+"' | az storage blob upload --data @- -c repro-project-"+typeOfLab+"s -n "+labId+".json --account-name ashisverma  --overwrite").Output()
+	return err
+}
+
+func (l *labRepository) DeleteLab(labId string, typeOfLab string) error {
+	_, err := exec.Command("bash", "-c", "az storage blob delete -c repro-project-"+typeOfLab+"s -n "+labId+".json --account-name ashisverma").Output()
+	return err
 }
 
 func (l *labRepository) GetMyLabsFromRedis() (string, error) {
@@ -130,4 +140,9 @@ func (l *labRepository) AddMyLab(storageAccountName string, labId string, lab st
 
 func (l *labRepository) DeleteLabsFromRedis() error {
 	return nil
+}
+
+func (l *labRepository) DeleteMyLab(labId string, storageAccountName string) error {
+	_, err := exec.Command("bash", "-c", "az storage blob delete -c labs -n "+labId+".json --account-name "+storageAccountName).Output()
+	return err
 }

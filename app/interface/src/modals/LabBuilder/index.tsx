@@ -171,7 +171,7 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
                 }}
               >
                 <option value={"template"}>Template</option>
-                <option value={"lab"}>Lab Exercise</option>
+                <option value={"labexercise"}>Lab Exercise</option>
                 <option value={"mockcase"}>Mock Case</option>
               </select>
             </div>

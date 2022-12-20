@@ -23,6 +23,7 @@ type KubernetesOrchestrator struct {
 
 type KVersionService interface {
 	GetOrchestrator() (KubernetesOrchestrator, error)
+	GetDefaultVersion() string
 }
 
 type KVersionRepository interface {

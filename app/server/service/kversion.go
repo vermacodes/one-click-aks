@@ -41,3 +41,19 @@ func (k *kVersionService) GetOrchestrator() (entity.KubernetesOrchestrator, erro
 
 	return kubernetesOrchestrator, nil
 }
+
+func (k *kVersionService) GetDefaultVersion() string {
+	o, err := k.GetOrchestrator()
+	if err != nil {
+		slog.Error("not able to get orchestrator", err)
+		return ""
+	}
+
+	for _, e := range o.Orchestrators {
+		if e.Default == true {
+			return e.OrchestratorVersion
+		}
+	}
+
+	return ""
+}

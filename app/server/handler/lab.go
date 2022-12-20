@@ -22,6 +22,7 @@ func NewLabHandler(r *gin.Engine, labService entity.LabService) {
 	r.GET("/lab", handler.GetLabFromRedis)
 	r.PUT("/lab", handler.SetLabInRedis)
 	r.POST("/lab", handler.AddLab)
+	r.DELETE("/lab", handler.DeleteLab)
 	r.GET("/lab/public/:typeOfLab", handler.GetPublicLabs)
 	r.GET("/lab/my", handler.GetMyLabs)
 }
@@ -131,16 +132,39 @@ func (l *labHandler) AddLab(c *gin.Context) {
 		return
 	}
 
-	switch typeOfLab := lab.Type; typeOfLab {
-	case "template":
+	if lab.Type == "template" {
 		if err := l.labService.AddMyLab(lab); err != nil {
 			c.Status(http.StatusInternalServerError)
 			return
 		}
-	default:
+	} else {
+		if err := l.labService.AddPublicLab(lab); err != nil {
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+	}
+
+	c.Status(http.StatusCreated)
+}
+
+func (l *labHandler) DeleteLab(c *gin.Context) {
+	lab := entity.LabType{}
+	if err := c.Bind(&lab); err != nil {
 		c.Status(http.StatusBadRequest)
 		return
 	}
 
-	c.Status(http.StatusCreated)
+	if lab.Type == "template" {
+		if err := l.labService.DeleteMyLab(lab); err != nil {
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+	} else {
+		if err := l.labService.DeletePublicLab(lab); err != nil {
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+	}
+
+	c.Status(http.StatusNoContent)
 }

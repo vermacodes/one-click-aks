@@ -9,6 +9,7 @@ import (
 	"sync"
 
 	"github.com/vermacodes/one-click-aks/app/server/entity"
+	"github.com/vermacodes/one-click-aks/app/server/helper"
 	"golang.org/x/exp/slog"
 )
 
@@ -16,15 +17,17 @@ type labService struct {
 	labRepository       entity.LabRepository
 	logStreamService    entity.LogStreamService
 	actionStatusService entity.ActionStatusService
+	kVersionService     entity.KVersionService
 	//tfvarService          entity.TfvarService
 	storageAccountService entity.StorageAccountService // Some information is needed from storage aacount service.
 }
 
-func NewLabService(repo entity.LabRepository, logStreamService entity.LogStreamService, actionStatusService entity.ActionStatusService, storageAccountService entity.StorageAccountService) entity.LabService {
+func NewLabService(repo entity.LabRepository, logStreamService entity.LogStreamService, actionStatusService entity.ActionStatusService, kVersionService entity.KVersionService, storageAccountService entity.StorageAccountService) entity.LabService {
 	return &labService{
 		labRepository:       repo,
 		logStreamService:    logStreamService,
 		actionStatusService: actionStatusService,
+		kVersionService:     kVersionService,
 		//tfvarService:          tfvarService,
 		storageAccountService: storageAccountService,
 	}
@@ -36,7 +39,7 @@ func (l *labService) GetLabFromRedis() (entity.LabType, error) {
 	if err != nil {
 		slog.Error("lab not found in redis. Setting default.", err)
 
-		defaultLab, err := helperDefaultLab()
+		defaultLab, err := helperDefaultLab(l)
 		if err != nil {
 			slog.Error("not able to genereate default lab", err)
 			return lab, err
@@ -99,7 +102,7 @@ func (l *labService) GetPublicLabs(typeOfLab string) ([]entity.LabType, error) {
 	}
 
 	for _, element := range er.Blobs.Blob {
-		lab, err := l.labRepository.GetBlob(element.Url)
+		lab, err := l.labRepository.GetLab(element.Url)
 		if err != nil {
 			slog.Error("not able to get blob from given url", err)
 			continue
@@ -108,6 +111,34 @@ func (l *labService) GetPublicLabs(typeOfLab string) ([]entity.LabType, error) {
 	}
 
 	return labs, nil
+}
+
+func (l *labService) AddPublicLab(lab entity.LabType) error {
+	// If lab Id is not yet generated Generate
+	if lab.Id == "" {
+		lab.Id = helper.Generate(20)
+	}
+
+	val, err := json.Marshal(lab)
+	if err != nil {
+		slog.Error("not able to convert object to string", err)
+		return err
+	}
+
+	if err := l.labRepository.AddLab(lab.Id, string(val), lab.Type); err != nil {
+		slog.Error("not able to save lab", err)
+		return err
+	}
+
+	return nil
+}
+
+func (l *labService) DeletePublicLab(lab entity.LabType) error {
+	if err := l.labRepository.DeleteLab(lab.Id, lab.Type); err != nil {
+		slog.Error("not able to delete lab", err)
+		return err
+	}
+	return nil
 }
 
 func (l *labService) GetMyLabs() ([]entity.LabType, error) {
@@ -184,6 +215,11 @@ func (l *labService) AddMyLab(lab entity.LabType) error {
 		return err
 	}
 
+	// If lab Id is not yet generated Generate
+	if lab.Id == "" {
+		lab.Id = helper.Generate(20)
+	}
+
 	out, err := json.Marshal(lab)
 	if err != nil {
 		slog.Error("not able to marshal lab object to string.", err)
@@ -192,6 +228,20 @@ func (l *labService) AddMyLab(lab entity.LabType) error {
 
 	if err := l.labRepository.AddMyLab(storageAccountName, lab.Id, string(out)); err != nil {
 		slog.Error("not able to add lab", err)
+		return err
+	}
+
+	return nil
+}
+
+func (l *labService) DeleteMyLab(lab entity.LabType) error {
+	storageAccountName, err := l.storageAccountService.GetStorageAccountName()
+	if err != nil {
+		return err
+	}
+
+	if err := l.labRepository.DeleteMyLab(lab.Id, storageAccountName); err != nil {
+		slog.Error("not able to delete lab", err)
 		return err
 	}
 
@@ -256,7 +306,7 @@ func helperTerraformAction(l *labService, tfvar entity.TfvarConfigType, action s
 	return nil
 }
 
-func helperDefaultLab() (entity.LabType, error) {
+func helperDefaultLab(l *labService) (entity.LabType, error) {
 
 	var defaultResourceGroup = entity.TfvarResourceGroupType{
 		Location: "East US",
@@ -269,7 +319,7 @@ func helperDefaultLab() (entity.LabType, error) {
 	}
 
 	var defaultKubernetesCluster = entity.TfvarKubernetesClusterType{
-		KubernetesVersion:     "",
+		KubernetesVersion:     l.kVersionService.GetDefaultVersion(),
 		NetworkPlugin:         "kubenet",
 		NetworkPolicy:         "null",
 		OutboundType:          "loadBalancer",

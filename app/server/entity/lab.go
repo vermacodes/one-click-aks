@@ -61,8 +61,12 @@ type LabService interface {
 	Validate() error
 
 	GetPublicLabs(typeOfLab string) ([]LabType, error)
+	AddPublicLab(LabType) error
+	DeletePublicLab(LabType) error
+
 	GetMyLabs() ([]LabType, error)
 	AddMyLab(LabType) error
+	DeleteMyLab(lab LabType) error
 }
 
 type LabRepository interface {
@@ -70,13 +74,18 @@ type LabRepository interface {
 	SetLabInRedis(string) error
 	TerraformAction(TfvarConfigType, string, string) (*exec.Cmd, *os.File, *os.File, error)
 
+	// Public labs
 	GetEnumerationResults(typeOfLab string) (EnumerationResults, error)
-	GetBlob(url string) (LabType, error)
-
+	GetLab(url string) (LabType, error)
+	AddLab(labId string, lab string, typeOfLab string) error
+	DeleteLab(labId string, typeOfLab string) error
+	// My Labs
 	GetMyLabsFromRedis() (string, error)
 	GetMyLabsFromStorageAccount(string) (string, error)
 	GetMyLabFromStorageAccount(string, string) (string, error)
 
 	AddMyLab(storageAccountName string, labId string, lab string) error
 	DeleteLabsFromRedis() error
+
+	DeleteMyLab(labId string, storageAccountName string) error
 }

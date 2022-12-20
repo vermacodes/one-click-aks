@@ -46,7 +46,7 @@ export function useSharedTemplates() {
 }
 
 function getSharedLabs(): Promise<AxiosResponse<Lab[]>> {
-  return axiosInstance.get("labs/labs");
+  return axiosInstance.get("lab/public/labexercises");
 }
 
 export function useSharedLabs() {
@@ -78,7 +78,7 @@ export function useCreateLab() {
 }
 
 function deleteLab(lab: Lab) {
-  return axiosInstance.delete("labs", { data: lab });
+  return axiosInstance.delete("lab", { data: lab });
 }
 
 // TODO: Optimistic updates
