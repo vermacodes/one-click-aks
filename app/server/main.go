@@ -34,17 +34,17 @@ func main() {
 	storageAccountService := service.NewStorageAccountService(storageAccountRepository)
 	handler.NewStorageAccountHandler(router, storageAccountService)
 
+	actionStatusRepository := repository.NewActionStatusRepository()
+	actionStatusService := service.NewActionStatusService(actionStatusRepository)
+	handler.NewActionStatusHanlder(*router, actionStatusService)
+
 	workspaceRepository := repository.NewTfWorkspaceRepository()
-	workspaceService := service.NewWorksapceService(workspaceRepository, storageAccountService)
+	workspaceService := service.NewWorksapceService(workspaceRepository, storageAccountService, actionStatusService)
 	handler.NewWorkspaceHandler(router, workspaceService)
 
 	logStreamRepository := repository.NewLogStreamRepository()
 	logStreamService := service.NewLogStreamService(logStreamRepository)
 	handler.NewLogStreamHandler(router, logStreamService)
-
-	actionStatusRepository := repository.NewActionStatusRepository()
-	actionStatusService := service.NewActionStatusService(actionStatusRepository)
-	handler.NewActionStatusHanlder(*router, actionStatusService)
 
 	authRepository := repository.NewAuthRepository()
 	authService := service.NewAuthService(authRepository, logStreamService, actionStatusService)
@@ -59,12 +59,16 @@ func main() {
 	handler.NewKVersionHandler(router, kVersionService)
 
 	labRepository := repository.NewLabRespository()
-	labService := service.NewLabService(labRepository, logStreamService, actionStatusService, kVersionService, storageAccountService)
+	labService := service.NewLabService(labRepository, kVersionService, storageAccountService)
 	handler.NewLabHandler(router, labService)
 
 	assignmentRepository := repository.NewAssignmentRepository()
 	assignmentService := service.NewAssignmentService(assignmentRepository)
 	handler.NewAssignmentHandler(router, assignmentService)
+
+	terraformRepository := repository.NewTerraformRepository()
+	terraformService := service.NewTerraformService(terraformRepository, labService, workspaceService, logStreamService, actionStatusService, kVersionService, storageAccountService)
+	handler.NewTerraformHandler(router, terraformService)
 
 	router.GET("/status", status)
 	router.Run()

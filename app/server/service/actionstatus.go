@@ -56,3 +56,39 @@ func (a *actionStatusService) SetActionStatus(actionStatus entity.ActionStatus) 
 
 	return nil
 }
+
+func (a *actionStatusService) SetActionStart() error {
+	actionStatus, err := a.GetActionStatus()
+	if err != nil {
+		slog.Error("not able to get current action status", err)
+		return err
+	}
+
+	if !actionStatus.InProgress {
+		actionStatus.InProgress = true
+	}
+
+	if err := a.SetActionStatus(actionStatus); err != nil {
+		slog.Error("not able to set action status to start", err)
+	}
+
+	return nil
+}
+
+func (a *actionStatusService) SetActionEnd() error {
+	actionStatus, err := a.GetActionStatus()
+	if err != nil {
+		slog.Error("not able to get current action status", err)
+		return err
+	}
+
+	if actionStatus.InProgress {
+		actionStatus.InProgress = false
+	}
+
+	if err := a.SetActionStatus(actionStatus); err != nil {
+		slog.Error("not able to set action status to end", err)
+	}
+
+	return nil
+}

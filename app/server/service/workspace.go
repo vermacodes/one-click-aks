@@ -10,12 +10,14 @@ import (
 type workspaceService struct {
 	workspaceRepository   entity.WorkspaceRepository
 	storageAccountService entity.StorageAccountService // Some information is needed from storage aacount service.
+	actionStatusService   entity.ActionStatusService
 }
 
-func NewWorksapceService(workspaceRepo entity.WorkspaceRepository, storageAccountService entity.StorageAccountService) entity.WorkspaceService {
+func NewWorksapceService(workspaceRepo entity.WorkspaceRepository, storageAccountService entity.StorageAccountService, actionStatusService entity.ActionStatusService) entity.WorkspaceService {
 	return &workspaceService{
 		workspaceRepository:   workspaceRepo,
 		storageAccountService: storageAccountService,
+		actionStatusService:   actionStatusService,
 	}
 }
 
@@ -50,34 +52,67 @@ func (w *workspaceService) List() ([]entity.Workspace, error) {
 }
 
 func (w *workspaceService) Add(workspace entity.Workspace) error {
+
 	if err := w.workspaceRepository.Add(workspace); err != nil {
 		slog.Error("not able to add workspace", err)
+		if err := w.actionStatusService.SetActionEnd(); err != nil {
+			slog.Error("not able to end action status", err)
+			return err
+		}
+		return err
 	}
 
 	// Since we just updated the workspaces, Redis info is now stale.
 	// Remove it so that it gets updated correctly.
 	w.workspaceRepository.DeleteListFromRedis()
 	w.workspaceRepository.DeleteResourcesFromRedis()
+
+	if err := w.actionStatusService.SetActionEnd(); err != nil {
+		slog.Error("not able to end action status", err)
+		return err
+	}
+
 	return nil
 }
 
 func (w *workspaceService) Select(workspace entity.Workspace) error {
 	if err := w.workspaceRepository.Select(workspace); err != nil {
 		slog.Error("not able to select the workspace", err)
+		if err := w.actionStatusService.SetActionEnd(); err != nil {
+			slog.Error("not able to end action status", err)
+			return err
+		}
 		return err
 	}
+
+	w.workspaceRepository.DeleteListFromRedis()
 	w.workspaceRepository.DeleteResourcesFromRedis()
+	if err := w.actionStatusService.SetActionEnd(); err != nil {
+		slog.Error("not able to end action status", err)
+		return err
+	}
 	return nil
 }
 
 func (w *workspaceService) Delete(workspace entity.Workspace) error {
 	if err := w.workspaceRepository.Delete(workspace); err != nil {
 		slog.Error("not able to delete workspace", err)
+		if err := w.actionStatusService.SetActionEnd(); err != nil {
+			slog.Error("not able to end action status", err)
+			return err
+		}
 		return err
 	}
+
+	w.workspaceRepository.DeleteListFromRedis()
 	w.workspaceRepository.DeleteResourcesFromRedis()
+	if err := w.actionStatusService.SetActionEnd(); err != nil {
+		slog.Error("not able to end action status", err)
+		return err
+	}
 	return nil
 }
+
 func (w *workspaceService) Resources() (string, error) {
 
 	// Get resources from redis.
@@ -101,6 +136,12 @@ func (w *workspaceService) Resources() (string, error) {
 
 	w.workspaceRepository.AddResourcesToRedis(resources)
 	return resources, err
+}
+
+func (w *workspaceService) DeleteAllWorkspaceFromRedis() error {
+	w.workspaceRepository.DeleteListFromRedis()
+	w.workspaceRepository.DeleteResourcesFromRedis()
+	return nil
 }
 
 // this is a hleper function which takes a string (output from the commmand)

@@ -7,6 +7,8 @@ type ActionStatus struct {
 type ActionStatusService interface {
 	GetActionStatus() (ActionStatus, error)
 	SetActionStatus(ActionStatus) error
+	SetActionStart() error
+	SetActionEnd() error
 }
 
 type ActionStatusRepository interface {

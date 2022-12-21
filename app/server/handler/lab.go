@@ -15,11 +15,6 @@ func NewLabHandler(r *gin.Engine, labService entity.LabService) {
 	handler := &labHandler{
 		labService: labService,
 	}
-
-	r.POST("/init", handler.Init)
-	r.POST("/plan", handler.Plan)
-	r.POST("/apply", handler.Apply)
-	r.POST("/destroy", handler.Destroy)
 	r.GET("/lab", handler.GetLabFromRedis)
 	r.PUT("/lab", handler.SetLabInRedis)
 	r.POST("/lab", handler.AddLab)
@@ -52,69 +47,6 @@ func (l *labHandler) SetLabInRedis(c *gin.Context) {
 	}
 
 	c.Status(http.StatusOK)
-}
-
-func (l *labHandler) Init(c *gin.Context) {
-
-	w := c.Writer
-	header := w.Header()
-	header.Set("Transfer-Encoding", "chunked")
-	header.Set("Content-type", "text/html")
-	w.WriteHeader(http.StatusOK)
-	w.(http.Flusher).Flush()
-
-	l.labService.Init()
-}
-
-func (l *labHandler) Plan(c *gin.Context) {
-	lab := entity.LabType{}
-	if err := c.Bind(&lab); err != nil {
-		c.Status(http.StatusBadRequest)
-		return
-	}
-
-	w := c.Writer
-	header := w.Header()
-	header.Set("Transfer-Encoding", "chunked")
-	header.Set("Content-type", "text/html")
-	w.WriteHeader(http.StatusOK)
-	w.(http.Flusher).Flush()
-
-	l.labService.Plan(lab)
-}
-
-func (l *labHandler) Apply(c *gin.Context) {
-	lab := entity.LabType{}
-	if err := c.Bind(&lab); err != nil {
-		c.Status(http.StatusBadRequest)
-		return
-	}
-
-	w := c.Writer
-	header := w.Header()
-	header.Set("Transfer-Encoding", "chunked")
-	header.Set("Content-type", "text/html")
-	w.WriteHeader(http.StatusOK)
-	w.(http.Flusher).Flush()
-
-	l.labService.Apply(lab)
-}
-
-func (l *labHandler) Destroy(c *gin.Context) {
-	lab := entity.LabType{}
-	if err := c.Bind(&lab); err != nil {
-		c.Status(http.StatusBadRequest)
-		return
-	}
-
-	w := c.Writer
-	header := w.Header()
-	header.Set("Transfer-Encoding", "chunked")
-	header.Set("Content-type", "text/html")
-	w.WriteHeader(http.StatusOK)
-	w.(http.Flusher).Flush()
-
-	l.labService.Destroy(lab)
 }
 
 func (l *labHandler) GetPublicLabs(c *gin.Context) {

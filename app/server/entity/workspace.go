@@ -18,6 +18,9 @@ type WorkspaceService interface {
 
 	// Resoureces of selected workspace
 	Resources() (string, error)
+
+	// Invalidate Cache
+	DeleteAllWorkspaceFromRedis() error
 }
 
 // Implements Terraform Repository
