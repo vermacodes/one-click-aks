@@ -45,8 +45,6 @@ export default function TfWorkspace({
     setNewWorkSpaceName(event.target.value);
   }
 
-  console.log(selectingWorkspace);
-
   return (
     <div className="gap-y-2">
       <div className="flex items-center justify-between py-2">

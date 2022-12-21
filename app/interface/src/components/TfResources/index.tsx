@@ -1,9 +1,5 @@
-import { useQueryClient } from "react-query";
 import { TerraformWorkspace } from "../../dataStructures";
-import {
-  useActionStatus,
-  useSetActionStatus,
-} from "../../hooks/useActionStatus";
+import { useActionStatus } from "../../hooks/useActionStatus";
 import { useLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
 import { useDestroy } from "../../hooks/useTerraform";
@@ -14,7 +10,6 @@ import {
   useSelectWorkspace,
   useTerraformWorkspace,
 } from "../../hooks/useWorkspace";
-import { axiosInstance } from "../../utils/axios-interceptors";
 import Button from "../Button";
 
 type Props = {};
@@ -22,7 +17,6 @@ type Props = {};
 export default function TfResources({}: Props) {
   const { data: actionStatus } = useActionStatus();
   const { data: resources, isFetching: fetchingResources } = useGetResources();
-  const { mutate: setActionStatus } = useSetActionStatus();
   const { data: lab } = useLab();
   const { mutate: setLogs } = useSetLogs();
   const {
@@ -32,44 +26,52 @@ export default function TfResources({}: Props) {
   } = useTerraformWorkspace();
   const { mutate: deleteWorkspace, isLoading: deletingWorkspace } =
     useDeleteWorkspace();
-  const { isLoading: selectingWorkspace } = useSelectWorkspace();
+  const { mutateAsync: selectWorkspaceAsync, isLoading: selectingWorkspace } =
+    useSelectWorkspace();
   const { isLoading: addingWorkspace } = useAddWorkspace();
-  const { mutate: destroy } = useDestroy();
-
-  const queryClient = useQueryClient();
+  const { mutate: destroy, mutateAsync: destroyAsync } = useDestroy();
 
   function destroyHandler() {
     setLogs({ isStreaming: true, logs: "" });
     lab && destroy(lab);
   }
 
-  function destroyAndDeleteHandler() {
-    var selectedWorkspaceName = "";
-    if (workspaces !== undefined) {
-      workspaces.map((workspace) => {
-        if (workspace.selected === true) {
-          selectedWorkspaceName = workspace.name;
-        }
-      });
-    }
-    queryClient.setQueryData("get-action-status", { inProgress: true });
-    setTimeout(() => {
-      queryClient.invalidateQueries("get-action-status");
-    }, 50);
-    setLogs({ isStreaming: true, logs: "" });
-    axiosInstance.post("destroy", lab).then(() => {
-      axiosInstance
-        .put("workspace", { name: "default", selected: true })
-        .then(() => {
-          if (workspaces !== undefined && selectedWorkspaceName !== "default") {
-            workspaces.map((workspace) => {
-              if (workspace.name === selectedWorkspaceName) {
-                deleteWorkspace(workspace);
-              }
-            });
+  async function getSelectedWorkspace(): Promise<TerraformWorkspace> {
+    return new Promise((resolve, reject) => {
+      if (workspaces === undefined) {
+        reject(Error("workspaces are not defined"));
+      } else {
+        workspaces.map((workspace) => {
+          if (workspace.selected === true) {
+            resolve(workspace);
           }
         });
+      }
     });
+  }
+
+  function destroyAndDeleteHandler() {
+    if (lab !== undefined) {
+      // Set logs streaming.
+      setLogs({ isStreaming: true, logs: "" });
+      // Execute and wait for destroy to complete.
+      destroyAsync(lab).then(() => {
+        // Get the current workspace.
+        getSelectedWorkspace()
+          .then((workspace) => {
+            // Change the worksapace to default.
+            selectWorkspaceAsync({ name: "default", selected: true }).then(
+              () => {
+                // Delete workspace.
+                deleteWorkspace(workspace);
+              }
+            );
+          })
+          .catch(() => {
+            console.error("not able to get the selected workspace.");
+          });
+      });
+    }
   }
 
   function isDefaultSelected(
