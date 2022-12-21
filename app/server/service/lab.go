@@ -75,6 +75,14 @@ func (l *labService) SetLabInRedis(lab entity.LabType) error {
 	return nil
 }
 
+func (l *labService) Init() error {
+	lab, err := l.GetLabFromRedis()
+	if err != nil {
+		slog.Error("not able to get lab from redis", err)
+	}
+	return helperTerraformAction(l, lab.Template, "init")
+}
+
 func (l *labService) Plan(lab entity.LabType) error {
 	return helperTerraformAction(l, lab.Template, "plan")
 }

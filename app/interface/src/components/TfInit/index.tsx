@@ -16,7 +16,7 @@ export default function TfInit({}: Props) {
   function initHandler() {
     setActionStatus({ inProgress: true });
     setLogs({ isStreaming: true, logs: "" });
-    axiosInstance.get("tfinit");
+    axiosInstance.post("init");
   }
 
   return (

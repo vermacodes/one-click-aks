@@ -18,6 +18,7 @@ func NewLogStreamHandler(r *gin.Engine, service entity.LogStreamService) {
 
 	r.GET("/logs", handler.GetLogs)
 	r.PUT("/logs", handler.SetLogs)
+	r.PUT("/logs/endstream", handler.EndLogStream)
 }
 
 func (l *logStreamHandler) GetLogs(c *gin.Context) {
@@ -38,5 +39,10 @@ func (l *logStreamHandler) SetLogs(c *gin.Context) {
 	}
 
 	l.logStreamService.SetLogs(logStream)
+	c.Status(http.StatusOK)
+}
+
+func (l *logStreamHandler) EndLogStream(c *gin.Context) {
+	l.logStreamService.EndLogStream()
 	c.Status(http.StatusOK)
 }

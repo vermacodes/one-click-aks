@@ -99,6 +99,10 @@ type BlobType struct {
 type LabService interface {
 	GetLabFromRedis() (LabType, error)
 	SetLabInRedis(LabType) error
+
+	// Terraform Init
+	Init() error
+
 	// Streams logs
 	Plan(LabType) error
 

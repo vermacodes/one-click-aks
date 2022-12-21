@@ -16,6 +16,7 @@ func NewLabHandler(r *gin.Engine, labService entity.LabService) {
 		labService: labService,
 	}
 
+	r.POST("/init", handler.Init)
 	r.POST("/plan", handler.Plan)
 	r.POST("/apply", handler.Apply)
 	r.POST("/destroy", handler.Destroy)
@@ -51,6 +52,18 @@ func (l *labHandler) SetLabInRedis(c *gin.Context) {
 	}
 
 	c.Status(http.StatusOK)
+}
+
+func (l *labHandler) Init(c *gin.Context) {
+
+	w := c.Writer
+	header := w.Header()
+	header.Set("Transfer-Encoding", "chunked")
+	header.Set("Content-type", "text/html")
+	w.WriteHeader(http.StatusOK)
+	w.(http.Flusher).Flush()
+
+	l.labService.Init()
 }
 
 func (l *labHandler) Plan(c *gin.Context) {
