@@ -1,13 +1,10 @@
 import { useActionStatus } from "../../hooks/useActionStatus";
 import { useLab, useSetLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
-import { useSetTfvar, useTfvar } from "../../hooks/useTfvar";
 import Checkbox from "../Checkbox";
 import { defaultContainerRegistry } from "./defaults";
 
 export default function ContainerRegistry() {
-  const { data: tfvar, isLoading } = useTfvar();
-  const { mutate: setTfvar } = useSetTfvar();
   const { data: inProgress } = useActionStatus();
   const { mutate: setLogs } = useSetLogs();
   const {
@@ -39,7 +36,7 @@ export default function ContainerRegistry() {
     return <></>;
   }
 
-  if (isLoading) {
+  if (labIsFetching || labIsLoading) {
     return <>Loading...</>;
   }
 

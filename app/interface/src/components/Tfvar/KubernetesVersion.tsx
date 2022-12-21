@@ -4,7 +4,6 @@ import { useActionStatus } from "../../hooks/useActionStatus";
 import { useLab, useSetLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
 import { useGetOrchestrators } from "../../hooks/useOrchestrators";
-import { useSetTfvar, useTfvar } from "../../hooks/useTfvar";
 
 type Props = {
   versionMenu: boolean;
@@ -17,8 +16,6 @@ export default function KubernetesVersion({
 }: Props) {
   const { data: actionStatus } = useActionStatus();
   const { data, isLoading, isFetching, isError } = useGetOrchestrators();
-  const { data: tfvar } = useTfvar();
-  const { mutate: setTfVar } = useSetTfvar();
   const { mutate: setLogs } = useSetLogs();
   const {
     data: lab,

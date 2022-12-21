@@ -8,8 +8,8 @@ import {
   useSharedTemplates,
   useTemplates,
 } from "../../hooks/useBlobs";
+import { useSetLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
-import { useSetTfvar } from "../../hooks/useTfvar";
 import LabBuilder from "../../modals/LabBuilder";
 
 export default function Templates() {
@@ -24,7 +24,7 @@ export default function Templates() {
     isFetching: myLabsFetching,
   } = useTemplates();
 
-  const { mutate: setTfvar } = useSetTfvar();
+  const { mutate: setLab } = useSetLab();
   const { data: inProgress } = useActionStatus();
   const { mutate: setLogs } = useSetLogs();
   const { mutate: deleteLab } = useDeleteLab();
@@ -37,9 +37,7 @@ export default function Templates() {
         isStreaming: false,
         logs: JSON.stringify(lab.template, null, 4),
       });
-      if (lab.template !== undefined) {
-        setTfvar(lab.template);
-      }
+      setLab(lab);
       navigate("/builder");
     }
   }

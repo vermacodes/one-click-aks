@@ -1,14 +1,10 @@
-import { TfvarConfigType } from "../../dataStructures";
 import { useActionStatus } from "../../hooks/useActionStatus";
 import { useLab, useSetLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
-import { useSetTfvar, useTfvar } from "../../hooks/useTfvar";
 import Checkbox from "../Checkbox";
 import { defaultTfvarConfig } from "./defaults";
 
 export default function CustomVnet() {
-  const { data: tfvar, isLoading } = useTfvar();
-  const { mutate: setTfvar } = useSetTfvar();
   const {
     data: lab,
     isLoading: labIsLoading,
@@ -49,7 +45,7 @@ export default function CustomVnet() {
     return <></>;
   }
 
-  if (isLoading) {
+  if (labIsFetching || labIsLoading) {
     return <>Loading...</>;
   }
 

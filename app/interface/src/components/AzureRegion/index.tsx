@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { FaCheck } from "react-icons/fa";
+import { useLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
 import { usePreference, useSetPreference } from "../../hooks/usePreference";
 import { useGetStorageAccount } from "../../hooks/useStorageAccount";
-import { useTfvar } from "../../hooks/useTfvar";
 type Props = { regionEdit: boolean; setRegionEdit(args: boolean): void };
 
 export default function AzureRegion({ regionEdit, setRegionEdit }: Props) {
@@ -11,7 +11,7 @@ export default function AzureRegion({ regionEdit, setRegionEdit }: Props) {
 
   const { data: preference, isLoading } = usePreference();
   const { mutate: setPreferece } = useSetPreference();
-  const { data: tfvar } = useTfvar();
+  const { data: lab } = useLab();
   const { mutate: setLogs } = useSetLogs();
 
   const {
@@ -30,10 +30,13 @@ export default function AzureRegion({ regionEdit, setRegionEdit }: Props) {
       ...preference,
       azureRegion: azureRegion,
     });
-    if (tfvar) {
-      tfvar.resourceGroup.location = azureRegion;
+    if (lab && lab.template) {
+      lab.template.resourceGroup.location = azureRegion;
     }
-    setLogs({ isStreaming: false, logs: JSON.stringify(tfvar, null, 4) });
+    setLogs({
+      isStreaming: false,
+      logs: JSON.stringify(lab?.template, null, 4),
+    });
   }
 
   return (

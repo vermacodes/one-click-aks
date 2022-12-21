@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
 import TemplateCard from "../../components/TemplateCard";
 import Terminal from "../../components/Terminal";
-import { Assignment, BlobType, Lab } from "../../dataStructures";
+import { Assignment, Lab } from "../../dataStructures";
 import {
   useActionStatus,
   useSetActionStatus,
@@ -12,7 +12,6 @@ import {
 import { useCreateAssignment } from "../../hooks/useAssignment";
 import { useDeleteLab, useSharedLabs } from "../../hooks/useBlobs";
 import { useSetLogs } from "../../hooks/useLogs";
-import { useSetTfvar } from "../../hooks/useTfvar";
 import LabBuilder from "../../modals/LabBuilder";
 import { axiosInstance } from "../../utils/axios-interceptors";
 import ServerError from "../ServerError";
@@ -26,7 +25,6 @@ export default function Labs() {
   const { mutate: setLogs } = useSetLogs();
   const { data: labs, isLoading, isError } = useSharedLabs();
   const { mutate: deleteLab } = useDeleteLab();
-  const { mutate: setTfvar } = useSetTfvar();
   const {
     mutate: createAssignment,
     isLoading: creating,

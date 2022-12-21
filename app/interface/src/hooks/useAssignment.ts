@@ -4,7 +4,7 @@ import { Assignment, Lab } from "../dataStructures";
 import { axiosInstance } from "../utils/axios-interceptors";
 
 function getAssignments(): Promise<AxiosResponse<Assignment[]>> {
-  return axiosInstance("assignments");
+  return axiosInstance("assignment");
 }
 
 export function useGetAssignments() {
@@ -23,14 +23,14 @@ export function useCreateAssignment() {
   const queryClient = useQueryClient();
   return useMutation(createAssignment, {
     onSuccess: () => {
-      queryClient.invalidateQueries("assignment");
+      queryClient.invalidateQueries("get-assignments");
       queryClient.invalidateQueries("get-userassignedlabs");
     },
   });
 }
 
 function deleteAssignment(assignment: Assignment) {
-  return axiosInstance.delete(`assignment/${assignment.id}`);
+  return axiosInstance.delete(`assignment`, { data: assignment });
 }
 
 export function useDeleteAssignment() {

@@ -11,7 +11,6 @@ import {
 } from "../../hooks/useActionStatus";
 import { useDeleteLab, useSharedMockCases } from "../../hooks/useBlobs";
 import { useSetLogs } from "../../hooks/useLogs";
-import { useSetTfvar } from "../../hooks/useTfvar";
 import LabBuilder from "../../modals/LabBuilder";
 import { axiosInstance } from "../../utils/axios-interceptors";
 
@@ -19,7 +18,6 @@ export default function MockCases() {
   const [more, setMore] = useState<string>("");
   const { data: labs, isLoading, isError } = useSharedMockCases();
 
-  const { mutate: setTfvar } = useSetTfvar();
   const { data: inProgress } = useActionStatus();
   const { mutate: setActionStatus } = useSetActionStatus();
   const { mutate: setLogs } = useSetLogs();

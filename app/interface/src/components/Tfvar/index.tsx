@@ -1,12 +1,8 @@
 import { useState } from "react";
 import { useQueryClient } from "react-query";
-import {
-  useActionStatus,
-  useSetActionStatus,
-} from "../../hooks/useActionStatus";
+import { useActionStatus } from "../../hooks/useActionStatus";
 import { useLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
-import { useTfvar } from "../../hooks/useTfvar";
 import LabBuilder from "../../modals/LabBuilder";
 import { axiosInstance } from "../../utils/axios-interceptors";
 import Button from "../Button";
@@ -21,13 +17,10 @@ import PrivateCluster from "./PrivateCluster";
 import UserDefinedRouting from "./UserDefinedRouting";
 
 export default function Tfvar() {
-  const [showLabBuilder, setShowLabBuilder] = useState(false);
   const [versionMenu, setVersionMenu] = useState<boolean>(false);
 
   const { data: inProgress } = useActionStatus();
-  const { mutate: setActionStatus } = useSetActionStatus();
   const { mutate: setLogs } = useSetLogs();
-  const { data: tfvar } = useTfvar();
   const { data: lab } = useLab();
   const queryClient = useQueryClient();
 
@@ -60,10 +53,6 @@ export default function Tfvar() {
 
     setLogs({ isStreaming: true, logs: "" });
     axiosInstance.post("destroy", lab);
-  }
-
-  function handleCreateLab() {
-    setShowLabBuilder(true);
   }
 
   return (

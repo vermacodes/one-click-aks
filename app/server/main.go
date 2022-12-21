@@ -30,10 +30,6 @@ func main() {
 	config.AllowOrigins = []string{"http://localhost:3000", "http://localhost:5173", "https://ashisverma.z13.web.core.windows.net", "https://*.azurewebsites.net"}
 	router.Use(cors.New(config))
 
-	// tfvarRepository := repository.NewRedisTfvarRepository()
-	// tfvarService := service.NewTfvarService(tfvarRepository)
-	// handler.NewTfvarHandler(router, tfvarService)
-
 	storageAccountRepository := repository.NewStorageAccountRepository()
 	storageAccountService := service.NewStorageAccountService(storageAccountRepository)
 	handler.NewStorageAccountHandler(router, storageAccountService)
@@ -65,6 +61,10 @@ func main() {
 	labRepository := repository.NewLabRespository()
 	labService := service.NewLabService(labRepository, logStreamService, actionStatusService, kVersionService, storageAccountService)
 	handler.NewLabHandler(router, labService)
+
+	assignmentRepository := repository.NewAssignmentRepository()
+	assignmentService := service.NewAssignmentService(assignmentRepository)
+	handler.NewAssignmentHandler(router, assignmentService)
 
 	router.GET("/status", status)
 	router.Run()

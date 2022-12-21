@@ -5,8 +5,6 @@ import { Lab } from "../../dataStructures";
 import { useGetPriviledge } from "../../hooks/useAccount";
 import { useCreateLab } from "../../hooks/useBlobs";
 import { useLab } from "../../hooks/useLab";
-import { useTfvar } from "../../hooks/useTfvar";
-import { axiosInstance } from "../../utils/axios-interceptors";
 
 type Props = {
   children?: React.ReactNode;

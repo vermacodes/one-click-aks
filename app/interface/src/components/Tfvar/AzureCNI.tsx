@@ -1,13 +1,9 @@
-import { TfvarConfigType } from "../../dataStructures";
 import { useActionStatus } from "../../hooks/useActionStatus";
 import { useLab, useSetLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
-import { useSetTfvar, useTfvar } from "../../hooks/useTfvar";
 import Checkbox from "../Checkbox";
 
 export default function AzureCNI() {
-  const { data: tfvar, isLoading } = useTfvar();
-  const { mutate: setTfvar } = useSetTfvar();
   const { data: inProgress } = useActionStatus();
   const { mutate: setLogs } = useSetLogs();
   const {
@@ -41,7 +37,7 @@ export default function AzureCNI() {
     return <></>;
   }
 
-  if (isLoading) {
+  if (labIsFetching || labIsLoading) {
     return <>Loading...</>;
   }
 
