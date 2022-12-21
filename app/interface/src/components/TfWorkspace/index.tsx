@@ -10,7 +10,7 @@ import {
   useGetResources,
   useSelectWorkspace,
   useTerraformWorkspace,
-} from "../../hooks/useTfActions";
+} from "../../hooks/useWorkspace";
 import Button from "../Button";
 import TfResources from "../TfResources";
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { SiTerraform } from "react-icons/si";
 import { Link } from "react-router-dom";
-import { useTerraformWorkspace } from "../../hooks/useTfActions";
+import { useTerraformWorkspace } from "../../hooks/useWorkspace";
 
 type Props = {};
 

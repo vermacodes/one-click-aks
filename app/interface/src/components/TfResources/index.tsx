@@ -6,13 +6,14 @@ import {
 } from "../../hooks/useActionStatus";
 import { useLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
+import { useDestroy } from "../../hooks/useTerraform";
 import {
   useAddWorkspace,
   useDeleteWorkspace,
   useGetResources,
   useSelectWorkspace,
   useTerraformWorkspace,
-} from "../../hooks/useTfActions";
+} from "../../hooks/useWorkspace";
 import { axiosInstance } from "../../utils/axios-interceptors";
 import Button from "../Button";
 
@@ -33,18 +34,13 @@ export default function TfResources({}: Props) {
     useDeleteWorkspace();
   const { isLoading: selectingWorkspace } = useSelectWorkspace();
   const { isLoading: addingWorkspace } = useAddWorkspace();
+  const { mutate: destroy } = useDestroy();
 
   const queryClient = useQueryClient();
 
   function destroyHandler() {
-    queryClient.setQueryData("get-action-status", { inProgress: true });
-    setTimeout(() => {
-      queryClient.invalidateQueries("get-action-status");
-      queryClient.invalidateQueries("get-resources");
-    }, 50);
-
     setLogs({ isStreaming: true, logs: "" });
-    axiosInstance.post("destroy", lab);
+    lab && destroy(lab);
   }
 
   function destroyAndDeleteHandler() {
@@ -56,7 +52,6 @@ export default function TfResources({}: Props) {
         }
       });
     }
-    //setActionStatus({ inProgress: true });
     queryClient.setQueryData("get-action-status", { inProgress: true });
     setTimeout(() => {
       queryClient.invalidateQueries("get-action-status");
@@ -94,7 +89,7 @@ export default function TfResources({}: Props) {
   }
   return (
     <div className="w-1/2 justify-between gap-y-4 rounded border border-slate-500 py-2">
-      <div className="h-48 rounded px-2 overflow-x-hidden scrollbar-thin scrollbar-track-slate-400 scrollbar-thumb-sky-500 scrollbar-track-rounded-full scrollbar-thumb-rounded-full">
+      <div className="h-48 overflow-x-hidden rounded px-2 scrollbar-thin scrollbar-track-slate-400 scrollbar-thumb-sky-500 scrollbar-track-rounded-full scrollbar-thumb-rounded-full">
         {fetchingResources ||
         gettingWorkspaces ||
         selectingWorkspace ||

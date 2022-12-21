@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { useQueryClient } from "react-query";
 import { useActionStatus } from "../../hooks/useActionStatus";
 import { useLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
+import { useApply, useDestroy, usePlan } from "../../hooks/useTerraform";
 import LabBuilder from "../../modals/LabBuilder";
-import { axiosInstance } from "../../utils/axios-interceptors";
 import Button from "../Button";
 import AutoScaling from "./AutoScaling";
 import AzureCNI from "./AzureCNI";
@@ -22,37 +21,23 @@ export default function Tfvar() {
   const { data: inProgress } = useActionStatus();
   const { mutate: setLogs } = useSetLogs();
   const { data: lab } = useLab();
-  const queryClient = useQueryClient();
+  const { mutate: plan } = usePlan();
+  const { mutate: apply } = useApply();
+  const { mutate: destroy } = useDestroy();
 
   function applyHandler() {
-    // TODO: Is this the best way to do this? If not, fix.
-    queryClient.setQueryData("get-action-status", { inProgress: true });
-    setTimeout(() => {
-      queryClient.invalidateQueries("get-action-status");
-    }, 50);
-
     setLogs({ isStreaming: true, logs: "" });
-    axiosInstance.post("apply", lab);
+    lab && apply(lab);
   }
 
   function planHandler() {
-    queryClient.setQueryData("get-action-status", { inProgress: true });
-    setTimeout(() => {
-      queryClient.invalidateQueries("get-action-status");
-    }, 50);
-
     setLogs({ isStreaming: true, logs: "" });
-    axiosInstance.post("plan", lab);
+    lab && plan(lab);
   }
 
   function destroyHandler() {
-    queryClient.setQueryData("get-action-status", { inProgress: true });
-    setTimeout(() => {
-      queryClient.invalidateQueries("get-action-status");
-    }, 50);
-
     setLogs({ isStreaming: true, logs: "" });
-    axiosInstance.post("destroy", lab);
+    lab && destroy(lab);
   }
 
   return (
