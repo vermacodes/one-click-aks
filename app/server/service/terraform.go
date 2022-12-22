@@ -73,6 +73,7 @@ func (t *terraformService) Apply(lab entity.LabType) error {
 
 func (t *terraformService) Extend(lab entity.LabType) error {
 	if lab.ExtendScript == "" {
+		t.logStreamService.EndLogStream()
 		return nil
 	}
 	return helperExecuteScript(t, lab.ExtendScript)
@@ -90,6 +91,7 @@ func (t *terraformService) Destroy(lab entity.LabType) error {
 
 func (t *terraformService) Validate(lab entity.LabType) error {
 	if lab.ValidateScript == "" {
+		t.logStreamService.EndLogStream()
 		return nil
 	}
 	return helperExecuteScript(t, lab.ExtendScript)
@@ -115,9 +117,6 @@ func helperTerraformAction(t *terraformService, tfvar entity.TfvarConfigType, ac
 		return errors.New("action already in progress")
 	}
 
-	actionStaus.InProgress = true
-	t.actionStatusService.SetActionStatus(actionStaus)
-
 	storageAccountName, err := t.storageAccountService.GetStorageAccountName()
 	if err != nil {
 		slog.Error("not able to get storage account name", err)
@@ -128,6 +127,9 @@ func helperTerraformAction(t *terraformService, tfvar entity.TfvarConfigType, ac
 	if err != nil {
 		slog.Error("not able to run terraform script", err)
 	}
+
+	actionStaus.InProgress = true
+	t.actionStatusService.SetActionStatus(actionStaus)
 
 	// GO routine that takes care of running command and moving logs to redis.
 	go func(input io.ReadCloser) {
@@ -173,9 +175,6 @@ func helperExecuteScript(t *terraformService, script string) error {
 		return errors.New("action already in progress")
 	}
 
-	actionStaus.InProgress = true
-	t.actionStatusService.SetActionStatus(actionStaus)
-
 	storageAccountName, err := t.storageAccountService.GetStorageAccountName()
 	if err != nil {
 		slog.Error("not able to get storage account name", err)
@@ -186,6 +185,9 @@ func helperExecuteScript(t *terraformService, script string) error {
 	if err != nil {
 		slog.Error("not able to run terraform script", err)
 	}
+
+	actionStaus.InProgress = true
+	t.actionStatusService.SetActionStatus(actionStaus)
 
 	// GO routine that takes care of running command and moving logs to redis.
 	go func(input io.ReadCloser) {

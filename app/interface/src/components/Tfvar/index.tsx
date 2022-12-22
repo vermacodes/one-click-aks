@@ -1,8 +1,15 @@
 import { useState } from "react";
+import { Lab } from "../../dataStructures";
 import { useActionStatus } from "../../hooks/useActionStatus";
 import { useLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
-import { useApply, useDestroy, usePlan } from "../../hooks/useTerraform";
+import {
+  useApply,
+  useDestroy,
+  useExtend,
+  usePlan,
+} from "../../hooks/useTerraform";
+import CodeEditor from "../../modals/CodeEditor";
 import LabBuilder from "../../modals/LabBuilder";
 import Button from "../Button";
 import AutoScaling from "./AutoScaling";
@@ -22,12 +29,24 @@ export default function Tfvar() {
   const { mutate: setLogs } = useSetLogs();
   const { data: lab } = useLab();
   const { mutate: plan } = usePlan();
-  const { mutate: apply } = useApply();
+  const { mutateAsync: applyAsync } = useApply();
   const { mutate: destroy } = useDestroy();
+  const { mutate: extend } = useExtend();
+
+  const [_lab, _setLab] = useState<Lab | undefined>(lab);
+
+  // function applyHandler() {
+  //   setLogs({ isStreaming: true, logs: "" });
+  //   lab && apply(lab);
+  // }
 
   function applyHandler() {
-    setLogs({ isStreaming: true, logs: "" });
-    lab && apply(lab);
+    if (lab !== undefined) {
+      setLogs({ isStreaming: true, logs: "" });
+      applyAsync(lab).then(() => {
+        extend(lab);
+      });
+    }
   }
 
   function planHandler() {
@@ -47,6 +66,7 @@ export default function Tfvar() {
           versionMenu={versionMenu}
           setVersionMenu={setVersionMenu}
         />
+        <CodeEditor variant="secondary-outline">Extend Script</CodeEditor>
         <CustomVnet />
         <PrivateCluster />
         <JumpServer />

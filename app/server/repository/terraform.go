@@ -66,7 +66,7 @@ func (t *terraformRepository) ExecuteScript(script string, storageAccountName st
 	setEnvironmentVariable("tf_state_file_name", "terraform.tfstate")
 
 	// Execute terraform script with appropriate action.
-	cmd := exec.Command("bash", "-c", "echo '"+script+"' | base64 -d | bash")
+	cmd := exec.Command("bash", "-c", "echo '"+script+"' | base64 -d | dos2unix | bash")
 	rPipe, wPipe, err := os.Pipe()
 	if err != nil {
 		return cmd, rPipe, wPipe, err
