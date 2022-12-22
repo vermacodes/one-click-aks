@@ -56,3 +56,27 @@ func (t *terraformRepository) TerraformAction(tfvar entity.TfvarConfigType, acti
 	// Return stuff to the service.
 	return cmd, rPipe, wPipe, nil
 }
+
+func (t *terraformRepository) ExecuteScript(script string, storageAccountName string) (*exec.Cmd, *os.File, *os.File, error) {
+	setEnvironmentVariable("terraform_directory", "tf")
+	setEnvironmentVariable("root_directory", os.ExpandEnv("$ROOT_DIR"))
+	setEnvironmentVariable("resource_group_name", "repro-project")
+	setEnvironmentVariable("storage_account_name", storageAccountName)
+	setEnvironmentVariable("container_name", "tfstate")
+	setEnvironmentVariable("tf_state_file_name", "terraform.tfstate")
+
+	// Execute terraform script with appropriate action.
+	cmd := exec.Command("bash", "-c", "echo '"+script+"' | base64 -d | bash")
+	rPipe, wPipe, err := os.Pipe()
+	if err != nil {
+		return cmd, rPipe, wPipe, err
+	}
+	cmd.Stdout = wPipe
+	cmd.Stderr = wPipe
+	if err := cmd.Start(); err != nil {
+		return cmd, rPipe, wPipe, err
+	}
+
+	// Return stuff to the service.
+	return cmd, rPipe, wPipe, nil
+}

@@ -14,6 +14,10 @@ function apply(lab: Lab) {
   return axiosInstance.post("apply", lab);
 }
 
+function extend(lab: Lab) {
+  return axiosInstance.post("extend", lab);
+}
+
 function destroy(lab: Lab) {
   return axiosInstance.post("destroy", lab);
 }
@@ -53,6 +57,22 @@ export function usePlan() {
 export function useApply() {
   const queryClient = useQueryClient();
   return useMutation(apply, {
+    onMutate: async () => {
+      await queryClient.cancelQueries("get-action-status");
+      setTimeout(() => {
+        queryClient.invalidateQueries("get-action-status");
+      }, 100);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries("list-terraform-workspaces");
+      queryClient.invalidateQueries("get-resources");
+    },
+  });
+}
+
+export function useExtend() {
+  const queryClient = useQueryClient();
+  return useMutation(extend, {
     onMutate: async () => {
       await queryClient.cancelQueries("get-action-status");
       setTimeout(() => {

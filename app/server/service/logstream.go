@@ -4,7 +4,6 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"time"
 
 	"github.com/vermacodes/one-click-aks/app/server/entity"
 	"golang.org/x/exp/slog"
@@ -21,6 +20,17 @@ func NewLogStreamService(logStreamRepository entity.LogStreamRepository) entity.
 }
 
 func (l *logStreamService) SetLogs(logStream entity.LogStream) error {
+
+	// this is a hack to continue the logs from where they are right now.
+	if logStream.Logs == "continue" {
+		prevLogStream, err := l.GetLogs()
+		if err != nil {
+			logStream.Logs = ""
+		} else {
+			logStream.Logs = prevLogStream.Logs
+		}
+	}
+
 	logStreamString, err := helperLogStreamToString(logStream)
 	if err != nil {
 		return err
@@ -60,7 +70,7 @@ func (l *logStreamService) EndLogStream() {
 	slog.Info("ending log stream in 5 seconds")
 
 	go func() {
-		time.Sleep(5 * time.Second)
+		//time.Sleep(5 * time.Second)
 		logStream, err := l.GetLogs()
 		if err != nil {
 			slog.Error("not able to get current logs", err)

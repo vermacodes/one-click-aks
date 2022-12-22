@@ -10,7 +10,8 @@ import {
   useSetActionStatus,
 } from "../../hooks/useActionStatus";
 import { useDeleteLab, useSharedMockCases } from "../../hooks/useBlobs";
-import { useSetLogs } from "../../hooks/useLogs";
+import { useLogs, useSetLogs } from "../../hooks/useLogs";
+import { useApply, useExtend } from "../../hooks/useTerraform";
 import LabBuilder from "../../modals/LabBuilder";
 import { axiosInstance } from "../../utils/axios-interceptors";
 
@@ -21,7 +22,10 @@ export default function MockCases() {
   const { data: inProgress } = useActionStatus();
   const { mutate: setActionStatus } = useSetActionStatus();
   const { mutate: setLogs } = useSetLogs();
+  const { data: logs } = useLogs();
   const { mutate: deleteLab } = useDeleteLab();
+  const { mutateAsync: applyAsync } = useApply();
+  const { mutate: extend } = useExtend();
 
   const navigate = useNavigate();
 
@@ -36,9 +40,16 @@ export default function MockCases() {
   }
 
   function handleTerraformAction(lab: Lab, action: string) {
-    setActionStatus({ inProgress: true });
     setLogs({ isStreaming: true, logs: "" });
     axiosInstance.post(`${action}`, lab.template);
+  }
+
+  function handleApply(lab: Lab) {
+    setLogs({ isStreaming: true, logs: "" });
+    applyAsync(lab).then(() => {
+      setLogs({ isStreaming: true, logs: "continue" });
+      extend(lab);
+    });
   }
 
   function handleLabAction(lab: Lab, action: string) {
@@ -80,7 +91,7 @@ export default function MockCases() {
                 <div className="flex flex-row justify-end gap-1">
                   <Button
                     variant="primary-outline"
-                    onClick={() => handleTerraformAction(lab, "apply")}
+                    onClick={() => handleApply(lab)}
                     disabled={inProgress}
                   >
                     Deploy

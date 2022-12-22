@@ -20,6 +20,8 @@ func NewTerraformHandler(r *gin.Engine, service entity.TerraformService) {
 	r.POST("/plan", handler.Plan)
 	r.POST("/apply", handler.Apply)
 	r.POST("/destroy", handler.Destroy)
+	r.POST("/extend", handler.Extend)
+	r.POST("/validate", handler.Validate)
 }
 
 func (t *terraformHandler) Init(c *gin.Context) {
@@ -68,6 +70,23 @@ func (t *terraformHandler) Apply(c *gin.Context) {
 	t.terraformService.Apply(lab)
 }
 
+func (t *terraformHandler) Extend(c *gin.Context) {
+	lab := entity.LabType{}
+	if err := c.Bind(&lab); err != nil {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	w := c.Writer
+	header := w.Header()
+	header.Set("Transfer-Encoding", "chunked")
+	header.Set("Content-type", "text/html")
+	w.WriteHeader(http.StatusOK)
+	w.(http.Flusher).Flush()
+
+	t.terraformService.Extend(lab)
+}
+
 func (t *terraformHandler) Destroy(c *gin.Context) {
 	lab := entity.LabType{}
 	if err := c.Bind(&lab); err != nil {
@@ -83,4 +102,21 @@ func (t *terraformHandler) Destroy(c *gin.Context) {
 	w.(http.Flusher).Flush()
 
 	t.terraformService.Destroy(lab)
+}
+
+func (t *terraformHandler) Validate(c *gin.Context) {
+	lab := entity.LabType{}
+	if err := c.Bind(&lab); err != nil {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	w := c.Writer
+	header := w.Header()
+	header.Set("Transfer-Encoding", "chunked")
+	header.Set("Content-type", "text/html")
+	w.WriteHeader(http.StatusOK)
+	w.(http.Flusher).Flush()
+
+	t.terraformService.Validate(lab)
 }

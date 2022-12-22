@@ -71,6 +71,13 @@ func (t *terraformService) Apply(lab entity.LabType) error {
 	//TODO : Extenstion script
 }
 
+func (t *terraformService) Extend(lab entity.LabType) error {
+	if lab.ExtendScript == "" {
+		return nil
+	}
+	return helperExecuteScript(t, lab.ExtendScript)
+}
+
 func (t *terraformService) Destroy(lab entity.LabType) error {
 	// Invalidate workspace cache
 	if err := t.workspaceService.DeleteAllWorkspaceFromRedis(); err != nil {
@@ -81,8 +88,11 @@ func (t *terraformService) Destroy(lab entity.LabType) error {
 	return helperTerraformAction(t, lab.Template, "destroy")
 }
 
-func (t *terraformService) Validate() error {
-	return nil
+func (t *terraformService) Validate(lab entity.LabType) error {
+	if lab.ValidateScript == "" {
+		return nil
+	}
+	return helperExecuteScript(t, lab.ExtendScript)
 }
 
 func helperTerraformAction(t *terraformService, tfvar entity.TfvarConfigType, action string) error {
@@ -126,6 +136,82 @@ func helperTerraformAction(t *terraformService, tfvar entity.TfvarConfigType, ac
 			Logs:        "",
 			IsStreaming: true,
 		}
+		for in.Scan() {
+			logStream.Logs = logStream.Logs + fmt.Sprintf("%s\n", in.Text()) // Appening 'end' to signal stream end.
+			t.logStreamService.SetLogs(logStream)
+		}
+		input.Close()
+	}(rPipe)
+
+	cmd.Wait()
+	wPipe.Close()
+	t.logStreamService.EndLogStream()
+
+	actionStaus.InProgress = false
+	t.actionStatusService.SetActionStatus(actionStaus)
+
+	return nil
+}
+
+func helperExecuteScript(t *terraformService, script string) error {
+
+	actionStaus, err := t.actionStatusService.GetActionStatus()
+	if err != nil {
+		slog.Error("not able to get current action status", err)
+
+		// Defaulting to no action
+		actionStaus := entity.ActionStatus{
+			InProgress: false,
+		}
+		if err := t.actionStatusService.SetActionStatus(actionStaus); err != nil {
+			slog.Error("not able to set default action status.", err)
+		}
+	}
+
+	if actionStaus.InProgress {
+		slog.Error("Error", errors.New("action already in progress"))
+		return errors.New("action already in progress")
+	}
+
+	actionStaus.InProgress = true
+	t.actionStatusService.SetActionStatus(actionStaus)
+
+	storageAccountName, err := t.storageAccountService.GetStorageAccountName()
+	if err != nil {
+		slog.Error("not able to get storage account name", err)
+		return err
+	}
+
+	cmd, rPipe, wPipe, err := t.terraformRepository.ExecuteScript(script, storageAccountName)
+	if err != nil {
+		slog.Error("not able to run terraform script", err)
+	}
+
+	// GO routine that takes care of running command and moving logs to redis.
+	go func(input io.ReadCloser) {
+		in := bufio.NewScanner(input)
+
+		// This will continue adding logs to existing logs.
+		// If couldn't get existing logs, then just start from scratch.
+		// If existing logs are not supposed to be shown, then client is expected to reset
+		// before using APIs.
+		logStream, err := t.logStreamService.GetLogs()
+		if err != nil {
+			slog.Error("not able to get logs", err)
+			logStream = entity.LogStream{
+				IsStreaming: true,
+				Logs:        "",
+			}
+		}
+
+		for i := 0; i < 5; i++ {
+			logStream.Logs = logStream.Logs + fmt.Sprintf("%s\n", "")
+		}
+		logStream.Logs = logStream.Logs + fmt.Sprintf("%s\n", "************************** Executing Script **************************")
+		for i := 0; i < 5; i++ {
+			logStream.Logs = logStream.Logs + fmt.Sprintf("%s\n", "")
+		}
+
 		for in.Scan() {
 			logStream.Logs = logStream.Logs + fmt.Sprintf("%s\n", in.Text()) // Appening 'end' to signal stream end.
 			t.logStreamService.SetLogs(logStream)
