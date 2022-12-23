@@ -11,11 +11,15 @@ import (
 
 type assignmentService struct {
 	assignmentRepository entity.AssignmentRepository
+	authService          entity.AuthService
+	labService           entity.LabService
 }
 
-func NewAssignmentService(assignmentRepository entity.AssignmentRepository) entity.AssignmentService {
+func NewAssignmentService(assignmentRepository entity.AssignmentRepository, authService entity.AuthService, labService entity.LabService) entity.AssignmentService {
 	return &assignmentService{
 		assignmentRepository: assignmentRepository,
+		authService:          authService,
+		labService:           labService,
 	}
 }
 
@@ -38,6 +42,45 @@ func (a *assignmentService) GetAssignments() ([]entity.Assigment, error) {
 	}
 
 	return assignments, nil
+}
+
+func (a *assignmentService) GetMyAssignments() ([]entity.LabType, error) {
+	assignedLabs := []entity.LabType{}
+
+	account, err := a.authService.GetAccount()
+	if err != nil {
+		slog.Error("not able to get account", err)
+		return assignedLabs, err
+	}
+
+	assignments, err := a.GetAssignments()
+	if err != nil {
+		slog.Error("not able to get assignments", err)
+		return assignedLabs, err
+	}
+
+	labs, err := a.labService.GetPublicLabs("labexercises")
+	if err != nil {
+		slog.Error("not able to get lab exercises", err)
+		return assignedLabs, err
+	}
+
+	for _, assignment := range assignments {
+		slog.Info("Assignment ID : " + assignment.Id)
+		for _, lab := range labs {
+			slog.Info("Lab ID : " + lab.Name)
+			if assignment.LabId == lab.Id {
+				if assignment.User == account.User.Name {
+					lab.ExtendScript = "redacted"
+					lab.ValidateScript = "redacted"
+					assignedLabs = append(assignedLabs, lab)
+					break
+				}
+			}
+		}
+	}
+
+	return assignedLabs, nil
 }
 
 func (a *assignmentService) CreateAssignment(assignment entity.Assigment) error {

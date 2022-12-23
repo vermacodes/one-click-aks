@@ -12,6 +12,7 @@ import {
 import { useCreateAssignment } from "../../hooks/useAssignment";
 import { useDeleteLab, useSharedLabs } from "../../hooks/useBlobs";
 import { useSetLogs } from "../../hooks/useLogs";
+import { useApply, useExtend, useValidate } from "../../hooks/useTerraform";
 import LabBuilder from "../../modals/LabBuilder";
 import { axiosInstance } from "../../utils/axios-interceptors";
 import ServerError from "../ServerError";
@@ -32,8 +33,17 @@ export default function Labs() {
     status: createStatus,
     data: createData,
   } = useCreateAssignment();
+  const { mutateAsync: applyAsync } = useApply();
+  const { mutate: extend } = useExtend();
+  const { mutate: validate } = useValidate();
 
-  const navigate = useNavigate();
+  function handleApply(lab: Lab) {
+    setLogs({ isStreaming: true, logs: "" });
+    applyAsync(lab).then(() => {
+      setLogs({ isStreaming: true, logs: "continue" });
+      extend(lab);
+    });
+  }
 
   useEffect(() => {
     if (createData?.status === 201) {
@@ -158,21 +168,24 @@ export default function Labs() {
                   >
                     <Button
                       variant="primary-outline"
-                      onClick={() => handleTerraformAction(lab, "apply")}
+                      onClick={() => handleApply(lab)}
                       disabled={inProgress}
                     >
                       Deploy
                     </Button>
-                    <Button
+                    {/* <Button
                       variant="secondary-outline"
                       onClick={() => handleLabAction(lab, "extend")}
                       disabled={inProgress}
                     >
                       Extend
-                    </Button>
+                    </Button> */}
                     <Button
                       variant="success-outline"
-                      onClick={() => handleLabAction(lab, "validate")}
+                      onClick={() => {
+                        setLogs({ isStreaming: true, logs: "" });
+                        validate(lab);
+                      }}
                       disabled={inProgress}
                     >
                       Validate

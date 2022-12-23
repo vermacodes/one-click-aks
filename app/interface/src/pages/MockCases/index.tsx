@@ -17,19 +17,14 @@ import { axiosInstance } from "../../utils/axios-interceptors";
 
 export default function MockCases() {
   const [more, setMore] = useState<string>("");
-  const { data: labs, isLoading, isError } = useSharedMockCases();
+  const { data: labs, isLoading } = useSharedMockCases();
 
   const { data: inProgress } = useActionStatus();
   const { mutate: setActionStatus } = useSetActionStatus();
   const { mutate: setLogs } = useSetLogs();
-  const { data: logs } = useLogs();
   const { mutate: deleteLab } = useDeleteLab();
   const { mutateAsync: applyAsync } = useApply();
   const { mutate: extend } = useExtend();
-
-  const navigate = useNavigate();
-
-  var tfvar: TfvarConfigType;
 
   function handleShowMore(lab: Lab) {
     if (more !== lab.id) {
@@ -88,7 +83,7 @@ export default function MockCases() {
                       </span>
                     ))}
                 </div>
-                <div className="flex flex-row justify-end gap-1">
+                <div className="flex flex-wrap justify-end gap-1">
                   <Button
                     variant="primary-outline"
                     onClick={() => handleApply(lab)}
@@ -96,13 +91,13 @@ export default function MockCases() {
                   >
                     Deploy
                   </Button>
-                  <Button
+                  {/* <Button
                     variant="secondary-outline"
                     onClick={() => handleLabAction(lab, "extend")}
                     disabled={inProgress}
                   >
                     Extend
-                  </Button>
+                  </Button> */}
                   <Button
                     variant="danger-outline"
                     onClick={() => handleTerraformAction(lab, "destroy")}

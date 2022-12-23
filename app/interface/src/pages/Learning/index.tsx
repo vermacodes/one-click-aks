@@ -8,6 +8,7 @@ import {
 } from "../../hooks/useActionStatus";
 import { useGetUserAssignedLabs } from "../../hooks/useAssignment";
 import { useSetLogs } from "../../hooks/useLogs";
+import { useApply, useExtend, useValidate } from "../../hooks/useTerraform";
 import { axiosInstance } from "../../utils/axios-interceptors";
 
 export default function Learning() {
@@ -15,6 +16,17 @@ export default function Learning() {
   const { data: inProgress } = useActionStatus();
   const { mutate: setActionStatus } = useSetActionStatus();
   const { mutate: setLogs } = useSetLogs();
+  const { mutateAsync: applyAsync } = useApply();
+  const { mutate: extend } = useExtend();
+  const { mutate: validate } = useValidate();
+
+  function handleApply(lab: Lab) {
+    setLogs({ isStreaming: true, logs: "" });
+    applyAsync(lab).then(() => {
+      setLogs({ isStreaming: true, logs: "continue" });
+      extend(lab);
+    });
+  }
 
   function handleTerraformAction(lab: Lab, action: string) {
     setActionStatus({ inProgress: true });
@@ -53,21 +65,24 @@ export default function Learning() {
                 <div className="flex flex-wrap justify-end gap-1">
                   <Button
                     variant="primary-outline"
-                    onClick={() => handleTerraformAction(lab, "apply")}
+                    onClick={() => handleApply(lab)}
                     disabled={inProgress}
                   >
                     Deploy
                   </Button>
-                  <Button
+                  {/* <Button
                     variant="secondary-outline"
                     onClick={() => handleLabAction(lab, "extend")}
                     disabled={inProgress}
                   >
                     Extend
-                  </Button>
+                  </Button> */}
                   <Button
                     variant="success-outline"
-                    onClick={() => handleLabAction(lab, "validate")}
+                    onClick={() => {
+                      setLogs({ isStreaming: true, logs: "" });
+                      validate(lab);
+                    }}
                     disabled={inProgress}
                   >
                     Validate

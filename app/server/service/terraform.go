@@ -76,6 +76,16 @@ func (t *terraformService) Extend(lab entity.LabType) error {
 		t.logStreamService.EndLogStream()
 		return nil
 	}
+
+	// Getting back redacted values
+	if lab.ExtendScript == "redacted" {
+		lab, err := helperGetLabExerciseById(t, lab.Id)
+		if err != nil {
+			slog.Error("not able to find the lab exercise", err)
+			return err
+		}
+		return helperExecuteScript(t, lab.ExtendScript)
+	}
 	return helperExecuteScript(t, lab.ExtendScript)
 }
 
@@ -94,7 +104,18 @@ func (t *terraformService) Validate(lab entity.LabType) error {
 		t.logStreamService.EndLogStream()
 		return nil
 	}
-	return helperExecuteScript(t, lab.ExtendScript)
+
+	// Getting back redacted values.
+	if lab.ValidateScript == "redacted" {
+		lab, err := helperGetLabExerciseById(t, lab.Id)
+		if err != nil {
+			slog.Error("not able to find the lab exercise", err)
+			return err
+		}
+		return helperExecuteScript(t, lab.ValidateScript)
+	}
+
+	return helperExecuteScript(t, lab.ValidateScript)
 }
 
 func helperTerraformAction(t *terraformService, tfvar entity.TfvarConfigType, action string) error {
@@ -206,13 +227,9 @@ func helperExecuteScript(t *terraformService, script string) error {
 			}
 		}
 
-		for i := 0; i < 5; i++ {
-			logStream.Logs = logStream.Logs + fmt.Sprintf("%s\n", "")
-		}
+		logStream.Logs = logStream.Logs + fmt.Sprintf("%s\n", "")
 		logStream.Logs = logStream.Logs + fmt.Sprintf("%s\n", "************************** Executing Script **************************")
-		for i := 0; i < 5; i++ {
-			logStream.Logs = logStream.Logs + fmt.Sprintf("%s\n", "")
-		}
+		logStream.Logs = logStream.Logs + fmt.Sprintf("%s\n", "")
 
 		for in.Scan() {
 			logStream.Logs = logStream.Logs + fmt.Sprintf("%s\n", in.Text()) // Appening 'end' to signal stream end.
@@ -229,4 +246,22 @@ func helperExecuteScript(t *terraformService, script string) error {
 	t.actionStatusService.SetActionStatus(actionStaus)
 
 	return nil
+}
+
+func helperGetLabExerciseById(t *terraformService, labId string) (entity.LabType, error) {
+	lab := entity.LabType{}
+
+	labExercises, err := t.labService.GetPublicLabs("labexercises")
+	if err != nil {
+		slog.Error("not able to get lab exercises", err)
+		return lab, err
+	}
+
+	for _, element := range labExercises {
+		if element.Id == labId {
+			return element, nil
+		}
+	}
+
+	return lab, errors.New("lab exercise not found.")
 }

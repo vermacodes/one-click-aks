@@ -63,7 +63,7 @@ func main() {
 	handler.NewLabHandler(router, labService)
 
 	assignmentRepository := repository.NewAssignmentRepository()
-	assignmentService := service.NewAssignmentService(assignmentRepository)
+	assignmentService := service.NewAssignmentService(assignmentRepository, authService, labService)
 	handler.NewAssignmentHandler(router, assignmentService)
 
 	terraformRepository := repository.NewTerraformRepository()

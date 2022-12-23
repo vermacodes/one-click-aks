@@ -44,7 +44,7 @@ export function useDeleteAssignment() {
 }
 
 function getUserAssignedLabs(): Promise<AxiosResponse<Lab[]>> {
-  return axiosInstance.get("userassignedlabs");
+  return axiosInstance.get("assignment/my");
 }
 
 export function useGetUserAssignedLabs() {

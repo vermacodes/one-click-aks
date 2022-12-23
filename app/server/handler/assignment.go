@@ -17,12 +17,23 @@ func NewAssignmentHandler(r *gin.Engine, service entity.AssignmentService) {
 	}
 
 	r.GET("/assignment", handler.GetAssignments)
+	r.GET("/assignment/my", handler.GetMyAssignments)
 	r.POST("/assignment", handler.CreateAssignment)
 	r.DELETE("/assignment", handler.DeleteAssignment)
 }
 
 func (a *assigmentHandler) GetAssignments(c *gin.Context) {
 	assignments, err := a.assignmentService.GetAssignments()
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, assignments)
+}
+
+func (a *assigmentHandler) GetMyAssignments(c *gin.Context) {
+	assignments, err := a.assignmentService.GetMyAssignments()
 	if err != nil {
 		c.Status(http.StatusInternalServerError)
 		return

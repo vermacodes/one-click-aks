@@ -1,3 +1,4 @@
+import Editor from "@monaco-editor/react";
 import { useEffect, useState } from "react";
 import { MdClose } from "react-icons/md";
 import Button from "../../components/Button";
@@ -73,7 +74,7 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
     }
   }, [labInMemory]);
 
-  if (!showModal) return null;
+  if (!showModal || lab === undefined) return null;
   return (
     <div
       className="max-w-ful -gap-x-2 fixed inset-0 flex max-h-full justify-center bg-slate-800 dark:bg-slate-100 dark:bg-opacity-80"
@@ -135,24 +136,46 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
             }}
           />
         </div>
-        <div className="my-4">
+        <div className="my-4 h-60 space-y-1">
           <label htmlFor="template">Template</label>
-          <textarea
+          {/* <textarea
             id="template"
             value={lab.template && JSON.stringify(lab.template, null, 4)}
             className="px h-60 w-full border border-slate-500 bg-inherit p-2 py-2 font-mono text-sm scrollbar-thin scrollbar-track-slate-300 scrollbar-thumb-sky-500 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500 hover:bg-slate-200 dark:hover:bg-slate-700"
             placeholder="This field will auto populate."
+          /> */}
+          <Editor
+            height={`95%`}
+            width={`100%`}
+            language={"json"}
+            value={lab.template && JSON.stringify(lab.template, null, 4)}
+            theme="vs-dark"
+            defaultValue="// some comment"
+            onChange={(value) => {
+              value && setLab({ ...lab, extendScript: btoa(value) });
+            }}
           />
         </div>
-        <div className={`my-4`}>
+        <div className={`my-4 h-60 space-y-1`}>
           <label htmlFor="extendscript">Extend Script</label>
-          <textarea
+          {/* <textarea
             id="extendscript"
             value={atob(lab.extendScript)}
             className="px h-60 w-full border border-slate-500 bg-inherit p-2 py-2 font-mono text-sm scrollbar-thin scrollbar-track-slate-300 scrollbar-thumb-sky-500 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500 hover:bg-slate-200 dark:hover:bg-slate-700"
             placeholder="Script to extend the cluster."
             onChange={(event) => {
               setLab({ ...lab, extendScript: btoa(event.target.value) });
+            }}
+          /> */}
+          <Editor
+            height={`95%`}
+            width={`100%`}
+            language={"shell"}
+            value={atob(lab.extendScript)}
+            theme="vs-dark"
+            defaultValue="// some comment"
+            onChange={(value) => {
+              value && setLab({ ...lab, extendScript: btoa(value) });
             }}
           />
         </div>
@@ -173,15 +196,30 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
                 <option value={"mockcase"}>Mock Case</option>
               </select>
             </div>
-            <div className={`my-4 ${lab.type === "template" && "hidden"}`}>
+            <div
+              className={`my-4 h-60 space-y-1 ${
+                lab.type === "template" && "hidden"
+              }`}
+            >
               <label htmlFor="validatescript">Validate Script</label>
-              <textarea
+              {/* <textarea
                 id="validatescript"
                 value={atob(lab.validateScript)}
                 className="px h-60 w-full border border-slate-500 bg-inherit p-2 py-2 font-mono text-sm scrollbar-thin scrollbar-track-slate-300 scrollbar-thumb-sky-500 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500 hover:bg-slate-200 dark:hover:bg-slate-700"
                 placeholder="Script to validate the fix"
                 onChange={(event) => {
                   setLab({ ...lab, validateScript: btoa(event.target.value) });
+                }}
+              /> */}
+              <Editor
+                height={`95%`}
+                width={`100%`}
+                language={"shell"}
+                value={atob(lab.validateScript)}
+                theme="vs-dark"
+                defaultValue="// some comment"
+                onChange={(value) => {
+                  value && setLab({ ...lab, validateScript: btoa(value) });
                 }}
               />
             </div>

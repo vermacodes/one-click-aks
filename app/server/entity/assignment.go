@@ -10,6 +10,7 @@ type Assigment struct {
 
 type AssignmentService interface {
 	GetAssignments() ([]Assigment, error)
+	GetMyAssignments() ([]LabType, error)
 	CreateAssignment(Assigment) error
 	// TODO: UpdateAssignment(Assigment) error
 	DeleteAssignment(Assigment) error
