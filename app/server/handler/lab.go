@@ -11,7 +11,7 @@ type labHandler struct {
 	labService entity.LabService
 }
 
-func NewLabHandler(r *gin.Engine, labService entity.LabService) {
+func NewLabHandler(r *gin.RouterGroup, labService entity.LabService) {
 	handler := &labHandler{
 		labService: labService,
 	}

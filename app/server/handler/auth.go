@@ -12,12 +12,19 @@ type authHandler struct {
 	authService entity.AuthService
 }
 
-func NewAuthHandler(r *gin.Engine, service entity.AuthService) {
+func NewLoginHandler(r *gin.Engine, service entity.AuthService) {
 	handler := &authHandler{
 		authService: service,
 	}
 
 	r.POST("/login", handler.Login)
+}
+
+func NewAuthHandler(r *gin.RouterGroup, service entity.AuthService) {
+	handler := &authHandler{
+		authService: service,
+	}
+
 	r.GET("/login", handler.GetLoginStatus)
 	r.GET("/account", handler.GetAccount)
 	r.GET("/accounts", handler.GetAccounts)

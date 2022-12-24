@@ -12,7 +12,7 @@ type WorkspaceHandler struct {
 	WorkspaceService entity.WorkspaceService
 }
 
-func NewWorkspaceHandler(r *gin.Engine, service entity.WorkspaceService) {
+func NewWorkspaceHandler(r *gin.RouterGroup, service entity.WorkspaceService) {
 	handler := &WorkspaceHandler{
 		WorkspaceService: service,
 	}

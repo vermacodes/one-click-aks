@@ -11,7 +11,7 @@ type assigmentHandler struct {
 	assignmentService entity.AssignmentService
 }
 
-func NewAssignmentHandler(r *gin.Engine, service entity.AssignmentService) {
+func NewAssignmentHandler(r *gin.RouterGroup, service entity.AssignmentService) {
 	handler := &assigmentHandler{
 		assignmentService: service,
 	}

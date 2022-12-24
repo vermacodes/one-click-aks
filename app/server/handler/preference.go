@@ -11,7 +11,7 @@ type preferenceHandler struct {
 	preferenceService entity.PreferenceService
 }
 
-func NewPreferenceHandler(r *gin.Engine, preferenceService entity.PreferenceService) {
+func NewPreferenceHandler(r *gin.RouterGroup, preferenceService entity.PreferenceService) {
 	handler := &preferenceHandler{
 		preferenceService: preferenceService,
 	}

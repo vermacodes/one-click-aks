@@ -152,7 +152,7 @@ export type ActionStatusType = {
 
 export type LogsStreamType = {
   isStreaming: boolean;
-  logs?: string;
+  logs: string;
 };
 
 export type TerraformWorkspace = {

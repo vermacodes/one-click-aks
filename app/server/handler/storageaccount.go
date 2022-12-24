@@ -12,7 +12,7 @@ type StorageAccountHandler struct {
 	storageAccountService entity.StorageAccountService
 }
 
-func NewStorageAccountHandler(r *gin.Engine, service entity.StorageAccountService) {
+func NewStorageAccountHandler(r *gin.RouterGroup, service entity.StorageAccountService) {
 	handler := &StorageAccountHandler{
 		storageAccountService: service,
 	}

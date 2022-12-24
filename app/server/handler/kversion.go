@@ -11,7 +11,7 @@ type kVerisonHandler struct {
 	kVersionService entity.KVersionService
 }
 
-func NewKVersionHandler(r *gin.Engine, service entity.KVersionService) {
+func NewKVersionHandler(r *gin.RouterGroup, service entity.KVersionService) {
 	handler := &kVerisonHandler{
 		kVersionService: service,
 	}

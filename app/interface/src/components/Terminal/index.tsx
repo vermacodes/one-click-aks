@@ -14,7 +14,7 @@ export default function Terminal() {
   }, [data]);
 
   function updateLogs(): string {
-    if (data) {
+    if (data !== undefined) {
       var convert = new ansiHTML({
         newline: false,
         escapeXML: false,

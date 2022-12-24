@@ -11,7 +11,7 @@ type terraformHandler struct {
 	terraformService entity.TerraformService
 }
 
-func NewTerraformHandler(r *gin.Engine, service entity.TerraformService) {
+func NewTerraformHandler(r *gin.RouterGroup, service entity.TerraformService) {
 	handler := &terraformHandler{
 		terraformService: service,
 	}
