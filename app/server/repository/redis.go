@@ -30,3 +30,8 @@ func deleteRedis(key string) error {
 	rdb := newRedisClient()
 	return rdb.Del(ctx, key).Err()
 }
+
+func deleteAllRedis() error {
+	rdb := newRedisClient()
+	return rdb.FlushAll(ctx).Err()
+}

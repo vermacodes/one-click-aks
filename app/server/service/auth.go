@@ -55,6 +55,12 @@ func (a *authService) Login() (entity.LoginStatus, error) {
 	actionStaus.InProgress = false
 	a.actionStatusService.SetActionStatus(actionStaus)
 
+	// Delete all cache from redis.
+	slog.Info("deleting all redis cache on authentication")
+	if err := a.authRepository.DeleteAllCache(); err != nil {
+		slog.Error("not able to delete all cache from redis", err)
+	}
+
 	loginStatus.IsLoggedIn = true
 	return loginStatus, nil
 }
@@ -65,7 +71,7 @@ func (a *authService) GetLoginStatus() (entity.LoginStatus, error) {
 
 	out, err := a.authRepository.GetLoginStatusFromRedis()
 	if err == nil {
-		slog.Info("login status found in redis.")
+		slog.Debug("login status found in redis.")
 
 		if err = json.Unmarshal([]byte(out), &accessToken); err != nil {
 			slog.Error("not able to marshal access token from cli to object", err)

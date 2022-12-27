@@ -88,6 +88,10 @@ func (a *authRepository) IsMentor(user string) (bool, error) {
 	return helperContains([]string{"ashisverma@microsoft.com", "evalan@microsoft.com", "amargherio@microsoft.com", "eric.lucier@microsoft.com"}, user)
 }
 
+func (a *authRepository) DeleteAllCache() error {
+	return deleteAllRedis()
+}
+
 func helperContains(s []string, str string) (bool, error) {
 	for _, v := range s {
 		if v == str {

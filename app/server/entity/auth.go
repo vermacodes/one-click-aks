@@ -59,6 +59,7 @@ type AuthService interface {
 
 type AuthRepository interface {
 	Login() (*exec.Cmd, *os.File, *os.File, error)
+	DeleteAllCache() error
 
 	GetLoginStatus() (string, error)
 	GetLoginStatusFromRedis() (string, error)

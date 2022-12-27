@@ -23,8 +23,8 @@ export default function Server({ section, setSection }: Props) {
     <>
       <p className="text-3xl text-slate-500">
         The brains 🧠 of this tool needs to be run in a docker container 🐋. All
-        you need to do is install docker and run our server locally on your
-        machine 💻.
+        you need to do is install docker and run server locally on your machine
+        💻.
       </p>
       <p className="text-3xl text-slate-500">
         How to install docker? I dont know.. ask Internet. After you've done

@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -27,8 +28,15 @@ func status(c *gin.Context) {
 
 func main() {
 
+	logLevel := os.Getenv("LOG_LEVEL")
+	logLevelInt, err := strconv.Atoi(logLevel)
+	if err != nil {
+		logLevelInt = 8
+	}
+
 	opts := slog.HandlerOptions{
 		AddSource: true,
+		Level:     slog.Level(logLevelInt),
 	}
 
 	slog.SetDefault(slog.New(opts.NewJSONHandler(os.Stderr)))
