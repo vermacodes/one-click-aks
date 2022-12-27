@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -9,6 +10,7 @@ import (
 	"github.com/vermacodes/one-click-aks/app/server/middleware"
 	"github.com/vermacodes/one-click-aks/app/server/repository"
 	"github.com/vermacodes/one-click-aks/app/server/service"
+	"golang.org/x/exp/slog"
 )
 
 type Status struct {
@@ -24,6 +26,13 @@ func status(c *gin.Context) {
 }
 
 func main() {
+
+	opts := slog.HandlerOptions{
+		AddSource: true,
+	}
+
+	slog.SetDefault(slog.New(opts.NewJSONHandler(os.Stderr)))
+
 	router := gin.Default()
 	router.SetTrustedProxies(nil)
 

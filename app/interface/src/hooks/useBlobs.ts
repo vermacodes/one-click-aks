@@ -32,7 +32,7 @@ export function useTemplates() {
 }
 
 function getSharedTemplates(): Promise<AxiosResponse<Lab[]>> {
-  return axiosInstance("labs/sharedtemplates");
+  return axiosInstance("lab/public/sharedtemplates");
 }
 
 export function useSharedTemplates() {

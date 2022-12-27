@@ -29,7 +29,7 @@ func (s *storageAccountService) GetStorageAccountName() (string, error) {
 	slog.Info("storage account name was not found in redis.")
 	// Get storage account name from CLI.
 	val, err = s.storageAccountRepository.GetStorageAccountName()
-	if err != nil {
+	if err != nil || val == "" {
 		slog.Error("not able to get storage account name", err)
 		return val, err
 	}
@@ -52,7 +52,7 @@ func (s *storageAccountService) GetBlobContainer(storageAccountName string, cont
 
 	// Following will only be run if not found in redis.
 	out, err = s.storageAccountRepository.GetBlobContainer(storageAccountName, containerName)
-	if err != nil {
+	if err != nil || out == "" {
 		slog.Error("not able to get blob container", err)
 		return blobContainer, err
 	}
@@ -77,7 +77,7 @@ func (s *storageAccountService) GetResourceGroup() (entity.ResourceGroup, error)
 	// Rest of function executed only if rg not cound in redis.
 
 	out, err = s.storageAccountRepository.GetResourceGroup()
-	if err != nil {
+	if err != nil || out == "" {
 		slog.Error("not able to get resource group from cli", err)
 		return resourceGroup, err
 	}
@@ -102,7 +102,7 @@ func (s *storageAccountService) GetStorageAccount(storageAccountName string) (en
 	// rest of function is exectued only if storage account is not found in redis.
 
 	out, err = s.storageAccountRepository.GetStorageAccount(storageAccountName)
-	if err != nil {
+	if err != nil || out == "" {
 		slog.Error("not able to get storage account by running azure cli command", err)
 		return storageAccount, err
 	}
@@ -129,10 +129,11 @@ func (s *storageAccountService) CreateResoureceGroup() (entity.ResourceGroup, er
 	}
 
 	out, err = s.storageAccountRepository.CreateResoureceGroup()
-	if err != nil {
+	if err != nil || out == "" {
 		slog.Error("not able to create resource group", err)
 		return resourceGroup, err
 	}
+
 	slog.Info("resource group created")
 	s.storageAccountRepository.SetResourceGroupInRedis(out)
 	helperStringToResourceGroup(out, &resourceGroup)
@@ -146,7 +147,7 @@ func (s *storageAccountService) CreateStorageAccount(storageAccountName string) 
 
 	// If storage account exists, just return that.
 	out, err := s.storageAccountRepository.GetStorageAccountName()
-	if err == nil {
+	if err == nil && out != "" {
 		slog.Info("Storage account already present")
 		out, _ = s.storageAccountRepository.GetStorageAccount(out)
 		helperStringToStorageAccount(out, &storageAccount)
@@ -154,7 +155,7 @@ func (s *storageAccountService) CreateStorageAccount(storageAccountName string) 
 	}
 
 	out, err = s.storageAccountRepository.CreateStorageAccount(storageAccountName)
-	if err != nil {
+	if err != nil || out == "" {
 		slog.Error("not able to create storage account", err)
 		return storageAccount, err
 	}
@@ -183,7 +184,7 @@ func (s *storageAccountService) CreateBlobContainer(storageAccountName string, c
 	}
 
 	out, err = s.storageAccountRepository.CreateBlobContainer(storageAccountName, containerName)
-	if err != nil {
+	if err != nil || out == "" {
 		slog.Error("not able to create blob container "+containerName+" in storage account"+storageAccountName, err)
 	}
 

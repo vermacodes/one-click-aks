@@ -19,6 +19,7 @@ export default function Storage({ section, setSection }: Props) {
     refetch: configureStorageAccount,
     isLoading: configureStorageAccountLoading,
     isError: configureStorageAccountError,
+    isFetching: configureStorageAccountFetching,
   } = useConfigureStorageAccount();
 
   const storageIsSetup = (
@@ -41,23 +42,23 @@ export default function Storage({ section, setSection }: Props) {
         All we need is that you have exactly one storage account in a resource
         group named 'repro-project' and contains a Container called 'tfstate'.
         Either you can do that manually or use 'Configure Storge' button below
-        and I can do that for you.
+        to do that automagically 🪄.
       </p>
       <div className="flex w-60 flex-col justify-center">
         <Button
           variant="success"
           disabled={
             configureStorageAccountLoading ||
+            configureStorageAccountFetching ||
             fetchingStorageAccount ||
-            getStorageAccountLoading ||
-            storageAccount === undefined
+            getStorageAccountLoading
           }
           onClick={() => configureStorageAccount()}
         >
           {configureStorageAccountLoading ||
+          configureStorageAccountFetching ||
           fetchingStorageAccount ||
-          getStorageAccountLoading ||
-          storageAccount === undefined
+          getStorageAccountLoading
             ? "Please wait..."
             : "Configure Storage"}
         </Button>

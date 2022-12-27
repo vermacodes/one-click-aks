@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
 import TemplateCard from "../../components/TemplateCard";
 import { Lab } from "../../dataStructures";
+import { useGetPriviledge } from "../../hooks/useAccount";
 import { useActionStatus } from "../../hooks/useActionStatus";
 import {
   useDeleteLab,
@@ -28,6 +29,7 @@ export default function Templates() {
   const { data: inProgress } = useActionStatus();
   const { mutate: setLogs } = useSetLogs();
   const { mutate: deleteLab } = useDeleteLab();
+  const { data: priviledge } = useGetPriviledge();
 
   const navigate = useNavigate();
 
@@ -107,7 +109,7 @@ export default function Templates() {
       {sharedLabs && sharedLabs?.length !== 0 && (
         <>
           <p className="my-2 border-b-2 border-slate-500 py-4 text-4xl">
-            Shared Labs
+            Public Labs
           </p>
           <div className="w-7/8 grid grid-cols-3 gap-4">
             {sharedLabs &&
@@ -127,18 +129,22 @@ export default function Templates() {
                         ))}
                     </div>
                     <div className="flex flex-wrap justify-end gap-1">
-                      <Button
-                        variant="danger-outline"
-                        onClick={() => deleteLab(lab)}
-                      >
-                        Delete
-                      </Button>
-                      <LabBuilder lab={lab} variant="secondary-outline">
-                        Edit
-                      </LabBuilder>
+                      {priviledge && priviledge.isAdmin && (
+                        <>
+                          <Button
+                            variant="danger-outline"
+                            onClick={() => deleteLab(lab)}
+                          >
+                            Delete
+                          </Button>
+                          <LabBuilder lab={lab} variant="secondary-outline">
+                            Edit
+                          </LabBuilder>
+                        </>
+                      )}
                       <Button
                         variant="primary"
-                        //onClick={() => deployHandler(lab)}
+                        onClick={() => handleLoadToEditor(lab)}
                         disabled={inProgress}
                       >
                         Load to Builder
