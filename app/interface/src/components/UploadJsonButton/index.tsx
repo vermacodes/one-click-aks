@@ -44,7 +44,7 @@ export default function index({}: Props) {
     <>
       <label
         htmlFor="file_input"
-        className="text-bold rounded border-2 border-slate-500 bg-slate-500 px-4 py-[2px] text-white disabled:border-slate-400 disabled:bg-slate-400 hover:border-slate-700 hover:bg-slate-700 disabled:hover:border-slate-400 disabled:hover:bg-slate-400 dark:disabled:border-slate-800 dark:disabled:bg-slate-800 dark:disabled:text-slate-500"
+        className="text-bold rounded border-2 border-slate-500 bg-slate-500 px-4 py-[2px] text-white disabled:border-slate-400 disabled:bg-slate-400 hover:cursor-pointer hover:border-slate-700 hover:bg-slate-700 disabled:hover:border-slate-400 disabled:hover:bg-slate-400 dark:disabled:border-slate-800 dark:disabled:bg-slate-800 dark:disabled:text-slate-500"
       >
         Import
       </label>
