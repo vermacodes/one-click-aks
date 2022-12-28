@@ -27,6 +27,9 @@ func (l *labService) GetLabFromRedis() (entity.LabType, error) {
 	lab := entity.LabType{}
 	out, err := l.labRepository.GetLabFromRedis()
 	if err != nil {
+
+		// If the lab was not found in redis then we will set to default.
+
 		slog.Error("lab not found in redis. Setting default.", err)
 
 		defaultLab, err := helperDefaultLab(l)
@@ -56,7 +59,7 @@ func (l *labService) SetLabInRedis(lab entity.LabType) error {
 	}
 
 	val, err := json.Marshal(lab)
-	if err != nil {
+	if err != nil || string(val) == "" {
 		slog.Error("not able to marshal object", err)
 		return err
 	}

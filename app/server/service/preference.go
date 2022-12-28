@@ -43,7 +43,7 @@ func (p *preferenceService) GetPreference() (entity.Preference, error) {
 	}
 
 	preferenceString, err = p.prefernceRepository.GetPreferenceFromBlob(storageAccountName)
-	if err != nil {
+	if err != nil || preferenceString == "" {
 		slog.Error("not able to get preference from storage account, fall back to default", err)
 
 		// Stting and returning default preference
@@ -75,10 +75,11 @@ func (p *preferenceService) SetPreference(preference entity.Preference) error {
 	slog.Debug("storage account name -> " + storageAccountName)
 
 	out, err := json.Marshal(preference)
-	if err != nil {
+	if err != nil || string(out) == "" {
 		slog.Error("Error marshaling json", err)
 		return err
 	}
+
 	slog.Debug("prefrence -> " + string(out))
 
 	if err := p.prefernceRepository.PutPreferenceInBlob(string(out), storageAccountName); err != nil {

@@ -40,7 +40,7 @@ func (w *workspaceService) List() ([]entity.Workspace, error) {
 	}
 
 	val, err = w.workspaceRepository.List(storageAccountName)
-	if err != nil {
+	if err != nil || val == "" {
 		slog.Error("Not able to list workspaces", err)
 		return workspaces, err
 	}

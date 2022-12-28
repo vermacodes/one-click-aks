@@ -93,7 +93,7 @@ func (a *authService) GetLoginStatus() (entity.LoginStatus, error) {
 	// Getting access token from CLI
 	slog.Info("running CLI command to get token")
 	out, err = a.authRepository.GetLoginStatus()
-	if err != nil {
+	if err != nil || out == "" {
 		slog.Error("not able to run azure cli command to get access token", err)
 		return loginStatus, err
 	}
@@ -126,7 +126,7 @@ func (a *authService) GetAccount() (entity.Account, error) {
 	// Following will be executed only if account not found in redis.
 	slog.Info("account not found in redis. running cli command")
 	out, err = a.authRepository.GetAccount()
-	if err != nil {
+	if err != nil || out == "" {
 		slog.Error("not able to run cli command to get current account", err)
 		return account, err
 	}
@@ -160,7 +160,7 @@ func (a *authService) GetAccounts() ([]entity.Account, error) {
 	// Following will be executed only if accounts not found in redis.
 	slog.Info("accounts not found in redis. running cli command")
 	out, err = a.authRepository.GetAccounts()
-	if err != nil {
+	if err != nil || out == "" {
 		slog.Error("not able to run cli command to get current accounts", err)
 		return accounts, err
 	}
