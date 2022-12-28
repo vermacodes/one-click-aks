@@ -49,7 +49,13 @@ func (a *authService) Login() (entity.LoginStatus, error) {
 
 	cmd.Wait()
 	wPipe.Close()
-	a.logStreamService.EndLogStream()
+
+	go func() {
+		//FIXME: This solution is stupid, fix it.
+		slog.Info("Ending logs stream after login in 5 seconds.")
+		time.Sleep(5 * time.Second)
+		a.logStreamService.EndLogStream()
+	}()
 
 	actionStaus := entity.ActionStatus{}
 	actionStaus.InProgress = false

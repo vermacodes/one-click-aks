@@ -21,6 +21,8 @@ func NewLogStreamService(logStreamRepository entity.LogStreamRepository) entity.
 
 func (l *logStreamService) SetLogs(logStream entity.LogStream) error {
 
+	slog.Info("setting logs stream")
+
 	// this is a hack to continue the logs from where they are right now.
 	if logStream.Logs == "continue" {
 		prevLogStream, err := l.GetLogs()
@@ -41,6 +43,9 @@ func (l *logStreamService) SetLogs(logStream entity.LogStream) error {
 }
 
 func (l *logStreamService) GetLogs() (entity.LogStream, error) {
+
+	slog.Info("getting logs stream")
+
 	logStreamString, err := l.logStreamRepository.GetLogsFromRedis()
 	if err != nil {
 		slog.Error("not able to get logs from redis", err)
@@ -67,19 +72,27 @@ func (l *logStreamService) GetLogs() (entity.LogStream, error) {
 }
 
 func (l *logStreamService) EndLogStream() {
-	slog.Info("ending log stream in 5 seconds")
+	slog.Info("ending log stream")
+	logStream, err := l.GetLogs()
+	if err != nil {
+		slog.Error("not able to get current logs", err)
+		return
+	}
+	logStream.IsStreaming = false                                // Setting streaming to false.
+	logStream.Logs = logStream.Logs + fmt.Sprintf("%s\n", "end") // Appening 'end' to signal stream end.
+	l.SetLogs(logStream)
 
-	go func() {
-		//time.Sleep(5 * time.Second)
-		logStream, err := l.GetLogs()
-		if err != nil {
-			slog.Error("not able to get current logs", err)
-			return
-		}
-		logStream.IsStreaming = false                                // Setting streaming to false.
-		logStream.Logs = logStream.Logs + fmt.Sprintf("%s\n", "end") // Appening 'end' to signal stream end.
-		l.SetLogs(logStream)
-	}()
+	// go func() {
+	// 	time.Sleep(5 * time.Second)
+	// 	logStream, err := l.GetLogs()
+	// 	if err != nil {
+	// 		slog.Error("not able to get current logs", err)
+	// 		return
+	// 	}
+	// 	logStream.IsStreaming = false                                // Setting streaming to false.
+	// 	logStream.Logs = logStream.Logs + fmt.Sprintf("%s\n", "end") // Appening 'end' to signal stream end.
+	// 	l.SetLogs(logStream)
+	// }()
 }
 
 // Encodes the Logs and conver object to sting.

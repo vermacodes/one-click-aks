@@ -47,7 +47,7 @@ export function useLogin() {
       queryClient.invalidateQueries("get-logs");
       queryClient.invalidateQueries("get-storage-account");
       queryClient.invalidateQueries("privilege");
-      queryClient.invalidateQueries("get-tfvar");
+      queryClient.invalidateQueries("get-lab");
     },
     enabled: false,
   });
@@ -72,7 +72,7 @@ export function useSetAccount() {
       queryClient.invalidateQueries("get-action-status");
       queryClient.invalidateQueries("list-terraform-workspaces");
       queryClient.invalidateQueries("get-preference");
-      queryClient.invalidateQueries("get-tfvar");
+      queryClient.invalidateQueries("get-lab");
       queryClient.invalidateQueries("get-logs");
     },
   });

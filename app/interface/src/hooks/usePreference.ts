@@ -24,7 +24,7 @@ export function useSetPreference() {
   return useMutation(setPreference, {
     onSuccess: () => {
       queryClient.invalidateQueries("get-preference");
-      queryClient.invalidateQueries("get-tfvar");
+      queryClient.invalidateQueries("get-lab");
       queryClient.invalidateQueries("get-logs");
       queryClient.invalidateQueries("kubernetesorchestrators");
     },
