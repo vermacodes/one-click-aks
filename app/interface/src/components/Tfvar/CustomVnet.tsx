@@ -45,9 +45,17 @@ export default function CustomVnet() {
     return <></>;
   }
 
-  // if (labIsFetching || labIsLoading) {
-  //   return <>Loading...</>;
-  // }
+  if (labIsLoading || labIsFetching) {
+    return (
+      <Checkbox
+        id="toggle-customvnet"
+        label="Custom VNET"
+        disabled={true}
+        checked={false}
+        handleOnChange={handleOnChange}
+      />
+    );
+  }
 
   return (
     <>

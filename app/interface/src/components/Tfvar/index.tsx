@@ -12,6 +12,8 @@ import {
 import CodeEditor from "../../modals/CodeEditor";
 import LabBuilder from "../../modals/LabBuilder";
 import Button from "../Button";
+import DownloadJsonButton from "../DownloadJsonButton";
+import UploadJsonButton from "../UploadJsonButton";
 import AutoScaling from "./AutoScaling";
 import AzureCNI from "./AzureCNI";
 import Calico from "./Calico";
@@ -94,6 +96,8 @@ export default function Tfvar() {
         >
           Clear Logs
         </Button>
+        <DownloadJsonButton variant="secondary">Export</DownloadJsonButton>
+        <UploadJsonButton></UploadJsonButton>
       </div>
     </div>
   );

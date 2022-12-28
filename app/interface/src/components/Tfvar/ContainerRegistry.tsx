@@ -36,9 +36,17 @@ export default function ContainerRegistry() {
     return <></>;
   }
 
-  // if (labIsFetching || labIsLoading) {
-  //   return <>Loading...</>;
-  // }
+  if (labIsLoading || labIsFetching) {
+    return (
+      <Checkbox
+        id="toggle-acr"
+        label="ACR"
+        disabled={true}
+        checked={false}
+        handleOnChange={handleOnChange}
+      />
+    );
+  }
 
   var checked: boolean = true;
   if (

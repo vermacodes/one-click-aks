@@ -38,9 +38,17 @@ export default function JumpServer() {
     return <></>;
   }
 
-  // if (labIsFetching || labIsLoading) {
-  //   return <>Loading...</>;
-  // }
+  if (labIsLoading || labIsFetching) {
+    return (
+      <Checkbox
+        id="toggle-jumpserver"
+        label="Jump Server"
+        disabled={true}
+        checked={false}
+        handleOnChange={handleOnChange}
+      />
+    );
+  }
 
   return (
     <>

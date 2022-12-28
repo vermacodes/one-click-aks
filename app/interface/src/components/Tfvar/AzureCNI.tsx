@@ -37,9 +37,17 @@ export default function AzureCNI() {
     return <></>;
   }
 
-  // if (labIsFetching || labIsLoading) {
-  //   return <>Loading...</>;
-  // }
+  if (labIsLoading || labIsFetching) {
+    return (
+      <Checkbox
+        id="toggle-azurecni"
+        label="Azure CNI"
+        disabled={true}
+        checked={false}
+        handleOnChange={handleOnChange}
+      />
+    );
+  }
 
   return (
     <>

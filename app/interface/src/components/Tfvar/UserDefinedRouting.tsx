@@ -38,9 +38,17 @@ export default function UserDefinedRouting() {
     return <></>;
   }
 
-  // if (labIsFetching || labIsLoading) {
-  //   return <>Loading...</>;
-  // }
+  if (labIsLoading || labIsFetching) {
+    return (
+      <Checkbox
+        id="toggle-udr"
+        label="UDR"
+        disabled={true}
+        checked={false}
+        handleOnChange={handleOnChange}
+      />
+    );
+  }
 
   var checked: boolean = true;
   if (lab && lab.template && lab.template.firewalls.length === 0) {

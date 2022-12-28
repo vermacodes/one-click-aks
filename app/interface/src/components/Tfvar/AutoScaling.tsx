@@ -37,9 +37,17 @@ export default function AutoScaling() {
     return <></>;
   }
 
-  // if (labIsLoading || labIsFetching) {
-  //   return <>Loading...</>;
-  // }
+  if (labIsLoading || labIsFetching) {
+    return (
+      <Checkbox
+        id="toggle-autoscaling"
+        label="Auto Scaling"
+        disabled={true}
+        checked={false}
+        handleOnChange={handleOnChange}
+      />
+    );
+  }
 
   return (
     <>
