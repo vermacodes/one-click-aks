@@ -45,9 +45,9 @@ export default function CustomVnet() {
     return <></>;
   }
 
-  if (labIsFetching || labIsLoading) {
-    return <>Loading...</>;
-  }
+  // if (labIsFetching || labIsLoading) {
+  //   return <>Loading...</>;
+  // }
 
   return (
     <>
@@ -56,7 +56,7 @@ export default function CustomVnet() {
           id="toggle-customvnet"
           label="Custom VNET"
           checked={lab.template.virtualNetworks.length > 0}
-          disabled={false}
+          disabled={labIsLoading || labIsFetching}
           handleOnChange={handleOnChange}
         />
       )}

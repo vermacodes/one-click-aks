@@ -38,9 +38,9 @@ export default function JumpServer() {
     return <></>;
   }
 
-  if (labIsFetching || labIsLoading) {
-    return <>Loading...</>;
-  }
+  // if (labIsFetching || labIsLoading) {
+  //   return <>Loading...</>;
+  // }
 
   return (
     <>
@@ -50,7 +50,9 @@ export default function JumpServer() {
           label="Jump Server"
           checked={lab.template.jumpservers.length > 0}
           disabled={
-            lab.template.kubernetesCluster.privateClusterEnabled === "false"
+            lab.template.kubernetesCluster.privateClusterEnabled === "false" ||
+            labIsLoading ||
+            labIsFetching
           }
           handleOnChange={handleOnChange}
         />

@@ -37,9 +37,9 @@ export default function AutoScaling() {
     return <></>;
   }
 
-  if (labIsLoading || labIsFetching) {
-    return <>Loading...</>;
-  }
+  // if (labIsLoading || labIsFetching) {
+  //   return <>Loading...</>;
+  // }
 
   return (
     <>
@@ -47,7 +47,7 @@ export default function AutoScaling() {
         <Checkbox
           id="toggle-autoscaling"
           label="Auto Scaling"
-          disabled={false}
+          disabled={labIsLoading || labIsFetching}
           checked={
             lab.template.kubernetesCluster.defaultNodePool.enableAutoScaling
           }

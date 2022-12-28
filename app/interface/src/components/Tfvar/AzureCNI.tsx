@@ -37,9 +37,9 @@ export default function AzureCNI() {
     return <></>;
   }
 
-  if (labIsFetching || labIsLoading) {
-    return <>Loading...</>;
-  }
+  // if (labIsFetching || labIsLoading) {
+  //   return <>Loading...</>;
+  // }
 
   return (
     <>
@@ -48,7 +48,7 @@ export default function AzureCNI() {
           id="toggle-azurecni"
           label="Azure CNI"
           checked={"azure" === lab.template.kubernetesCluster.networkPlugin}
-          disabled={false}
+          disabled={labIsLoading || labIsFetching}
           handleOnChange={handleOnChange}
         />
       )}

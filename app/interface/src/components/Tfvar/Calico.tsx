@@ -35,9 +35,9 @@ export default function Calico() {
     return <></>;
   }
 
-  if (labIsFetching || labIsFetching) {
-    return <>Loading...</>;
-  }
+  // if (labIsFetching || labIsFetching) {
+  //   return <>Loading...</>;
+  // }
 
   return (
     <>
@@ -46,7 +46,11 @@ export default function Calico() {
           id="toggle-calico"
           label="Calico"
           checked={"calico" === lab.template.kubernetesCluster.networkPolicy}
-          disabled={lab.template.kubernetesCluster.networkPlugin === "kubenet"}
+          disabled={
+            lab.template.kubernetesCluster.networkPlugin === "kubenet" ||
+            labIsLoading ||
+            labIsFetching
+          }
           handleOnChange={handleOnChange}
         />
       )}

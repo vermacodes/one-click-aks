@@ -36,16 +36,20 @@ export default function PrivateCluster() {
     return <></>;
   }
 
-  if (labIsFetching || labIsLoading) {
-    return <>Loading...</>;
-  }
+  // if (labIsFetching || labIsLoading) {
+  //   return <>Loading...</>;
+  // }
 
   return (
     <Checkbox
       id="toogle-privatecluster"
       label="Private Cluster"
       checked={lab.template.kubernetesCluster.privateClusterEnabled === "true"}
-      disabled={lab.template.virtualNetworks.length === 0}
+      disabled={
+        lab.template.virtualNetworks.length === 0 ||
+        labIsLoading ||
+        labIsFetching
+      }
       handleOnChange={handleOnChange}
     />
   );

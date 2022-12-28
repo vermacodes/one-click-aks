@@ -36,9 +36,9 @@ export default function ContainerRegistry() {
     return <></>;
   }
 
-  if (labIsFetching || labIsLoading) {
-    return <>Loading...</>;
-  }
+  // if (labIsFetching || labIsLoading) {
+  //   return <>Loading...</>;
+  // }
 
   var checked: boolean = true;
   if (
@@ -57,7 +57,7 @@ export default function ContainerRegistry() {
           id="toggle-acr"
           label="ACR"
           checked={checked}
-          disabled={false}
+          disabled={labIsLoading || labIsFetching}
           handleOnChange={handleOnChange}
         />
       )}

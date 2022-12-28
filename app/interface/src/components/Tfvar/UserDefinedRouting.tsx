@@ -38,9 +38,9 @@ export default function UserDefinedRouting() {
     return <></>;
   }
 
-  if (labIsFetching || labIsLoading) {
-    return <>Loading...</>;
-  }
+  // if (labIsFetching || labIsLoading) {
+  //   return <>Loading...</>;
+  // }
 
   var checked: boolean = true;
   if (lab && lab.template && lab.template.firewalls.length === 0) {
@@ -48,7 +48,11 @@ export default function UserDefinedRouting() {
   }
 
   var disabled: boolean = false;
-  if (lab && lab.template && lab.template.virtualNetworks.length === 0) {
+  if (
+    (lab && lab.template && lab.template.virtualNetworks.length === 0) ||
+    labIsLoading ||
+    labIsFetching
+  ) {
     disabled = true;
   }
 
