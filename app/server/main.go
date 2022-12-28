@@ -51,6 +51,7 @@ func main() {
 
 	authRouter := router.Group("/")
 
+	// TODO: We are in service dependency hell down here. Should we use HTTP instead? It will but may not add noticiable latency.
 	logStreamRepository := repository.NewLogStreamRepository()
 	logStreamService := service.NewLogStreamService(logStreamRepository)
 	handler.NewLogStreamHandler(router, logStreamService)
