@@ -24,6 +24,10 @@ func (l *labRepository) SetLabInRedis(val string) error {
 	return setRedis("lab", val)
 }
 
+func (l *labRepository) DeleteLabFromRedis() error {
+	return deleteRedis("lab")
+}
+
 func (l *labRepository) GetEnumerationResults(typeOfLab string) (entity.EnumerationResults, error) {
 	er := entity.EnumerationResults{}
 

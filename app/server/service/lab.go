@@ -51,6 +51,10 @@ func (l *labService) GetLabFromRedis() (entity.LabType, error) {
 }
 
 func (l *labService) SetLabInRedis(lab entity.LabType) error {
+	if lab.Template.KubernetesCluster.KubernetesVersion == "" {
+		lab.Template.KubernetesCluster.KubernetesVersion = l.kVersionService.GetDefaultVersion()
+	}
+
 	val, err := json.Marshal(lab)
 	if err != nil {
 		slog.Error("not able to marshal object", err)
@@ -63,6 +67,10 @@ func (l *labService) SetLabInRedis(lab entity.LabType) error {
 	}
 
 	return nil
+}
+
+func (l *labService) DeleteLabFromRedis() error {
+	return l.labRepository.DeleteLabFromRedis()
 }
 
 func (l *labService) GetPublicLabs(typeOfLab string) ([]entity.LabType, error) {

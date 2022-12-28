@@ -94,6 +94,7 @@ type BlobType struct {
 type LabService interface {
 	GetLabFromRedis() (LabType, error)
 	SetLabInRedis(LabType) error
+	DeleteLabFromRedis() error
 
 	// Public Labs
 	// Includes = sharedlabs, labexercises, mockcases.
@@ -111,6 +112,7 @@ type LabService interface {
 type LabRepository interface {
 	GetLabFromRedis() (string, error)
 	SetLabInRedis(string) error
+	DeleteLabFromRedis() error
 
 	// Public labs
 	GetEnumerationResults(typeOfLab string) (EnumerationResults, error)

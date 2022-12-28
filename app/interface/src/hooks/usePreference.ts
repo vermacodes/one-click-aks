@@ -26,6 +26,7 @@ export function useSetPreference() {
       queryClient.invalidateQueries("get-preference");
       queryClient.invalidateQueries("get-tfvar");
       queryClient.invalidateQueries("get-logs");
+      queryClient.invalidateQueries("kubernetesorchestrators");
     },
   });
 }

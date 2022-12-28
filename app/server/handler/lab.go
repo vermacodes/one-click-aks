@@ -17,6 +17,7 @@ func NewLabHandler(r *gin.RouterGroup, labService entity.LabService) {
 	}
 	r.GET("/lab", handler.GetLabFromRedis)
 	r.PUT("/lab", handler.SetLabInRedis)
+	r.DELETE("/lab/redis", handler.DeleteLabFromRedis)
 	r.POST("/lab", handler.AddLab)
 	r.DELETE("/lab", handler.DeleteLab)
 	r.GET("/lab/public/:typeOfLab", handler.GetPublicLabs)
@@ -47,6 +48,15 @@ func (l *labHandler) SetLabInRedis(c *gin.Context) {
 	}
 
 	c.Status(http.StatusOK)
+}
+
+func (l *labHandler) DeleteLabFromRedis(c *gin.Context) {
+	if err := l.labService.DeleteLabFromRedis(); err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.Status(http.StatusNoContent)
 }
 
 func (l *labHandler) GetPublicLabs(c *gin.Context) {

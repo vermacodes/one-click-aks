@@ -18,7 +18,7 @@ export default function Checkbox({
       <label
         htmlFor={id}
         className={`flex h-4 w-8 items-center rounded-full transition-all duration-100 hover:cursor-pointer ${
-          checked ? "bg-sky-500" : "bg-slate-500"
+          checked ? "bg-green-400" : "bg-slate-500"
         } ${
           disabled && "bg-slate-300 hover:cursor-not-allowed dark:bg-slate-800"
         }
