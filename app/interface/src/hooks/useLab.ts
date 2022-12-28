@@ -11,6 +11,10 @@ function setLab(lab: Lab) {
   return axiosInstance.put("lab", lab);
 }
 
+function deleteLab() {
+  return axiosInstance.delete("lab/redis");
+}
+
 export function useLab() {
   return useQuery("get-lab", getLab, {
     select: (data): Lab => {
@@ -22,7 +26,16 @@ export function useLab() {
 export function useSetLab() {
   var queryClient = useQueryClient();
   return useMutation(setLab, {
-    onSuccess: (data) => {
+    onSuccess: () => {
+      queryClient.invalidateQueries("get-lab");
+    },
+  });
+}
+
+export function useDeleteLab() {
+  var queryClient = useQueryClient();
+  return useMutation(deleteLab, {
+    onSuccess: () => {
       queryClient.invalidateQueries("get-lab");
     },
   });

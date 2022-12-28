@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Lab } from "../../dataStructures";
 import { useActionStatus } from "../../hooks/useActionStatus";
-import { useLab } from "../../hooks/useLab";
-import { useSetLogs } from "../../hooks/useLogs";
+import { useDeleteLab, useLab } from "../../hooks/useLab";
+import { useLogs, useSetLogs } from "../../hooks/useLogs";
 import {
   useApply,
   useDestroy,
@@ -29,7 +29,9 @@ export default function Tfvar() {
 
   const { data: inProgress } = useActionStatus();
   const { mutate: setLogs } = useSetLogs();
+  const { refetch: getLogs } = useLogs();
   const { data: lab } = useLab();
+  const { mutate: deleteLab } = useDeleteLab();
   const { mutate: plan } = usePlan();
   const { mutateAsync: applyAsync } = useApply();
   const { mutate: destroy } = useDestroy();
@@ -40,6 +42,18 @@ export default function Tfvar() {
   // function applyHandler() {
   //   setLogs({ isStreaming: true, logs: "" });
   //   lab && apply(lab);
+  // }
+
+  // function deleteHandler() {
+  //   deleteLabAsync().then(() => {
+  //     getLogs();
+  //     // if (lab != undefined && lab.template != undefined) {
+  //     //   setLogs({
+  //     //     isStreaming: false,
+  //     //     logs: JSON.stringify(lab.template, null, 4),
+  //     //   });
+  //     // }
+  //   });
   // }
 
   function applyHandler() {
@@ -95,6 +109,15 @@ export default function Tfvar() {
           disabled={inProgress}
         >
           Clear Logs
+        </Button>
+        <Button
+          variant="secondary"
+          onClick={() => {
+            setLogs({ isStreaming: false, logs: "" });
+            deleteLab();
+          }}
+        >
+          Reset
         </Button>
         <DownloadJsonButton variant="secondary">Export</DownloadJsonButton>
         <UploadJsonButton></UploadJsonButton>
