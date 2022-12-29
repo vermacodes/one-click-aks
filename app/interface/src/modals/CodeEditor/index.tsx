@@ -70,8 +70,8 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
           e.stopPropagation();
         }}
       >
-        <div className="w-100 flex justify-between border-b border-slate-500 pb-2">
-          <h1 className="text-3xl">Code Editor</h1>
+        <div className="w-100 flex justify-between border-b border-slate-500">
+          <h1 className="text-xl">Code Editor</h1>
           <button
             onClick={() => {
               setShowModal(false);
@@ -82,8 +82,7 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
             <MdClose className="text-3xl" />
           </button>
         </div>
-        <div className={`my-4 h-4/5 space-y-1`}>
-          <label htmlFor="extendscript">Extend Script</label>
+        <div className={`my-1 h-[95%] space-y-1`}>
           <Editor
             height={`100%`}
             width={`100%`}
