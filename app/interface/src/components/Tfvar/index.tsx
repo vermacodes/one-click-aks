@@ -6,11 +6,11 @@ import { useSetLogs } from "../../hooks/useLogs";
 import CodeEditor from "../../modals/CodeEditor";
 import LabBuilder from "../../modals/LabBuilder";
 import Button from "../Button";
-import DownloadJsonButton from "../DownloadJsonButton";
+import ExportLabInBuilder from "../Lab/Export/ExportLabInBuilder";
+import ImportLabToBuilder from "../Lab/Import/ImportLabToBuilder";
 import ApplyButton from "../Terraform/ApplyButton";
 import DestroyButton from "../Terraform/DestroyButton";
 import PlanButton from "../Terraform/PlanButton";
-import UploadJsonButton from "../UploadJsonButton";
 import AutoScaling from "./AutoScaling";
 import AzureCNI from "./AzureCNI";
 import Calico from "./Calico";
@@ -75,8 +75,8 @@ export default function Tfvar() {
         >
           Reset
         </Button>
-        <DownloadJsonButton variant="secondary">Export</DownloadJsonButton>
-        <UploadJsonButton></UploadJsonButton>
+        <ExportLabInBuilder variant="secondary">Export</ExportLabInBuilder>
+        <ImportLabToBuilder />
       </div>
     </div>
   );

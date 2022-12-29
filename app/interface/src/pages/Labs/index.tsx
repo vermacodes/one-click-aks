@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
-import { FaArrowRight, FaCheck } from "react-icons/fa";
+import { useState } from "react";
+import { FaArrowRight } from "react-icons/fa";
 import Button from "../../components/Button";
+import CreateAssignment from "../../components/Lab/Assignment/CreateAssignment";
 import DeleteLabButton from "../../components/Lab/DeleteLabButton";
 import LabCard from "../../components/Lab/LabCard";
 import LoadToBuilderButton from "../../components/Lab/LoadToBuilderButton";
@@ -10,31 +11,14 @@ import Terminal from "../../components/Terminal";
 import ApplyButton from "../../components/Terraform/ApplyButton";
 import DestroyButton from "../../components/Terraform/DestroyButton";
 import PlanButton from "../../components/Terraform/PlanButton";
-import { Assignment, Lab } from "../../dataStructures";
-import { useCreateAssignment } from "../../hooks/useAssignment";
-import { useDeleteLab, useSharedLabs } from "../../hooks/useBlobs";
+import { Lab } from "../../dataStructures";
+import { useSharedLabs } from "../../hooks/useBlobs";
 import LabBuilder from "../../modals/LabBuilder";
 import ServerError from "../ServerError";
 
 export default function Labs() {
   const [more, setMore] = useState<string>("");
-  const [userAlias, setUserAlias] = useState<string>("");
-  const [createdColor, setCreatedColor] = useState<boolean>(false);
   const { data: labs, isLoading, isError } = useSharedLabs();
-  const {
-    mutate: createAssignment,
-    isLoading: creating,
-    data: createData,
-  } = useCreateAssignment();
-
-  useEffect(() => {
-    if (createData?.status === 201) {
-      setCreatedColor(true);
-      setTimeout(() => {
-        setCreatedColor(false);
-      }, 3000);
-    }
-  }, [createData]);
 
   function handleShowMore(lab: Lab) {
     if (more !== lab.id) {
@@ -42,18 +26,6 @@ export default function Labs() {
     } else {
       setMore("");
     }
-  }
-
-  function handleAssignment(lab: Lab) {
-    var assignment: Assignment = {
-      id: "",
-      user: userAlias,
-      labId: lab.id,
-      labName: lab.name,
-      status: "Assigned",
-    };
-    setUserAlias("");
-    createAssignment(assignment);
   }
 
   if (isLoading) {
@@ -74,36 +46,8 @@ export default function Labs() {
               <LabCard lab={lab}>
                 <>
                   <div className="flex flex-col justify-between gap-2">
-                    <div className="flex justify-between gap-x-4 gap-y-2">
-                      <input
-                        className="w-full rounded border border-slate-500 bg-inherit px-2 py-1"
-                        placeholder="Enter user alias to assign lab"
-                        onChange={(event) => setUserAlias(event.target.value)}
-                        value={userAlias}
-                      ></input>
-                      <Button
-                        variant={createdColor ? "success" : "primary"}
-                        onClick={() => handleAssignment(lab)}
-                        disabled={creating}
-                      >
-                        <div className="flex items-center justify-center gap-x-2">
-                          {createdColor ? (
-                            <>
-                              <FaCheck /> Assigned
-                            </>
-                          ) : (
-                            <>
-                              {creating ? (
-                                "Assigning.."
-                              ) : (
-                                <>
-                                  Assign <FaArrowRight />
-                                </>
-                              )}
-                            </>
-                          )}
-                        </div>
-                      </Button>
+                    <div className="flex justify-end gap-x-4 gap-y-2">
+                      <CreateAssignment lab={lab} />
                       <Button
                         variant="primary-outline"
                         onClick={() => handleShowMore(lab)}

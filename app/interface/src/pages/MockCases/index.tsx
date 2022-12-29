@@ -1,31 +1,22 @@
 import { useState } from "react";
 import { FaArrowRight } from "react-icons/fa";
 import Button from "../../components/Button";
+import DeleteLabButton from "../../components/Lab/DeleteLabButton";
 import LabCard from "../../components/Lab/LabCard";
 import LoadToBuilderButton from "../../components/Lab/LoadToBuilderButton";
+import ValidateLabButton from "../../components/Lab/ValidateLabButton";
 import TemplateCard from "../../components/TemplateCard";
 import Terminal from "../../components/Terminal";
 import ApplyButton from "../../components/Terraform/ApplyButton";
 import DestroyButton from "../../components/Terraform/DestroyButton";
 import PlanButton from "../../components/Terraform/PlanButton";
 import { Lab } from "../../dataStructures";
-import {
-  useActionStatus,
-  useSetActionStatus,
-} from "../../hooks/useActionStatus";
-import { useDeleteLab, useSharedMockCases } from "../../hooks/useBlobs";
-import { useSetLogs } from "../../hooks/useLogs";
+import { useSharedMockCases } from "../../hooks/useBlobs";
 import LabBuilder from "../../modals/LabBuilder";
-import { axiosInstance } from "../../utils/axios-interceptors";
 
 export default function MockCases() {
   const [more, setMore] = useState<string>("");
   const { data: labs, isLoading } = useSharedMockCases();
-
-  const { data: inProgress } = useActionStatus();
-  const { mutate: setActionStatus } = useSetActionStatus();
-  const { mutate: setLogs } = useSetLogs();
-  const { mutate: deleteLab } = useDeleteLab();
 
   function handleShowMore(lab: Lab) {
     if (more !== lab.id) {
@@ -33,12 +24,6 @@ export default function MockCases() {
     } else {
       setMore("");
     }
-  }
-
-  function handleLabAction(lab: Lab, action: string) {
-    setActionStatus({ inProgress: true });
-    setLogs({ isStreaming: true, logs: "" });
-    axiosInstance.post(`labs/${action}/${lab.type}/${lab.id}`);
   }
 
   if (isLoading) {
@@ -89,19 +74,12 @@ export default function MockCases() {
                       lab.id === more ? "max-h-40" : "max-h-0"
                     } flex flex-wrap justify-end gap-1 gap-x-1 overflow-hidden transition-all duration-500`}
                   >
-                    <Button
-                      variant="success-outline"
-                      onClick={() => handleLabAction(lab, "validate")}
-                      disabled={inProgress}
-                    >
+                    <ValidateLabButton lab={lab} variant="secondary-outline">
                       Validate
-                    </Button>
-                    <Button
-                      variant="danger-outline"
-                      onClick={() => deleteLab(lab)}
-                    >
+                    </ValidateLabButton>
+                    <DeleteLabButton lab={lab} variant="danger-outline">
                       Delete
-                    </Button>
+                    </DeleteLabButton>
                     <LabBuilder lab={lab} variant="secondary-outline">
                       Edit
                     </LabBuilder>

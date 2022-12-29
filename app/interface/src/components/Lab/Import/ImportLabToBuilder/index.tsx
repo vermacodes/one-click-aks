@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Lab } from "../../dataStructures";
-import { useActionStatus } from "../../hooks/useActionStatus";
-import { useSetLab } from "../../hooks/useLab";
-import { useSetLogs } from "../../hooks/useLogs";
+import { Lab } from "../../../../dataStructures";
+import { useActionStatus } from "../../../../hooks/useActionStatus";
+import { useSetLab } from "../../../../hooks/useLab";
+import { useSetLogs } from "../../../../hooks/useLogs";
 
 type Props = {};
 
-export default function index({}: Props) {
+export default function ImportLabToBuilder({}: Props) {
   const [lab, _setLab] = useState<Lab | undefined>();
   const { mutate: setLab } = useSetLab();
   const { data: inProgress } = useActionStatus();
