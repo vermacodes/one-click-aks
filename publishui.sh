@@ -17,4 +17,4 @@ else
     sa=$1
 fi
 
-nvm use v18.12.1 lts/hydrogen && npm run build && cd dist && az storage blob upload-batch -d '$web' --account-name ${sa} -s "." --overwrite
+npm run build && cd dist && az storage blob upload-batch -d '$web' --account-name ${sa} -s "." --overwrite

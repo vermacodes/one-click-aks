@@ -1,4 +1,5 @@
 import Button from "../../components/Button";
+import DeleteAssignment from "../../components/Lab/Assignment/DeleteAssignment";
 import {
   useDeleteAssignment,
   useGetAssignments,
@@ -46,12 +47,7 @@ export default function Assignments({}: Props) {
                   {assignment.status}
                 </td>
                 <td className="border-collapse items-center space-x-2 border  border-slate-500 px-4 py-2">
-                  <Button
-                    variant="danger-outline"
-                    onClick={() => deleteAssignment.mutate(assignment)}
-                  >
-                    Delete
-                  </Button>
+                  <DeleteAssignment assignment={assignment} />
                 </td>
               </tr>
             ))}

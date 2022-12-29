@@ -10,10 +10,10 @@ export default function ResetActionStatus({}: Props) {
         variant="danger-outline"
         onClick={() =>
           axiosInstance
-            .post("actionstatus", {
+            .put("actionstatus", {
               inProgress: false,
             })
-            .then(() => axiosInstance.get("endstream"))
+            .then(() => axiosInstance.put("logs/endstream"))
         }
       >
         Stop Runaway Action

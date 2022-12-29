@@ -226,3 +226,14 @@ export type ServerStatus = {
 export type LoginStatus = {
   isLoggedIn: boolean;
 };
+
+export type ButtonVariant =
+  | "primary"
+  | "secondary"
+  | "danger"
+  | "success"
+  | "primary-outline"
+  | "secondary-outline"
+  | "danger-outline"
+  | "success-outline"
+  | "primary-outline-animate";

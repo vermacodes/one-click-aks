@@ -1,9 +1,9 @@
 import { FaChevronDown } from "react-icons/fa";
 import { Orchestrator } from "../../dataStructures";
 import { useActionStatus } from "../../hooks/useActionStatus";
+import { useLab, useSetLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
 import { useGetOrchestrators } from "../../hooks/useOrchestrators";
-import { useSetTfvar, useTfvar } from "../../hooks/useTfvar";
 
 type Props = {
   versionMenu: boolean;
@@ -16,17 +16,26 @@ export default function KubernetesVersion({
 }: Props) {
   const { data: actionStatus } = useActionStatus();
   const { data, isLoading, isFetching, isError } = useGetOrchestrators();
-  const { data: tfvar } = useTfvar();
-  const { mutate: setTfVar } = useSetTfvar();
   const { mutate: setLogs } = useSetLogs();
+  const {
+    data: lab,
+    isLoading: labIsLoading,
+    isFetching: labIsFetching,
+  } = useLab();
+  const { mutate: setLab } = useSetLab();
 
   function handleOnSelect(orchestrator: Orchestrator) {
-    if (tfvar !== undefined) {
-      tfvar.kubernetesCluster.kubernetesVersion =
-        orchestrator.orchestratorVersion;
-      !actionStatus &&
-        setLogs({ isStreaming: false, logs: JSON.stringify(tfvar, null, 4) });
-      setTfVar(tfvar);
+    if (lab !== undefined) {
+      if (lab.template !== undefined) {
+        lab.template.kubernetesCluster.kubernetesVersion =
+          orchestrator.orchestratorVersion;
+        !actionStatus &&
+          setLogs({
+            isStreaming: false,
+            logs: JSON.stringify(lab.template, null, 4),
+          });
+        setLab(lab);
+      }
     }
   }
 
@@ -45,7 +54,9 @@ export default function KubernetesVersion({
           e.stopPropagation();
         }}
       >
-        {tfvar && tfvar.kubernetesCluster.kubernetesVersion}
+        {lab &&
+          lab.template &&
+          lab.template.kubernetesCluster.kubernetesVersion}
         <p>
           <FaChevronDown />
         </p>
@@ -57,13 +68,14 @@ export default function KubernetesVersion({
       >
         {data?.orchestrators?.map(
           (orchestrator) =>
-            tfvar &&
-            tfvar?.kubernetesCluster.kubernetesVersion !== undefined && (
+            lab &&
+            lab.template &&
+            lab.template?.kubernetesCluster.kubernetesVersion !== undefined && (
               <div className="flex justify-between gap-x-1">
                 <div
                   className={`${
                     orchestrator.orchestratorVersion ===
-                      tfvar?.kubernetesCluster.kubernetesVersion &&
+                      lab.template?.kubernetesCluster.kubernetesVersion &&
                     "bg-green-300 hover:text-slate-900 dark:text-slate-900"
                   } w-full items-center justify-between rounded p-2 hover:bg-sky-500 hover:text-slate-100 `}
                   onClick={() => {

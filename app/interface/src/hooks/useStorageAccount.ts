@@ -2,11 +2,11 @@ import { useQuery, useQueryClient } from "react-query";
 import { axiosInstance } from "../utils/axios-interceptors";
 
 function getStorageAccount() {
-  return axiosInstance.get("getstate");
+  return axiosInstance.get("storageaccount");
 }
 
 function configureStorageAccount() {
-  return axiosInstance.get("configurestate");
+  return axiosInstance.post("storageaccount");
 }
 
 export function useGetStorageAccount() {

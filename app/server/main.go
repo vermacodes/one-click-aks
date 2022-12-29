@@ -2,9 +2,16 @@ package main
 
 import (
 	"net/http"
+	"os"
+	"strconv"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/vermacodes/one-click-aks/app/server/handler"
+	"github.com/vermacodes/one-click-aks/app/server/middleware"
+	"github.com/vermacodes/one-click-aks/app/server/repository"
+	"github.com/vermacodes/one-click-aks/app/server/service"
+	"golang.org/x/exp/slog"
 )
 
 type Status struct {
@@ -19,60 +26,76 @@ func status(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, status)
 }
 
-func handleRequests() {
+func main() {
+
+	logLevel := os.Getenv("LOG_LEVEL")
+	logLevelInt, err := strconv.Atoi(logLevel)
+	if err != nil {
+		logLevelInt = 8
+	}
+
+	opts := slog.HandlerOptions{
+		AddSource: true,
+		Level:     slog.Level(logLevelInt),
+	}
+
+	slog.SetDefault(slog.New(opts.NewJSONHandler(os.Stderr)))
+
 	router := gin.Default()
+	router.SetTrustedProxies(nil)
+
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{"http://localhost:3000", "http://localhost:5173", "https://ashisverma.z13.web.core.windows.net", "https://*.azurewebsites.net"}
+
 	router.Use(cors.New(config))
 
-	router.GET("/tfinit", tfInit)
-	router.POST("/apply", apply)
-	router.POST("/plan", plan)
-	router.POST("/destroy", destroy)
-	router.POST("/validatelab", validateLab)
-	router.GET("/status", status)
-	router.GET("/healthz", status)
-	router.GET("/accountshow", accountShowApi)
-	router.GET("/account", getAccounts)
-	router.PUT("/account", putAccount)
-	router.GET("/login", accountLogin)
-	router.GET("/loginstatus", validateLoginController)
-	router.GET("/getstate", getStateStorageConfiguration)
-	router.GET("/configurestate", configureStateStorage)
-	router.GET("/sharedtemplates", listSharedTemplates)
-	router.POST("/createlab", createLab)
-	router.POST("/deploylab", deployLab)
-	router.POST("/validate", validate)
-	router.GET("/listlabs", listLabsApi)
-	router.GET("/actionstatus", getActionStatus)
-	router.POST("/actionstatus", setActionStatus)
-	router.GET("/logs", getLogs)
-	router.POST("/logs", setLogs)
-	router.GET("/endstream", endStream)
-	router.GET("/tfvar", getTfvar)
-	router.POST("/tfvar", setTfvar)
-	router.POST("/tfvardefault", setDefaultTfvar)
-	router.GET("/workspace", listWorkspaces)
-	router.PUT("/workspace", selectWorkspace)
-	router.DELETE("/workspace", deleteWorkspace)
-	router.POST("/workspace", addWorkspace)
-	router.GET("/preference", getPreferenceController)
-	router.PUT("/preference", putPreference)
-	router.GET("/resources", listResoureces)
-	router.POST("/labs", createLab)
-	router.PUT("/labs", createLab)
-	router.POST("/labs/:labaction/:labType/:labId", labAction)
-	router.GET("/labs/:type", getLabs)
-	router.DELETE("/labs", deleteLab)
-	router.POST("/assignment", createAssignmentApi)
-	router.GET("/assignments", listAssignmentsApi)
-	router.GET("/userassignedlabs", listUserAssignedLabsApi)
-	router.DELETE("/assignment/:assignmentId", deleteAssignment)
-	router.GET("/privilege", getPrivilegesApi)
-	router.GET("/kubernetesorchestrators", getKubernetesOrchestratorController)
-	router.Run(":8080")
-}
+	authRouter := router.Group("/")
 
-func main() {
-	handleRequests()
+	// TODO: We are in service dependency hell down here. Should we use HTTP instead? It will but may not add noticiable latency.
+	logStreamRepository := repository.NewLogStreamRepository()
+	logStreamService := service.NewLogStreamService(logStreamRepository)
+	handler.NewLogStreamHandler(router, logStreamService)
+
+	actionStatusRepository := repository.NewActionStatusRepository()
+	actionStatusService := service.NewActionStatusService(actionStatusRepository)
+	handler.NewActionStatusHanlder(*router, actionStatusService)
+
+	authRepository := repository.NewAuthRepository()
+	authService := service.NewAuthService(authRepository, logStreamService, actionStatusService)
+	handler.NewLoginHandler(router, authService)
+
+	authRouter.Use(middleware.AuthRequired(authService))
+
+	handler.NewAuthHandler(authRouter, authService)
+
+	storageAccountRepository := repository.NewStorageAccountRepository()
+	storageAccountService := service.NewStorageAccountService(storageAccountRepository)
+	handler.NewStorageAccountHandler(authRouter, storageAccountService)
+
+	workspaceRepository := repository.NewTfWorkspaceRepository()
+	workspaceService := service.NewWorksapceService(workspaceRepository, storageAccountService, actionStatusService)
+	handler.NewWorkspaceHandler(authRouter, workspaceService)
+
+	prefRepository := repository.NewPreferenceRepository()
+	prefService := service.NewPreferenceService(prefRepository, storageAccountService)
+	handler.NewPreferenceHandler(authRouter, prefService)
+
+	kVersionRepository := repository.NewKVersionRepository()
+	kVersionService := service.NewKVersionService(kVersionRepository, prefService)
+	handler.NewKVersionHandler(authRouter, kVersionService)
+
+	labRepository := repository.NewLabRespository()
+	labService := service.NewLabService(labRepository, kVersionService, storageAccountService)
+	handler.NewLabHandler(authRouter, labService)
+
+	assignmentRepository := repository.NewAssignmentRepository()
+	assignmentService := service.NewAssignmentService(assignmentRepository, authService, labService)
+	handler.NewAssignmentHandler(authRouter, assignmentService)
+
+	terraformRepository := repository.NewTerraformRepository()
+	terraformService := service.NewTerraformService(terraformRepository, labService, workspaceService, logStreamService, actionStatusService, kVersionService, storageAccountService)
+	handler.NewTerraformHandler(authRouter, terraformService)
+
+	router.GET("/status", status)
+	router.Run()
 }

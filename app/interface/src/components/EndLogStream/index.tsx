@@ -1,4 +1,3 @@
-import { axiosInstance } from "../../utils/axios-interceptors";
 import Button from "../Button";
 
 type Props = {};

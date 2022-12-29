@@ -10,7 +10,7 @@ import {
   useGetResources,
   useSelectWorkspace,
   useTerraformWorkspace,
-} from "../../hooks/useTfActions";
+} from "../../hooks/useWorkspace";
 import Button from "../Button";
 import TfResources from "../TfResources";
 
@@ -44,8 +44,6 @@ export default function TfWorkspace({
   function handleAddWorkspace(event: React.ChangeEvent<HTMLInputElement>) {
     setNewWorkSpaceName(event.target.value);
   }
-
-  console.log(selectingWorkspace);
 
   return (
     <div className="gap-y-2">

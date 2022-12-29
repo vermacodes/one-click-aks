@@ -4,7 +4,7 @@ import { Lab } from "../dataStructures";
 import { axiosInstance } from "../utils/axios-interceptors";
 
 function getSharedMockCases(): Promise<AxiosResponse<Lab[]>> {
-  return axiosInstance("labs/mockcases");
+  return axiosInstance("/lab/public/mockcases");
 }
 
 export function useSharedMockCases() {
@@ -18,7 +18,7 @@ export function useSharedMockCases() {
 }
 
 function getTempalates(): Promise<AxiosResponse<Lab[]>> {
-  return axiosInstance("labs/mytemplates");
+  return axiosInstance("lab/my");
 }
 
 export function useTemplates() {
@@ -32,7 +32,7 @@ export function useTemplates() {
 }
 
 function getSharedTemplates(): Promise<AxiosResponse<Lab[]>> {
-  return axiosInstance("labs/sharedtemplates");
+  return axiosInstance("lab/public/sharedtemplates");
 }
 
 export function useSharedTemplates() {
@@ -46,7 +46,7 @@ export function useSharedTemplates() {
 }
 
 function getSharedLabs(): Promise<AxiosResponse<Lab[]>> {
-  return axiosInstance.get("labs/labs");
+  return axiosInstance.get("lab/public/labexercises");
 }
 
 export function useSharedLabs() {
@@ -60,7 +60,7 @@ export function useSharedLabs() {
 }
 
 function createLab(lab: Lab): Promise<AxiosResponse<Lab[]>> {
-  return axiosInstance.post("createlab", lab);
+  return axiosInstance.post("/lab", lab);
 }
 
 // TODO: Optimistic updates
@@ -78,7 +78,7 @@ export function useCreateLab() {
 }
 
 function deleteLab(lab: Lab) {
-  return axiosInstance.delete("labs", { data: lab });
+  return axiosInstance.delete("lab", { data: lab });
 }
 
 // TODO: Optimistic updates

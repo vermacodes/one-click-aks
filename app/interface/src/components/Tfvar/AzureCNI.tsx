@@ -1,46 +1,62 @@
-import { TfvarConfigType } from "../../dataStructures";
 import { useActionStatus } from "../../hooks/useActionStatus";
+import { useLab, useSetLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
-import { useSetTfvar, useTfvar } from "../../hooks/useTfvar";
 import Checkbox from "../Checkbox";
 
 export default function AzureCNI() {
-  const { data: tfvar, isLoading } = useTfvar();
-  const { mutate: setTfvar } = useSetTfvar();
   const { data: inProgress } = useActionStatus();
   const { mutate: setLogs } = useSetLogs();
+  const {
+    data: lab,
+    isLoading: labIsLoading,
+    isFetching: labIsFetching,
+  } = useLab();
+  const { mutate: setLab } = useSetLab();
 
   function handleOnChange() {
-    if (tfvar !== undefined) {
-      if ("azure" === tfvar.kubernetesCluster.networkPlugin) {
-        tfvar.kubernetesCluster.networkPlugin = "kubenet";
-        tfvar.kubernetesCluster.networkPolicy = "null";
-      } else {
-        tfvar.kubernetesCluster.networkPlugin = "azure";
-        tfvar.kubernetesCluster.networkPolicy = "azure";
+    if (lab !== undefined) {
+      if (lab.template !== undefined) {
+        if ("azure" === lab.template.kubernetesCluster.networkPlugin) {
+          lab.template.kubernetesCluster.networkPlugin = "kubenet";
+          lab.template.kubernetesCluster.networkPolicy = "null";
+        } else {
+          lab.template.kubernetesCluster.networkPlugin = "azure";
+          lab.template.kubernetesCluster.networkPolicy = "azure";
+        }
+        !inProgress &&
+          setLogs({
+            isStreaming: false,
+            logs: JSON.stringify(lab.template, null, 4),
+          });
+        setLab(lab);
       }
-      !inProgress &&
-        setLogs({ isStreaming: false, logs: JSON.stringify(tfvar, null, 4) });
-      setTfvar(tfvar);
     }
   }
 
-  if (tfvar === undefined) {
+  if (lab === undefined || lab.template === undefined) {
     return <></>;
   }
 
-  if (isLoading) {
-    return <>Loading...</>;
+  if (labIsLoading || labIsFetching) {
+    return (
+      <Checkbox
+        id="toggle-azurecni"
+        label="Azure CNI"
+        disabled={true}
+        checked={false}
+        handleOnChange={handleOnChange}
+      />
+    );
   }
 
   return (
     <>
-      {tfvar && (
+      {lab && lab.template && (
         <Checkbox
           id="toggle-azurecni"
           label="Azure CNI"
-          checked={"azure" === tfvar.kubernetesCluster.networkPlugin}
-          disabled={false}
+          checked={"azure" === lab.template.kubernetesCluster.networkPlugin}
+          disabled={labIsLoading || labIsFetching}
           handleOnChange={handleOnChange}
         />
       )}

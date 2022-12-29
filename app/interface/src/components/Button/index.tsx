@@ -1,16 +1,8 @@
 import React from "react";
+import { ButtonVariant } from "../../dataStructures";
 
 type Props = {
-  variant:
-    | "primary"
-    | "secondary"
-    | "danger"
-    | "success"
-    | "primary-outline"
-    | "secondary-outline"
-    | "danger-outline"
-    | "success-outline"
-    | "primary-outline-animate";
+  variant: ButtonVariant;
   children?: React.ReactNode;
   onClick?(args: any): any;
   onDoubbleClick?(args: any): any;

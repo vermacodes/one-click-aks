@@ -1,52 +1,72 @@
-import { TfvarConfigType } from "../../dataStructures";
 import { useActionStatus } from "../../hooks/useActionStatus";
+import { useLab, useSetLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
-import { useSetTfvar, useTfvar } from "../../hooks/useTfvar";
 import Checkbox from "../Checkbox";
 import { defaultFirewall } from "./defaults";
 
 export default function UserDefinedRouting() {
-  const { data: tfvar, isLoading } = useTfvar();
-  const { mutate: setTfvar } = useSetTfvar();
   const { data: inProgress } = useActionStatus();
   const { mutate: setLogs } = useSetLogs();
+  const {
+    data: lab,
+    isLoading: labIsLoading,
+    isFetching: labIsFetching,
+  } = useLab();
+  const { mutate: setLab } = useSetLab();
 
   function handleOnChange() {
-    if (tfvar !== undefined) {
-      if (tfvar.firewalls.length > 0) {
-        tfvar.kubernetesCluster.outboundType = "loadBalancer";
-        tfvar.firewalls = [];
-      } else {
-        tfvar.kubernetesCluster.outboundType = "userDefinedRouting";
-        tfvar.firewalls = [defaultFirewall];
+    if (lab !== undefined) {
+      if (lab.template !== undefined) {
+        if (lab.template.firewalls.length > 0) {
+          lab.template.kubernetesCluster.outboundType = "loadBalancer";
+          lab.template.firewalls = [];
+        } else {
+          lab.template.kubernetesCluster.outboundType = "userDefinedRouting";
+          lab.template.firewalls = [defaultFirewall];
+        }
+        !inProgress &&
+          setLogs({
+            isStreaming: false,
+            logs: JSON.stringify(lab.template, null, 4),
+          });
+        setLab(lab);
       }
-      !inProgress &&
-        setLogs({ isStreaming: false, logs: JSON.stringify(tfvar, null, 4) });
-      setTfvar(tfvar);
     }
   }
 
-  if (tfvar === undefined) {
+  if (lab === undefined || lab.template === undefined) {
     return <></>;
   }
 
-  if (isLoading) {
-    return <>Loading...</>;
+  if (labIsLoading || labIsFetching) {
+    return (
+      <Checkbox
+        id="toggle-udr"
+        label="UDR"
+        disabled={true}
+        checked={false}
+        handleOnChange={handleOnChange}
+      />
+    );
   }
 
   var checked: boolean = true;
-  if (tfvar && tfvar.firewalls.length === 0) {
+  if (lab && lab.template && lab.template.firewalls.length === 0) {
     checked = false;
   }
 
   var disabled: boolean = false;
-  if (tfvar && tfvar.virtualNetworks.length === 0) {
+  if (
+    (lab && lab.template && lab.template.virtualNetworks.length === 0) ||
+    labIsLoading ||
+    labIsFetching
+  ) {
     disabled = true;
   }
 
   return (
     <>
-      {tfvar && (
+      {lab && lab.template && (
         <Checkbox
           id="toggle-udr"
           label="UDR"
