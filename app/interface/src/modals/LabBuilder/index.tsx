@@ -2,22 +2,14 @@ import Editor from "@monaco-editor/react";
 import { useEffect, useState } from "react";
 import { MdClose } from "react-icons/md";
 import Button from "../../components/Button";
-import { Lab } from "../../dataStructures";
+import { ButtonVariant, Lab } from "../../dataStructures";
 import { useGetPriviledge } from "../../hooks/useAccount";
 import { useCreateLab } from "../../hooks/useBlobs";
 import { useLab } from "../../hooks/useLab";
 
 type Props = {
   children?: React.ReactNode;
-  variant:
-    | "primary"
-    | "secondary"
-    | "danger"
-    | "success"
-    | "primary-outline"
-    | "secondary-outline"
-    | "danger-outline"
-    | "success-outline";
+  variant: ButtonVariant;
   lab?: Lab;
 };
 
@@ -138,12 +130,6 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
         </div>
         <div className="my-4 h-60 space-y-1">
           <label htmlFor="template">Template</label>
-          {/* <textarea
-            id="template"
-            value={lab.template && JSON.stringify(lab.template, null, 4)}
-            className="px h-60 w-full border border-slate-500 bg-inherit p-2 py-2 font-mono text-sm scrollbar-thin scrollbar-track-slate-300 scrollbar-thumb-sky-500 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500 hover:bg-slate-200 dark:hover:bg-slate-700"
-            placeholder="This field will auto populate."
-          /> */}
           <Editor
             height={`95%`}
             width={`100%`}
@@ -158,15 +144,6 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
         </div>
         <div className={`my-4 h-60 space-y-1`}>
           <label htmlFor="extendscript">Extend Script</label>
-          {/* <textarea
-            id="extendscript"
-            value={atob(lab.extendScript)}
-            className="px h-60 w-full border border-slate-500 bg-inherit p-2 py-2 font-mono text-sm scrollbar-thin scrollbar-track-slate-300 scrollbar-thumb-sky-500 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500 hover:bg-slate-200 dark:hover:bg-slate-700"
-            placeholder="Script to extend the cluster."
-            onChange={(event) => {
-              setLab({ ...lab, extendScript: btoa(event.target.value) });
-            }}
-          /> */}
           <Editor
             height={`95%`}
             width={`100%`}
@@ -202,15 +179,6 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
               }`}
             >
               <label htmlFor="validatescript">Validate Script</label>
-              {/* <textarea
-                id="validatescript"
-                value={atob(lab.validateScript)}
-                className="px h-60 w-full border border-slate-500 bg-inherit p-2 py-2 font-mono text-sm scrollbar-thin scrollbar-track-slate-300 scrollbar-thumb-sky-500 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500 hover:bg-slate-200 dark:hover:bg-slate-700"
-                placeholder="Script to validate the fix"
-                onChange={(event) => {
-                  setLab({ ...lab, validateScript: btoa(event.target.value) });
-                }}
-              /> */}
               <Editor
                 height={`95%`}
                 width={`100%`}
@@ -251,8 +219,20 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
               setShowModal(false);
             }}
           >
-            Save
+            {lab.id !== "" ? "Update" : "Save"}
           </Button>
+          {lab.id !== "" && (
+            <Button
+              variant="primary"
+              onClick={() => {
+                lab.id = "";
+                createLab(lab);
+                setShowModal(false);
+              }}
+            >
+              Save as New
+            </Button>
+          )}
         </div>
       </div>
     </div>

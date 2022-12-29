@@ -3,21 +3,13 @@ import { useEffect, useState } from "react";
 import { MdClose } from "react-icons/md";
 
 import Button from "../../components/Button";
-import { Lab } from "../../dataStructures";
+import { ButtonVariant, Lab } from "../../dataStructures";
 import { useCreateLab } from "../../hooks/useBlobs";
 import { useLab, useSetLab } from "../../hooks/useLab";
 
 type Props = {
   children?: React.ReactNode;
-  variant:
-    | "primary"
-    | "secondary"
-    | "danger"
-    | "success"
-    | "primary-outline"
-    | "secondary-outline"
-    | "danger-outline"
-    | "success-outline";
+  variant: ButtonVariant;
   lab?: Lab;
 };
 
