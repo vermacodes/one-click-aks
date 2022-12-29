@@ -1,19 +1,18 @@
 import { useEffect, useState } from "react";
 import { FaArrowRight, FaCheck } from "react-icons/fa";
 import Button from "../../components/Button";
+import DeleteLabButton from "../../components/Lab/DeleteLabButton";
 import LabCard from "../../components/Lab/LabCard";
 import LoadToBuilderButton from "../../components/Lab/LoadToBuilderButton";
+import ValidateLabButton from "../../components/Lab/ValidateLabButton";
 import TemplateCard from "../../components/TemplateCard";
 import Terminal from "../../components/Terminal";
 import ApplyButton from "../../components/Terraform/ApplyButton";
 import DestroyButton from "../../components/Terraform/DestroyButton";
 import PlanButton from "../../components/Terraform/PlanButton";
 import { Assignment, Lab } from "../../dataStructures";
-import { useActionStatus } from "../../hooks/useActionStatus";
 import { useCreateAssignment } from "../../hooks/useAssignment";
 import { useDeleteLab, useSharedLabs } from "../../hooks/useBlobs";
-import { useSetLogs } from "../../hooks/useLogs";
-import { useValidate } from "../../hooks/useTerraform";
 import LabBuilder from "../../modals/LabBuilder";
 import ServerError from "../ServerError";
 
@@ -21,16 +20,12 @@ export default function Labs() {
   const [more, setMore] = useState<string>("");
   const [userAlias, setUserAlias] = useState<string>("");
   const [createdColor, setCreatedColor] = useState<boolean>(false);
-  const { data: inProgress } = useActionStatus();
-  const { mutate: setLogs } = useSetLogs();
   const { data: labs, isLoading, isError } = useSharedLabs();
-  const { mutate: deleteLab } = useDeleteLab();
   const {
     mutate: createAssignment,
     isLoading: creating,
     data: createData,
   } = useCreateAssignment();
-  const { mutate: validate } = useValidate();
 
   useEffect(() => {
     if (createData?.status === 201) {
@@ -133,16 +128,9 @@ export default function Labs() {
                       <ApplyButton variant="primary-outline" lab={lab}>
                         Apply
                       </ApplyButton>
-                      <Button
-                        variant="success-outline"
-                        onClick={() => {
-                          setLogs({ isStreaming: true, logs: "" });
-                          validate(lab);
-                        }}
-                        disabled={inProgress}
-                      >
+                      <ValidateLabButton lab={lab} variant="primary-outline">
                         Validate
-                      </Button>
+                      </ValidateLabButton>
                       <DestroyButton variant="danger-outline" lab={lab}>
                         Destroy
                       </DestroyButton>
@@ -155,12 +143,9 @@ export default function Labs() {
                       >
                         Load To Builder
                       </LoadToBuilderButton>
-                      <Button
-                        variant="danger-outline"
-                        onClick={() => deleteLab(lab)}
-                      >
+                      <DeleteLabButton lab={lab} variant="secondary-outline">
                         Delete
-                      </Button>
+                      </DeleteLabButton>
                     </div>
                   </div>
                 </>

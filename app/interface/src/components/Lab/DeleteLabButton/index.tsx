@@ -1,8 +1,8 @@
 import React from "react";
 import { ButtonVariant, Lab } from "../../../dataStructures";
 import { useActionStatus } from "../../../hooks/useActionStatus";
+import { useDeleteLab } from "../../../hooks/useBlobs";
 import { useSetLogs } from "../../../hooks/useLogs";
-import { useApply, useExtend } from "../../../hooks/useTerraform";
 import Button from "../../Button";
 
 type Props = {
@@ -11,19 +11,14 @@ type Props = {
   lab: Lab | undefined;
 };
 
-export default function ApplyButton({ variant, children, lab }: Props) {
+export default function DeleteLabButton({ variant, children, lab }: Props) {
   const { mutate: setLogs } = useSetLogs();
-  const { mutateAsync: applyAsync } = useApply();
-  const { mutate: extend } = useExtend();
   const { data: inProgress } = useActionStatus();
+  const { mutate: deleteLab } = useDeleteLab();
 
   function onClickHandler() {
-    if (lab !== undefined) {
-      setLogs({ isStreaming: true, logs: "" });
-      applyAsync(lab).then(() => {
-        extend(lab);
-      });
-    }
+    setLogs({ isStreaming: true, logs: "" });
+    lab && deleteLab(lab);
   }
 
   return (

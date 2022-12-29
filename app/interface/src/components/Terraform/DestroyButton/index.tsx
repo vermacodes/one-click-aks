@@ -11,7 +11,7 @@ type Props = {
   lab: Lab | undefined;
 };
 
-export default function index({ variant, children, lab }: Props) {
+export default function DestroyButton({ variant, children, lab }: Props) {
   const { mutate: setLogs } = useSetLogs();
   const { mutate: destroy } = useDestroy();
   const { data: inProgress } = useActionStatus();
