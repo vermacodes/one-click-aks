@@ -46,7 +46,7 @@ export default function Labs() {
               <LabCard lab={lab}>
                 <>
                   <div className="flex flex-col justify-between gap-2">
-                    <div className="flex justify-end gap-x-4 gap-y-2">
+                    <div className="flex justify-between gap-x-4 gap-y-2">
                       <CreateAssignment lab={lab} />
                       <Button
                         variant="primary-outline"
