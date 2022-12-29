@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { FaArrowRight, FaCheck } from "react-icons/fa";
 import Button from "../../components/Button";
+import LabCard from "../../components/Lab/LabCard";
 import LoadToBuilderButton from "../../components/Lab/LoadToBuilderButton";
 import TemplateCard from "../../components/TemplateCard";
 import Terminal from "../../components/Terminal";
@@ -75,105 +76,95 @@ export default function Labs() {
         {labs &&
           labs.map((lab: Lab) => (
             <TemplateCard key={lab.name}>
-              <div className="flex h-min flex-col justify-between gap-y-4 transition-transform duration-500 ease-in-out">
-                <p className="break-all border-b border-slate-500 py-2 text-xl">
-                  {lab.name}
-                </p>
-                <p className="break-all text-sm">{lab.description}</p>
-                <div className="flex flex-auto space-x-1 border-b border-slate-500 pb-4">
-                  {lab.tags &&
-                    lab.tags.map((tag) => (
-                      <span
-                        className="h-5 border border-slate-500 px-3 text-xs"
-                        key={tag}
+              <LabCard lab={lab}>
+                <>
+                  <div className="flex flex-col justify-between gap-2">
+                    <div className="flex justify-between gap-x-4 gap-y-2">
+                      <input
+                        className="w-full rounded border border-slate-500 bg-inherit px-2 py-1"
+                        placeholder="Enter user alias to assign lab"
+                        onChange={(event) => setUserAlias(event.target.value)}
+                        value={userAlias}
+                      ></input>
+                      <Button
+                        variant={createdColor ? "success" : "primary"}
+                        onClick={() => handleAssignment(lab)}
+                        disabled={creating}
                       >
-                        {tag}
-                      </span>
-                    ))}
-                </div>
-                <div className="flex flex-col justify-between gap-2">
-                  <div className="flex justify-between gap-x-4 gap-y-2">
-                    <input
-                      className="w-full rounded border border-slate-500 bg-inherit px-2 py-1"
-                      placeholder="Enter user alias to assign lab"
-                      onChange={(event) => setUserAlias(event.target.value)}
-                      value={userAlias}
-                    ></input>
-                    <Button
-                      variant={createdColor ? "success" : "primary"}
-                      onClick={() => handleAssignment(lab)}
-                      disabled={creating}
-                    >
-                      <div className="flex items-center justify-center gap-x-2">
-                        {createdColor ? (
-                          <>
-                            <FaCheck /> Assigned
-                          </>
-                        ) : (
-                          <>
-                            {creating ? (
-                              "Assigning.."
-                            ) : (
-                              <>
-                                Assign <FaArrowRight />
-                              </>
-                            )}
-                          </>
-                        )}
-                      </div>
-                    </Button>
-                    <Button
-                      variant="primary-outline"
-                      onClick={() => handleShowMore(lab)}
-                    >
-                      <div
-                        className={` ${
-                          lab.id === more ? "rotate-90" : ""
-                        } transition-transform duration-500`}
+                        <div className="flex items-center justify-center gap-x-2">
+                          {createdColor ? (
+                            <>
+                              <FaCheck /> Assigned
+                            </>
+                          ) : (
+                            <>
+                              {creating ? (
+                                "Assigning.."
+                              ) : (
+                                <>
+                                  Assign <FaArrowRight />
+                                </>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      </Button>
+                      <Button
+                        variant="primary-outline"
+                        onClick={() => handleShowMore(lab)}
                       >
-                        <FaArrowRight />
-                      </div>
-                    </Button>
-                  </div>
-                  <div
-                    className={`${
-                      lab.id === more ? "max-h-40" : "max-h-0"
-                    } flex flex-wrap justify-end gap-1 gap-x-1 overflow-hidden transition-all duration-500`}
-                  >
-                    <PlanButton variant="success-outline" lab={lab}>
-                      Plan
-                    </PlanButton>
-                    <ApplyButton variant="primary-outline" lab={lab}>
-                      Apply
-                    </ApplyButton>
-                    <Button
-                      variant="success-outline"
-                      onClick={() => {
-                        setLogs({ isStreaming: true, logs: "" });
-                        validate(lab);
-                      }}
-                      disabled={inProgress}
+                        <div
+                          className={` ${
+                            lab.id === more ? "rotate-90" : ""
+                          } transition-transform duration-500`}
+                        >
+                          <FaArrowRight />
+                        </div>
+                      </Button>
+                    </div>
+                    <div
+                      className={`${
+                        lab.id === more ? "max-h-40" : "max-h-0"
+                      } flex flex-wrap justify-end gap-1 gap-x-1 overflow-hidden transition-all duration-500`}
                     >
-                      Validate
-                    </Button>
-                    <DestroyButton variant="danger-outline" lab={lab}>
-                      Destroy
-                    </DestroyButton>
-                    <LabBuilder lab={lab} variant="secondary-outline">
-                      Edit
-                    </LabBuilder>
-                    <LoadToBuilderButton variant="secondary-outline" lab={lab}>
-                      Load To Builder
-                    </LoadToBuilderButton>
-                    <Button
-                      variant="danger-outline"
-                      onClick={() => deleteLab(lab)}
-                    >
-                      Delete
-                    </Button>
+                      <PlanButton variant="success-outline" lab={lab}>
+                        Plan
+                      </PlanButton>
+                      <ApplyButton variant="primary-outline" lab={lab}>
+                        Apply
+                      </ApplyButton>
+                      <Button
+                        variant="success-outline"
+                        onClick={() => {
+                          setLogs({ isStreaming: true, logs: "" });
+                          validate(lab);
+                        }}
+                        disabled={inProgress}
+                      >
+                        Validate
+                      </Button>
+                      <DestroyButton variant="danger-outline" lab={lab}>
+                        Destroy
+                      </DestroyButton>
+                      <LabBuilder lab={lab} variant="secondary-outline">
+                        Edit
+                      </LabBuilder>
+                      <LoadToBuilderButton
+                        variant="secondary-outline"
+                        lab={lab}
+                      >
+                        Load To Builder
+                      </LoadToBuilderButton>
+                      <Button
+                        variant="danger-outline"
+                        onClick={() => deleteLab(lab)}
+                      >
+                        Delete
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              </div>
+                </>
+              </LabCard>
             </TemplateCard>
           ))}
       </div>

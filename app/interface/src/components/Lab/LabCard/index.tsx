@@ -1,20 +1,13 @@
-import { FaArrowRight } from "react-icons/fa";
 import { Lab } from "../../../dataStructures";
-import LabBuilder from "../../../modals/LabBuilder";
-import Button from "../../Button";
-import LoadToBuilderButton from "../../Lab/LoadToBuilderButton";
-import ApplyButton from "../../Terraform/ApplyButton";
-import DestroyButton from "../../Terraform/DestroyButton";
-import PlanButton from "../../Terraform/PlanButton";
 
 type Props = {
   lab: Lab | undefined;
-  buttonRack: React.ReactNode;
+  children: React.ReactNode;
 };
 
-export default function LabCard({ lab, buttonRack }: Props) {
+export default function LabCard({ lab, children }: Props) {
   if (lab === undefined) {
-    return;
+    return <></>;
   }
   return (
     <div className="flex h-full flex-col justify-between gap-y-4">
@@ -28,7 +21,7 @@ export default function LabCard({ lab, buttonRack }: Props) {
             <span className="border border-slate-500 px-3 text-xs">{tag}</span>
           ))}
       </div>
-      <>{buttonRack}</>
+      <>{children}</>
     </div>
   );
 }
