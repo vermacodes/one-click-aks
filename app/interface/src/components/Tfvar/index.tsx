@@ -2,17 +2,14 @@ import { useState } from "react";
 import { Lab } from "../../dataStructures";
 import { useActionStatus } from "../../hooks/useActionStatus";
 import { useDeleteLab, useLab } from "../../hooks/useLab";
-import { useLogs, useSetLogs } from "../../hooks/useLogs";
-import {
-  useApply,
-  useDestroy,
-  useExtend,
-  usePlan,
-} from "../../hooks/useTerraform";
+import { useSetLogs } from "../../hooks/useLogs";
 import CodeEditor from "../../modals/CodeEditor";
 import LabBuilder from "../../modals/LabBuilder";
 import Button from "../Button";
 import DownloadJsonButton from "../DownloadJsonButton";
+import ApplyButton from "../Terraform/ApplyButton";
+import DestroyButton from "../Terraform/DestroyButton";
+import PlanButton from "../Terraform/PlanButton";
 import UploadJsonButton from "../UploadJsonButton";
 import AutoScaling from "./AutoScaling";
 import AzureCNI from "./AzureCNI";
@@ -29,51 +26,10 @@ export default function Tfvar() {
 
   const { data: inProgress } = useActionStatus();
   const { mutate: setLogs } = useSetLogs();
-  const { refetch: getLogs } = useLogs();
   const { data: lab } = useLab();
   const { mutate: deleteLab } = useDeleteLab();
-  const { mutate: plan } = usePlan();
-  const { mutateAsync: applyAsync } = useApply();
-  const { mutate: destroy } = useDestroy();
-  const { mutate: extend } = useExtend();
 
   const [_lab, _setLab] = useState<Lab | undefined>(lab);
-
-  // function applyHandler() {
-  //   setLogs({ isStreaming: true, logs: "" });
-  //   lab && apply(lab);
-  // }
-
-  // function deleteHandler() {
-  //   deleteLabAsync().then(() => {
-  //     getLogs();
-  //     // if (lab != undefined && lab.template != undefined) {
-  //     //   setLogs({
-  //     //     isStreaming: false,
-  //     //     logs: JSON.stringify(lab.template, null, 4),
-  //     //   });
-  //     // }
-  //   });
-  // }
-
-  function applyHandler() {
-    if (lab !== undefined) {
-      setLogs({ isStreaming: true, logs: "" });
-      applyAsync(lab).then(() => {
-        extend(lab);
-      });
-    }
-  }
-
-  function planHandler() {
-    setLogs({ isStreaming: true, logs: "" });
-    lab && plan(lab);
-  }
-
-  function destroyHandler() {
-    setLogs({ isStreaming: true, logs: "" });
-    lab && destroy(lab);
-  }
 
   return (
     <div onClick={() => setVersionMenu(false)}>
@@ -93,15 +49,15 @@ export default function Tfvar() {
         <ContainerRegistry />
       </div>
       <div className="mt-4 flex gap-x-2">
-        <Button variant="success" onClick={planHandler} disabled={inProgress}>
+        <PlanButton variant="success" lab={lab}>
           Plan
-        </Button>
-        <Button variant="primary" onClick={applyHandler} disabled={inProgress}>
-          Apply
-        </Button>
-        <Button variant="danger" onClick={destroyHandler} disabled={inProgress}>
+        </PlanButton>
+        <ApplyButton variant="primary" lab={lab}>
+          Deploy
+        </ApplyButton>
+        <DestroyButton variant="danger" lab={lab}>
           Destroy
-        </Button>
+        </DestroyButton>
         <LabBuilder variant="secondary">Save</LabBuilder>
         <Button
           variant="secondary"

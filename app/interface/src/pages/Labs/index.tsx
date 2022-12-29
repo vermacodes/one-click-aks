@@ -1,20 +1,19 @@
 import { useEffect, useState } from "react";
 import { FaArrowRight, FaCheck } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
+import LoadToBuilderButton from "../../components/Lab/LoadToBuilderButton";
 import TemplateCard from "../../components/TemplateCard";
 import Terminal from "../../components/Terminal";
+import ApplyButton from "../../components/Terraform/ApplyButton";
+import DestroyButton from "../../components/Terraform/DestroyButton";
+import PlanButton from "../../components/Terraform/PlanButton";
 import { Assignment, Lab } from "../../dataStructures";
-import {
-  useActionStatus,
-  useSetActionStatus,
-} from "../../hooks/useActionStatus";
+import { useActionStatus } from "../../hooks/useActionStatus";
 import { useCreateAssignment } from "../../hooks/useAssignment";
 import { useDeleteLab, useSharedLabs } from "../../hooks/useBlobs";
 import { useSetLogs } from "../../hooks/useLogs";
-import { useApply, useExtend, useValidate } from "../../hooks/useTerraform";
+import { useValidate } from "../../hooks/useTerraform";
 import LabBuilder from "../../modals/LabBuilder";
-import { axiosInstance } from "../../utils/axios-interceptors";
 import ServerError from "../ServerError";
 
 export default function Labs() {
@@ -22,28 +21,15 @@ export default function Labs() {
   const [userAlias, setUserAlias] = useState<string>("");
   const [createdColor, setCreatedColor] = useState<boolean>(false);
   const { data: inProgress } = useActionStatus();
-  const { mutate: setActionStatus } = useSetActionStatus();
   const { mutate: setLogs } = useSetLogs();
   const { data: labs, isLoading, isError } = useSharedLabs();
   const { mutate: deleteLab } = useDeleteLab();
   const {
     mutate: createAssignment,
     isLoading: creating,
-    isSuccess: created,
-    status: createStatus,
     data: createData,
   } = useCreateAssignment();
-  const { mutateAsync: applyAsync } = useApply();
-  const { mutate: extend } = useExtend();
   const { mutate: validate } = useValidate();
-
-  function handleApply(lab: Lab) {
-    setLogs({ isStreaming: true, logs: "" });
-    applyAsync(lab).then(() => {
-      setLogs({ isStreaming: true, logs: "continue" });
-      extend(lab);
-    });
-  }
 
   useEffect(() => {
     if (createData?.status === 201) {
@@ -53,18 +39,6 @@ export default function Labs() {
       }, 3000);
     }
   }, [createData]);
-
-  function handleTerraformAction(lab: Lab, action: string) {
-    setActionStatus({ inProgress: true });
-    setLogs({ isStreaming: true, logs: "" });
-    axiosInstance.post(`${action}`, lab.template);
-  }
-
-  function handleLabAction(lab: Lab, action: string) {
-    setActionStatus({ inProgress: true });
-    setLogs({ isStreaming: true, logs: "" });
-    axiosInstance.post(`labs/${action}/${lab.type}/${lab.id}`);
-  }
 
   function handleShowMore(lab: Lab) {
     if (more !== lab.id) {
@@ -166,20 +140,12 @@ export default function Labs() {
                       lab.id === more ? "max-h-40" : "max-h-0"
                     } flex flex-wrap justify-end gap-1 gap-x-1 overflow-hidden transition-all duration-500`}
                   >
-                    <Button
-                      variant="primary-outline"
-                      onClick={() => handleApply(lab)}
-                      disabled={inProgress}
-                    >
-                      Deploy
-                    </Button>
-                    {/* <Button
-                      variant="secondary-outline"
-                      onClick={() => handleLabAction(lab, "extend")}
-                      disabled={inProgress}
-                    >
-                      Extend
-                    </Button> */}
+                    <PlanButton variant="success-outline" lab={lab}>
+                      Plan
+                    </PlanButton>
+                    <ApplyButton variant="primary-outline" lab={lab}>
+                      Apply
+                    </ApplyButton>
                     <Button
                       variant="success-outline"
                       onClick={() => {
@@ -190,16 +156,15 @@ export default function Labs() {
                     >
                       Validate
                     </Button>
+                    <DestroyButton variant="danger-outline" lab={lab}>
+                      Destroy
+                    </DestroyButton>
                     <LabBuilder lab={lab} variant="secondary-outline">
                       Edit
                     </LabBuilder>
-                    <Button
-                      variant="danger-outline"
-                      onClick={() => handleTerraformAction(lab, "destroy")}
-                      disabled={inProgress}
-                    >
-                      Destroy
-                    </Button>
+                    <LoadToBuilderButton variant="secondary-outline" lab={lab}>
+                      Load To Builder
+                    </LoadToBuilderButton>
                     <Button
                       variant="danger-outline"
                       onClick={() => deleteLab(lab)}

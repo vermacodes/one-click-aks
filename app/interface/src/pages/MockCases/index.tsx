@@ -1,17 +1,19 @@
 import { useState } from "react";
 import { FaArrowRight } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
+import LoadToBuilderButton from "../../components/Lab/LoadToBuilderButton";
 import TemplateCard from "../../components/TemplateCard";
 import Terminal from "../../components/Terminal";
-import { Lab, TfvarConfigType } from "../../dataStructures";
+import ApplyButton from "../../components/Terraform/ApplyButton";
+import DestroyButton from "../../components/Terraform/DestroyButton";
+import PlanButton from "../../components/Terraform/PlanButton";
+import { Lab } from "../../dataStructures";
 import {
   useActionStatus,
   useSetActionStatus,
 } from "../../hooks/useActionStatus";
 import { useDeleteLab, useSharedMockCases } from "../../hooks/useBlobs";
-import { useLogs, useSetLogs } from "../../hooks/useLogs";
-import { useApply, useExtend } from "../../hooks/useTerraform";
+import { useSetLogs } from "../../hooks/useLogs";
 import LabBuilder from "../../modals/LabBuilder";
 import { axiosInstance } from "../../utils/axios-interceptors";
 
@@ -23,8 +25,6 @@ export default function MockCases() {
   const { mutate: setActionStatus } = useSetActionStatus();
   const { mutate: setLogs } = useSetLogs();
   const { mutate: deleteLab } = useDeleteLab();
-  const { mutateAsync: applyAsync } = useApply();
-  const { mutate: extend } = useExtend();
 
   function handleShowMore(lab: Lab) {
     if (more !== lab.id) {
@@ -32,19 +32,6 @@ export default function MockCases() {
     } else {
       setMore("");
     }
-  }
-
-  function handleTerraformAction(lab: Lab, action: string) {
-    setLogs({ isStreaming: true, logs: "" });
-    axiosInstance.post(`${action}`, lab.template);
-  }
-
-  function handleApply(lab: Lab) {
-    setLogs({ isStreaming: true, logs: "" });
-    applyAsync(lab).then(() => {
-      setLogs({ isStreaming: true, logs: "continue" });
-      extend(lab);
-    });
   }
 
   function handleLabAction(lab: Lab, action: string) {
@@ -84,27 +71,15 @@ export default function MockCases() {
                     ))}
                 </div>
                 <div className="flex flex-wrap justify-end gap-1">
-                  <Button
-                    variant="primary-outline"
-                    onClick={() => handleApply(lab)}
-                    disabled={inProgress}
-                  >
+                  <PlanButton variant="success-outline" lab={lab}>
+                    Plan
+                  </PlanButton>
+                  <ApplyButton variant="primary-outline" lab={lab}>
                     Deploy
-                  </Button>
-                  {/* <Button
-                    variant="secondary-outline"
-                    onClick={() => handleLabAction(lab, "extend")}
-                    disabled={inProgress}
-                  >
-                    Extend
-                  </Button> */}
-                  <Button
-                    variant="danger-outline"
-                    onClick={() => handleTerraformAction(lab, "destroy")}
-                    disabled={inProgress}
-                  >
+                  </ApplyButton>
+                  <DestroyButton variant="danger-outline" lab={lab}>
                     Destroy
-                  </Button>
+                  </DestroyButton>
                   <Button
                     variant="primary-outline"
                     onClick={() => handleShowMore(lab)}
@@ -140,6 +115,9 @@ export default function MockCases() {
                   <LabBuilder lab={lab} variant="secondary-outline">
                     Edit
                   </LabBuilder>
+                  <LoadToBuilderButton variant="secondary-outline" lab={lab}>
+                    Load To Builder
+                  </LoadToBuilderButton>
                 </div>
               </div>
             </TemplateCard>
