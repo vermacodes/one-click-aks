@@ -14,7 +14,8 @@ resource "azurerm_public_ip" "app_gateway" {
   name                = "${module.naming.application_gateway.name}-pip"
   resource_group_name = azurerm_resource_group.this.name
   location            = azurerm_resource_group.this.location
-  allocation_method   = "Dynamic"
+  allocation_method   = "Static"
+  sku                 = "Standard"
 }
 
 resource "azurerm_application_gateway" "this" {
@@ -24,9 +25,9 @@ resource "azurerm_application_gateway" "this" {
   location            = azurerm_resource_group.this.location
 
   sku {
-    name     = "Standard_Small"
-    tier     = "Standard"
-    capacity = 2
+    name     = "Standard_v2"
+    tier     = "Standard_v2"
+    capacity = 1
   }
 
   gateway_ip_configuration {
@@ -67,8 +68,25 @@ resource "azurerm_application_gateway" "this" {
   request_routing_rule {
     name                       = local.request_routing_rule_name
     rule_type                  = "Basic"
+    priority                   = 10000
     http_listener_name         = local.listener_name
     backend_address_pool_name  = local.backend_address_pool_name
     backend_http_settings_name = local.http_setting_name
   }
+}
+
+// AGIC ID needs following Access
+
+resource "azurerm_role_assignment" "ingress_app_gateway_rg_reader" {
+  count                = var.app_gateways == null ? 0 : length(var.app_gateways)
+  principal_id         = azurerm_kubernetes_cluster.this.ingress_application_gateway[count.index].ingress_application_gateway_identity[count.index].object_id
+  scope                = azurerm_resource_group.this.id
+  role_definition_name = "Reader"
+}
+
+resource "azurerm_role_assignment" "ingress_app_gateway_contributor" {
+  count                = var.app_gateways == null ? 0 : length(var.app_gateways)
+  principal_id         = azurerm_kubernetes_cluster.this.ingress_application_gateway[count.index].ingress_application_gateway_identity[count.index].object_id
+  scope                = azurerm_application_gateway.this[count.index].id
+  role_definition_name = "Contributor"
 }

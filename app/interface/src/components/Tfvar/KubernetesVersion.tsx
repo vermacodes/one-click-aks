@@ -99,7 +99,10 @@ export default function KubernetesVersion({
                     Upgrades :
                     {orchestrator.upgrades &&
                       orchestrator.upgrades.map((upgrade) => (
-                        <span> {upgrade.orchestratorVersion}</span>
+                        <span key={upgrade.orchestratorVersion}>
+                          {" "}
+                          {upgrade.orchestratorVersion}
+                        </span>
                       ))}
                   </div>
                 </div>

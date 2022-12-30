@@ -33,6 +33,7 @@ type ModalProps = {
 };
 
 function Modal({ _lab, showModal, setShowModal }: ModalProps) {
+  const [tag, setTag] = useState<string>("");
   const { data: labInMemory, refetch } = useLab();
   const { mutate: createLab, isLoading: creatingLab } = useCreateLab();
   const { data: priviledge } = useGetPriviledge();
@@ -116,17 +117,30 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
         </div>
         <div className="my-4">
           <label htmlFor="tags">Tags</label>
-          <input
-            id="tags"
-            type="text"
-            value={lab.tags.toString()}
-            placeholder="Add comma seperated tags"
-            className="px w-full border border-slate-500 bg-inherit p-2 py-2 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500 hover:bg-slate-200 dark:hover:bg-slate-700"
-            onChange={(event) => {
-              var result = event.target.value.replace(", ", ",");
-              setLab({ ...lab, tags: result.split(",") });
-            }}
-          />
+          <div className="flex items-center  gap-x-2 border border-slate-500 bg-inherit focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500 hover:bg-slate-200 dark:hover:bg-slate-700">
+            <Tags lab={lab} setLab={setLab} />
+            <form
+              className="w-full"
+              onSubmit={(e) => {
+                e.preventDefault();
+                lab.tags.push(tag);
+                setLab(lab);
+                setTag("");
+              }}
+            >
+              <input
+                id="tags"
+                type="text"
+                value={tag}
+                placeholder="Add tag"
+                className="px w-full border-none bg-inherit p-2 py-2"
+                onChange={(event) => {
+                  var updatedTag = event.target.value.replace(" ", "_");
+                  setTag(updatedTag);
+                }}
+              />
+            </form>
+          </div>
         </div>
         <div className="my-4 h-60 space-y-1">
           <label htmlFor="template">Template</label>
@@ -242,6 +256,38 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+type TagsPros = {
+  lab: Lab;
+  setLab(args: Lab): void;
+};
+
+function Tags({ lab, setLab }: TagsPros) {
+  function deleteTag(tagToBeDeleted: string) {
+    var filteredTags = lab.tags.filter((tag) => tag !== tagToBeDeleted);
+    setLab({ ...lab, tags: filteredTags });
+  }
+
+  return (
+    <div className="flex flex-auto space-x-1 rounded px-2">
+      {lab.tags &&
+        lab.tags.map((tag) => (
+          <div
+            key={tag}
+            className="flex justify-between gap-x-2 rounded border border-slate-500 p-1 px-3 text-xs"
+          >
+            <span>{tag}</span>
+            <button
+              className="h-4 w-4 bg-slate-500 hover:bg-sky-500"
+              onClick={() => deleteTag(tag)}
+            >
+              x
+            </button>
+          </div>
+        ))}
     </div>
   );
 }

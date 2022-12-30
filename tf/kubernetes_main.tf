@@ -51,6 +51,13 @@ resource "azurerm_kubernetes_cluster" "this" {
     user_assigned_identity_id = azurerm_user_assigned_identity.kubelet_identity.id
   }
 
+  dynamic "ingress_application_gateway" {
+    for_each = azurerm_application_gateway.this
+    content {
+      gateway_id = azurerm_application_gateway.this[0].id
+    }
+  }
+
   depends_on = [
     azurerm_subnet_route_table_association.this,
     azurerm_firewall_application_rule_collection.app_rules_collection,

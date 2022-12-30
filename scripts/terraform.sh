@@ -34,6 +34,9 @@ function plan() {
 function apply() {
     log "Applying"
     terraform apply -auto-approve
+    if [ $? -ne 0 ]; then
+        err "Terraform Apply Failed"
+    fi
 }
 
 function destroy() {
