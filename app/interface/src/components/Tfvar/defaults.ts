@@ -1,4 +1,5 @@
 import {
+  TfvarAppGatewayType,
   TfvarConfigType,
   TfvarContainerRegistryType,
   TfvarFirewallType,
@@ -10,6 +11,8 @@ export const defaultFirewall: TfvarFirewallType = {
 };
 
 export const defaultContainerRegistry: TfvarContainerRegistryType = {};
+
+export const defaultAppGateways: TfvarAppGatewayType = {};
 
 export const defaultTfvarConfig: TfvarConfigType = {
   resourceGroup: {
@@ -45,6 +48,10 @@ export const defaultTfvarConfig: TfvarConfigType = {
       addressPrefixes: ["10.1.3.0/24"],
       name: "KubernetesSubnet",
     },
+    {
+      addressPrefixes: ["10.1.4.0/24"],
+      name: "AppGatewaySubnet",
+    },
   ],
   networkSecurityGroups: [{}],
   jumpservers: [
@@ -55,4 +62,5 @@ export const defaultTfvarConfig: TfvarConfigType = {
   ],
   firewalls: [],
   containerRegistries: [],
+  appGateways: [],
 };

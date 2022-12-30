@@ -11,6 +11,7 @@ import ImportLabToBuilder from "../Lab/Import/ImportLabToBuilder";
 import ApplyButton from "../Terraform/ApplyButton";
 import DestroyButton from "../Terraform/DestroyButton";
 import PlanButton from "../Terraform/PlanButton";
+import AppGateway from "./AppGateway";
 import AutoScaling from "./AutoScaling";
 import AzureCNI from "./AzureCNI";
 import Calico from "./Calico";
@@ -47,6 +48,7 @@ export default function Tfvar() {
         <AutoScaling />
         <UserDefinedRouting />
         <ContainerRegistry />
+        <AppGateway />
       </div>
       <div className="mt-4 flex gap-x-2">
         <PlanButton variant="success" lab={lab}>

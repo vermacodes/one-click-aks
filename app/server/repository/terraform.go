@@ -10,6 +10,7 @@ import (
 	"github.com/Rican7/conjson/transform"
 	"github.com/vermacodes/one-click-aks/app/server/entity"
 	"github.com/vermacodes/one-click-aks/app/server/helper"
+	"golang.org/x/exp/slog"
 )
 
 type terraformRepository struct{}
@@ -38,7 +39,13 @@ func (t *terraformRepository) TerraformAction(tfvar entity.TfvarConfigType, acti
 
 		// Set the evironment variable of resource.
 		encoded, _ := json.Marshal(conjson.NewMarshaler(value.Interface(), transform.ConventionalKeys()))
-		setEnvironmentVariable("TF_VAR_"+helper.CamelToConventional(field.Name), string(encoded))
+
+		slog.Debug("Field :" + field.Name + " Encoded String : " + string(encoded))
+
+		// If a variable doesnt exist, just skip it and let terraform default do the magic.
+		if string(encoded) != "null" {
+			setEnvironmentVariable("TF_VAR_"+helper.CamelToConventional(field.Name), string(encoded))
+		}
 	}
 
 	// Execute terraform script with appropriate action.
