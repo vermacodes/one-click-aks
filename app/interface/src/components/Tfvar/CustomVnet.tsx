@@ -28,6 +28,7 @@ export default function CustomVnet() {
           lab.template.networkSecurityGroups = [];
           lab.template.jumpservers = [];
           lab.template.firewalls = [];
+          lab.template.appGateways = [];
           lab.template.kubernetesCluster.privateClusterEnabled = "false";
           lab.template.kubernetesCluster.outboundType = "loadBalancer";
         }

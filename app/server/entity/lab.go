@@ -44,6 +44,8 @@ type TfvarFirewallType struct {
 type ContainerRegistryType struct {
 }
 
+type AppGatewayType struct{}
+
 type TfvarConfigType struct {
 	ResourceGroup         TfvarResourceGroupType          `json:"resourceGroup"`
 	VirtualNetworks       []TfvarVirtualNeworkType        `json:"virtualNetworks"`
@@ -53,6 +55,7 @@ type TfvarConfigType struct {
 	KubernetesCluster     TfvarKubernetesClusterType      `json:"kubernetesCluster"`
 	Firewalls             []TfvarFirewallType             `json:"firewalls"`
 	ContainerRegistries   []ContainerRegistryType         `json:"containerRegistries"`
+	AppGateways           []AppGatewayType                `json:"appGateways"`
 }
 
 type Blob struct {

@@ -261,6 +261,7 @@ func helperDefaultLab(l *labService) (entity.LabType, error) {
 		Jumpservers:           []entity.TfvarJumpserverType{},
 		Firewalls:             []entity.TfvarFirewallType{},
 		ContainerRegistries:   []entity.ContainerRegistryType{},
+		AppGateways:           []entity.AppGatewayType{},
 	}
 
 	var defaultLab = entity.LabType{
