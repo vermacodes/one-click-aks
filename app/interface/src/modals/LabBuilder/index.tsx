@@ -277,7 +277,7 @@ function Tags({ lab, setLab }: TagsPros) {
         lab.tags.map((tag) => (
           <div
             key={tag}
-            className="flex justify-between gap-x-2 rounded border border-slate-500 bg-slate-500 p-1 px-2 text-xs text-slate-100"
+            className="flex items-center justify-between gap-x-2 rounded border border-slate-500 bg-slate-500 p-1 px-2 text-xs text-slate-100"
           >
             <span>{tag}</span>
             <button
