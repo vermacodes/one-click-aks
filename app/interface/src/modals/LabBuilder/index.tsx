@@ -133,7 +133,7 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
                 type="text"
                 value={tag}
                 placeholder="Add tag"
-                className="px w-full border-none bg-inherit p-2 py-2"
+                className="px w-full border-none bg-inherit p-2 py-2 outline-none"
                 onChange={(event) => {
                   var updatedTag = event.target.value.replace(" ", "_");
                   setTag(updatedTag);
@@ -281,7 +281,7 @@ function Tags({ lab, setLab }: TagsPros) {
           >
             <span>{tag}</span>
             <button
-              className="h-4 w-4 bg-slate-500 hover:bg-sky-500"
+              className="h-4 w-4 bg-slate-500 text-slate-100 hover:bg-sky-500"
               onClick={() => deleteTag(tag)}
             >
               x
