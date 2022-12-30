@@ -277,11 +277,11 @@ function Tags({ lab, setLab }: TagsPros) {
         lab.tags.map((tag) => (
           <div
             key={tag}
-            className="flex justify-between gap-x-2 rounded border border-slate-500 p-1 px-3 text-xs"
+            className="flex justify-between gap-x-2 rounded border border-slate-500 bg-slate-500 p-1 px-2 text-xs text-slate-100"
           >
             <span>{tag}</span>
             <button
-              className="h-4 w-4 bg-slate-500 text-slate-100 hover:bg-sky-500"
+              className="h-4 w-4 rounded bg-slate-500 text-slate-100 hover:bg-sky-500"
               onClick={() => deleteTag(tag)}
             >
               x
