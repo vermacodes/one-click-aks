@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Lab } from "../../dataStructures";
-import { useActionStatus } from "../../hooks/useActionStatus";
 import { useDeleteLab, useLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
 import CodeEditor from "../../modals/CodeEditor";
@@ -25,7 +24,6 @@ import UserDefinedRouting from "./UserDefinedRouting";
 export default function Tfvar() {
   const [versionMenu, setVersionMenu] = useState<boolean>(false);
 
-  const { data: inProgress } = useActionStatus();
   const { mutate: setLogs } = useSetLogs();
   const { data: lab } = useLab();
   const { mutate: deleteLab } = useDeleteLab();
@@ -34,7 +32,7 @@ export default function Tfvar() {
 
   return (
     <div onClick={() => setVersionMenu(false)}>
-      <div className="flex flex-wrap gap-x-2 gap-y-2">
+      <div className="flex flex-wrap gap-y-2">
         <KubernetesVersion
           versionMenu={versionMenu}
           setVersionMenu={setVersionMenu}
@@ -61,13 +59,6 @@ export default function Tfvar() {
           Destroy
         </DestroyButton>
         <LabBuilder variant="secondary">Save</LabBuilder>
-        <Button
-          variant="secondary"
-          onClick={() => setLogs({ isStreaming: false, logs: "" })}
-          disabled={inProgress}
-        >
-          Clear Logs
-        </Button>
         <Button
           variant="secondary"
           onClick={() => {

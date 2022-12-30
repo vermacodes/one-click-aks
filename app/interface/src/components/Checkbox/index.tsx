@@ -14,7 +14,7 @@ export default function Checkbox({
   handleOnChange,
 }: CheckboxProps) {
   return (
-    <div className="flex items-center gap-x-2">
+    <div className="flex items-center gap-x-2 px-2">
       <label
         htmlFor={id}
         className={`flex h-4 w-8 items-center rounded-full transition-all duration-100 hover:cursor-pointer ${
