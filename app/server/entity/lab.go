@@ -18,6 +18,7 @@ type TfvarKubernetesClusterType struct {
 	KubernetesVersion     string                   `json:"kubernetesVersion"`
 	NetworkPlugin         string                   `json:"networkPlugin"`
 	NetworkPolicy         string                   `json:"networkPolicy"`
+	NetworkPluginMode     string                   `json:"networkPluginMode"`
 	OutboundType          string                   `json:"outboundType"`
 	PrivateClusterEnabled string                   `json:"privateClusterEnabled"`
 	Addons                TfvarAddonsType          `json:"addons"`

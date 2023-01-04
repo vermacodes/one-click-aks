@@ -18,6 +18,7 @@ import ContainerRegistry from "./ContainerRegistry";
 import CustomVnet from "./CustomVnet";
 import JumpServer from "./JumpServer";
 import KubernetesVersion from "./KubernetesVersion";
+import NetworkPluginMode from "./NetworkProfile/NetworkPluginMode";
 import PrivateCluster from "./PrivateCluster";
 import UserDefinedRouting from "./UserDefinedRouting";
 
@@ -43,6 +44,7 @@ export default function Tfvar() {
         <JumpServer />
         <AzureCNI />
         <Calico />
+        <NetworkPluginMode />
         <AutoScaling />
         <UserDefinedRouting />
         <ContainerRegistry />

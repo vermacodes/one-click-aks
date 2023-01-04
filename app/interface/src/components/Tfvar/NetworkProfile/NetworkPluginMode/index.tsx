@@ -1,9 +1,12 @@
-import { useActionStatus } from "../../hooks/useActionStatus";
-import { useLab, useSetLab } from "../../hooks/useLab";
-import { useSetLogs } from "../../hooks/useLogs";
-import Checkbox from "../Checkbox";
+import React from "react";
+import { useActionStatus } from "../../../../hooks/useActionStatus";
+import { useLab, useSetLab } from "../../../../hooks/useLab";
+import { useSetLogs } from "../../../../hooks/useLogs";
+import Checkbox from "../../../Checkbox";
 
-export default function Calico() {
+type Props = {};
+
+export default function NetworkPluginMode({}: Props) {
   const { data: inProgress } = useActionStatus();
   const { mutate: setLogs } = useSetLogs();
   const {
@@ -16,10 +19,9 @@ export default function Calico() {
   function handleOnChange() {
     if (lab !== undefined) {
       if (lab.template !== undefined) {
-        if ("calico" === lab.template.kubernetesCluster.networkPolicy) {
-          lab.template.kubernetesCluster.networkPolicy = "azure";
+        if ("null" === lab.template.kubernetesCluster.networkPluginMode) {
+          lab.template.kubernetesCluster.networkPluginMode = "Overlay";
         } else {
-          lab.template.kubernetesCluster.networkPolicy = "calico";
           lab.template.kubernetesCluster.networkPluginMode = "null";
         }
         !inProgress &&
@@ -39,8 +41,8 @@ export default function Calico() {
   if (labIsLoading || labIsFetching) {
     return (
       <Checkbox
-        id="toggle-calico"
-        label="Calico"
+        id="toggle-overlay"
+        label="Overlay"
         disabled={true}
         checked={false}
         handleOnChange={handleOnChange}
@@ -50,15 +52,17 @@ export default function Calico() {
 
   return (
     <>
-      {lab && lab.template && lab.template.kubernetesCluster && (
+      {lab && lab.template && (
         <Checkbox
-          id="toggle-calico"
-          label="Calico"
-          checked={"calico" === lab.template.kubernetesCluster.networkPolicy}
+          id="toggle-overlay"
+          label="Overlay"
+          checked={
+            "Overlay" === lab.template.kubernetesCluster.networkPluginMode
+          }
           disabled={
-            lab.template.kubernetesCluster.networkPlugin === "kubenet" ||
             labIsLoading ||
-            labIsFetching
+            labIsFetching ||
+            "azure" !== lab.template.kubernetesCluster.networkPlugin
           }
           handleOnChange={handleOnChange}
         />

@@ -4,6 +4,7 @@ variable "kubernetes_cluster" {
     kubernetes_version      = string
     network_plugin          = string
     network_policy          = string
+    network_plugin_mode     = string
     outbound_type           = string
     private_cluster_enabled = bool
     addons = object({

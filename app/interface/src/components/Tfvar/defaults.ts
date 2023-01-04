@@ -22,10 +22,11 @@ export const defaultTfvarConfig: TfvarConfigType = {
     kubernetesVersion: "",
     networkPlugin: "azure",
     networkPolicy: "azure",
+    networkPluginMode: "null",
     outboundType: "loadBalancer",
     privateClusterEnabled: "true",
     addons: {
-      appGateway: true,
+      appGateway: false,
     },
     defaultNodePool: {
       enableAutoScaling: true,

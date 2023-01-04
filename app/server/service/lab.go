@@ -244,13 +244,14 @@ func helperDefaultLab(l *labService) (entity.LabType, error) {
 	}
 
 	var defaultAddons = entity.TfvarAddonsType{
-		AppGateway: true,
+		AppGateway: false,
 	}
 
 	var defaultKubernetesCluster = entity.TfvarKubernetesClusterType{
 		KubernetesVersion:     l.kVersionService.GetDefaultVersion(),
 		NetworkPlugin:         "kubenet",
 		NetworkPolicy:         "null",
+		NetworkPluginMode:     "null",
 		OutboundType:          "loadBalancer",
 		PrivateClusterEnabled: "false",
 		Addons:                defaultAddons,

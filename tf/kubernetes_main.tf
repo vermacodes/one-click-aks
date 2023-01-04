@@ -35,9 +35,10 @@ resource "azurerm_kubernetes_cluster" "this" {
   }
 
   network_profile {
-    network_plugin = var.kubernetes_cluster.network_plugin
-    network_policy = var.kubernetes_cluster.network_policy == "null" ? null : var.kubernetes_cluster.network_policy
-    outbound_type  = var.kubernetes_cluster.outbound_type == null || var.kubernetes_cluster.outbound_type == "" ? "loadBalancer" : var.kubernetes_cluster.outbound_type
+    network_plugin      = var.kubernetes_cluster.network_plugin
+    network_policy      = var.kubernetes_cluster.network_policy == "null" ? null : var.kubernetes_cluster.network_policy
+    outbound_type       = var.kubernetes_cluster.outbound_type == null || var.kubernetes_cluster.outbound_type == "" ? "loadBalancer" : var.kubernetes_cluster.outbound_type
+    network_plugin_mode = var.kubernetes_cluster.network_plugin_mode == "null" ? null : var.kubernetes_cluster.network_plugin_mode
   }
 
   identity {
@@ -52,7 +53,7 @@ resource "azurerm_kubernetes_cluster" "this" {
   }
 
   dynamic "ingress_application_gateway" {
-    for_each = var.kubernetes_cluster.addons.app_gateway ? [{}] : []
+    for_each = var.virtual_networks != null && var.kubernetes_cluster.addons.app_gateway ? [{}] : []
     content {
       subnet_id = azurerm_subnet.this[3].id
     }

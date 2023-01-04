@@ -19,6 +19,7 @@ export default function AzureCNI() {
         if ("azure" === lab.template.kubernetesCluster.networkPlugin) {
           lab.template.kubernetesCluster.networkPlugin = "kubenet";
           lab.template.kubernetesCluster.networkPolicy = "null";
+          lab.template.kubernetesCluster.networkPluginMode = "null";
         } else {
           lab.template.kubernetesCluster.networkPlugin = "azure";
           lab.template.kubernetesCluster.networkPolicy = "azure";
