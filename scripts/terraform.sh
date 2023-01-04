@@ -36,6 +36,7 @@ function apply() {
     terraform apply -auto-approve
     if [ $? -ne 0 ]; then
         err "Terraform Apply Failed"
+        exit 1
     fi
 }
 

@@ -166,14 +166,14 @@ func helperTerraformAction(t *terraformService, tfvar entity.TfvarConfigType, ac
 		input.Close()
 	}(rPipe)
 
-	cmd.Wait()
+	err = cmd.Wait()
 	wPipe.Close()
 	t.logStreamService.EndLogStream()
 
 	actionStaus.InProgress = false
 	t.actionStatusService.SetActionStatus(actionStaus)
 
-	return nil
+	return err
 }
 
 func helperExecuteScript(t *terraformService, script string) error {

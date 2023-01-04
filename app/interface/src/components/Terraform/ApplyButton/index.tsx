@@ -20,8 +20,11 @@ export default function ApplyButton({ variant, children, lab }: Props) {
   function onClickHandler() {
     if (lab !== undefined) {
       setLogs({ isStreaming: true, logs: "" });
-      applyAsync(lab).then(() => {
-        extend(lab);
+      applyAsync(lab).then((response) => {
+        console.log("response status -> ", response.status);
+        if (response.status !== undefined) {
+          extend(lab);
+        }
       });
     }
   }
