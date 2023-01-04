@@ -2,7 +2,6 @@ import { useActionStatus } from "../../../hooks/useActionStatus";
 import { useLab, useSetLab } from "../../../hooks/useLab";
 import { useSetLogs } from "../../../hooks/useLogs";
 import Checkbox from "../../Checkbox";
-import { defaultAppGateways } from "../defaults";
 
 export default function AppGateway() {
   const { data: inProgress } = useActionStatus();
@@ -17,16 +16,18 @@ export default function AppGateway() {
   function handleOnChange() {
     if (lab !== undefined) {
       if (lab.template !== undefined) {
-        if (lab.template.appGateways.length > 0) {
-          lab.template.appGateways = [];
+        if (lab.template.kubernetesCluster.addons.appGateway) {
+          lab.template.kubernetesCluster.addons.appGateway = false;
         } else {
-          lab.template.appGateways = [defaultAppGateways];
+          lab.template.kubernetesCluster.addons.appGateway = true;
         }
+
         !inProgress &&
           setLogs({
             isStreaming: false,
             logs: JSON.stringify(lab.template, null, 4),
           });
+
         setLab(lab);
       }
     }
@@ -38,10 +39,10 @@ export default function AppGateway() {
 
   // Reset to empty if not found. This probably ensures backward compatibility.
   if (
-    lab.template.appGateways === null ||
-    lab.template.appGateways === undefined
+    lab.template.kubernetesCluster.addons.appGateway === null ||
+    lab.template.kubernetesCluster.addons.appGateway === undefined
   ) {
-    lab.template.appGateways = [];
+    lab.template.kubernetesCluster.addons.appGateway = false;
   }
 
   // If still loading then display disabled flag.
@@ -62,8 +63,9 @@ export default function AppGateway() {
   if (
     lab &&
     lab.template &&
-    lab.template.appGateways !== null &&
-    lab.template.appGateways.length === 0
+    lab.template.kubernetesCluster &&
+    lab.template.kubernetesCluster.addons &&
+    lab.template.kubernetesCluster.addons.appGateway === false
   ) {
     checked = false;
   }
@@ -83,7 +85,7 @@ export default function AppGateway() {
       {lab && lab.template && (
         <Checkbox
           id="toggle-appgateway"
-          label="App Gateway"
+          label="AGIC (Addon)"
           checked={checked}
           disabled={disabled}
           handleOnChange={handleOnChange}

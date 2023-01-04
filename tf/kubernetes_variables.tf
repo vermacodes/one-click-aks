@@ -6,6 +6,9 @@ variable "kubernetes_cluster" {
     network_policy          = string
     outbound_type           = string
     private_cluster_enabled = bool
+    addons = object({
+      app_gateway = bool
+    })
     default_node_pool = object({
       enable_auto_scaling = bool
       min_count           = number

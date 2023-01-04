@@ -10,12 +10,17 @@ type TfvarDefaultNodePoolType struct {
 	MaxCount          int  `json:"maxCount"`
 }
 
+type TfvarAddonsType struct {
+	AppGateway bool `json:"appGateway"`
+}
+
 type TfvarKubernetesClusterType struct {
 	KubernetesVersion     string                   `json:"kubernetesVersion"`
 	NetworkPlugin         string                   `json:"networkPlugin"`
 	NetworkPolicy         string                   `json:"networkPolicy"`
 	OutboundType          string                   `json:"outboundType"`
 	PrivateClusterEnabled string                   `json:"privateClusterEnabled"`
+	Addons                TfvarAddonsType          `json:"addons"`
 	DefaultNodePool       TfvarDefaultNodePoolType `json:"defaultNodePool"`
 }
 

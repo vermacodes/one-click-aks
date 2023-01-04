@@ -52,11 +52,15 @@ resource "azurerm_kubernetes_cluster" "this" {
   }
 
   dynamic "ingress_application_gateway" {
-    for_each = azurerm_application_gateway.this
+    for_each = var.kubernetes_cluster.addons.app_gateway ? [{}] : []
     content {
-      gateway_id = azurerm_application_gateway.this[0].id
+      subnet_id = azurerm_subnet.this[3].id
     }
   }
+
+  # ingress_application_gateway {
+  #   subnet_id = azurerm_subnet.this[3].id
+  # }
 
   depends_on = [
     azurerm_subnet_route_table_association.this,
@@ -64,4 +68,19 @@ resource "azurerm_kubernetes_cluster" "this" {
     azurerm_firewall_network_rule_collection.network_rules_collection,
     azurerm_role_assignment.identity_operator
   ]
+}
+
+# Role assigments for app gateway add on.
+resource "azurerm_role_assignment" "ingress_app_gateway_rg_reader" {
+  count                = var.kubernetes_cluster.addons.app_gateway ? 1 : 0
+  principal_id         = azurerm_kubernetes_cluster.this.ingress_application_gateway[count.index].ingress_application_gateway_identity[count.index].object_id
+  scope                = azurerm_resource_group.this.id
+  role_definition_name = "Reader"
+}
+
+resource "azurerm_role_assignment" "ingress_app_gateway_contributor" {
+  count                = var.kubernetes_cluster.addons.app_gateway ? 1 : 0
+  principal_id         = azurerm_kubernetes_cluster.this.ingress_application_gateway[count.index].ingress_application_gateway_identity[count.index].object_id
+  scope                = azurerm_kubernetes_cluster.this.ingress_application_gateway[count.index].effective_gateway_id
+  role_definition_name = "Contributor"
 }

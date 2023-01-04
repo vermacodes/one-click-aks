@@ -46,17 +46,31 @@ function tf_init() {
 function get_variables_from_tf_output () {
     log "Pulling variables from TF output"
     cd tf
-    AKS_LOGIN=$(terraform output -raw aks_login)
-    CLUSTER_NAME=$(terraform output -raw cluster_name)
-    CLUSTER_VERSION=$(terraform output -raw cluster_version)
-    RESOURCE_GROUP=$(terraform output -raw resource_group_name)
-    VNET_NAME=$(terraform output -raw vnet_name)
-    NSG_NAME=$(terraform output -raw nsg_name)
-    ACR_NAME=$(terraform output -raw acr_name)
-    FIREWALL_PRIVATE_IP=$(terraform output -raw firewall_private_ip)
-    LOCATION=$(terraform output -raw resource_group_location)
-    CLUSTER_MSI_ID=$(terraform output -raw cluster_msi_id)
-    KUBELET_MSI_ID=$(terraform output -raw kubelet_msi_id)
+    export SUBSCRIPTION_ID=$(az account show --output json | jq -r .id)
+    # AKS_LOGIN=$(terraform output -raw aks_login)
+    # CLUSTER_NAME=$(terraform output -raw cluster_name)
+    # CLUSTER_VERSION=$(terraform output -raw cluster_version)
+    # RESOURCE_GROUP=$(terraform output -raw resource_group_name)
+    # VNET_NAME=$(terraform output -raw vnet_name)
+    # NSG_NAME=$(terraform output -raw nsg_name)
+    # ACR_NAME=$(terraform output -raw acr_name)
+    # FIREWALL_PRIVATE_IP=$(terraform output -raw firewall_private_ip)
+    # LOCATION=$(terraform output -raw resource_group_location)
+    # CLUSTER_MSI_ID=$(terraform output -raw cluster_msi_id)
+    # KUBELET_MSI_ID=$(terraform output -raw kubelet_msi_id)
+
+    # # Set environment variables from Terraform output
+    # export $(terraform output -json | jq -r 'to_entries | map("\(.key)=\(.value.value|tostring)") | .[]')
+
+    # Get the Terraform output variables
+    output=$(terraform output -json)
+
+    # Iterate through each output variable and set as an environment variable
+    while read -r key value; do
+      export "$(echo "$key" | tr '[:lower:]' '[:upper:]')"="$value"
+    done <<< "$(echo "$output" | jq -r 'to_entries[] | "\(.key) \(.value.value)"')"
+
+
     change_to_root_dir
 }
 

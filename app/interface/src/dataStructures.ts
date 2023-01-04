@@ -94,6 +94,10 @@ export type TfvarSubnetType = tfvarSubnet[];
 
 export type TfvarNetworkSecurityGroupType = {};
 
+export type TfvarAddonsType = {
+  appGateway: boolean;
+};
+
 export type TfvarDefaultNodepoolType = {
   enableAutoScaling: boolean;
   minCount: number;
@@ -106,6 +110,7 @@ export type TfvarKubernetesClusterType = {
   networkPolicy: "azure" | "calico" | "null";
   outboundType: "loadBalancer" | "userDefinedRouting";
   privateClusterEnabled: "true" | "false";
+  addons: TfvarAddonsType;
   defaultNodePool: TfvarDefaultNodepoolType;
 };
 

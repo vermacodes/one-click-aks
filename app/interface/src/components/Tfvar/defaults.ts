@@ -24,6 +24,9 @@ export const defaultTfvarConfig: TfvarConfigType = {
     networkPolicy: "azure",
     outboundType: "loadBalancer",
     privateClusterEnabled: "true",
+    addons: {
+      appGateway: true,
+    },
     defaultNodePool: {
       enableAutoScaling: true,
       minCount: 1,
