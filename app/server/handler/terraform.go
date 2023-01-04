@@ -64,10 +64,15 @@ func (t *terraformHandler) Apply(c *gin.Context) {
 	header := w.Header()
 	header.Set("Transfer-Encoding", "chunked")
 	header.Set("Content-type", "text/html")
-	w.WriteHeader(http.StatusOK)
-	w.(http.Flusher).Flush()
+	// w.WriteHeader(http.StatusOK)
 
-	t.terraformService.Apply(lab)
+	if err := t.terraformService.Apply(lab); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	} else {
+		w.WriteHeader(http.StatusOK)
+	}
+
+	w.(http.Flusher).Flush()
 }
 
 func (t *terraformHandler) Extend(c *gin.Context) {
