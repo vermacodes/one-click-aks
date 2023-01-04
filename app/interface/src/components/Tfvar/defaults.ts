@@ -27,6 +27,7 @@ export const defaultTfvarConfig: TfvarConfigType = {
     privateClusterEnabled: "true",
     addons: {
       appGateway: false,
+      microsoftDefender: false,
     },
     defaultNodePool: {
       enableAutoScaling: true,

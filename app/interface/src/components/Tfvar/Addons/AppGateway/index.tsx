@@ -1,7 +1,7 @@
-import { useActionStatus } from "../../../hooks/useActionStatus";
-import { useLab, useSetLab } from "../../../hooks/useLab";
-import { useSetLogs } from "../../../hooks/useLogs";
-import Checkbox from "../../Checkbox";
+import { useActionStatus } from "../../../../hooks/useActionStatus";
+import { useLab, useSetLab } from "../../../../hooks/useLab";
+import { useSetLogs } from "../../../../hooks/useLogs";
+import Checkbox from "../../../Checkbox";
 
 export default function AppGateway() {
   const { data: inProgress } = useActionStatus();

@@ -96,6 +96,7 @@ export type TfvarNetworkSecurityGroupType = {};
 
 export type TfvarAddonsType = {
   appGateway: boolean;
+  microsoftDefender: boolean;
 };
 
 export type TfvarDefaultNodepoolType = {

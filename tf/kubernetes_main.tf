@@ -1,3 +1,7 @@
+locals {
+  network_plugin_mode = var.kubernetes_cluster.network_plugin_mode == "null" || var.kubernetes_cluster.network_plugin_mode == "" ? null : var.kubernetes_cluster.network_plugin_mode
+}
+
 resource "azurerm_user_assigned_identity" "kubelet_identity" {
   name                = "${module.naming.user_assigned_identity.name}-kubelet"
   resource_group_name = azurerm_resource_group.this.name
@@ -38,7 +42,7 @@ resource "azurerm_kubernetes_cluster" "this" {
     network_plugin      = var.kubernetes_cluster.network_plugin
     network_policy      = var.kubernetes_cluster.network_policy == "null" ? null : var.kubernetes_cluster.network_policy
     outbound_type       = var.kubernetes_cluster.outbound_type == null || var.kubernetes_cluster.outbound_type == "" ? "loadBalancer" : var.kubernetes_cluster.outbound_type
-    network_plugin_mode = var.kubernetes_cluster.network_plugin_mode == "null" ? null : var.kubernetes_cluster.network_plugin_mode
+    network_plugin_mode = local.network_plugin_mode
   }
 
   identity {
@@ -56,6 +60,13 @@ resource "azurerm_kubernetes_cluster" "this" {
     for_each = var.virtual_networks != null && var.kubernetes_cluster.addons.app_gateway ? [{}] : []
     content {
       subnet_id = azurerm_subnet.this[3].id
+    }
+  }
+
+  dynamic "microsoft_defender" {
+    for_each = var.kubernetes_cluster.addons.microsoft_defender ? [{}] : []
+    content {
+      log_analytics_workspace_id = azurerm_log_analytics_workspace.this[0].id
     }
   }
 

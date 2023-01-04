@@ -55,7 +55,7 @@ function list() {
 
 cd $root_directory/$terraform_directory
 log "Terraform Environment Variables"
-env | grep "TF_VAR"
+env | grep "TF_VAR" | awk -F"=" '{printf "%s=", $1; print $2 | "jq ."; close("jq ."); }'
 echo ""
 
 # Delete existing if init
