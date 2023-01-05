@@ -13,7 +13,6 @@ export default function ImportLabToBuilder({}: Props) {
   const { mutate: setLogs } = useSetLogs();
 
   useEffect(() => {
-    console.log(JSON.stringify(lab, null, 4));
     if (lab != undefined) {
       !inProgress &&
         setLogs({
