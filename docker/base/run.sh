@@ -11,7 +11,7 @@ apt update
 apt install curl -y
 apt install wget -y
 apt install jq -y
-sudo apt-get install -y dos2unix
+apt install dos2unix -y
 
 # Install redis
 add-apt-repository ppa:redislabs/redis

@@ -1,4 +1,4 @@
-FROM repro_base
+FROM ashishvermapu/repro_base
 
 WORKDIR /app
 
