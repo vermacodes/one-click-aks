@@ -2,13 +2,7 @@
 
 action=$1
 
-err() {
-  echo "$(date +'%Y-%m-%dT%H:%M:%S%z')]: ERROR - $*" >&2
-}
-
-log() {
-  echo "$(date +'%Y-%m-%dT%H:%M:%S%z')]: INFO - $*" >&1
-}
+source $ROOT_DIR/scripts/helper.sh
 
 function init() {
     log "Initializing"
@@ -20,9 +14,9 @@ function init() {
         -backend-config="storage_account_name=$storage_account_name" \
         -backend-config="container_name=$container_name" \
         -backend-config="key=$tf_state_file_name"
-        log "Initialization Complted"
+        ok "Initialization Complted"
     else 
-        log "Already Initialized - Skipped"
+        ok "Already Initialized - Skipped"
     fi
 }
 
@@ -74,4 +68,4 @@ elif [[ "$action" == "destroy" ]]; then
     destroy
 fi
 
-log "Terraform Action End"
+ok "Terraform Action End"

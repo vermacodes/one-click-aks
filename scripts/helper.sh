@@ -17,7 +17,7 @@ log() {
 }
 
 ok() {
-  echo -e "${GREEN}[$(date +'%Y-%m-%dT%H:%M:%S%z')]: SUCCESS - $* ${NC}" >&1
+  echo -e "${GREEN}[$(date +'%Y-%m-%dT%H:%M:%S%z')]: INFO - $* ${NC}" >&1
 }
 
 function change_to_root_dir() {
@@ -41,7 +41,7 @@ function get_kubectl() {
 }
 
 function tf_init() {
-    log "Pulling variables from TF output"
+    log "Terraform Init"
     cd tf
     terraform init \
     -migrate-state \
