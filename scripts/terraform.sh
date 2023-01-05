@@ -4,21 +4,6 @@ action=$1
 
 source $ROOT_DIR/scripts/helper.sh
 
-function init() {
-    log "Initializing"
-    # Initialize terraform only if not.
-    if [[ ! -f .terraform/terraform.tfstate ]] || [[ ! -f .terraform.lock.hcl ]]; then
-        terraform init \
-        -migrate-state \
-        -backend-config="resource_group_name=$resource_group_name" \
-        -backend-config="storage_account_name=$storage_account_name" \
-        -backend-config="container_name=$container_name" \
-        -backend-config="key=$tf_state_file_name"
-        ok "Initialization Complted"
-    else 
-        ok "Already Initialized - Skipped"
-    fi
-}
 
 function plan() {
     log "Planning"
@@ -58,7 +43,8 @@ if [[ "$action" == "init" ]]; then
     rm -rf .terraform*
 fi
 
-init
+# Terraform Init - Sourced from helper script.
+tf_init
 
 if [[ "$action" == "plan" ]]; then
     plan
