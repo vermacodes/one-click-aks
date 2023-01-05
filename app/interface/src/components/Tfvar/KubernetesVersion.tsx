@@ -27,7 +27,7 @@ export default function KubernetesVersion({
   function handleOnSelect(orchestrator: Orchestrator) {
     if (lab !== undefined) {
       if (lab.template !== undefined) {
-        lab.template.kubernetesCluster.kubernetesVersion =
+        lab.template.kubernetesClusters[0].kubernetesVersion =
           orchestrator.orchestratorVersion;
         !actionStatus &&
           setLogs({
@@ -37,6 +37,21 @@ export default function KubernetesVersion({
         setLab(lab);
       }
     }
+  }
+
+  if (
+    lab &&
+    lab.template &&
+    lab.template.kubernetesClusters.length > 0 &&
+    lab.template.kubernetesClusters[0].kubernetesVersion === "" &&
+    data &&
+    data.orchestrators
+  ) {
+    data.orchestrators.forEach((orchetrator) => {
+      if (orchetrator.default && lab.template) {
+        handleOnSelect(orchetrator);
+      }
+    });
   }
 
   return (
@@ -56,7 +71,8 @@ export default function KubernetesVersion({
       >
         {lab &&
           lab.template &&
-          lab.template.kubernetesCluster.kubernetesVersion}
+          lab.template.kubernetesClusters.length > 0 &&
+          lab.template.kubernetesClusters[0].kubernetesVersion}
         <p>
           <FaChevronDown />
         </p>
@@ -70,12 +86,17 @@ export default function KubernetesVersion({
           (orchestrator) =>
             lab &&
             lab.template &&
-            lab.template?.kubernetesCluster.kubernetesVersion !== undefined && (
-              <div className="flex justify-between gap-x-1">
+            lab.template.kubernetesClusters.length > 0 &&
+            lab.template?.kubernetesClusters[0].kubernetesVersion !==
+              undefined && (
+              <div
+                key={orchestrator.orchestratorVersion}
+                className="flex justify-between gap-x-1"
+              >
                 <div
                   className={`${
                     orchestrator.orchestratorVersion ===
-                      lab.template?.kubernetesCluster.kubernetesVersion &&
+                      lab.template?.kubernetesClusters[0].kubernetesVersion &&
                     "bg-green-300 hover:text-slate-900 dark:text-slate-900"
                   } w-full items-center justify-between rounded p-2 hover:bg-sky-500 hover:text-slate-100 `}
                   onClick={() => {

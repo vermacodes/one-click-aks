@@ -182,11 +182,11 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
                     ) : (
                       <>
                         {accounts?.map((account) => (
-                          <>
+                          <div key={account.id}>
                             {account.isDefault === true && (
                               <p>{account.user.name}</p>
                             )}
-                          </>
+                          </div>
                         ))}
                       </>
                     )}

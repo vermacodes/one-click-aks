@@ -54,8 +54,8 @@ func (l *labService) GetLabFromRedis() (entity.LabType, error) {
 }
 
 func (l *labService) SetLabInRedis(lab entity.LabType) error {
-	if lab.Template.KubernetesCluster.KubernetesVersion == "" {
-		lab.Template.KubernetesCluster.KubernetesVersion = l.kVersionService.GetDefaultVersion()
+	if len(lab.Template.KubernetesClusters) > 0 && lab.Template.KubernetesClusters[0].KubernetesVersion == "" {
+		lab.Template.KubernetesClusters[0].KubernetesVersion = l.kVersionService.GetDefaultVersion()
 	}
 
 	val, err := json.Marshal(lab)
@@ -237,31 +237,31 @@ func helperDefaultLab(l *labService) (entity.LabType, error) {
 		Location: "East US",
 	}
 
-	var defaultNodePool = entity.TfvarDefaultNodePoolType{
-		EnableAutoScaling: false,
-		MinCount:          1,
-		MaxCount:          1,
-	}
+	// var defaultNodePool = entity.TfvarDefaultNodePoolType{
+	// 	EnableAutoScaling: false,
+	// 	MinCount:          1,
+	// 	MaxCount:          1,
+	// }
 
-	var defaultAddons = entity.TfvarAddonsType{
-		AppGateway:        false,
-		MicrosoftDefender: false,
-	}
+	// var defaultAddons = entity.TfvarAddonsType{
+	// 	AppGateway:        false,
+	// 	MicrosoftDefender: false,
+	// }
 
-	var defaultKubernetesCluster = entity.TfvarKubernetesClusterType{
-		KubernetesVersion:     l.kVersionService.GetDefaultVersion(),
-		NetworkPlugin:         "kubenet",
-		NetworkPolicy:         "null",
-		NetworkPluginMode:     "null",
-		OutboundType:          "loadBalancer",
-		PrivateClusterEnabled: "false",
-		Addons:                defaultAddons,
-		DefaultNodePool:       defaultNodePool,
-	}
+	// var defaultKubernetesCluster = entity.TfvarKubernetesClusterType{
+	// 	KubernetesVersion:     l.kVersionService.GetDefaultVersion(),
+	// 	NetworkPlugin:         "kubenet",
+	// 	NetworkPolicy:         "null",
+	// 	NetworkPluginMode:     "null",
+	// 	OutboundType:          "loadBalancer",
+	// 	PrivateClusterEnabled: "false",
+	// 	Addons:                defaultAddons,
+	// 	DefaultNodePool:       defaultNodePool,
+	// }
 
 	var defautlTfvar = entity.TfvarConfigType{
 		ResourceGroup:         defaultResourceGroup,
-		KubernetesCluster:     defaultKubernetesCluster,
+		KubernetesClusters:    []entity.TfvarKubernetesClusterType{},
 		VirtualNetworks:       []entity.TfvarVirtualNeworkType{},
 		NetworkSecurityGroups: []entity.TfvarNetworkSecurityGroupType{},
 		Subnets:               []entity.TfvarSubnetType{},

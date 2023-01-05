@@ -16,11 +16,13 @@ export default function PrivateCluster() {
   function handleOnChange() {
     if (lab !== undefined) {
       if (lab.template !== undefined) {
-        if (lab.template.kubernetesCluster.privateClusterEnabled === "true") {
-          lab.template.kubernetesCluster.privateClusterEnabled = "false";
+        if (
+          lab.template.kubernetesClusters[0].privateClusterEnabled === "true"
+        ) {
+          lab.template.kubernetesClusters[0].privateClusterEnabled = "false";
           lab.template.jumpservers = [];
         } else {
-          lab.template.kubernetesCluster.privateClusterEnabled = "true";
+          lab.template.kubernetesClusters[0].privateClusterEnabled = "true";
         }
         !inProgress &&
           setLogs({
@@ -52,8 +54,12 @@ export default function PrivateCluster() {
     <Checkbox
       id="toogle-privatecluster"
       label="Private Cluster"
-      checked={lab.template.kubernetesCluster.privateClusterEnabled === "true"}
+      checked={
+        lab.template.kubernetesClusters.length > 0 &&
+        lab.template.kubernetesClusters[0].privateClusterEnabled === "true"
+      }
       disabled={
+        lab.template.kubernetesClusters.length === 0 ||
         lab.template.virtualNetworks.length === 0 ||
         labIsLoading ||
         labIsFetching

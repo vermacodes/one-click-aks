@@ -16,11 +16,11 @@ export default function Calico() {
   function handleOnChange() {
     if (lab !== undefined) {
       if (lab.template !== undefined) {
-        if ("calico" === lab.template.kubernetesCluster.networkPolicy) {
-          lab.template.kubernetesCluster.networkPolicy = "azure";
+        if ("calico" === lab.template.kubernetesClusters[0].networkPolicy) {
+          lab.template.kubernetesClusters[0].networkPolicy = "azure";
         } else {
-          lab.template.kubernetesCluster.networkPolicy = "calico";
-          lab.template.kubernetesCluster.networkPluginMode = "null";
+          lab.template.kubernetesClusters[0].networkPolicy = "calico";
+          lab.template.kubernetesClusters[0].networkPluginMode = "null";
         }
         !inProgress &&
           setLogs({
@@ -50,13 +50,17 @@ export default function Calico() {
 
   return (
     <>
-      {lab && lab.template && lab.template.kubernetesCluster && (
+      {lab && lab.template && (
         <Checkbox
           id="toggle-calico"
           label="Calico"
-          checked={"calico" === lab.template.kubernetesCluster.networkPolicy}
+          checked={
+            lab.template.kubernetesClusters.length > 0 &&
+            "calico" === lab.template.kubernetesClusters[0].networkPolicy
+          }
           disabled={
-            lab.template.kubernetesCluster.networkPlugin === "kubenet" ||
+            lab.template.kubernetesClusters.length === 0 ||
+            lab.template.kubernetesClusters[0].networkPlugin === "kubenet" ||
             labIsLoading ||
             labIsFetching
           }

@@ -59,7 +59,7 @@ type TfvarConfigType struct {
 	Subnets               []TfvarSubnetType               `json:"subnets"`
 	Jumpservers           []TfvarJumpserverType           `json:"jumpservers"`
 	NetworkSecurityGroups []TfvarNetworkSecurityGroupType `json:"networkSecurityGroups"`
-	KubernetesCluster     TfvarKubernetesClusterType      `json:"kubernetesCluster"`
+	KubernetesClusters    []TfvarKubernetesClusterType    `json:"kubernetesClusters"`
 	Firewalls             []TfvarFirewallType             `json:"firewalls"`
 	ContainerRegistries   []ContainerRegistryType         `json:"containerRegistries"`
 	AppGateways           []AppGatewayType                `json:"appGateways"`

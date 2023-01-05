@@ -28,9 +28,11 @@ export default function CustomVnet() {
           lab.template.networkSecurityGroups = [];
           lab.template.jumpservers = [];
           lab.template.firewalls = [];
-          lab.template.kubernetesCluster.addons.appGateway = false;
-          lab.template.kubernetesCluster.privateClusterEnabled = "false";
-          lab.template.kubernetesCluster.outboundType = "loadBalancer";
+          if (lab.template.kubernetesClusters.length > 0) {
+            lab.template.kubernetesClusters[0].addons.appGateway = false;
+            lab.template.kubernetesClusters[0].privateClusterEnabled = "false";
+            lab.template.kubernetesClusters[0].outboundType = "loadBalancer";
+          }
         }
         !inProgress &&
           setLogs({

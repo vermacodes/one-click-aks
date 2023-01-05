@@ -21,7 +21,6 @@ export default function ApplyButton({ variant, children, lab }: Props) {
     if (lab !== undefined) {
       setLogs({ isStreaming: true, logs: "" });
       applyAsync(lab).then((response) => {
-        console.log("response status -> ", response.status);
         if (response.status !== undefined) {
           extend(lab);
         }

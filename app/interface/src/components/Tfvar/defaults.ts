@@ -14,27 +14,47 @@ export const defaultContainerRegistry: TfvarContainerRegistryType = {};
 
 export const defaultAppGateways: TfvarAppGatewayType = {};
 
+export const defautlKubernetesCluster = {
+  kubernetesVersion: "",
+  networkPlugin: "azure",
+  networkPolicy: "azure",
+  networkPluginMode: "null",
+  outboundType: "loadBalancer",
+  privateClusterEnabled: "true",
+  addons: {
+    appGateway: false,
+    microsoftDefender: false,
+  },
+  defaultNodePool: {
+    enableAutoScaling: true,
+    minCount: 1,
+    maxCount: 1,
+  },
+};
+
 export const defaultTfvarConfig: TfvarConfigType = {
   resourceGroup: {
     location: "East US",
   },
-  kubernetesCluster: {
-    kubernetesVersion: "",
-    networkPlugin: "azure",
-    networkPolicy: "azure",
-    networkPluginMode: "null",
-    outboundType: "loadBalancer",
-    privateClusterEnabled: "true",
-    addons: {
-      appGateway: false,
-      microsoftDefender: false,
+  kubernetesClusters: [
+    {
+      kubernetesVersion: "",
+      networkPlugin: "kubenet",
+      networkPolicy: "null",
+      networkPluginMode: "null",
+      outboundType: "loadBalancer",
+      privateClusterEnabled: "false",
+      addons: {
+        appGateway: false,
+        microsoftDefender: false,
+      },
+      defaultNodePool: {
+        enableAutoScaling: false,
+        minCount: 1,
+        maxCount: 1,
+      },
     },
-    defaultNodePool: {
-      enableAutoScaling: true,
-      minCount: 1,
-      maxCount: 1,
-    },
-  },
+  ],
   virtualNetworks: [
     {
       addressSpace: ["10.1.0.0/16"],

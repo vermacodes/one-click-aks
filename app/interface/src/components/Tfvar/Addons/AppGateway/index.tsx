@@ -16,10 +16,10 @@ export default function AppGateway() {
   function handleOnChange() {
     if (lab !== undefined) {
       if (lab.template !== undefined) {
-        if (lab.template.kubernetesCluster.addons.appGateway) {
-          lab.template.kubernetesCluster.addons.appGateway = false;
+        if (lab.template.kubernetesClusters[0].addons.appGateway) {
+          lab.template.kubernetesClusters[0].addons.appGateway = false;
         } else {
-          lab.template.kubernetesCluster.addons.appGateway = true;
+          lab.template.kubernetesClusters[0].addons.appGateway = true;
         }
 
         !inProgress &&
@@ -38,19 +38,20 @@ export default function AppGateway() {
   }
 
   // Reset to empty if not found. This probably ensures backward compatibility.
-  if (
-    lab.template.kubernetesCluster.addons.appGateway === null ||
-    lab.template.kubernetesCluster.addons.appGateway === undefined
-  ) {
-    lab.template.kubernetesCluster.addons.appGateway = false;
-  }
+  // if (
+
+  //   lab.template.kubernetesClusters[0].addons.appGateway === null ||
+  //   lab.template.kubernetesClusters[0].addons.appGateway === undefined
+  // ) {
+  //   lab.template.kubernetesClusters[0].addons.appGateway = false;
+  // }
 
   // If still loading then display disabled flag.
   if (labIsLoading || labIsFetching) {
     return (
       <Checkbox
         id="toggle-appgateway"
-        label="App Gateway"
+        label="AGIC (Addon)"
         disabled={true}
         checked={false}
         handleOnChange={handleOnChange}
@@ -63,9 +64,9 @@ export default function AppGateway() {
   if (
     lab &&
     lab.template &&
-    lab.template.kubernetesCluster &&
-    lab.template.kubernetesCluster.addons &&
-    lab.template.kubernetesCluster.addons.appGateway === false
+    lab.template.kubernetesClusters.length > 0 &&
+    lab.template.kubernetesClusters[0].addons &&
+    lab.template.kubernetesClusters[0].addons.appGateway === false
   ) {
     checked = false;
   }
@@ -75,6 +76,7 @@ export default function AppGateway() {
   if (
     labIsLoading ||
     labIsFetching ||
+    lab.template.kubernetesClusters.length === 0 ||
     lab.template.virtualNetworks.length === 0
   ) {
     disabled = true;

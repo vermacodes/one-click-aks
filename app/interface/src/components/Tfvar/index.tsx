@@ -18,6 +18,7 @@ import Calico from "./Calico";
 import ContainerRegistry from "./ContainerRegistry";
 import CustomVnet from "./CustomVnet";
 import JumpServer from "./JumpServer";
+import KubernetesCluster from "./KubernetesCluster";
 import KubernetesVersion from "./KubernetesVersion";
 import NetworkPluginMode from "./NetworkProfile/NetworkPluginMode";
 import PrivateCluster from "./PrivateCluster";
@@ -35,11 +36,12 @@ export default function Tfvar() {
   return (
     <div onClick={() => setVersionMenu(false)}>
       <div className="flex flex-wrap gap-y-2 gap-x-2">
+        <CodeEditor variant="secondary-outline">Extend Script</CodeEditor>
+        <KubernetesCluster />
         <KubernetesVersion
           versionMenu={versionMenu}
           setVersionMenu={setVersionMenu}
         />
-        <CodeEditor variant="secondary-outline">Extend Script</CodeEditor>
         <CustomVnet />
         <PrivateCluster />
         <JumpServer />
