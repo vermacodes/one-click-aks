@@ -3,7 +3,8 @@ import { MdOutlineContentCopy, MdDoneOutline } from "react-icons/md";
 
 export default function ServerError() {
   const [copy, setCopy] = useState<boolean>(false);
-  const dockerCommand = "docker run -d -it -p 8080:8080 ashishvermapu/repro";
+  const dockerCommand =
+    "docker run --pull=always -d -it -p 8080:8080 ashishvermapu/repro";
 
   function handleCommandCopy() {
     navigator.clipboard.writeText(dockerCommand);

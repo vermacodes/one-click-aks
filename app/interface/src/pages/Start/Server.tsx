@@ -7,7 +7,8 @@ type Props = { section: string; setSection(args: string): void };
 
 export default function Server({ section, setSection }: Props) {
   const [copy, setCopy] = useState<boolean>(false);
-  const dockerCommand = "docker run -d -it -p 8080:8080 ashishvermapu/repro";
+  const dockerCommand =
+    "docker run --pull=always -d -it -p 8080:8080 ashishvermapu/repro";
 
   const { data, isError, isFetching, isLoading } = useServerStatus();
 
