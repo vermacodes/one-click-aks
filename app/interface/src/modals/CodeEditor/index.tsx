@@ -62,16 +62,16 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
           e.stopPropagation();
         }}
       >
-        <div className="w-100 flex justify-between border-b border-slate-500">
-          <h1 className="text-xl">Code Editor</h1>
+        <div className="w-100 flex justify-between border-b border-slate-500 pb-1">
+          <h1 className="flex items-center text-xl">Code Editor</h1>
           <button
             onClick={() => {
               setShowModal(false);
               _extendScript && setLab({ ...lab, extendScript: _extendScript });
             }}
-            className="border border-slate-100 px-1 py-1 hover:border-rose-500 hover:text-rose-500 dark:border-slate-900 dark:hover:border-rose-500"
+            className="flex items-center rounded border border-slate-100 px-1 py-1 text-lg hover:border-sky-500 hover:text-sky-500 dark:border-slate-900 dark:hover:border-sky-500"
           >
-            <MdClose className="text-3xl" />
+            Save & Close
           </button>
         </div>
         <div className={`my-1 h-[95%] space-y-1`}>
