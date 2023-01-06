@@ -36,13 +36,14 @@ export default function Tfvar() {
   return (
     <div onClick={() => setVersionMenu(false)}>
       <div className="flex flex-wrap gap-y-2 gap-x-2">
-        <CodeEditor variant="secondary-outline">Extend Script</CodeEditor>
+        <CodeEditor variant="secondary-outline">Extention Script</CodeEditor>
+        <CustomVnet />
+        <ContainerRegistry />
         <KubernetesCluster />
         <KubernetesVersion
           versionMenu={versionMenu}
           setVersionMenu={setVersionMenu}
         />
-        <CustomVnet />
         <PrivateCluster />
         <JumpServer />
         <AzureCNI />
@@ -50,7 +51,6 @@ export default function Tfvar() {
         <NetworkPluginMode />
         <AutoScaling />
         <UserDefinedRouting />
-        <ContainerRegistry />
         <AppGateway />
         <MicrosoftDefender />
       </div>

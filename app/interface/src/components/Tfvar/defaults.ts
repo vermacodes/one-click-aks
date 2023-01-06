@@ -77,6 +77,14 @@ export const defaultTfvarConfig: TfvarConfigType = {
       addressPrefixes: ["10.1.4.0/24"],
       name: "AppGatewaySubnet",
     },
+    {
+      addressPrefixes: ["10.1.5.0/24"],
+      name: "AROMasterSubnet",
+    },
+    {
+      addressPrefixes: ["10.1.6.0/24"],
+      name: "AROWorkerSubnet",
+    },
   ],
   networkSecurityGroups: [{}],
   jumpservers: [
