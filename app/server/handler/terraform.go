@@ -147,7 +147,12 @@ func (t *terraformHandler) Validate(c *gin.Context) {
 	header.Set("Transfer-Encoding", "chunked")
 	header.Set("Content-type", "text/html")
 	w.WriteHeader(http.StatusOK)
-	w.(http.Flusher).Flush()
 
-	t.terraformService.Validate(lab)
+	if err := t.terraformService.Extend(lab, "validate"); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	} else {
+		w.WriteHeader(http.StatusOK)
+	}
+
+	w.(http.Flusher).Flush()
 }

@@ -181,7 +181,6 @@ export type Lab = {
   tags: string[];
   template: TfvarConfigType | undefined;
   extendScript: string;
-  validateScript: string;
   message: string;
   type: string;
   createdby: string;

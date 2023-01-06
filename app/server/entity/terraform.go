@@ -28,7 +28,7 @@ type TerraformService interface {
 	// Executes shell script to run vlidation aginst infra.
 	// runs against selected workspace. This doesnt send any response body
 	// and logs are streamed.
-	Validate(LabType) error
+	// Validate(LabType) error
 }
 
 type TerraformRepository interface {

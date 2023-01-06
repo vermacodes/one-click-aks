@@ -45,7 +45,6 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
     type: "template",
     template: labInMemory?.template,
     extendScript: "",
-    validateScript: "",
     message: "",
     createdby: "",
     updatedby: "",
@@ -188,26 +187,8 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
                 <option value={"mockcase"}>Mock Case</option>
               </select>
             </div>
-            <div
-              className={`my-4 h-60 space-y-1 ${
-                (lab.type === "template" || lab.type === "sharedtemplate") &&
-                "hidden"
-              }`}
-            >
-              <label htmlFor="validatescript">Validate Script</label>
-              <Editor
-                height={`95%`}
-                width={`100%`}
-                language={"shell"}
-                value={atob(lab.validateScript)}
-                theme="vs-dark"
-                defaultValue="// some comment"
-                onChange={(value) => {
-                  value && setLab({ ...lab, validateScript: btoa(value) });
-                }}
-              />
-            </div>
-            <div
+            {/* Enable this on UI after implementation */}
+            {/* <div
               className={`my-4 ${
                 (lab.type === "template" || lab.type === "sharedtemplate") &&
                 "hidden"
@@ -223,7 +204,7 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
                   setLab({ ...lab, message: event.target.value });
                 }}
               />
-            </div>
+            </div> */}
           </>
         )}
         <div className="flex justify-end gap-x-4">

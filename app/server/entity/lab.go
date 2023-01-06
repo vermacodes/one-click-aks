@@ -81,19 +81,18 @@ type EnumerationResults struct {
 }
 
 type LabType struct {
-	Id             string          `json:"id"`
-	Name           string          `json:"name"`
-	Description    string          `json:"description"`
-	Tags           []string        `json:"tags"`
-	Template       TfvarConfigType `json:"template"`
-	ExtendScript   string          `json:"extendScript"`
-	ValidateScript string          `json:"validateScript"`
-	Message        string          `json:"message"`
-	Type           string          `json:"type"`
-	CreatedBy      string          `json:"createdBy"`
-	CreatedOn      string          `json:"createdOn"`
-	UpdatedBy      string          `json:"updatedBy"`
-	UpdatedOn      string          `json:"updatedOn"`
+	Id           string          `json:"id"`
+	Name         string          `json:"name"`
+	Description  string          `json:"description"`
+	Tags         []string        `json:"tags"`
+	Template     TfvarConfigType `json:"template"`
+	ExtendScript string          `json:"extendScript"`
+	Message      string          `json:"message"`
+	Type         string          `json:"type"`
+	CreatedBy    string          `json:"createdBy"`
+	CreatedOn    string          `json:"createdOn"`
+	UpdatedBy    string          `json:"updatedBy"`
+	UpdatedOn    string          `json:"updatedOn"`
 }
 
 type BlobType struct {

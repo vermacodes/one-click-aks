@@ -99,24 +99,24 @@ func (t *terraformService) Destroy(lab entity.LabType) error {
 	return helperTerraformAction(t, lab.Template, "destroy")
 }
 
-func (t *terraformService) Validate(lab entity.LabType) error {
-	if lab.ValidateScript == "" {
-		t.logStreamService.EndLogStream()
-		return nil
-	}
+// func (t *terraformService) Validate(lab entity.LabType) error {
+// 	if lab.ValidateScript == "" {
+// 		t.logStreamService.EndLogStream()
+// 		return nil
+// 	}
 
-	// Getting back redacted values.
-	if lab.ValidateScript == "redacted" {
-		lab, err := helperGetLabExerciseById(t, lab.Id)
-		if err != nil {
-			slog.Error("not able to find the lab exercise", err)
-			return err
-		}
-		return helperExecuteScript(t, lab.ValidateScript, "")
-	}
+// 	// Getting back redacted values.
+// 	if lab.ValidateScript == "redacted" {
+// 		lab, err := helperGetLabExerciseById(t, lab.Id)
+// 		if err != nil {
+// 			slog.Error("not able to find the lab exercise", err)
+// 			return err
+// 		}
+// 		return helperExecuteScript(t, lab.ValidateScript, "")
+// 	}
 
-	return helperExecuteScript(t, lab.ValidateScript, "")
-}
+// 	return helperExecuteScript(t, lab.ValidateScript, "")
+// }
 
 func helperTerraformAction(t *terraformService, tfvar entity.TfvarConfigType, action string) error {
 

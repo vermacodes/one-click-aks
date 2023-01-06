@@ -95,7 +95,9 @@ function get_variables_from_tf_output () {
 }
 
 function init() {
-    gap
+    if [[ ${SCRIPT_MODE} != "destroy" ]]; then
+        gap
+    fi
     log "Initializing Environment"
     change_to_root_dir
     tf_init

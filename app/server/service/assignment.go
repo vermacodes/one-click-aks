@@ -72,7 +72,6 @@ func (a *assignmentService) GetMyAssignments() ([]entity.LabType, error) {
 			if assignment.LabId == lab.Id {
 				if assignment.User == account.User.Name {
 					lab.ExtendScript = "redacted"
-					lab.ValidateScript = "redacted"
 					assignedLabs = append(assignedLabs, lab)
 					break
 				}
