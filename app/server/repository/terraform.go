@@ -64,13 +64,14 @@ func (t *terraformRepository) TerraformAction(tfvar entity.TfvarConfigType, acti
 	return cmd, rPipe, wPipe, nil
 }
 
-func (t *terraformRepository) ExecuteScript(script string, storageAccountName string) (*exec.Cmd, *os.File, *os.File, error) {
+func (t *terraformRepository) ExecuteScript(script string, mode string, storageAccountName string) (*exec.Cmd, *os.File, *os.File, error) {
 	setEnvironmentVariable("terraform_directory", "tf")
 	setEnvironmentVariable("root_directory", os.ExpandEnv("$ROOT_DIR"))
 	setEnvironmentVariable("resource_group_name", "repro-project")
 	setEnvironmentVariable("storage_account_name", storageAccountName)
 	setEnvironmentVariable("container_name", "tfstate")
 	setEnvironmentVariable("tf_state_file_name", "terraform.tfstate")
+	setEnvironmentVariable("script_mode", mode)
 
 	// Execute terraform script with appropriate action.
 	cmd := exec.Command("bash", "-c", "echo '"+script+"' | base64 -d | dos2unix | bash")

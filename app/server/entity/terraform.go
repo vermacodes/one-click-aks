@@ -19,7 +19,7 @@ type TerraformService interface {
 	// Executes shell script to run extention of infra.
 	// runs against selected workspace. This doesnt send any response body
 	// and logs are streamed.
-	Extend(LabType) error
+	Extend(LabType, string) error
 
 	// destroy the resources in current worksapce.
 	// Streams logs
@@ -33,5 +33,5 @@ type TerraformService interface {
 
 type TerraformRepository interface {
 	TerraformAction(TfvarConfigType, string, string) (*exec.Cmd, *os.File, *os.File, error)
-	ExecuteScript(script string, storageAccountName string) (*exec.Cmd, *os.File, *os.File, error)
+	ExecuteScript(script string, mode string, storageAccountName string) (*exec.Cmd, *os.File, *os.File, error)
 }

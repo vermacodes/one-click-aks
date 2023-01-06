@@ -20,14 +20,27 @@ ok() {
   echo -e "${GREEN}[$(date +'%Y-%m-%dT%H:%M:%S%z')]: INFO - $* ${NC}" >&1
 }
 
+gap() {
+  echo -e ""
+  echo -e ""
+  echo -e "******************************************************************"
+  echo -e ""
+  echo -e ""
+}
+
 function change_to_root_dir() {
     log "Changing to root directory"
     cd $ROOT_DIR
 }
 
+function changeToTerraformDirectory() {
+    log "Changing to terraform directory"
+    cd $ROOT_DIR/tf
+}
+
 function get_aks_credentials() {
     log "Pulling AKS credentials"
-    cd tf && terraform output -raw aks_login | bash
+    changeToTerraformDirectory && terraform output -raw aks_login | bash
     change_to_root_dir
 }
 
@@ -42,6 +55,10 @@ function get_kubectl() {
 
 function tf_init() {
     log "Initializing"
+    
+    # Change to TF Directory
+    changeToTerraformDirectory
+
     # Initialize terraform only if not.
     if [[ ! -f .terraform/terraform.tfstate ]] || [[ ! -f .terraform.lock.hcl ]]; then
         terraform init \
@@ -54,17 +71,20 @@ function tf_init() {
     else 
         ok "Already Initialized - Skipped"
     fi
+
+    # Change to root directory
+    # change_to_root_dir
 }
 
 function get_variables_from_tf_output () {
     log "Pulling variables from TF output"
-    cd tf
+    changeToTerraformDirectory
     
     # Subscription as Env Variable
     export SUBSCRIPTION_ID=$(az account show --output json | jq -r .id)
 
     output=$(terraform output -json)
-
+    log "output -> ${output}"
     # Iterate through each output variable and set as an environment variable
     while read -r key value; do
       export "$(echo "$key" | tr '[:lower:]' '[:upper:]')"="$value"
@@ -75,10 +95,12 @@ function get_variables_from_tf_output () {
 }
 
 function init() {
+    gap
     log "Initializing Environment"
     change_to_root_dir
-    # tf_init
+    tf_init
     get_aks_credentials
+    # changeToTerraformDirectory
     get_kubectl
     get_variables_from_tf_output
 }

@@ -36,10 +36,15 @@ export default function Tfvar() {
   return (
     <div onClick={() => setVersionMenu(false)}>
       <div className="flex flex-wrap gap-y-2 gap-x-2">
-        <CodeEditor variant="secondary-outline">Extention Script</CodeEditor>
         <CustomVnet />
         <ContainerRegistry />
         <KubernetesCluster />
+      </div>
+      <div
+        className={`${
+          lab?.template?.kubernetesClusters.length === 0 && "hidden"
+        } mt-4 flex flex-wrap gap-x-2 gap-y-2`}
+      >
         <KubernetesVersion
           versionMenu={versionMenu}
           setVersionMenu={setVersionMenu}
@@ -54,7 +59,7 @@ export default function Tfvar() {
         <AppGateway />
         <MicrosoftDefender />
       </div>
-      <div className="mt-4 flex gap-x-2">
+      <div className={`mt-4 flex gap-x-2`}>
         <PlanButton variant="success" lab={lab}>
           Plan
         </PlanButton>
@@ -64,6 +69,7 @@ export default function Tfvar() {
         <DestroyButton variant="danger" lab={lab}>
           Destroy
         </DestroyButton>
+        <CodeEditor variant="secondary">Extention</CodeEditor>
         <LabBuilder variant="secondary">Save</LabBuilder>
         <Button
           variant="secondary"

@@ -128,7 +128,7 @@ func helperDeleteLabFromRedis() error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 204 {
-		error := errors.New("delete lab failure.")
+		error := errors.New("delete lab failure")
 		slog.Error("not able to delete lab from redis", error)
 
 		return error
