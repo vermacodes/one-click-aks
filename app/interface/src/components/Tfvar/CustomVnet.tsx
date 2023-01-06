@@ -52,7 +52,7 @@ export default function CustomVnet() {
     return (
       <Checkbox
         id="toggle-customvnet"
-        label="Custom VNET"
+        label="VNET"
         disabled={true}
         checked={false}
         handleOnChange={handleOnChange}
@@ -65,7 +65,7 @@ export default function CustomVnet() {
       {lab && lab.template && (
         <Checkbox
           id="toggle-customvnet"
-          label="Custom VNET"
+          label="VNET"
           checked={lab.template.virtualNetworks.length > 0}
           disabled={labIsLoading || labIsFetching}
           handleOnChange={handleOnChange}
