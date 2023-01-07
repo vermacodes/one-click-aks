@@ -40,7 +40,16 @@ function changeToTerraformDirectory() {
 
 function get_aks_credentials() {
     log "Pulling AKS credentials"
-    changeToTerraformDirectory && terraform output -raw aks_login | bash
+    
+    if [[ ${AKS_LOGIN} != "" ]]; then
+      ok "AKS Login Command -> ${AKS_LOGIN}"
+      echo ${AKS_LOGIN} | bash
+    elif [[ ${AKS_LOGIN} == "" ]]; then
+      log "AKS Login command not available"
+    else
+      err "Expected either AKS login command or an empty string. Found this -> ${AKS_LOGIN}"
+    fi
+
     change_to_root_dir
 }
 
@@ -85,10 +94,18 @@ function get_variables_from_tf_output () {
 
     output=$(terraform output -json)
     log "output -> ${output}"
+
     # Iterate through each output variable and set as an environment variable
-    while read -r key value; do
-      export "$(echo "$key" | tr '[:lower:]' '[:upper:]')"="$value"
-    done <<< "$(echo "$output" | jq -r 'to_entries[] | "\(.key) \(.value.value)"')"
+    if [[ ${output} != "{}" ]]; then
+      while read -r key value; do
+        export "$(echo "$key" | tr '[:lower:]' '[:upper:]')"="$value"
+      done <<< "$(echo "$output" | jq -r 'to_entries[] | "\(.key) \(.value.value)"')"
+
+    elif [[ ${output} == "{}" ]]; then
+      log "terraform output not found."
+    else
+      err "Expected terraform outputs or an empty object {}. But found -> ${output}"
+    fi
 
 
     change_to_root_dir
@@ -101,8 +118,8 @@ function init() {
     log "Initializing Environment"
     change_to_root_dir
     tf_init
+    get_variables_from_tf_output
     get_aks_credentials
     # changeToTerraformDirectory
     get_kubectl
-    get_variables_from_tf_output
 }

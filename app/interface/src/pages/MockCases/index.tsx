@@ -2,9 +2,9 @@ import { useState } from "react";
 import { FaArrowRight } from "react-icons/fa";
 import Button from "../../components/Button";
 import DeleteLabButton from "../../components/Lab/DeleteLabButton";
+import ExportLabButton from "../../components/Lab/Export/ExportLabButton";
 import LabCard from "../../components/Lab/LabCard";
 import LoadToBuilderButton from "../../components/Lab/LoadToBuilderButton";
-import ValidateLabButton from "../../components/Lab/ValidateLabButton";
 import TemplateCard from "../../components/TemplateCard";
 import Terminal from "../../components/Terminal";
 import ApplyButton from "../../components/Terraform/ApplyButton";
@@ -74,9 +74,9 @@ export default function MockCases() {
                       lab.id === more ? "max-h-40" : "max-h-0"
                     } flex flex-wrap justify-end gap-1 gap-x-1 overflow-hidden transition-all duration-500`}
                   >
-                    <ValidateLabButton lab={lab} variant="secondary-outline">
-                      Validate
-                    </ValidateLabButton>
+                    <ExportLabButton lab={lab} variant="secondary-outline">
+                      Export
+                    </ExportLabButton>
                     <DeleteLabButton lab={lab} variant="danger-outline">
                       Delete
                     </DeleteLabButton>
