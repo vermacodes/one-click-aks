@@ -20,7 +20,8 @@ func NewTerraformHandler(r *gin.RouterGroup, service entity.TerraformService) {
 	r.POST("/plan", handler.Plan)
 	r.POST("/apply", handler.Apply)
 	r.POST("/destroy", handler.Destroy)
-	r.POST("/extend", handler.Extend)
+	r.POST("/apply/extend", handler.ApplyExtend)
+	r.POST("/destroy/extend", handler.DestroyExtend)
 	r.POST("/validate", handler.Validate)
 }
 
@@ -75,7 +76,7 @@ func (t *terraformHandler) Apply(c *gin.Context) {
 	w.(http.Flusher).Flush()
 }
 
-func (t *terraformHandler) Extend(c *gin.Context) {
+func (t *terraformHandler) ApplyExtend(c *gin.Context) {
 	lab := entity.LabType{}
 	if err := c.Bind(&lab); err != nil {
 		c.Status(http.StatusBadRequest)
@@ -86,10 +87,35 @@ func (t *terraformHandler) Extend(c *gin.Context) {
 	header := w.Header()
 	header.Set("Transfer-Encoding", "chunked")
 	header.Set("Content-type", "text/html")
-	w.WriteHeader(http.StatusOK)
-	w.(http.Flusher).Flush()
 
-	t.terraformService.Extend(lab)
+	if err := t.terraformService.Extend(lab, "apply"); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	} else {
+		w.WriteHeader(http.StatusOK)
+	}
+
+	w.(http.Flusher).Flush()
+}
+
+func (t *terraformHandler) DestroyExtend(c *gin.Context) {
+	lab := entity.LabType{}
+	if err := c.Bind(&lab); err != nil {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	w := c.Writer
+	header := w.Header()
+	header.Set("Transfer-Encoding", "chunked")
+	header.Set("Content-type", "text/html")
+
+	if err := t.terraformService.Extend(lab, "destroy"); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	} else {
+		w.WriteHeader(http.StatusOK)
+	}
+
+	w.(http.Flusher).Flush()
 }
 
 func (t *terraformHandler) Destroy(c *gin.Context) {
@@ -121,7 +147,12 @@ func (t *terraformHandler) Validate(c *gin.Context) {
 	header.Set("Transfer-Encoding", "chunked")
 	header.Set("Content-type", "text/html")
 	w.WriteHeader(http.StatusOK)
-	w.(http.Flusher).Flush()
 
-	t.terraformService.Validate(lab)
+	if err := t.terraformService.Extend(lab, "validate"); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	} else {
+		w.WriteHeader(http.StatusOK)
+	}
+
+	w.(http.Flusher).Flush()
 }

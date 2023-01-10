@@ -18,7 +18,9 @@ export default function LabCard({ lab, children }: Props) {
       <div className="flex flex-auto space-x-1 border-b border-slate-500 pb-4">
         {lab.tags &&
           lab.tags.map((tag) => (
-            <span className="border border-slate-500 px-3 text-xs">{tag}</span>
+            <span key={tag} className="border border-slate-500 px-3 text-xs">
+              {tag}
+            </span>
           ))}
       </div>
       <>{children}</>

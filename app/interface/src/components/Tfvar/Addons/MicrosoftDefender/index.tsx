@@ -18,10 +18,10 @@ export default function MicrosoftDefender({}: Props) {
   function handleOnChange() {
     if (lab !== undefined) {
       if (lab.template !== undefined) {
-        if (lab.template.kubernetesCluster.addons.microsoftDefender) {
-          lab.template.kubernetesCluster.addons.microsoftDefender = false;
+        if (lab.template.kubernetesClusters[0].addons.microsoftDefender) {
+          lab.template.kubernetesClusters[0].addons.microsoftDefender = false;
         } else {
-          lab.template.kubernetesCluster.addons.microsoftDefender = true;
+          lab.template.kubernetesClusters[0].addons.microsoftDefender = true;
         }
 
         !inProgress &&
@@ -40,19 +40,19 @@ export default function MicrosoftDefender({}: Props) {
   }
 
   // Reset to empty if not found. This probably ensures backward compatibility.
-  if (
-    lab.template.kubernetesCluster.addons.microsoftDefender === null ||
-    lab.template.kubernetesCluster.addons.microsoftDefender === undefined
-  ) {
-    lab.template.kubernetesCluster.addons.microsoftDefender = false;
-  }
+  // if (
+  //   lab.template.kubernetesClusters[0].addons.microsoftDefender === null ||
+  //   lab.template.kubernetesClusters[0].addons.microsoftDefender === undefined
+  // ) {
+  //   lab.template.kubernetesClusters[0].addons.microsoftDefender = false;
+  // }
 
   // If still loading then display disabled flag.
   if (labIsLoading || labIsFetching) {
     return (
       <Checkbox
         id="toggle-defender"
-        label="Defender"
+        label="Defender (Addon)"
         disabled={true}
         checked={false}
         handleOnChange={handleOnChange}
@@ -65,16 +65,20 @@ export default function MicrosoftDefender({}: Props) {
   if (
     lab &&
     lab.template &&
-    lab.template.kubernetesCluster &&
-    lab.template.kubernetesCluster.addons &&
-    lab.template.kubernetesCluster.addons.microsoftDefender === false
+    lab.template.kubernetesClusters.length > 0 &&
+    lab.template.kubernetesClusters[0].addons &&
+    lab.template.kubernetesClusters[0].addons.microsoftDefender === false
   ) {
     checked = false;
   }
 
   // Disabled Conditions
   var disabled: boolean = false;
-  if (labIsLoading || labIsFetching) {
+  if (
+    labIsLoading ||
+    labIsFetching ||
+    lab.template.kubernetesClusters.length === 0
+  ) {
     disabled = true;
   }
 

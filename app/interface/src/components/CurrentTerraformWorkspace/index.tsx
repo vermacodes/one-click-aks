@@ -18,7 +18,9 @@ export default function index({}: Props) {
         >
           {data &&
             data.map((worksapce) => (
-              <>{worksapce.selected && worksapce.name}</>
+              <div key={worksapce.name}>
+                {worksapce.selected && worksapce.name}
+              </div>
             ))}
         </button>
         <div

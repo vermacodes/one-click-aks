@@ -134,7 +134,7 @@ export type TfvarAppGatewayType = {};
 
 export type TfvarConfigType = {
   resourceGroup: TfvarResourceGroupType;
-  kubernetesCluster: TfvarKubernetesClusterType;
+  kubernetesClusters: TfvarKubernetesClusterType[];
   virtualNetworks: TfvarVirtualNetworkType;
   subnets: TfvarSubnetType;
   networkSecurityGroups: TfvarNetworkSecurityGroupType[];
@@ -181,7 +181,6 @@ export type Lab = {
   tags: string[];
   template: TfvarConfigType | undefined;
   extendScript: string;
-  validateScript: string;
   message: string;
   type: string;
   createdby: string;

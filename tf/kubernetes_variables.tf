@@ -1,6 +1,6 @@
-variable "kubernetes_cluster" {
+variable "kubernetes_clusters" {
   description = "AKS Cluster Object"
-  type = object({
+  type = list(object({
     kubernetes_version      = string
     network_plugin          = string
     network_policy          = string
@@ -16,5 +16,5 @@ variable "kubernetes_cluster" {
       min_count           = number
       max_count           = number
     })
-  })
+  }))
 }

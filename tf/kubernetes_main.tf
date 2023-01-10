@@ -1,70 +1,75 @@
-locals {
-  network_plugin_mode = var.kubernetes_cluster.network_plugin_mode == "null" || var.kubernetes_cluster.network_plugin_mode == "" ? null : var.kubernetes_cluster.network_plugin_mode
-}
+# locals {
+#   count               = var.kubernetes_clusters == null ? 0 : length(var.kubernetes_clusters)
+#   network_plugin_mode = var.kubernetes_clusters[count.index].network_plugin_mode == "null" || var.kubernetes_clusters[count.index].network_plugin_mode == "" ? null : var.kubernetes_clusters[count.index].network_plugin_mode
+# }
 
 resource "azurerm_user_assigned_identity" "kubelet_identity" {
+  count               = var.kubernetes_clusters == null ? 0 : length(var.kubernetes_clusters)
   name                = "${module.naming.user_assigned_identity.name}-kubelet"
   resource_group_name = azurerm_resource_group.this.name
   location            = azurerm_resource_group.this.location
 }
 
 resource "azurerm_user_assigned_identity" "ccp_identity" {
+  count               = var.kubernetes_clusters == null ? 0 : length(var.kubernetes_clusters)
   name                = "${module.naming.user_assigned_identity.name}-ccp"
   resource_group_name = azurerm_resource_group.this.name
   location            = azurerm_resource_group.this.location
 }
 
 resource "azurerm_role_assignment" "identity_operator" {
-  principal_id         = azurerm_user_assigned_identity.ccp_identity.principal_id
+  count                = var.kubernetes_clusters == null ? 0 : length(var.kubernetes_clusters)
+  principal_id         = azurerm_user_assigned_identity.ccp_identity[count.index].principal_id
   scope                = azurerm_resource_group.this.id
   role_definition_name = "Managed Identity Operator"
 }
 
 resource "azurerm_kubernetes_cluster" "this" {
+  count                   = var.kubernetes_clusters == null ? 0 : length(var.kubernetes_clusters)
   name                    = module.naming.kubernetes_cluster.name
   location                = azurerm_resource_group.this.location
   resource_group_name     = azurerm_resource_group.this.name
   dns_prefix              = "aks"
-  private_cluster_enabled = var.kubernetes_cluster.private_cluster_enabled
-  kubernetes_version      = var.kubernetes_cluster.kubernetes_version == null || var.kubernetes_cluster.kubernetes_version == "" ? null : var.kubernetes_cluster.kubernetes_version
+  private_cluster_enabled = var.kubernetes_clusters[count.index].private_cluster_enabled
+  kubernetes_version      = var.kubernetes_clusters[count.index].kubernetes_version == null || var.kubernetes_clusters[count.index].kubernetes_version == "" ? null : var.kubernetes_clusters[count.index].kubernetes_version
 
   default_node_pool {
     name                = "default"
-    min_count           = var.kubernetes_cluster.default_node_pool.enable_auto_scaling == false ? null : var.kubernetes_cluster.default_node_pool.min_count
-    max_count           = var.kubernetes_cluster.default_node_pool.enable_auto_scaling == false ? null : var.kubernetes_cluster.default_node_pool.max_count
-    node_count          = var.kubernetes_cluster.default_node_pool.enable_auto_scaling == false ? 1 : null
-    vm_size             = "Standard_D2_v2"
-    enable_auto_scaling = var.kubernetes_cluster.default_node_pool.enable_auto_scaling
+    min_count           = var.kubernetes_clusters[count.index].default_node_pool.enable_auto_scaling == false ? null : var.kubernetes_clusters[count.index].default_node_pool.min_count
+    max_count           = var.kubernetes_clusters[count.index].default_node_pool.enable_auto_scaling == false ? null : var.kubernetes_clusters[count.index].default_node_pool.max_count
+    node_count          = var.kubernetes_clusters[count.index].default_node_pool.enable_auto_scaling == false ? 1 : null
+    vm_size             = "Standard_D2_v5"
+    enable_auto_scaling = var.kubernetes_clusters[count.index].default_node_pool.enable_auto_scaling
     vnet_subnet_id      = var.virtual_networks == null || length(var.virtual_networks) == 0 ? null : azurerm_subnet.this[2].id
   }
 
   network_profile {
-    network_plugin      = var.kubernetes_cluster.network_plugin
-    network_policy      = var.kubernetes_cluster.network_policy == "null" ? null : var.kubernetes_cluster.network_policy
-    outbound_type       = var.kubernetes_cluster.outbound_type == null || var.kubernetes_cluster.outbound_type == "" ? "loadBalancer" : var.kubernetes_cluster.outbound_type
-    network_plugin_mode = local.network_plugin_mode
+    network_plugin      = var.kubernetes_clusters[count.index].network_plugin
+    network_policy      = var.kubernetes_clusters[count.index].network_policy == "null" ? null : var.kubernetes_clusters[count.index].network_policy
+    outbound_type       = var.kubernetes_clusters[count.index].outbound_type == null || var.kubernetes_clusters[count.index].outbound_type == "" ? "loadBalancer" : var.kubernetes_clusters[count.index].outbound_type
+    network_plugin_mode = var.kubernetes_clusters[count.index].network_plugin_mode == "null" || var.kubernetes_clusters[count.index].network_plugin_mode == "" ? null : var.kubernetes_clusters[count.index].network_plugin_mode
   }
 
   identity {
     type         = "UserAssigned"
-    identity_ids = [azurerm_user_assigned_identity.ccp_identity.id]
+    identity_ids = [azurerm_user_assigned_identity.ccp_identity[0].id]
   }
 
   kubelet_identity {
-    client_id                 = azurerm_user_assigned_identity.kubelet_identity.client_id
-    object_id                 = azurerm_user_assigned_identity.kubelet_identity.principal_id # Principal ID and Object ID are same.
-    user_assigned_identity_id = azurerm_user_assigned_identity.kubelet_identity.id
+    client_id                 = azurerm_user_assigned_identity.kubelet_identity[0].client_id
+    object_id                 = azurerm_user_assigned_identity.kubelet_identity[0].principal_id # Principal ID and Object ID are same.
+    user_assigned_identity_id = azurerm_user_assigned_identity.kubelet_identity[0].id
   }
 
   dynamic "ingress_application_gateway" {
-    for_each = var.virtual_networks != null && var.kubernetes_cluster.addons.app_gateway ? [{}] : []
+    for_each = var.virtual_networks != null && var.kubernetes_clusters[count.index].addons.app_gateway ? [{}] : []
     content {
       subnet_id = azurerm_subnet.this[3].id
     }
   }
 
   dynamic "microsoft_defender" {
-    for_each = var.kubernetes_cluster.addons.microsoft_defender ? [{}] : []
+    for_each = var.kubernetes_clusters[count.index].addons.microsoft_defender ? [{}] : []
     content {
       log_analytics_workspace_id = azurerm_log_analytics_workspace.this[0].id
     }
@@ -84,15 +89,15 @@ resource "azurerm_kubernetes_cluster" "this" {
 
 # Role assigments for app gateway add on.
 resource "azurerm_role_assignment" "ingress_app_gateway_rg_reader" {
-  count                = var.kubernetes_cluster.addons.app_gateway ? 1 : 0
-  principal_id         = azurerm_kubernetes_cluster.this.ingress_application_gateway[count.index].ingress_application_gateway_identity[count.index].object_id
+  count                = var.kubernetes_clusters == null ? 0 : length(var.kubernetes_clusters) == 0 ? 0 : var.kubernetes_clusters[0].addons.app_gateway ? 1 : 0
+  principal_id         = azurerm_kubernetes_cluster.this[count.index].ingress_application_gateway[count.index].ingress_application_gateway_identity[count.index].object_id
   scope                = azurerm_resource_group.this.id
   role_definition_name = "Reader"
 }
 
 resource "azurerm_role_assignment" "ingress_app_gateway_contributor" {
-  count                = var.kubernetes_cluster.addons.app_gateway ? 1 : 0
-  principal_id         = azurerm_kubernetes_cluster.this.ingress_application_gateway[count.index].ingress_application_gateway_identity[count.index].object_id
-  scope                = azurerm_kubernetes_cluster.this.ingress_application_gateway[count.index].effective_gateway_id
+  count                = var.kubernetes_clusters == null ? 0 : length(var.kubernetes_clusters) == 0 ? 0 : var.kubernetes_clusters[0].addons.app_gateway ? 1 : 0
+  principal_id         = azurerm_kubernetes_cluster.this[count.index].ingress_application_gateway[count.index].ingress_application_gateway_identity[count.index].object_id
+  scope                = azurerm_kubernetes_cluster.this[count.index].ingress_application_gateway[count.index].effective_gateway_id
   role_definition_name = "Contributor"
 }

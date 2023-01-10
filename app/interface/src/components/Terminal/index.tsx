@@ -42,13 +42,15 @@ export default function Terminal() {
         >
           Clear Logs
         </button>
-        <Checkbox
-          id="terminal-autoscroll"
-          label="Auto Scroll"
-          disabled={false}
-          checked={autoScroll}
-          handleOnChange={handleOnChange}
-        />
+        <div className="pl-2">
+          <Checkbox
+            id="terminal-autoscroll"
+            label="Auto Scroll"
+            disabled={false}
+            checked={autoScroll}
+            handleOnChange={handleOnChange}
+          />
+        </div>
       </div>
       <div className="mb-5 h-1/2 max-h-[500px] min-h-[500px] overflow-y-auto rounded border border-slate-400 p-4  text-sm shadow shadow-slate-300 scrollbar-thin scrollbar-track-slate-300 scrollbar-thumb-sky-500 hover:border-sky-500 dark:border-slate-600 dark:shadow-slate-700 dark:hover:border-sky-500">
         <pre

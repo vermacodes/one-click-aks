@@ -16,11 +16,13 @@ export default function AutoScaling() {
   function handleOnChange() {
     if (lab !== undefined) {
       if (lab.template !== undefined) {
-        if (lab.template.kubernetesCluster.defaultNodePool.enableAutoScaling) {
-          lab.template.kubernetesCluster.defaultNodePool.enableAutoScaling =
+        if (
+          lab.template.kubernetesClusters[0].defaultNodePool.enableAutoScaling
+        ) {
+          lab.template.kubernetesClusters[0].defaultNodePool.enableAutoScaling =
             false;
         } else {
-          lab.template.kubernetesCluster.defaultNodePool.enableAutoScaling =
+          lab.template.kubernetesClusters[0].defaultNodePool.enableAutoScaling =
             true;
         }
         !inProgress &&
@@ -55,9 +57,14 @@ export default function AutoScaling() {
         <Checkbox
           id="toggle-autoscaling"
           label="Auto Scaling"
-          disabled={labIsLoading || labIsFetching}
+          disabled={
+            labIsLoading ||
+            labIsFetching ||
+            lab.template.kubernetesClusters.length === 0
+          }
           checked={
-            lab.template.kubernetesCluster.defaultNodePool.enableAutoScaling
+            lab.template.kubernetesClusters.length > 0 &&
+            lab.template.kubernetesClusters[0].defaultNodePool.enableAutoScaling
           }
           handleOnChange={handleOnChange}
         />

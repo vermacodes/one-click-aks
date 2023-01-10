@@ -28,9 +28,11 @@ export default function CustomVnet() {
           lab.template.networkSecurityGroups = [];
           lab.template.jumpservers = [];
           lab.template.firewalls = [];
-          lab.template.kubernetesCluster.addons.appGateway = false;
-          lab.template.kubernetesCluster.privateClusterEnabled = "false";
-          lab.template.kubernetesCluster.outboundType = "loadBalancer";
+          if (lab.template.kubernetesClusters.length > 0) {
+            lab.template.kubernetesClusters[0].addons.appGateway = false;
+            lab.template.kubernetesClusters[0].privateClusterEnabled = "false";
+            lab.template.kubernetesClusters[0].outboundType = "loadBalancer";
+          }
         }
         !inProgress &&
           setLogs({
@@ -50,7 +52,7 @@ export default function CustomVnet() {
     return (
       <Checkbox
         id="toggle-customvnet"
-        label="Custom VNET"
+        label="VNET"
         disabled={true}
         checked={false}
         handleOnChange={handleOnChange}
@@ -63,7 +65,7 @@ export default function CustomVnet() {
       {lab && lab.template && (
         <Checkbox
           id="toggle-customvnet"
-          label="Custom VNET"
+          label="VNET"
           checked={lab.template.virtualNetworks.length > 0}
           disabled={labIsLoading || labIsFetching}
           handleOnChange={handleOnChange}

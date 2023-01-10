@@ -16,13 +16,13 @@ export default function AzureCNI() {
   function handleOnChange() {
     if (lab !== undefined) {
       if (lab.template !== undefined) {
-        if ("azure" === lab.template.kubernetesCluster.networkPlugin) {
-          lab.template.kubernetesCluster.networkPlugin = "kubenet";
-          lab.template.kubernetesCluster.networkPolicy = "null";
-          lab.template.kubernetesCluster.networkPluginMode = "null";
+        if ("azure" === lab.template.kubernetesClusters[0].networkPlugin) {
+          lab.template.kubernetesClusters[0].networkPlugin = "kubenet";
+          lab.template.kubernetesClusters[0].networkPolicy = "null";
+          lab.template.kubernetesClusters[0].networkPluginMode = "null";
         } else {
-          lab.template.kubernetesCluster.networkPlugin = "azure";
-          lab.template.kubernetesCluster.networkPolicy = "azure";
+          lab.template.kubernetesClusters[0].networkPlugin = "azure";
+          lab.template.kubernetesClusters[0].networkPolicy = "azure";
         }
         !inProgress &&
           setLogs({
@@ -56,8 +56,15 @@ export default function AzureCNI() {
         <Checkbox
           id="toggle-azurecni"
           label="Azure CNI"
-          checked={"azure" === lab.template.kubernetesCluster.networkPlugin}
-          disabled={labIsLoading || labIsFetching}
+          checked={
+            lab.template.kubernetesClusters.length > 0 &&
+            "azure" === lab.template.kubernetesClusters[0].networkPlugin
+          }
+          disabled={
+            labIsLoading ||
+            labIsFetching ||
+            lab.template.kubernetesClusters.length === 0
+          }
           handleOnChange={handleOnChange}
         />
       )}

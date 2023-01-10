@@ -19,10 +19,10 @@ export default function NetworkPluginMode({}: Props) {
   function handleOnChange() {
     if (lab !== undefined) {
       if (lab.template !== undefined) {
-        if ("null" === lab.template.kubernetesCluster.networkPluginMode) {
-          lab.template.kubernetesCluster.networkPluginMode = "Overlay";
+        if ("null" === lab.template.kubernetesClusters[0].networkPluginMode) {
+          lab.template.kubernetesClusters[0].networkPluginMode = "Overlay";
         } else {
-          lab.template.kubernetesCluster.networkPluginMode = "null";
+          lab.template.kubernetesClusters[0].networkPluginMode = "null";
         }
         !inProgress &&
           setLogs({
@@ -57,12 +57,15 @@ export default function NetworkPluginMode({}: Props) {
           id="toggle-overlay"
           label="Overlay"
           checked={
-            "Overlay" === lab.template.kubernetesCluster.networkPluginMode
+            lab.template.kubernetesClusters.length > 0 &&
+            "Overlay" === lab.template.kubernetesClusters[0].networkPluginMode
           }
           disabled={
             labIsLoading ||
             labIsFetching ||
-            "azure" !== lab.template.kubernetesCluster.networkPlugin
+            lab.template.kubernetesClusters.length === 0 ||
+            "azure" !== lab.template.kubernetesClusters[0].networkPlugin ||
+            "azure" !== lab.template.kubernetesClusters[0].networkPolicy
           }
           handleOnChange={handleOnChange}
         />

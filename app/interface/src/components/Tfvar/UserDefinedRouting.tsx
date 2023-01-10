@@ -18,10 +18,11 @@ export default function UserDefinedRouting() {
     if (lab !== undefined) {
       if (lab.template !== undefined) {
         if (lab.template.firewalls.length > 0) {
-          lab.template.kubernetesCluster.outboundType = "loadBalancer";
+          lab.template.kubernetesClusters[0].outboundType = "loadBalancer";
           lab.template.firewalls = [];
         } else {
-          lab.template.kubernetesCluster.outboundType = "userDefinedRouting";
+          lab.template.kubernetesClusters[0].outboundType =
+            "userDefinedRouting";
           lab.template.firewalls = [defaultFirewall];
         }
         !inProgress &&
@@ -58,6 +59,7 @@ export default function UserDefinedRouting() {
   var disabled: boolean = false;
   if (
     (lab && lab.template && lab.template.virtualNetworks.length === 0) ||
+    lab.template.kubernetesClusters.length === 0 ||
     labIsLoading ||
     labIsFetching
   ) {

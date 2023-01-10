@@ -71,7 +71,7 @@ func (t *terraformService) Apply(lab entity.LabType) error {
 	//TODO : Extenstion script
 }
 
-func (t *terraformService) Extend(lab entity.LabType) error {
+func (t *terraformService) Extend(lab entity.LabType, mode string) error {
 	if lab.ExtendScript == "" {
 		t.logStreamService.EndLogStream()
 		return nil
@@ -84,9 +84,9 @@ func (t *terraformService) Extend(lab entity.LabType) error {
 			slog.Error("not able to find the lab exercise", err)
 			return err
 		}
-		return helperExecuteScript(t, lab.ExtendScript)
+		return helperExecuteScript(t, lab.ExtendScript, mode)
 	}
-	return helperExecuteScript(t, lab.ExtendScript)
+	return helperExecuteScript(t, lab.ExtendScript, mode)
 }
 
 func (t *terraformService) Destroy(lab entity.LabType) error {
@@ -99,24 +99,24 @@ func (t *terraformService) Destroy(lab entity.LabType) error {
 	return helperTerraformAction(t, lab.Template, "destroy")
 }
 
-func (t *terraformService) Validate(lab entity.LabType) error {
-	if lab.ValidateScript == "" {
-		t.logStreamService.EndLogStream()
-		return nil
-	}
+// func (t *terraformService) Validate(lab entity.LabType) error {
+// 	if lab.ValidateScript == "" {
+// 		t.logStreamService.EndLogStream()
+// 		return nil
+// 	}
 
-	// Getting back redacted values.
-	if lab.ValidateScript == "redacted" {
-		lab, err := helperGetLabExerciseById(t, lab.Id)
-		if err != nil {
-			slog.Error("not able to find the lab exercise", err)
-			return err
-		}
-		return helperExecuteScript(t, lab.ValidateScript)
-	}
+// 	// Getting back redacted values.
+// 	if lab.ValidateScript == "redacted" {
+// 		lab, err := helperGetLabExerciseById(t, lab.Id)
+// 		if err != nil {
+// 			slog.Error("not able to find the lab exercise", err)
+// 			return err
+// 		}
+// 		return helperExecuteScript(t, lab.ValidateScript, "")
+// 	}
 
-	return helperExecuteScript(t, lab.ValidateScript)
-}
+// 	return helperExecuteScript(t, lab.ValidateScript, "")
+// }
 
 func helperTerraformAction(t *terraformService, tfvar entity.TfvarConfigType, action string) error {
 
@@ -152,13 +152,23 @@ func helperTerraformAction(t *terraformService, tfvar entity.TfvarConfigType, ac
 	actionStaus.InProgress = true
 	t.actionStatusService.SetActionStatus(actionStaus)
 
-	// GO routine that takes care of running command and moving logs to redis.
-	go func(input io.ReadCloser) {
-		in := bufio.NewScanner(input)
-		logStream := entity.LogStream{
+	// Getting current logs.
+	logStream, err := t.logStreamService.GetLogs()
+	if err != nil {
+		slog.Error("not able to get current logs", err)
+		logStream = entity.LogStream{
 			Logs:        "",
 			IsStreaming: true,
 		}
+	}
+
+	// GO routine that takes care of running command and moving logs to redis.
+	go func(input io.ReadCloser) {
+		in := bufio.NewScanner(input)
+
+		// Begin streaming logs if not already.
+		logStream.IsStreaming = true
+
 		for in.Scan() {
 			logStream.Logs = logStream.Logs + fmt.Sprintf("%s\n", in.Text()) // Appening 'end' to signal stream end.
 			t.logStreamService.SetLogs(logStream)
@@ -176,7 +186,7 @@ func helperTerraformAction(t *terraformService, tfvar entity.TfvarConfigType, ac
 	return err
 }
 
-func helperExecuteScript(t *terraformService, script string) error {
+func helperExecuteScript(t *terraformService, script string, mode string) error {
 
 	actionStaus, err := t.actionStatusService.GetActionStatus()
 	if err != nil {
@@ -202,7 +212,7 @@ func helperExecuteScript(t *terraformService, script string) error {
 		return err
 	}
 
-	cmd, rPipe, wPipe, err := t.terraformRepository.ExecuteScript(script, storageAccountName)
+	cmd, rPipe, wPipe, err := t.terraformRepository.ExecuteScript(script, mode, storageAccountName)
 	if err != nil {
 		slog.Error("not able to run terraform script", err)
 	}
@@ -227,10 +237,6 @@ func helperExecuteScript(t *terraformService, script string) error {
 			}
 		}
 
-		logStream.Logs = logStream.Logs + fmt.Sprintf("%s\n", "")
-		logStream.Logs = logStream.Logs + fmt.Sprintf("%s\n", "************************** Executing Script **************************")
-		logStream.Logs = logStream.Logs + fmt.Sprintf("%s\n", "")
-
 		for in.Scan() {
 			logStream.Logs = logStream.Logs + fmt.Sprintf("%s\n", in.Text()) // Appening 'end' to signal stream end.
 			t.logStreamService.SetLogs(logStream)
@@ -238,14 +244,14 @@ func helperExecuteScript(t *terraformService, script string) error {
 		input.Close()
 	}(rPipe)
 
-	cmd.Wait()
+	err = cmd.Wait()
 	wPipe.Close()
 	t.logStreamService.EndLogStream()
 
 	actionStaus.InProgress = false
 	t.actionStatusService.SetActionStatus(actionStaus)
 
-	return nil
+	return err
 }
 
 func helperGetLabExerciseById(t *terraformService, labId string) (entity.LabType, error) {
@@ -263,5 +269,5 @@ func helperGetLabExerciseById(t *terraformService, labId string) (entity.LabType
 		}
 	}
 
-	return lab, errors.New("lab exercise not found.")
+	return lab, errors.New("lab exercise not found")
 }
