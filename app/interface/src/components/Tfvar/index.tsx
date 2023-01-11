@@ -14,6 +14,7 @@ import AppGateway from "./Addons/AppGateway";
 import MicrosoftDefender from "./Addons/MicrosoftDefender";
 import AutoScaling from "./AutoScaling";
 import AzureCNI from "./AzureCNI";
+import AzureFirewall from "./AzureFirewall";
 import Calico from "./Calico";
 import ContainerRegistry from "./ContainerRegistry";
 import CustomVnet from "./CustomVnet";
@@ -38,6 +39,7 @@ export default function Tfvar() {
       <div className="flex flex-wrap gap-y-2 gap-x-2">
         <CustomVnet />
         <ContainerRegistry />
+        <AzureFirewall />
         <KubernetesCluster />
       </div>
       <div

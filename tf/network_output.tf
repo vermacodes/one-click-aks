@@ -5,3 +5,7 @@ output "vnet_name" {
 output "nsg_name" {
   value = length(var.network_security_groups) == 0 ? "" : azurerm_network_security_group.this[0].name
 }
+
+output "route_table_name" {
+  value = length(var.firewalls) == 0 ? "" : azurerm_route_table.this[0].name
+}

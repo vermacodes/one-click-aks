@@ -26,17 +26,19 @@ export default function AzureRegion({ regionEdit, setRegionEdit }: Props) {
   }
 
   function handleOnClick() {
-    setPreferece({
-      ...preference,
-      azureRegion: azureRegion,
-    });
-    if (lab && lab.template) {
-      lab.template.resourceGroup.location = azureRegion;
+    if (preference !== undefined) {
+      setPreferece({
+        ...preference,
+        azureRegion: azureRegion,
+      });
+      if (lab && lab.template) {
+        lab.template.resourceGroup.location = azureRegion;
+      }
+      setLogs({
+        isStreaming: false,
+        logs: JSON.stringify(lab?.template, null, 4),
+      });
     }
-    setLogs({
-      isStreaming: false,
-      logs: JSON.stringify(lab?.template, null, 4),
-    });
   }
 
   return (

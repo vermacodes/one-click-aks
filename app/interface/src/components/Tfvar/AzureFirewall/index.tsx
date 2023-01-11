@@ -1,9 +1,10 @@
-import { useActionStatus } from "../../hooks/useActionStatus";
-import { useLab, useSetLab } from "../../hooks/useLab";
-import { useSetLogs } from "../../hooks/useLogs";
-import Checkbox from "../Checkbox";
+import { useActionStatus } from "../../../hooks/useActionStatus";
+import { useLab, useSetLab } from "../../../hooks/useLab";
+import { useSetLogs } from "../../../hooks/useLogs";
+import Checkbox from "../../Checkbox";
+import { defaultFirewall } from "./../defaults";
 
-export default function UserDefinedRouting() {
+export default function AzureFirewall() {
   const { data: inProgress } = useActionStatus();
   const { mutate: setLogs } = useSetLogs();
   const {
@@ -16,15 +17,10 @@ export default function UserDefinedRouting() {
   function handleOnChange() {
     if (lab !== undefined) {
       if (lab.template !== undefined) {
-        if (
-          lab.template.kubernetesClusters.length > 0 &&
-          lab.template.kubernetesClusters[0].outboundType ===
-            "userDefinedRouting"
-        ) {
-          lab.template.kubernetesClusters[0].outboundType = "loadBalancer";
+        if (lab.template.firewalls.length > 0) {
+          lab.template.firewalls = [];
         } else {
-          lab.template.kubernetesClusters[0].outboundType =
-            "userDefinedRouting";
+          lab.template.firewalls = [defaultFirewall];
         }
         !inProgress &&
           setLogs({
@@ -43,8 +39,8 @@ export default function UserDefinedRouting() {
   if (labIsLoading || labIsFetching) {
     return (
       <Checkbox
-        id="toggle-udr"
-        label="UDR"
+        id="toggle-azurefirewall"
+        label="Firewall"
         disabled={true}
         checked={false}
         handleOnChange={handleOnChange}
@@ -52,22 +48,14 @@ export default function UserDefinedRouting() {
     );
   }
 
-  var checked: boolean = false;
-  if (
-    lab &&
-    lab.template &&
-    lab.template.kubernetesClusters &&
-    lab.template.kubernetesClusters.length > 0 &&
-    lab.template.kubernetesClusters[0].outboundType === "userDefinedRouting"
-  ) {
-    checked = true;
+  var checked: boolean = true;
+  if (lab && lab.template && lab.template.firewalls.length === 0) {
+    checked = false;
   }
 
   var disabled: boolean = false;
   if (
     (lab && lab.template && lab.template.virtualNetworks.length === 0) ||
-    lab.template.kubernetesClusters.length === 0 ||
-    lab.template.firewalls.length === 0 ||
     labIsLoading ||
     labIsFetching
   ) {
@@ -78,8 +66,8 @@ export default function UserDefinedRouting() {
     <>
       {lab && lab.template && (
         <Checkbox
-          id="toggle-udr"
-          label="UDR"
+          id="toggle-azurefirewall"
+          label="Firewall"
           checked={checked}
           disabled={disabled}
           handleOnChange={handleOnChange}

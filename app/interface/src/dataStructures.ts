@@ -172,6 +172,7 @@ export type TerraformWorkspace = {
 
 export type Preference = {
   azureRegion: string;
+  terminalAutoScroll: boolean;
 };
 
 export type Lab = {

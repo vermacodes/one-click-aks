@@ -3,12 +3,15 @@ import { useLogs, useSetLogs } from "../../hooks/useLogs";
 import ansiHTML from "ansi-to-html";
 import Checkbox from "../Checkbox";
 import { useActionStatus } from "../../hooks/useActionStatus";
+import { usePreference, useSetPreference } from "../../hooks/usePreference";
 
 export default function Terminal() {
   const [autoScroll, setAutoScroll] = useState(false);
   const { data } = useLogs();
   const { mutate: setLogs } = useSetLogs();
   const { data: inProgress } = useActionStatus();
+  const { data: preference } = usePreference();
+  const { mutate: setPreference } = useSetPreference();
 
   const logEndRef = useRef<null | HTMLDivElement>(null);
   useEffect(() => {
@@ -29,7 +32,10 @@ export default function Terminal() {
   }
 
   function handleOnChange() {
-    setAutoScroll(!autoScroll);
+    if (preference !== undefined) {
+      preference.terminalAutoScroll = !preference.terminalAutoScroll;
+      setPreference(preference);
+    }
   }
 
   return (
@@ -47,7 +53,11 @@ export default function Terminal() {
             id="terminal-autoscroll"
             label="Auto Scroll"
             disabled={false}
-            checked={autoScroll}
+            checked={
+              preference && preference.terminalAutoScroll === true
+                ? true
+                : false
+            }
             handleOnChange={handleOnChange}
           />
         </div>
@@ -58,7 +68,7 @@ export default function Terminal() {
           style={{ padding: "10px", whiteSpace: "pre-wrap" }}
         ></pre>
 
-        {autoScroll && <div ref={logEndRef} />}
+        {preference && preference.terminalAutoScroll && <div ref={logEndRef} />}
       </div>
     </div>
   );

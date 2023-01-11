@@ -1,7 +1,8 @@
 package entity
 
 type Preference struct {
-	AzureRegion string `json:"azureRegion"`
+	AzureRegion        string `json:"azureRegion"`
+	TerminalAutoScroll bool   `json:"terminalAutoScroll"`
 }
 
 type PreferenceService interface {
