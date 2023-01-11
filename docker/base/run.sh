@@ -48,3 +48,15 @@ apt install git -y
 # Install Helm
 # I've added install hlem in dockerfile directly. Bring it here for good.
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+
+# Install OpenShift CLI
+# https://learn.microsoft.com/en-us/azure/openshift/tutorial-connect-cluster#install-the-openshift-cli
+
+cd ~
+wget https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux.tar.gz
+
+mkdir openshift
+tar -zxvf openshift-client-linux.tar.gz -C openshift
+echo 'export PATH=$PATH:~/openshift' >> ~/.bashrc && source ~/.bashrc
+cd -
