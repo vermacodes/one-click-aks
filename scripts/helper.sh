@@ -55,7 +55,7 @@ function get_aks_credentials() {
 
 function get_kubectl() {
     log "Checking if kubectl exists"
-    kubectl version > /dev/null 2>&1
+    which kubectl > /dev/null 2>&1
     if [ $? -ne 0 ]; then
       log "kubectl not found. installing."
       az aks install-cli

@@ -1,43 +1,26 @@
-import Button from "../../components/Button";
+import LabCard from "../../components/Lab/LabCard";
+import ValidateLabButton from "../../components/Lab/ValidateLabButton";
 import TemplateCard from "../../components/TemplateCard";
 import Terminal from "../../components/Terminal";
-import { Lab } from "../../dataStructures";
-import {
-  useActionStatus,
-  useSetActionStatus,
-} from "../../hooks/useActionStatus";
+import ApplyButton from "../../components/Terraform/ApplyButton";
+import DestroyButton from "../../components/Terraform/DestroyButton";
 import { useGetUserAssignedLabs } from "../../hooks/useAssignment";
-import { useSetLogs } from "../../hooks/useLogs";
-import { useApply, useExtend, useValidate } from "../../hooks/useTerraform";
-import { axiosInstance } from "../../utils/axios-interceptors";
+import ServerError from "../ServerError";
 
 export default function Learning() {
-  const { data: labs } = useGetUserAssignedLabs();
-  const { data: inProgress } = useActionStatus();
-  const { mutate: setActionStatus } = useSetActionStatus();
-  const { mutate: setLogs } = useSetLogs();
-  const { mutateAsync: applyAsync } = useApply();
-  const { mutate: extend } = useExtend();
-  const { mutate: validate } = useValidate();
+  const {
+    data: labs,
+    isLoading,
+    isFetching,
+    isError,
+  } = useGetUserAssignedLabs();
 
-  function handleApply(lab: Lab) {
-    setLogs({ isStreaming: true, logs: "" });
-    applyAsync(lab).then(() => {
-      setLogs({ isStreaming: true, logs: "continue" });
-      extend(lab);
-    });
+  if (isLoading || isFetching) {
+    return <div className="my-3 mx-20 mb-2">Loading...</div>;
   }
 
-  function handleTerraformAction(lab: Lab, action: string) {
-    setActionStatus({ inProgress: true });
-    setLogs({ isStreaming: true, logs: "" });
-    axiosInstance.post(`${action}`, lab.template);
-  }
-
-  function handleLabAction(lab: Lab, action: string) {
-    setActionStatus({ inProgress: true });
-    setLogs({ isStreaming: true, logs: "" });
-    axiosInstance.post(`labs/${action}/${lab.type}/${lab.id}`);
+  if (isError) {
+    return <ServerError />;
   }
 
   return (
@@ -48,54 +31,20 @@ export default function Learning() {
       <div className="w-7/8 grid grid-cols-3 gap-4">
         {labs &&
           labs.map((lab) => (
-            <TemplateCard key={lab.name}>
-              <div className="flex h-full flex-col justify-between gap-y-4">
-                <p className="break-all border-b border-slate-500 py-2 text-xl">
-                  {lab.name}
-                </p>
-                <p className="break-all text-sm">{lab.description}</p>
-                <div className="flex flex-auto space-x-1 border-b border-slate-500 pb-4">
-                  {lab.tags &&
-                    lab.tags.map((tag) => (
-                      <span className="border border-slate-500 px-3 text-xs">
-                        {tag}
-                      </span>
-                    ))}
-                </div>
+            <TemplateCard key={lab.id}>
+              <LabCard lab={lab}>
                 <div className="flex flex-wrap justify-end gap-1">
-                  <Button
-                    variant="primary-outline"
-                    onClick={() => handleApply(lab)}
-                    disabled={inProgress}
-                  >
+                  <ApplyButton variant="primary-outline" lab={lab}>
                     Deploy
-                  </Button>
-                  {/* <Button
-                    variant="secondary-outline"
-                    onClick={() => handleLabAction(lab, "extend")}
-                    disabled={inProgress}
-                  >
-                    Extend
-                  </Button> */}
-                  <Button
-                    variant="success-outline"
-                    onClick={() => {
-                      setLogs({ isStreaming: true, logs: "" });
-                      validate(lab);
-                    }}
-                    disabled={inProgress}
-                  >
+                  </ApplyButton>
+                  <ValidateLabButton lab={lab} variant="primary-outline">
                     Validate
-                  </Button>
-                  <Button
-                    variant="danger-outline"
-                    onClick={() => handleTerraformAction(lab, "destroy")}
-                    disabled={inProgress}
-                  >
+                  </ValidateLabButton>
+                  <DestroyButton variant="danger-outline" lab={lab}>
                     Destroy
-                  </Button>
+                  </DestroyButton>
                 </div>
-              </div>
+              </LabCard>
             </TemplateCard>
           ))}
       </div>

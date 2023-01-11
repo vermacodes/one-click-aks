@@ -32,6 +32,7 @@ export default function Templates() {
       </div>
     );
   }
+
   return (
     <div className="my-3 mx-20 mb-2 flex flex-col gap-x-4">
       {/* My Labs Secion */}

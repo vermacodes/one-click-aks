@@ -18,7 +18,7 @@ import ServerError from "../ServerError";
 
 export default function Labs() {
   const [more, setMore] = useState<string>("");
-  const { data: labs, isLoading, isError } = useSharedLabs();
+  const { data: labs, isLoading, isFetching, isError } = useSharedLabs();
 
   function handleShowMore(lab: Lab) {
     if (more !== lab.id) {
@@ -28,7 +28,7 @@ export default function Labs() {
     }
   }
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return <div className="my-3 mx-20 mb-2">Loading...</div>;
   }
 
@@ -70,7 +70,7 @@ export default function Labs() {
                         Plan
                       </PlanButton>
                       <ApplyButton variant="primary-outline" lab={lab}>
-                        Apply
+                        Deploy
                       </ApplyButton>
                       <ValidateLabButton lab={lab} variant="primary-outline">
                         Validate

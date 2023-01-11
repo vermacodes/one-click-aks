@@ -46,15 +46,6 @@ resource "azurerm_route_table" "this" {
   resource_group_name = azurerm_resource_group.this.name
 }
 
-# resource "azurerm_route" "vnetlocal" {
-#   count               = length(var.firewalls) > 0 && length(var.virtual_networks) > 0 ? 1 : 0
-#   name                = "VnetLocal"
-#   resource_group_name = azurerm_resource_group.this.name
-#   route_table_name    = azurerm_route_table.this[0].name
-#   next_hop_type       = "VnetLocal"
-#   address_prefix      = "10.1.0.0/16"
-# }
-
 resource "azurerm_route" "default" {
   count                  = length(var.firewalls) > 0 && length(var.virtual_networks) > 0 ? 1 : 0
   name                   = "Default"
@@ -65,8 +56,9 @@ resource "azurerm_route" "default" {
   next_hop_in_ip_address = "10.1.1.4" # This will always be the IP. Trust me.
 }
 
+# Associate kubernetes subnet only if outbound type is UDR
 resource "azurerm_subnet_route_table_association" "this" {
-  count          = length(var.firewalls) > 0 && length(var.virtual_networks) > 0 ? 1 : 0
+  count          = length(var.kubernetes_clusters) == 0 ? 0 : var.kubernetes_clusters[0].outbound_type == "userDefinedRouting" ? 1 : 0
   subnet_id      = azurerm_subnet.this[2].id
   route_table_id = azurerm_route_table.this[0].id
 }

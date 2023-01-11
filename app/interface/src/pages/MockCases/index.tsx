@@ -16,7 +16,7 @@ import LabBuilder from "../../modals/LabBuilder";
 
 export default function MockCases() {
   const [more, setMore] = useState<string>("");
-  const { data: labs, isLoading } = useSharedMockCases();
+  const { data: labs, isLoading, isFetching } = useSharedMockCases();
 
   function handleShowMore(lab: Lab) {
     if (more !== lab.id) {
@@ -26,7 +26,7 @@ export default function MockCases() {
     }
   }
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return (
       <div className="my-3 mx-20 mb-2 flex gap-x-4">
         <p className="text-4xl">Loading...</p>
