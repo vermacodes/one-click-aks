@@ -15,10 +15,13 @@ export default function LabCard({ lab, children }: Props) {
         {lab.name}
       </p>
       <p className="break-all text-sm">{lab.description}</p>
-      <div className="flex flex-auto space-x-1 border-b border-slate-500 pb-4">
+      <div className="flex flex-wrap gap-x-1 gap-y-1 rounded border-b border-slate-500 pb-4">
         {lab.tags &&
           lab.tags.map((tag) => (
-            <span key={tag} className="border border-slate-500 px-3 text-xs">
+            <span
+              key={tag}
+              className="rounded border border-slate-500 bg-slate-500 px-3 py-1 text-xs"
+            >
               {tag}
             </span>
           ))}
