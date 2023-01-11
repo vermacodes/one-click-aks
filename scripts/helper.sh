@@ -112,7 +112,7 @@ function get_variables_from_tf_output () {
 }
 
 function init() {
-    if [[ ${SCRIPT_MODE} != "destroy" ]]; then
+    if [[ ${SCRIPT_MODE} == "apply" ]]; then
         gap
     fi
     log "Initializing Environment"

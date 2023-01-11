@@ -21,16 +21,21 @@ export default function LoadToBuilderButton({ variant, children, lab }: Props) {
   const navigate = useNavigate();
 
   function onClickHandler() {
-    if (!inProgress && lab !== undefined) {
+    if (lab !== undefined) {
       // Apply Preference
       if (lab.template !== undefined && preference !== undefined) {
         lab.template.resourceGroup.location = preference.azureRegion;
       }
 
-      setLogs({
-        isStreaming: false,
-        logs: JSON.stringify(lab.template, null, 4),
-      });
+      // Update logs only if no action is in progress.
+      if (!inProgress) {
+        setLogs({
+          isStreaming: false,
+          logs: JSON.stringify(lab.template, null, 4),
+        });
+      }
+
+      // Set lab and navigate to builder.
       setLab(lab);
       navigate("/builder");
     }
@@ -40,7 +45,7 @@ export default function LoadToBuilderButton({ variant, children, lab }: Props) {
     <Button
       variant={variant}
       onClick={onClickHandler}
-      disabled={inProgress || lab === undefined}
+      disabled={lab === undefined}
     >
       {children}
     </Button>
