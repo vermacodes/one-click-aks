@@ -66,14 +66,14 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
             <li>
               <Link to={"/templates"}>
                 <button className="border-b-2 border-transparent py-1 hover:border-b-2 hover:border-b-sky-400 hover:text-sky-400">
-                  Labs
+                  Templates
                 </button>
               </Link>
             </li>
             <li>
               <Link to={"/learning"}>
                 <button className="border-b-2 border-transparent py-1 hover:border-b-2 hover:border-b-sky-400 hover:text-sky-400">
-                  Learn
+                  Learning
                 </button>
               </Link>
             </li>
@@ -82,7 +82,7 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
                 <li>
                   <Link to={"/labs"}>
                     <button className="border-b-2 border-transparent py-1 hover:border-b-2 hover:border-b-sky-400 hover:text-sky-400">
-                      Paths
+                      Labs
                     </button>
                   </Link>
                 </li>
