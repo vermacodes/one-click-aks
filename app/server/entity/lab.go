@@ -123,6 +123,8 @@ type LabRepository interface {
 	SetLabInRedis(string) error
 	DeleteLabFromRedis() error
 
+	GetExtendScriptTemplate() (string, error)
+
 	// Public labs
 	GetEnumerationResults(typeOfLab string) (EnumerationResults, error)
 	GetLab(url string) (LabType, error)
