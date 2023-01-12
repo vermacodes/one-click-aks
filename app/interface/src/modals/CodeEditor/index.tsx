@@ -1,11 +1,12 @@
 import Editor from "@monaco-editor/react";
 import { useEffect, useState } from "react";
-import { MdClose } from "react-icons/md";
 
 import Button from "../../components/Button";
 import { ButtonVariant, Lab } from "../../dataStructures";
-import { useCreateLab } from "../../hooks/useBlobs";
+import { useActionStatus } from "../../hooks/useActionStatus";
 import { useLab, useSetLab } from "../../hooks/useLab";
+import { useSetLogs } from "../../hooks/useLogs";
+import { useExtend } from "../../hooks/useTerraform";
 
 type Props = {
   children?: React.ReactNode;
@@ -34,13 +35,11 @@ type ModalProps = {
 
 function Modal({ _lab, showModal, setShowModal }: ModalProps) {
   const [_extendScript, setExtendScript] = useState<string>();
-  const {
-    data: lab,
-    isLoading: labIsLoading,
-    isFetching: labIsFetching,
-  } = useLab();
+  const { data: lab } = useLab();
   const { mutate: setLab } = useSetLab();
-  const { mutate: createLab, isLoading: creatingLab } = useCreateLab();
+  const { mutate: extend } = useExtend();
+  const { data: inProgress } = useActionStatus();
+  const { mutate: setLogs } = useSetLogs();
 
   useEffect(() => {
     if (lab !== undefined) {
@@ -63,23 +62,71 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
         }}
       >
         <div className="w-100 flex justify-between border-b border-slate-500 pb-1">
-          <h1 className="flex items-center text-xl">Code Editor</h1>
-          <button
-            onClick={() => {
-              setShowModal(false);
-              _extendScript && setLab({ ...lab, extendScript: _extendScript });
-            }}
-            className="flex items-center rounded border border-slate-100 px-1 py-1 text-lg hover:border-sky-500 hover:text-sky-500 dark:border-slate-900 dark:hover:border-sky-500"
-          >
-            Save & Close
-          </button>
+          <h1 className="flex items-center text-xl">Extension Script</h1>
+          <div className="flex gap-x-2">
+            <Button
+              variant="secondary-outline"
+              disabled={inProgress}
+              onClick={() => {
+                // Save
+                _extendScript &&
+                  setLab({ ...lab, extendScript: _extendScript });
+
+                // Close Modal.
+                setShowModal(false);
+
+                // Run
+                if (lab !== undefined && !inProgress) {
+                  setLogs({ isStreaming: true, logs: "" });
+                  extend(lab);
+                }
+              }}
+            >
+              Run in Extend Mode
+            </Button>
+            <Button
+              variant="secondary-outline"
+              onClick={() => {
+                setExtendScript(lab.extendScript);
+              }}
+            >
+              Reset
+            </Button>
+            <Button
+              variant="secondary-outline"
+              onClick={() => {
+                _extendScript &&
+                  setLab({ ...lab, extendScript: _extendScript });
+              }}
+            >
+              Save
+            </Button>
+            <Button
+              variant="danger-outline"
+              onClick={() => {
+                setShowModal(false);
+              }}
+            >
+              Close
+            </Button>
+            <Button
+              onClick={() => {
+                setShowModal(false);
+                _extendScript &&
+                  setLab({ ...lab, extendScript: _extendScript });
+              }}
+              variant="primary-outline"
+            >
+              Save & Close
+            </Button>
+          </div>
         </div>
         <div className={`my-1 h-[95%] space-y-1`}>
           <Editor
             height={`100%`}
             width={`100%`}
             language={"shell"}
-            value={atob(lab.extendScript)}
+            value={_extendScript && atob(_extendScript)}
             theme="vs-dark"
             defaultValue="// some comment"
             onChange={(value) => {

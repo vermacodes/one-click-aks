@@ -32,6 +32,7 @@ export default function ApplyButton({ variant, children, lab }: Props) {
           extend(lab);
         }
       });
+      //extend(lab);
     }
   }
 
