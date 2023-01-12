@@ -123,3 +123,7 @@ function init() {
     # changeToTerraformDirectory
     get_kubectl
 }
+
+# Adding sources
+source ${ROOT_DIR}/scripts/aro_shared_functions.sh
+source ${ROOT_DIR}/scripts/shared_functions.sh
