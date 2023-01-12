@@ -29,7 +29,11 @@ export default function Labs() {
   }
 
   if (isLoading || isFetching) {
-    return <div className="my-3 mx-20 mb-2">Loading...</div>;
+    return (
+      <div className="my-3 mx-20 mb-2">
+        <p className="text-4xl">Loading...</p>
+      </div>
+    );
   }
 
   if (isError) {
