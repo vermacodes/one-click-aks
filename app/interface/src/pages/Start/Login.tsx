@@ -2,6 +2,7 @@ import { useState } from "react";
 import Button from "../../components/Button";
 import Terminal from "../../components/Terminal";
 import { useLogin, useLoginStatus } from "../../hooks/useAccount";
+import { useActionStatus } from "../../hooks/useActionStatus";
 import { useLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
 
@@ -10,14 +11,21 @@ type Props = { section: string; setSection(args: string): void };
 export default function Login({ section, setSection }: Props) {
   const [showTerminal, setShowTerminal] = useState<boolean>(false);
   const loginStatus = useLoginStatus();
-  const { mutate: login, isLoading: loginLoading } = useLogin();
+  const { data: inProgress } = useActionStatus();
+  const { mutateAsync: loginAsync, isLoading: loginLoading } = useLogin();
   const { mutate: setLogs } = useSetLogs();
   const { data: lab } = useLab();
 
   function handleLogin() {
-    setShowTerminal(true);
-    setLogs({ isStreaming: true, logs: "" });
-    login();
+    if (!inProgress) {
+      setShowTerminal(true);
+      setLogs({ isStreaming: true, logs: "" });
+      loginAsync().then((response) => {
+        if (response.status !== undefined) {
+          loginStatus.refetch();
+        }
+      });
+    }
   }
 
   const authenticated = (
@@ -38,10 +46,12 @@ export default function Login({ section, setSection }: Props) {
       <div className="flex w-40 flex-col justify-center">
         <Button
           variant="success"
-          disabled={loginLoading || loginStatus.isFetching}
+          disabled={inProgress || loginLoading || loginStatus.isFetching}
           onClick={() => handleLogin()}
         >
-          {loginLoading || loginStatus.isFetching ? "Please wait..." : "Login"}
+          {inProgress || loginLoading || loginStatus.isFetching
+            ? "Please wait..."
+            : "Login"}
         </Button>
       </div>
       <div className="w-full">
