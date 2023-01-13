@@ -38,9 +38,12 @@ export function useLoginStatus() {
 
 export function useLogin() {
   const queryClient = useQueryClient();
-  return useQuery("login", login, {
-    select: (data) => {
-      return data.data;
+  return useMutation(login, {
+    onMutate: async () => {
+      await queryClient.cancelQueries("get-action-status");
+      setTimeout(() => {
+        queryClient.invalidateQueries("get-action-status");
+      }, 100);
     },
     onSuccess: () => {
       queryClient.invalidateQueries("login-status");
@@ -49,7 +52,6 @@ export function useLogin() {
       queryClient.invalidateQueries("privilege");
       queryClient.invalidateQueries("get-lab");
     },
-    enabled: false,
   });
 }
 

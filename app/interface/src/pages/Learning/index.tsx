@@ -5,15 +5,16 @@ import Terminal from "../../components/Terminal";
 import ApplyButton from "../../components/Terraform/ApplyButton";
 import DestroyButton from "../../components/Terraform/DestroyButton";
 import { useGetUserAssignedLabs } from "../../hooks/useAssignment";
+import { useServerStatus } from "../../hooks/useServerStatus";
 import ServerError from "../ServerError";
 
 export default function Learning() {
-  const {
-    data: labs,
-    isLoading,
-    isFetching,
-    isError,
-  } = useGetUserAssignedLabs();
+  const { data: labs, isLoading, isFetching } = useGetUserAssignedLabs();
+  const { data: serverStatus } = useServerStatus();
+
+  if (serverStatus?.status !== "OK") {
+    return <ServerError />;
+  }
 
   if (isLoading || isFetching) {
     return (
@@ -21,10 +22,6 @@ export default function Learning() {
         <p className="text-4xl">Loading...</p>
       </div>
     );
-  }
-
-  if (isError) {
-    return <ServerError />;
   }
 
   return (

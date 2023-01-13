@@ -1,17 +1,13 @@
 import { useState } from "react";
 import AzureSubscription from "../../components/AzureSubscription";
 import Button from "../../components/Button";
-import Terminal from "../../components/Terminal";
-import { useLogin, useLoginStatus } from "../../hooks/useAccount";
-import { useSetLogs } from "../../hooks/useLogs";
+import { useLoginStatus } from "../../hooks/useAccount";
 
 type Props = { section: string; setSection(args: string): void };
 
 export default function Subscription({ section, setSection }: Props) {
   const [subscriptionMenu, setSubscriptionMenu] = useState<boolean>(false);
   const loginStatus = useLoginStatus();
-  const { refetch: login, isLoading: loginLoading } = useLogin();
-  const { mutate: setLogs } = useSetLogs();
 
   return (
     <section className={`${section !== "subscription" && "hidden"} `}>

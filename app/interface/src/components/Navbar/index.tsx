@@ -1,17 +1,11 @@
 import { useState } from "react";
-import { FaServer, FaSun, FaMoon, FaCog, FaUserNinja } from "react-icons/fa";
-import Settings from "../../modals/Settings";
-import { Link, useNavigate } from "react-router-dom";
+import { FaCog, FaMoon, FaServer, FaSun } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { useGetPriviledge } from "../../hooks/useAccount";
 import { useServerStatus } from "../../hooks/useServerStatus";
-import {
-  useAccount,
-  useGetPriviledge,
-  useLogin,
-  useLoginStatus,
-} from "../../hooks/useAccount";
-import { useGetStorageAccount } from "../../hooks/useStorageAccount";
-import { useSetLogs } from "../../hooks/useLogs";
+import Settings from "../../modals/Settings";
 import Terraform from "../../modals/Terraform";
+import LoginButton from "../Authentication/LoginButton";
 import CurrentTerraformWorkspace from "../CurrentTerraformWorkspace";
 
 type NavbarProps = {
@@ -21,31 +15,11 @@ type NavbarProps = {
 
 export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
   const [showSettingsModal, setShowSettingsModal] = useState<boolean>(false);
-  const [showUserName, setShowUserName] = useState<boolean>(false);
   const [showServerStatus, setShowServerStatus] = useState<boolean>(false);
 
-  const {
-    data: serverStatus,
-    refetch: getServerStatus,
-    isError,
-  } = useServerStatus();
-  const {
-    data: isLogin,
-    refetch: getLoginStatus,
-    isError: loginError,
-  } = useLoginStatus();
-  const { refetch: login } = useLogin();
-  const { data: accounts, isLoading: accountsLoading } = useAccount();
-  const { data: storageAccount } = useGetStorageAccount();
-  const navigate = useNavigate();
-  const { mutate: setLogs } = useSetLogs();
+  const { data: serverStatus, refetch: getServerStatus } = useServerStatus();
   const { data: priviledge } = useGetPriviledge();
 
-  function handleLogin() {
-    navigate("/builder");
-    setLogs({ isStreaming: true, logs: "" });
-    login();
-  }
   return (
     <nav className="z-100 sticky top-0 mt-0 mb-4 w-full bg-slate-100 dark:bg-slate-900">
       <div className="flex justify-between border-b py-4 px-20 hover:shadow hover:shadow-slate-500 dark:border-b-slate-700">
@@ -151,57 +125,14 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
             </li>
             <li>
               <button
-                className={`items-center justify-center border-b-2 border-transparent py-1 text-2xl hover:border-b-sky-400 hover:text-sky-400 ${
-                  isLogin &&
-                  storageAccount &&
-                  storageAccount.storageAccount.name === "" &&
-                  "animate-bounced"
-                }`}
+                className={`items-center justify-center border-b-2 border-transparent py-1 text-2xl hover:border-b-sky-400 hover:text-sky-400`}
                 onClick={() => setShowSettingsModal(!showSettingsModal)}
               >
                 <FaCog />
               </button>
             </li>
             <li>
-              {isLogin && !loginError ? (
-                <div className="relative inline-block text-left">
-                  <button
-                    className="items-center justify-center border-b-2 border-transparent py-1 text-2xl hover:border-b-sky-400 hover:text-sky-400"
-                    onMouseEnter={() => setShowUserName(true)}
-                    onMouseLeave={() => setShowUserName(false)}
-                  >
-                    <FaUserNinja />
-                  </button>
-                  <div
-                    className={`absolute right-0 z-10 mt-1 w-56 origin-top-right rounded bg-slate-200 p-3 text-slate-900 shadow dark:bg-slate-900 dark:text-slate-100 dark:shadow-slate-300 ${
-                      !showUserName && "hidden"
-                    }`}
-                  >
-                    {accountsLoading ? (
-                      <p>Loading...</p>
-                    ) : (
-                      <>
-                        {accounts?.map((account) => (
-                          <div key={account.id}>
-                            {account.isDefault === true && (
-                              <p>{account.user.name}</p>
-                            )}
-                          </div>
-                        ))}
-                      </>
-                    )}
-                  </div>
-                </div>
-              ) : (
-                <button
-                  className={`${
-                    !isError && "animate-bounced"
-                  } text-bold rounded-2xl bg-sky-500 py-1 px-5 text-white hover:bg-sky-700`}
-                  onClick={() => handleLogin()}
-                >
-                  Login
-                </button>
-              )}
+              <LoginButton />
             </li>
           </ul>
         </div>

@@ -5,7 +5,9 @@ import LoadToBuilderButton from "../../components/Lab/LoadToBuilderButton";
 import TemplateCard from "../../components/TemplateCard";
 import { Lab } from "../../dataStructures";
 import { useSharedTemplates, useTemplates } from "../../hooks/useBlobs";
+import { useServerStatus } from "../../hooks/useServerStatus";
 import LabBuilder from "../../modals/LabBuilder";
+import ServerError from "../ServerError";
 
 export default function Templates() {
   const {
@@ -19,6 +21,12 @@ export default function Templates() {
     isLoading: myLabsLoading,
     isFetching: myLabsFetching,
   } = useTemplates();
+
+  const { data: serverStatus } = useServerStatus();
+
+  if (serverStatus?.status !== "OK") {
+    return <ServerError />;
+  }
 
   if (
     myLabsLoading ||

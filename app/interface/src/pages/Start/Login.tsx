@@ -10,7 +10,7 @@ type Props = { section: string; setSection(args: string): void };
 export default function Login({ section, setSection }: Props) {
   const [showTerminal, setShowTerminal] = useState<boolean>(false);
   const loginStatus = useLoginStatus();
-  const { refetch: login, isLoading: loginLoading } = useLogin();
+  const { mutate: login, isLoading: loginLoading } = useLogin();
   const { mutate: setLogs } = useSetLogs();
   const { data: lab } = useLab();
 

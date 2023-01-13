@@ -3,6 +3,7 @@ package service
 import (
 	"bufio"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"time"
@@ -26,12 +27,35 @@ func NewAuthService(authRepository entity.AuthRepository, logStreamService entit
 }
 
 func (a *authService) Login() (entity.LoginStatus, error) {
+
 	loginStatus := entity.LoginStatus{}
 	cmd, rPipe, wPipe, err := a.authRepository.Login()
 	if err != nil {
 		slog.Error("not able to run login command", err)
 		return loginStatus, err
 	}
+
+	// Set action status to start.
+	actionStaus, err := a.actionStatusService.GetActionStatus()
+	if err != nil {
+		slog.Error("not able to get current action status", err)
+
+		// Defaulting to no action
+		actionStaus := entity.ActionStatus{
+			InProgress: false,
+		}
+		if err := a.actionStatusService.SetActionStatus(actionStaus); err != nil {
+			slog.Error("not able to set default action status.", err)
+		}
+	}
+
+	if actionStaus.InProgress {
+		slog.Error("Error", errors.New("action already in progress"))
+		return loginStatus, errors.New("action already in progress")
+	}
+
+	actionStaus.InProgress = true
+	a.actionStatusService.SetActionStatus(actionStaus)
 
 	// GO routine that takes care of running command and moving logs to redis.
 	go func(input io.ReadCloser) {
@@ -57,7 +81,7 @@ func (a *authService) Login() (entity.LoginStatus, error) {
 		a.logStreamService.EndLogStream()
 	}()
 
-	actionStaus := entity.ActionStatus{}
+	// End action satus.
 	actionStaus.InProgress = false
 	a.actionStatusService.SetActionStatus(actionStaus)
 
