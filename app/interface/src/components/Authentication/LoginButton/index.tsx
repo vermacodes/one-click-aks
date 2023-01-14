@@ -6,7 +6,10 @@ import {
   useLogin,
   useLoginStatus,
 } from "../../../hooks/useAccount";
-import { useActionStatus } from "../../../hooks/useActionStatus";
+import {
+  useActionStatus,
+  useSetActionStatus,
+} from "../../../hooks/useActionStatus";
 import { useSetLogs } from "../../../hooks/useLogs";
 import { useServerStatus } from "../../../hooks/useServerStatus";
 import Button from "../../Button";
@@ -25,6 +28,7 @@ export default function LoginButton({}: Props) {
   const { mutateAsync: loginAsync } = useLogin();
   const { data: accounts, isLoading: accountsLoading } = useAccount();
   const { mutate: setLogs } = useSetLogs();
+  const setActionStatus = useSetActionStatus();
 
   const navigate = useNavigate();
 
@@ -32,11 +36,22 @@ export default function LoginButton({}: Props) {
     if (!inProgress) {
       navigate("/builder");
       setLogs({ isStreaming: true, logs: "" });
-      loginAsync().then((response) => {
-        if (response.status !== undefined) {
-          getLoginStatus();
-        }
-      });
+      loginAsync()
+        .then((response) => {
+          if (response.status !== undefined) {
+            getLoginStatus();
+          }
+        })
+        // Finally End action status and log stream.
+        .finally(() => {
+          setActionStatus
+            .mutateAsync({
+              inProgress: false,
+            })
+            .finally(() => {
+              setLogs({ isStreaming: true, logs: "" });
+            });
+        });
     }
   }
 
