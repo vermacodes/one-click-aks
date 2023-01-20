@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const axiosInstance = axios.create({
-  baseURL: "http://localhost:8080/",
+  baseURL: getBaseUrl(),
 });
 
 axiosInstance.interceptors.response.use(
@@ -15,3 +15,12 @@ axiosInstance.interceptors.response.use(
     return error;
   }
 );
+
+function getBaseUrl(): string {
+  const baseUrlFromLocalStorage = localStorage.getItem("baseUrl");
+  if (baseUrlFromLocalStorage != undefined && baseUrlFromLocalStorage !== "") {
+    return baseUrlFromLocalStorage;
+  }
+
+  return "http://localhost:8080/";
+}

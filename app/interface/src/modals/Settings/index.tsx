@@ -2,6 +2,7 @@ import { useState } from "react";
 import { MdClose } from "react-icons/md";
 import AzureRegion from "../../components/AzureRegion";
 import AzureSubscription from "../../components/AzureSubscription";
+import ServerEndpoint from "../../components/Config/ServerEndpoint";
 import EndLogStream from "../../components/EndLogStream";
 import ResetActionStatus from "../../components/ResetActionStatus";
 import StorageAccount from "../../components/StorageAccount";
@@ -63,6 +64,7 @@ export default function Settings({ showModal, setShowModal }: SettingsProps) {
 
         <div className="flex">
           <ResetActionStatus />
+          <ServerEndpoint />
         </div>
       </div>
     </div>
