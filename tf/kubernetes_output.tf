@@ -18,7 +18,26 @@ output "cluster_msi_id" {
   description = "The Principal ID associated with this Managed Service Identity"
 }
 
+output "cluster_msi_client_id" {
+  value       = length(var.kubernetes_clusters) == 0 ? "" : azurerm_user_assigned_identity.ccp_identity[0].client_id
+  description = "The Principal ID associated with this Managed Service Identity"
+}
+
+output "cluster_msi_principal_id" {
+  value       = length(var.kubernetes_clusters) == 0 ? "" : azurerm_user_assigned_identity.ccp_identity[0].principal_id
+  description = "The Principal ID associated with this Managed Service Identity"
+}
+
 output "kubelet_msi_id" {
   value       = length(var.kubernetes_clusters) == 0 ? "" : azurerm_user_assigned_identity.kubelet_identity[0].id
+  description = "ID of User assigned Identity for kubelet"
+}
+
+output "kubelet_msi_client_id" {
+  value       = length(var.kubernetes_clusters) == 0 ? "" : azurerm_user_assigned_identity.kubelet_identity[0].client_id
+  description = "ID of User assigned Identity for kubelet"
+}
+output "kubelet_msi_principal_id" {
+  value       = length(var.kubernetes_clusters) == 0 ? "" : azurerm_user_assigned_identity.kubelet_identity[0].principal_id
   description = "ID of User assigned Identity for kubelet"
 }
