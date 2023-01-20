@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaCheck, FaEdit } from "react-icons/fa";
+import { FaCheck, FaEdit, FaTimes } from "react-icons/fa";
 
 type Props = {};
 
@@ -21,11 +21,16 @@ export default function ServerEndpoint({}: Props) {
   return (
     <div className="flex w-60 flex-col gap-2 p-2">
       <div
-        className="flex h-8 items-center justify-between rounded border border-slate-500"
+        className={`${
+          showEditButton ? "bg-rose-500 text-slate-100" : ""
+        } flex h-8 items-center justify-between rounded border-2 border-rose-500 text-rose-500`}
         onMouseEnter={() => setShowEditButton(true)}
         onMouseLeave={() => setShowEditButton(false)}
       >
-        <p className={`${edit && "hidden"} items-center bg-inherit px-1`}>
+        <p
+          className={`${edit && "hidden"} items-center bg-inherit px-1`}
+          onClick={() => setEdit(true)}
+        >
           {baseUrl}
         </p>
         <input
@@ -36,13 +41,15 @@ export default function ServerEndpoint({}: Props) {
           onChange={(event) => setBaseUrl(event.target.value)}
         />
         <button
-          className={`${!showEditButton && "hidden"} ${edit && "hidden"} px-1`}
+          className={`${!showEditButton && "hidden"} ${
+            edit && "hidden"
+          } px-1 text-slate-100`}
           onClick={() => setEdit(true)}
         >
           <FaEdit />
         </button>
         <button
-          className={`${!edit && "hidden"} px-1`}
+          className={`${!edit && "hidden"} px-1 text-green-500`}
           onClick={() => {
             localStorage.setItem("baseUrl", baseUrl);
             setEdit(false);
@@ -51,7 +58,21 @@ export default function ServerEndpoint({}: Props) {
         >
           <FaCheck />
         </button>
+        <button
+          className={`${
+            !edit && "hidden"
+          } px-1 text-slate-900 dark:text-slate-100`}
+          onClick={() => {
+            setEdit(false);
+          }}
+        >
+          <FaTimes />
+        </button>
       </div>
+      <p className="text-xs">
+        Server Endpoint. You probably dont want to edit this unless you know
+        what you are doing. But, if you know, you know. Go ahead.
+      </p>
     </div>
   );
 }
