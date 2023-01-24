@@ -58,7 +58,11 @@ func main() {
 
 	actionStatusRepository := repository.NewActionStatusRepository()
 	actionStatusService := service.NewActionStatusService(actionStatusRepository)
-	handler.NewActionStatusHanlder(*router, actionStatusService)
+	handler.NewActionStatusHanlder(router, actionStatusService)
+
+	redisRepository := repository.NewRedisRepository()
+	redisService := service.NewRedisService(redisRepository)
+	handler.NewRedisHandler(router, redisService)
 
 	authRepository := repository.NewAuthRepository()
 	authService := service.NewAuthService(authRepository, logStreamService, actionStatusService)

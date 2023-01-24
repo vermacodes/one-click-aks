@@ -5,6 +5,7 @@ import AzureSubscription from "../../components/AzureSubscription";
 import ServerEndpoint from "../../components/Config/ServerEndpoint";
 import EndLogStream from "../../components/EndLogStream";
 import ResetActionStatus from "../../components/ResetActionStatus";
+import ResetServerCache from "../../components/ResetServerCache";
 import StorageAccount from "../../components/StorageAccount";
 import TfInit from "../../components/TfInit";
 import TfWorkspace from "../../components/TfWorkspace";
@@ -64,6 +65,7 @@ export default function Settings({ showModal, setShowModal }: SettingsProps) {
 
         <div className="flex">
           <ResetActionStatus />
+          <ResetServerCache />
           <ServerEndpoint />
         </div>
       </div>

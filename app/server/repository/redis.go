@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/go-redis/redis/v9"
+	"github.com/vermacodes/one-click-aks/app/server/entity"
 )
 
 var ctx = context.Background()
@@ -14,6 +15,17 @@ func newRedisClient() *redis.Client {
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
+}
+
+type RedisReposiroty struct{}
+
+func NewRedisRepository() entity.RedisReposiroty {
+	return &RedisReposiroty{}
+}
+
+func (r *RedisReposiroty) ResetServerCache() error {
+	rdb := newRedisClient()
+	return rdb.FlushAll(ctx).Err()
 }
 
 func getRedis(key string) (string, error) {
