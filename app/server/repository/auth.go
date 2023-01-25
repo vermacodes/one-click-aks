@@ -81,11 +81,11 @@ func (a *authRepository) DeleteAccountsFromRedis() error {
 }
 
 func (a *authRepository) IsAdmin(user string) (bool, error) {
-	return helperContains([]string{"ashisverma@microsoft.com", "evalan@microsoft.com", "amargherio@microsoft.com", "eric.lucier@microsoft.com", "mnallago@microsoft.com", "akathimi@microsoft.com"}, user)
+	return helperContains([]string{"ashisverma@microsoft.com", "evalan@microsoft.com", "amargherio@microsoft.com", "ericlucier@microsoft.com", "mnallago@microsoft.com", "akathimi@microsoft.com"}, user)
 }
 
 func (a *authRepository) IsMentor(user string) (bool, error) {
-	return helperContains([]string{"ashisverma@microsoft.com", "evalan@microsoft.com", "amargherio@microsoft.com", "eric.lucier@microsoft.com", "mnallago@microsoft.com", "akathimi@microsoft.com"}, user)
+	return helperContains([]string{"ashisverma@microsoft.com", "evalan@microsoft.com", "amargherio@microsoft.com", "ericlucier@microsoft.com", "mnallago@microsoft.com", "akathimi@microsoft.com"}, user)
 }
 
 func (a *authRepository) DeleteAllCache() error {

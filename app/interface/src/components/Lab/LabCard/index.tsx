@@ -14,7 +14,7 @@ export default function LabCard({ lab, children }: Props) {
       <p className="break-all border-b border-slate-500 py-2 text-xl">
         {lab.name}
       </p>
-      <p className="break-all text-sm">{lab.description}</p>
+      <p className="whitespace-pre-line text-sm">{lab.description}</p>
       <div className="flex flex-wrap gap-x-1 gap-y-1 rounded border-b border-slate-500 pb-4">
         {lab.tags &&
           lab.tags.map((tag) => (
