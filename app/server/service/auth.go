@@ -2,13 +2,17 @@ package service
 
 import (
 	"bufio"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
+	"os"
 	"time"
 
+	"github.com/Azure/azure-sdk-for-go/sdk/data/aztables"
 	"github.com/vermacodes/one-click-aks/app/server/entity"
+	"github.com/vermacodes/one-click-aks/app/server/helper"
 	"golang.org/x/exp/slog"
 )
 
@@ -90,6 +94,8 @@ func (a *authService) Login() (entity.LoginStatus, error) {
 	if err := a.authRepository.DeleteAllCache(); err != nil {
 		slog.Error("not able to delete all cache from redis", err)
 	}
+
+	a.LoginRecord()
 
 	loginStatus.IsLoggedIn = true
 	return loginStatus, nil
@@ -281,4 +287,39 @@ func helperIsTokenValid(accessToken entity.AccessToken) (entity.LoginStatus, err
 
 	loginStatus.IsLoggedIn = false
 	return loginStatus, nil
+}
+
+func (a *authService) LoginRecord() {
+
+	// sasURL := ""
+	sasURL := os.Getenv("SAS_URL")
+	serviceClient, err := aztables.NewServiceClientWithNoCredential(sasURL, nil)
+	if err != nil {
+		slog.Error("error get client", err)
+	}
+
+	client := serviceClient.NewClient("LoginRecords")
+
+	account, err := a.GetAccount()
+	if err != nil {
+		slog.Error("Not able to get Account", err)
+		return
+	}
+
+	loginRecord := entity.LoginRecord{
+		Entity: aztables.Entity{
+			PartitionKey: account.User.Name,
+			RowKey:       helper.Generate(32),
+		},
+	}
+
+	marshalled, err := json.Marshal(loginRecord)
+	if err != nil {
+		slog.Error("error occurred marshalling the login record.", err)
+	}
+
+	_, err = client.AddEntity(context.TODO(), marshalled, nil)
+	if err != nil {
+		slog.Error("error adding login record ", err)
+	}
 }
