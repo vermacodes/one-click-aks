@@ -19,12 +19,15 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
 
   const { data: serverStatus, refetch: getServerStatus } = useServerStatus();
   const { data: priviledge } = useGetPriviledge();
+  const actLabsLogoImage = new URL("/azure_container_apps.png", import.meta.url)
+    .href;
 
   return (
     <nav className="z-100 sticky top-0 mt-0 mb-4 w-full bg-slate-100 dark:bg-slate-900">
       <div className="flex justify-between border-b py-4 px-20 hover:shadow hover:shadow-slate-500 dark:border-b-slate-700">
         <Link to={"/"}>
-          <h1 className="border-b-2 border-transparent text-2xl font-bold hover:border-b-sky-400 hover:text-sky-400">
+          <h1 className="flex border-b-2 border-transparent text-2xl font-bold hover:border-b-sky-400 hover:text-sky-400">
+            <img src={actLabsLogoImage} className="mr-2 h-8 w-8"></img>
             ACT Labs
           </h1>
         </Link>
