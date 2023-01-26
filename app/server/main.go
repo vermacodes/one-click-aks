@@ -56,6 +56,9 @@ func main() {
 	logStreamService := service.NewLogStreamService(logStreamRepository)
 	handler.NewLogStreamHandler(router, logStreamService)
 
+	loggingRespoitory := repository.NewLoggingRepository()
+	loggingService := service.NewLoggingService(loggingRespoitory)
+
 	actionStatusRepository := repository.NewActionStatusRepository()
 	actionStatusService := service.NewActionStatusService(actionStatusRepository)
 	handler.NewActionStatusHanlder(router, actionStatusService)
@@ -65,7 +68,7 @@ func main() {
 	handler.NewRedisHandler(router, redisService)
 
 	authRepository := repository.NewAuthRepository()
-	authService := service.NewAuthService(authRepository, logStreamService, actionStatusService)
+	authService := service.NewAuthService(authRepository, logStreamService, actionStatusService, loggingService)
 	handler.NewLoginHandler(router, authService)
 
 	authRouter.Use(middleware.AuthRequired(authService))

@@ -3,17 +3,11 @@ package entity
 import (
 	"os"
 	"os/exec"
-
-	"github.com/Azure/azure-sdk-for-go/sdk/data/aztables"
 )
 
 type User struct {
 	Name string `json:"name"`
 	Type string `json:"type"`
-}
-
-type LoginRecord struct {
-	aztables.Entity
 }
 
 type Tenant struct {
@@ -61,7 +55,6 @@ type AuthService interface {
 	GetAccounts() ([]Account, error)
 	SetAccount(account Account) error
 	GetPriveledges() (Priviledge, error)
-	LoginRecord()
 }
 
 type AuthRepository interface {

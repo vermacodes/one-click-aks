@@ -4,8 +4,13 @@
 
 export ROOT_DIR=$(pwd)
 
-cd app/server
-go run . &
+if [[ "${SAS_URL}" == "" ]]; then
+    echo "SAS URL missing"
+    exit 1
+fi
 
-cd ../interface
-npm run dev
+cd ./app/server
+
+go build -ldflags "-X 'github.com/vermacodes/one-click-aks/app/server/entity.SasUrl=$SAS_URL'"
+
+redis-cli flushall && export LOG_LEVEL="4" && export PORT="8081" && ./server

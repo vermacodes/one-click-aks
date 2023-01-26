@@ -11,7 +11,12 @@ rm .terraform.lock.hcl
 
 cd ../app/server
 
-go build
+if [[ "${SAS_URL}" == "" ]]; then
+    echo "SAS URL missing"
+    exit 1
+fi
+
+go build -ldflags "-X 'github.com/vermacodes/one-click-aks/app/server/entity.SasUrl=$SAS_URL'"
 
 cd ../..
 
