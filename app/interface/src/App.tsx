@@ -15,7 +15,7 @@ function App() {
 
   return (
     <div
-      className={`min-h-screen w-full pb-2 scrollbar scrollbar-track-sky-500 ${
+      className={`min-h-screen w-full min-w-[1000px] pb-2 scrollbar scrollbar-track-sky-500 ${
         darkMode
           ? " dark bg-slate-900 text-slate-200"
           : " bg-slate-100 text-slate-900"
