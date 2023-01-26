@@ -38,7 +38,7 @@ export default function CreateAssignment({ lab }: Props) {
     createAssignment(assignment);
   }
   return (
-    <div className="flex justify-start gap-y-2">
+    <div className="mr-2 flex justify-start gap-y-2">
       <input
         className="mr-4 w-full rounded border border-slate-500 bg-inherit px-2 py-1"
         placeholder="Enter user alias to assign lab"

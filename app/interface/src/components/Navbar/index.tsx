@@ -19,8 +19,7 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
 
   const { data: serverStatus, refetch: getServerStatus } = useServerStatus();
   const { data: priviledge } = useGetPriviledge();
-  const actLabsLogoImage = new URL("/azure_container_apps.png", import.meta.url)
-    .href;
+  const actLabsLogoImage = new URL("/actlabs_logo.svg", import.meta.url).href;
 
   return (
     <nav className="z-100 sticky top-0 mt-0 mb-4 w-full bg-slate-100 dark:bg-slate-900">
