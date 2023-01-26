@@ -1,0 +1,117 @@
+package repository
+
+import (
+	"context"
+	"encoding/json"
+
+	"github.com/Azure/azure-sdk-for-go/sdk/data/aztables"
+	"github.com/vermacodes/one-click-aks/app/server/entity"
+	"github.com/vermacodes/one-click-aks/app/server/helper"
+	"golang.org/x/exp/slog"
+)
+
+type loggingRespoitory struct{}
+
+func NewLoggingRepository() entity.LoggingRespoitory {
+	return &loggingRespoitory{}
+}
+
+func getServiceClient() *aztables.ServiceClient {
+	serviceClient, err := aztables.NewServiceClientWithNoCredential(entity.SasUrl, nil)
+	if err != nil {
+		slog.Error("error get client", err)
+	}
+
+	return serviceClient
+}
+
+func (l *loggingRespoitory) LoginRecord(user entity.User) error {
+	client := getServiceClient().NewClient("LoginRecords")
+
+	loginRecord := entity.LoginRecord{
+		Entity: aztables.Entity{
+			PartitionKey: user.Name,
+			RowKey:       helper.Generate(32),
+		},
+	}
+
+	marshalled, err := json.Marshal(loginRecord)
+	if err != nil {
+		slog.Error("error occurred marshalling the login record.", err)
+		return err
+	}
+
+	_, err = client.AddEntity(context.TODO(), marshalled, nil)
+	if err != nil {
+		slog.Error("error adding login record ", err)
+		return err
+	}
+
+	return nil
+}
+
+func (l *loggingRespoitory) PlanRecord(user entity.User, lab entity.LabType) error {
+
+	client := getServiceClient().NewClient("Plans")
+
+	marshalledLab, err := json.Marshal(lab)
+	if err != nil {
+		slog.Error("unable to marshal lab", err)
+		return err
+	}
+
+	planRecord := entity.PlanRecord{
+		Entity: aztables.Entity{
+			PartitionKey: user.Name,
+			RowKey:       helper.Generate(32),
+		},
+		Lab: string(marshalledLab),
+	}
+
+	marshalled, err := json.Marshal(planRecord)
+	if err != nil {
+		slog.Error("error occurred marshalling the plan record.", err)
+		return err
+	}
+
+	_, err = client.AddEntity(context.TODO(), marshalled, nil)
+	if err != nil {
+		slog.Error("error adding plan record ", err)
+		return err
+	}
+
+	return nil
+}
+
+func (l *loggingRespoitory) DeploymentRecord(user entity.User, lab entity.LabType) error {
+
+	client := getServiceClient().NewClient("Deployments")
+
+	marshalledLab, err := json.Marshal(lab)
+	if err != nil {
+		slog.Error("unable to marshal lab", err)
+		return err
+	}
+
+	deploymentRecord := entity.DeploymentRecord{
+		Entity: aztables.Entity{
+			PartitionKey: user.Name,
+			RowKey:       helper.Generate(32),
+		},
+		Lab: string(marshalledLab),
+	}
+
+	marshalled, err := json.Marshal(deploymentRecord)
+	if err != nil {
+		slog.Error("error occurred marshalling the deployment record.", err)
+		return err
+	}
+
+	_, err = client.AddEntity(context.TODO(), marshalled, nil)
+	if err != nil {
+		slog.Error("error adding deployment record ", err)
+		return err
+	}
+
+	return nil
+}

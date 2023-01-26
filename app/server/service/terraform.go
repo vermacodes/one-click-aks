@@ -18,6 +18,8 @@ type terraformService struct {
 	actionStatusService   entity.ActionStatusService
 	kVersionService       entity.KVersionService
 	storageAccountService entity.StorageAccountService // Some information is needed from storage aacount service.
+	loggingService        entity.LoggingService
+	authService           entity.AuthService
 }
 
 func NewTerraformService(
@@ -28,6 +30,8 @@ func NewTerraformService(
 	actionStatusService entity.ActionStatusService,
 	kVersionService entity.KVersionService,
 	storageAccountService entity.StorageAccountService,
+	loggingService entity.LoggingService,
+	authService entity.AuthService,
 ) entity.TerraformService {
 	return &terraformService{
 		terraformRepository:   terraformRepository,
@@ -37,6 +41,8 @@ func NewTerraformService(
 		kVersionService:       kVersionService,
 		workspaceService:      workspaceService,
 		storageAccountService: storageAccountService,
+		loggingService:        loggingService,
+		authService:           authService,
 	}
 }
 
@@ -56,10 +62,28 @@ func (t *terraformService) Init() error {
 }
 
 func (t *terraformService) Plan(lab entity.LabType) error {
+
+	// Logging
+	account, err := t.authService.GetAccount()
+	if err != nil {
+		slog.Error("Not able to get account", err)
+	} else {
+		t.loggingService.PlanRecord(account.User, lab)
+	}
+
 	return helperTerraformAction(t, lab.Template, "plan")
 }
 
 func (t *terraformService) Apply(lab entity.LabType) error {
+
+	// Logging
+	account, err := t.authService.GetAccount()
+	if err != nil {
+		slog.Error("Not able to get account", err)
+	} else {
+		t.loggingService.DeploymentRecord(account.User, lab)
+	}
+
 	// Invalidate workspace cache
 	if err := t.workspaceService.DeleteAllWorkspaceFromRedis(); err != nil {
 		slog.Error("not able to invlidate workspace cache", err)
@@ -98,25 +122,6 @@ func (t *terraformService) Destroy(lab entity.LabType) error {
 
 	return helperTerraformAction(t, lab.Template, "destroy")
 }
-
-// func (t *terraformService) Validate(lab entity.LabType) error {
-// 	if lab.ValidateScript == "" {
-// 		t.logStreamService.EndLogStream()
-// 		return nil
-// 	}
-
-// 	// Getting back redacted values.
-// 	if lab.ValidateScript == "redacted" {
-// 		lab, err := helperGetLabExerciseById(t, lab.Id)
-// 		if err != nil {
-// 			slog.Error("not able to find the lab exercise", err)
-// 			return err
-// 		}
-// 		return helperExecuteScript(t, lab.ValidateScript, "")
-// 	}
-
-// 	return helperExecuteScript(t, lab.ValidateScript, "")
-// }
 
 func helperTerraformAction(t *terraformService, tfvar entity.TfvarConfigType, action string) error {
 

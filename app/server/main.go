@@ -100,7 +100,7 @@ func main() {
 	handler.NewAssignmentHandler(authRouter, assignmentService)
 
 	terraformRepository := repository.NewTerraformRepository()
-	terraformService := service.NewTerraformService(terraformRepository, labService, workspaceService, logStreamService, actionStatusService, kVersionService, storageAccountService)
+	terraformService := service.NewTerraformService(terraformRepository, labService, workspaceService, logStreamService, actionStatusService, kVersionService, storageAccountService, loggingService, authService)
 	handler.NewTerraformHandler(authRouter, terraformService)
 
 	router.GET("/status", status)
