@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
 import Landing from "./pages/Landing";
 import { Routes, Route } from "react-router-dom";
@@ -13,6 +13,26 @@ import Start from "./pages/Start";
 function App() {
   const [darkMode, setDarkMode] = useState<boolean>(true);
 
+  useEffect(() => {
+    var darkModeFromLocalStorage = localStorage.getItem("darkMode");
+    if (darkModeFromLocalStorage === null) {
+      localStorage.setItem("darkMode", "true");
+    } else {
+      if (darkModeFromLocalStorage === "false") {
+        setDarkMode(false);
+      }
+    }
+  }, []);
+
+  function handleSetDarkMode(updatedDarkMode: boolean) {
+    if (updatedDarkMode) {
+      localStorage.setItem("darkMode", "true");
+    } else {
+      localStorage.setItem("darkMode", "false");
+    }
+    setDarkMode(updatedDarkMode);
+  }
+
   return (
     <div
       className={`min-h-screen w-full min-w-[1000px] pb-2 scrollbar scrollbar-track-sky-500 ${
@@ -21,7 +41,7 @@ function App() {
           : " bg-slate-100 text-slate-900"
       }`}
     >
-      <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
+      <Navbar darkMode={darkMode} setDarkMode={handleSetDarkMode} />
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/builder" element={<Builder />} />
