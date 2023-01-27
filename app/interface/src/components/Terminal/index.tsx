@@ -1,23 +1,42 @@
-import { useEffect, useRef, useState } from "react";
-import { useLogs, useSetLogs } from "../../hooks/useLogs";
 import ansiHTML from "ansi-to-html";
-import Checkbox from "../Checkbox";
+import { useEffect, useRef, useState } from "react";
 import { useActionStatus } from "../../hooks/useActionStatus";
-import { usePreference, useSetPreference } from "../../hooks/usePreference";
+import { useLogs, useSetLogs } from "../../hooks/useLogs";
+import Checkbox from "../Checkbox";
 
 export default function Terminal() {
   const [autoScroll, setAutoScroll] = useState(false);
   const { data } = useLogs();
   const { mutate: setLogs } = useSetLogs();
   const { data: inProgress } = useActionStatus();
-  const { data: preference } = usePreference();
-  const { mutate: setPreference } = useSetPreference();
 
   const logEndRef = useRef<null | HTMLDivElement>(null);
   useEffect(() => {
     logEndRef.current?.scrollIntoView({ behavior: "smooth" });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
+
+  function getAutoScrollFromLocalStorage(): string {
+    var autoScrollFromLocalStorage = localStorage.getItem("autoScroll");
+    if (autoScrollFromLocalStorage !== null) {
+      return autoScrollFromLocalStorage;
+    }
+
+    return "";
+  }
+
+  function setAutoScrollInLocalStorage(autoScroll: string) {
+    localStorage.setItem("autoScroll", autoScroll);
+  }
+
+  useEffect(() => {
+    var autoScrollFromLocalStorage = getAutoScrollFromLocalStorage();
+    if (autoScrollFromLocalStorage === "true") {
+      setAutoScroll(true);
+    } else {
+      setAutoScroll(false);
+    }
+  });
 
   function updateLogs(): string {
     if (data !== undefined) {
@@ -32,10 +51,12 @@ export default function Terminal() {
   }
 
   function handleOnChange() {
-    if (preference !== undefined) {
-      preference.terminalAutoScroll = !preference.terminalAutoScroll;
-      setPreference(preference);
+    if (autoScroll) {
+      setAutoScrollInLocalStorage("false");
+    } else {
+      setAutoScrollInLocalStorage("true");
     }
+    setAutoScroll(!autoScroll);
   }
 
   return (
@@ -53,11 +74,7 @@ export default function Terminal() {
             id="terminal-autoscroll"
             label="Auto Scroll"
             disabled={false}
-            checked={
-              preference && preference.terminalAutoScroll === true
-                ? true
-                : false
-            }
+            checked={autoScroll}
             handleOnChange={handleOnChange}
           />
         </div>
@@ -68,7 +85,7 @@ export default function Terminal() {
           style={{ padding: "10px", whiteSpace: "pre-wrap" }}
         ></pre>
 
-        {preference && preference.terminalAutoScroll && <div ref={logEndRef} />}
+        {autoScroll && <div ref={logEndRef} />}
       </div>
     </div>
   );

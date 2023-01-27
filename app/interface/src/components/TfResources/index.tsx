@@ -90,8 +90,8 @@ export default function TfResources({}: Props) {
     return returned;
   }
   return (
-    <div className="w-1/2 justify-between gap-y-4 rounded border border-slate-500 py-2">
-      <div className="h-48 overflow-x-hidden rounded px-2 scrollbar-thin scrollbar-track-slate-400 scrollbar-thumb-sky-500 scrollbar-track-rounded-full scrollbar-thumb-rounded-full">
+    <div className="w-full justify-between gap-y-4 rounded border border-slate-500 py-2">
+      <div className="h-48 rounded px-2 overflow-x-hidden scrollbar-thin scrollbar-track-slate-400 scrollbar-thumb-sky-500 scrollbar-track-rounded-full scrollbar-thumb-rounded-full">
         {fetchingResources ||
         gettingWorkspaces ||
         selectingWorkspace ||
