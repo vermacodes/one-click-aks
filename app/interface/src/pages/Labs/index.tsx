@@ -41,29 +41,36 @@ export default function Labs() {
   }
 
   return (
-    <div className="my-3 mx-20 mb-2 overflow-x-hidden">
-      <p className="my-2 border-b-2 border-slate-500 py-4 text-4xl">Labs</p>
-      <div className="w-7/8 grid grid-cols-3 gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <div className="my-3 mx-20 mb-2 flex flex-col gap-x-4">
+      <p className="my-2 mb-6 border-b-2 border-slate-500 py-4 text-4xl">
+        Labs
+      </p>
+      <div className="w-7/8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {labs &&
           labs.map((lab: Lab) => (
             <TemplateCard key={lab.name}>
               <LabCard lab={lab}>
                 <>
                   <div className="flex flex-col justify-between gap-2">
-                    <div className="flex justify-between">
+                    <div className="flex flex-wrap justify-end gap-2">
                       <CreateAssignment lab={lab} />
-                      <Button
-                        variant="primary-outline"
-                        onClick={() => handleShowMore(lab)}
+                    </div>
+                    <div
+                      className={`${
+                        lab.id === more
+                          ? "text-slate-900 dark:text-slate-100"
+                          : "text-slate-500"
+                      } mt-4 flex items-center justify-between border-t border-slate-500 py-2 text-sm transition-all duration-500 hover:text-sky-500`}
+                      onClick={() => handleShowMore(lab)}
+                    >
+                      <div>More Actions</div>
+                      <div
+                        className={` ${
+                          lab.id === more ? "rotate-90" : ""
+                        } transition-transform duration-500 `}
                       >
-                        <div
-                          className={` ${
-                            lab.id === more ? "rotate-90" : ""
-                          } transition-transform duration-500`}
-                        >
-                          <FaArrowRight />
-                        </div>
-                      </Button>
+                        <FaArrowRight />
+                      </div>
                     </div>
                     <div
                       className={`${

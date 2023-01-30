@@ -38,10 +38,10 @@ export default function CreateAssignment({ lab }: Props) {
     createAssignment(assignment);
   }
   return (
-    <div className="mr-2 flex justify-start gap-y-2">
+    <div className="flex flex-wrap justify-start gap-y-2">
       <input
-        className="mr-4 w-full rounded border border-slate-500 bg-inherit px-2 py-1"
-        placeholder="Enter user alias to assign lab"
+        className="mr-4 rounded border border-slate-500 bg-inherit px-2 py-1"
+        placeholder="Enter user alias"
         onChange={(event) => setUserAlias(event.target.value)}
         value={userAlias}
       ></input>

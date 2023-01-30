@@ -55,20 +55,25 @@ export default function MockCases() {
                     <DestroyButton variant="danger-outline" lab={lab}>
                       Destroy
                     </DestroyButton>
-                    <Button
-                      variant="primary-outline"
-                      onClick={() => handleShowMore(lab)}
-                    >
-                      <div
-                        className={` ${
-                          lab.id === more ? "rotate-90" : ""
-                        } transition-transform duration-500`}
-                      >
-                        <FaArrowRight />
-                      </div>
-                    </Button>
                   </div>
 
+                  <div
+                    className={`${
+                      lab.id === more
+                        ? "text-slate-900 dark:text-slate-100"
+                        : "text-slate-500"
+                    } mt-4 flex items-center justify-between border-t border-slate-500 py-2 text-sm transition-all duration-500 hover:text-sky-500`}
+                    onClick={() => handleShowMore(lab)}
+                  >
+                    <div>More Actions</div>
+                    <div
+                      className={` ${
+                        lab.id === more ? "rotate-90" : ""
+                      } transition-transform duration-500 `}
+                    >
+                      <FaArrowRight />
+                    </div>
+                  </div>
                   <div
                     className={`${
                       lab.id === more ? "max-h-40" : "max-h-0"
