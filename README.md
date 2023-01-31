@@ -36,33 +36,102 @@ This script runs in two primary modes.
 -   Deploy
 -   Destroy
 
-### Deploy Mode
+### Deploy (Extend) Mode
 
 When click '**Deploy**' button, the base infra is deployed using terraform code. After that completes successfully, extension script is deployed. Both these steps happen automatically in order. Since extension script runs after terraform apply is finished. It has access to terraform output.
 
-```mermaid
-graph LR
-A[Deploy] -- 1. Deploy Request to Server --> B[Server]
-B -- 2. Terraform Deploy to Azure --> C[Azure]
-C -- 3. Return Success --> B
-B -- 4. Return Success --> A
-A -- 5. Deploy Extension Script --> B
-C -- 6. Pull terraform output --> B
-B -- 7. Deploy Extension Script --> C
+When running in deploy (extend) mode, 'extend' function is called.
 
+```
+function extend()  {
+	# Add your code here to be executed after apply
+	ok "nothing to extend"
+}
+```
+
+```mermaid
+sequenceDiagram
+App ->> Server : Deploy Request
+Server ->> Azure : Terraform Apply
+Azure ->> Server: Success
+Server ->> App: Success
+App ->> Server: Extension Script (Deploy)
+Azure ->> Server: Pull Terraform Output
+Server ->> Azure: Exteion Script (Deploy)
+Azure ->> Server: Success
+Server ->> App: Success
 ```
 
 ### Destroy Mode
 
-When click '**Deploy**' button, the base infra is deployed using terraform code. After that completes successfully, extension script is deployed. Both these steps happen automatically in order. Since extension script runs after terraform apply is finished. It has access to terraform output.
+When click '**Destroy**' button, first, extension script runs in destroy mode, and lets you delete the resources that were created in deploy mode. Or do any other activity that must be done gracefully before resources are destroyed.
+
+When running in destroy mode, 'destroy' function is called.
+
+```
+function destroy()  {
+	# Add your code here to be executed before destruction
+	ok "nothing to destroy"
+}
+```
 
 ```mermaid
-graph LR
-A[Deploy] -- 1. Deploy Request to Server --> B[Server]
-B -- 2. Terraform Deploy to Azure --> C[Azure]
-C -- 3. Return Success --> B
-B -- 4. Return Success --> A
-A -- 5. Deploy Extension Script --> B
-C -- 6. Pull terraform output --> B
-B -- 7. Deploy Extension Script --> C
+sequenceDiagram
+App ->> Server : Detroy Request
+Azure ->> Server : Pull Terraform Output
+Server ->> Azure : Extension Script (Destroy Mode)
+Azure ->> Server: Success
+Server ->> App: Success
+App ->> Server: Terraform Destroy
+Server ->> Azure: Terraform Destroy
+Azure ->> Server: Success
+Server ->> App: Success
 ```
+
+## Environment Variables.
+
+Following environment variables are available for script to use. There may be other variables that are not in this list. Any terraform output is automatically added as an even variable for extension script. For example, terraform output "resource_group" is automatically added as an env variable "RESOURCE_GROUP". You can see entire terraform output in the deployment logs.
+
+| Variable            | Description                                                                                                                                                                                                         |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| RESOURCE_GROUP      | Name of the resource group in azure. This is where all resources will be deployed. Please note if you create additional resource groups using extension script you need to manage the deleting in destroy function. |
+| ACR_NAME            | Name of the ACR if deployed                                                                                                                                                                                         |
+| AKS_LOGIN           | Command to login to the AKS Cluster if deployed                                                                                                                                                                     |
+| CLUSTER_NAME        | Name of AKS Cluster if deployed                                                                                                                                                                                     |
+| CLUSTER_VERSION     | Version of AKS Cluster if deployed                                                                                                                                                                                  |
+| FIREWALL_PRIVATE_IP | Private IP address of the firewall.                                                                                                                                                                                 |
+| NSG_NAME            | Name of the NSG associated with subnet where AKS cluster is deployed, you can use this to add/remove rules using extension scripts"                                                                                 |
+| LOCATION            | This is the Azure Region where the resources are deployed. None of the resources are given region exclusively. They all inherit it from resource group.                                                             |
+| VNET_NAME           | Name of the virtual network.                                                                                                                                                                                        |
+| CLUSTER_MSI_ID      | Clusters managed identity ID.                                                                                                                                                                                       |
+| KUBELET_MSI_ID      | Kubelet's managed identity                                                                                                                                                                                          |
+
+## Shared Functions
+
+There are few things that almost all scripts will do. We are aware of these and added them as shared functions which are available to the script and are ready for use.
+
+-   Loging
+    `function log()`
+    Args: "string"
+    Example: `log "this statement will be logged"`
+
+-   Green (OK) Logging
+    `function ok()`
+    Args: "string"
+    Example: `ok "this statement will be logged as INFO log in green color"`
+
+-   Error Logging
+    `function err()`
+    Args: (String)
+    Example: `err "this error occrured"`
+
+In addition to these, we figured that there are few things that we will be doing over and over again in extension scripts. Ultimate goal is to add them as a flag (Switch Button) and make part of terraform, but as an interim solution they are provided as shared functions.
+
+-   Deploy ARO Cluster
+    `function deployAROCluster()`
+-   Delete ARO Cluster
+    `function deleteAROCluster()`
+-   Deploy Ingress Nginx Controller.
+    `deployIngressNginxController()`
+-   Deploy Dummy App (HTTPBIN)
+    `function deployHttpbin()`
