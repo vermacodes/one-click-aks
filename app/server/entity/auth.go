@@ -50,6 +50,7 @@ type Priviledge struct {
 
 type AuthService interface {
 	Login() (LoginStatus, error)
+	StopRunningLoginAttempt() error
 	GetLoginStatus() (LoginStatus, error)
 	GetAccount() (Account, error)
 	GetAccounts() ([]Account, error)
@@ -64,6 +65,8 @@ type AuthRepository interface {
 	GetLoginStatus() (string, error)
 	GetLoginStatusFromRedis() (string, error)
 	SetLoginStatusInRedis(string) error
+
+	StopRunningLoginAttempt() error
 	// DeleteLoginStatusFromRedis() error
 
 	GetAccount() (string, error)

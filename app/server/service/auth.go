@@ -59,6 +59,11 @@ func (a *authService) Login() (entity.LoginStatus, error) {
 	actionStaus.InProgress = true
 	a.actionStatusService.SetActionStatus(actionStaus)
 
+	// Stop any existing running login attempt before a new attempt.
+	if err := a.StopRunningLoginAttempt(); err != nil {
+		return loginStatus, err
+	}
+
 	// GO routine that takes care of running command and moving logs to redis.
 	go func(input io.ReadCloser) {
 		in := bufio.NewScanner(input)
@@ -87,6 +92,11 @@ func (a *authService) Login() (entity.LoginStatus, error) {
 	actionStaus.InProgress = false
 	a.actionStatusService.SetActionStatus(actionStaus)
 
+	// Stop any stale login attempts.
+	if err := a.StopRunningLoginAttempt(); err != nil {
+		return loginStatus, err
+	}
+
 	// Delete all cache from redis.
 	slog.Info("deleting all redis cache on authentication")
 	if err := a.authRepository.DeleteAllCache(); err != nil {
@@ -104,6 +114,15 @@ func (a *authService) Login() (entity.LoginStatus, error) {
 
 	loginStatus.IsLoggedIn = true
 	return loginStatus, nil
+}
+
+func (a *authService) StopRunningLoginAttempt() error {
+	if err := a.authRepository.StopRunningLoginAttempt(); err != nil {
+		slog.Error("Not able to stop running login attempt", err)
+		return err
+	}
+
+	return nil
 }
 
 func (a *authService) GetLoginStatus() (entity.LoginStatus, error) {

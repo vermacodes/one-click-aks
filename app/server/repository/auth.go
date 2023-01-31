@@ -41,6 +41,11 @@ func (a *authRepository) SetLoginStatusInRedis(val string) error {
 	return setRedis("loginStatus", val)
 }
 
+func (a *authRepository) StopRunningLoginAttempt() error {
+	_, err := exec.Command("bash", "-c", "pkill -f 'az login'").Output()
+	return err
+}
+
 func (a *authRepository) GetAccount() (string, error) {
 	out, err := exec.Command("bash", "-c", "az account show -o json").Output()
 	return string(out), err
