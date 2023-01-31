@@ -20,4 +20,49 @@ After the app starts running you can access it using http://localhost:3000 from 
 
 ## Under the hood.
 
-Updating...
+# Extension Script.
+
+Extension script gives you the ability to go beyond what this tool can do out of the box and be really creative. You can use this to do everything that can be done using Azure CLI. Some examples use cases are:
+
+-   Pulling an image from docker hub to your ACR.
+-   Deploy an application to Kubernetes cluster.
+-   Adding additional node pools to your cluster.
+-   Ordering food online for free. Well, not that, but you get the idea.
+
+## How this works?
+
+This script runs in two primary modes.
+
+-   Deploy
+-   Destroy
+
+### Deploy Mode
+
+When click '**Deploy**' button, the base infra is deployed using terraform code. After that completes successfully, extension script is deployed. Both these steps happen automatically in order. Since extension script runs after terraform apply is finished. It has access to terraform output.
+
+```mermaid
+graph LR
+A[Deploy] -- 1. Deploy Request to Server --> B[Server]
+B -- 2. Terraform Deploy to Azure --> C[Azure]
+C -- 3. Return Success --> B
+B -- 4. Return Success --> A
+A -- 5. Deploy Extension Script --> B
+C -- 6. Pull terraform output --> B
+B -- 7. Deploy Extension Script --> C
+
+```
+
+### Destroy Mode
+
+When click '**Deploy**' button, the base infra is deployed using terraform code. After that completes successfully, extension script is deployed. Both these steps happen automatically in order. Since extension script runs after terraform apply is finished. It has access to terraform output.
+
+```mermaid
+graph LR
+A[Deploy] -- 1. Deploy Request to Server --> B[Server]
+B -- 2. Terraform Deploy to Azure --> C[Azure]
+C -- 3. Return Success --> B
+B -- 4. Return Success --> A
+A -- 5. Deploy Extension Script --> B
+C -- 6. Pull terraform output --> B
+B -- 7. Deploy Extension Script --> C
+```
