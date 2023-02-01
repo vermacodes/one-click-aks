@@ -51,6 +51,9 @@ export default function LoginButton({}: Props) {
             .finally(() => {
               setLogs({ isStreaming: true, logs: "" });
             });
+
+          // Reload Window, just for fun.
+          window.location.reload();
         });
     }
   }
