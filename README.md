@@ -1,4 +1,4 @@
-# One Click AKS : Simplest way to deploy Complex AKS Cluster.
+# One Click AKS: Simplest way to deploy Complex AKS Cluster.
 
 Deploying Azure Kubernetes Cluster is really easy. You can create production grade cluster with couple CLI commands. So what this project brings to the table you ask.
 There are hundereds of ways that an AKS cluster can be deployed in and then thousands more to configure and meet your unique requirements. If you have to deploy AKS with differnet configurations over and over again its no more an easy task. Along comes this project.
@@ -26,7 +26,9 @@ This setup wizard will help you with following.
 -   All your data is stored in a storage account in '_repro-project_' resource group of your subscription. If you delete this storage account, all data will be lost. We don't keep a copy of your data.
 -   Make sure there is exactly one storage account in '_repro-project_' resource group. If you create additional storage accounts in this resource-group, you will see unexpected behaviors.
 
-# What is a lab?
+# Lab
+
+## What is a lab?
 
 In simplest term a Lab is a scenario that you would want to create. For example, you may want to create an AKS cluster with following specifications.
 
@@ -94,6 +96,31 @@ This is what a lab object looks like.
 	"updatedOn": ""
 }
 ```
+
+## Saving your lab
+
+You should be able to recreate simple scenarios easily. But for complex scenarios especially when you end up using [Extension Script](#extension-script) then it becomes absolutely necessary to save your work. You can use '_Save_' button in [Builder](#builder) to save your work. You will be presented with a form and following information will be requested.
+
+-   Name
+    <sub><sup>I know it's hard to name stuff. But try your best to give one liner introduction of your lab. </sup></sub>
+-   Description
+    <sub><sup>Add as much information as humanly possible. It's important that you get the idea of what this lab does when you come back later after a month and shouldn't have to read the extension script. trust me, it's important. </sup></sub>
+-   Tags
+    <sub><sup>Plan is to add search feature later which will help you find labs based on tags, something like tags in stack overflow. </sup></sub>
+-   Template
+    <sub><sup>This is auto populated. </sup></sub>
+-   Extension Script
+    <sub><sup>This is auto populated. </sup></sub>
+
+**Update**: This will update the existing lab.
+**Save as New**: This will save as a new lab. Use this to make a copy of your existing lab.
+
+## Sharing Lab.
+
+-   **Export** - You can use '_Export_' button in [Builder](#builder) to export lab to a file, which then can be shared with anyone, and they can use this to import and use.
+-   **Import** - You can use '_Import_' button in [Builder](#builder) to import lab from a file. You can then [Save](##saving-your-lab) it in your templates.
+-   **[Shared Templates](https://actlabs.azureedge.net/templates)** - There are some pre-built labs that you can use to get a head start.
+-   **Contributing to shared templates.** - _Coming soon_
 
 # Extension Script.
 
