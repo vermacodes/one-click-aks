@@ -37,7 +37,9 @@ func (l *labRepository) GetExtendScriptTemplate() (string, error) {
 func (l *labRepository) GetEnumerationResults(typeOfLab string) (entity.EnumerationResults, error) {
 	er := entity.EnumerationResults{}
 
-	url := "https://ashisverma.blob.core.windows.net/repro-project-" + typeOfLab + "?restype=container&comp=list"
+	// URL of the container to list the blobs
+	url := "https://" + entity.StorageAccountName + ".blob.core.windows.net/repro-project-" + typeOfLab + "" + entity.SasToken + "&restype=container&comp=list"
+
 	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Add("Accept", "application/json")
 
@@ -57,8 +59,12 @@ func (l *labRepository) GetEnumerationResults(typeOfLab string) (entity.Enumerat
 	return er, nil
 }
 
-func (l *labRepository) GetLab(url string) (entity.LabType, error) {
+func (l *labRepository) GetLab(name string, typeOfLab string) (entity.LabType, error) {
 	lab := entity.LabType{}
+
+	// URL of the blob with SAS token.
+	url := "https://" + entity.StorageAccountName + ".blob.core.windows.net/repro-project-" + typeOfLab + "/" + name + "" + entity.SasToken
+
 	resp, err := http.Get(url)
 	if err != nil {
 		return lab, err
@@ -76,12 +82,12 @@ func (l *labRepository) GetLab(url string) (entity.LabType, error) {
 }
 
 func (l *labRepository) AddLab(labId string, lab string, typeOfLab string) error {
-	_, err := exec.Command("bash", "-c", "echo '"+lab+"' | az storage blob upload --data @- -c repro-project-"+typeOfLab+"s -n "+labId+".json --account-name ashisverma --sas-token '"+entity.SasToken+"' --overwrite").Output()
+	_, err := exec.Command("bash", "-c", "echo '"+lab+"' | az storage blob upload --data @- -c repro-project-"+typeOfLab+"s -n "+labId+".json --account-name "+entity.StorageAccountName+" --sas-token '"+entity.SasToken+"' --overwrite").Output()
 	return err
 }
 
 func (l *labRepository) DeleteLab(labId string, typeOfLab string) error {
-	_, err := exec.Command("bash", "-c", "az storage blob delete -c repro-project-"+typeOfLab+"s -n "+labId+".json --account-name ashisverma --sas-token '"+entity.SasToken+"'").Output()
+	_, err := exec.Command("bash", "-c", "az storage blob delete -c repro-project-"+typeOfLab+"s -n "+labId+".json --account-name "+entity.StorageAccountName+" --sas-token '"+entity.SasToken+"'").Output()
 	return err
 }
 
