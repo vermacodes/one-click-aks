@@ -78,6 +78,16 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
                 </li>
               </>
             )}
+            <li>
+              <a
+                target="_blank"
+                href="https://github.com/vermacodes/one-click-aks/blob/master/README.md#one-click-aks-simplest-way-to-deploy-complex-aks-cluster"
+              >
+                <button className="border-b-2 border-transparent py-1 hover:border-b-2 hover:border-b-sky-400 hover:text-sky-400">
+                  Docs
+                </button>
+              </a>
+            </li>
           </ul>
           <ul className="flex gap-x-4 pl-5">
             <li>
