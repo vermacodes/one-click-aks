@@ -97,6 +97,102 @@ This is what a lab object looks like.
 }
 ```
 
+### Deployment
+
+In a nutshell this will deploy the lab. This is a two step process.
+
+- [terraform apply](https://developer.hashicorp.com/terraform/cli/commands/apply) When you hit 'Deploy' button, first, terraform part of the lab is deployed. The lab object contains 'template' object.
+
+```json
+"template": {
+  "resourceGroup": {
+   "location": "East US"
+  },
+  "virtualNetworks": [],
+  "subnets": [],
+  "jumpservers": [],
+  "networkSecurityGroups": [],
+  "kubernetesClusters": [
+   {
+   "kubernetesVersion": "1.24.9",
+   "networkPlugin": "kubenet",
+   "networkPolicy": "null",
+   "networkPluginMode": "null",
+   "outboundType": "loadBalancer",
+   "privateClusterEnabled": "false",
+   "addons": {
+    "appGateway": false,
+    "microsoftDefender": false
+   },
+   "defaultNodePool": {
+    "enableAutoScaling": false,
+    "minCount": 1,
+    "maxCount": 1
+   }
+   }
+  ],
+  "firewalls": [],
+  "containerRegistries": [],
+  "appGateways": []
+ }
+```
+
+These are the values that server will translate to terraform variables and set them as environmetn variables in [server](#server). After the terraform apply is successfuly, [execention script](#extension-script) will be executed.
+
+#### Deployment Fow
+
+```mermaid
+sequenceDiagram
+App ->> Server : Deploy Request
+Server ->> Azure : Terraform Apply
+Azure ->> Server: Success
+Server ->> App: Success
+App ->> Server: Extension Script (Deploy)
+Azure ->> Server: Pull Terraform Output
+Server ->> Azure: Exteion Script (Deploy)
+Azure ->> Server: Success
+Server ->> App: Success
+```
+
+- [extension script](#extension-script) Extension script is a huge topic, its covered in its own section.
+
+_**Note:** Its important that you [Plan](#plan) before deploymnet to avoid accidently deleting stuff that you dont want to._
+
+### Plan
+
+You can do a [`terraform plan`](https://developer.hashicorp.com/terraform/cli/commands/plan) using '_Plan_' button in [Builder](#builder). This will generate a terrafrom plan and you will be able to see output.
+
+I highly recommend to run a plan before deploymnet just to be sure you dont accidently delete stuff you dont intend to.
+
+_**Note**: [Extension script](#extension-script) is not tested/executed in plan mode_
+
+#### Plan Flow
+
+```mermaid
+sequenceDiagram
+App ->> Server : Terraform Plan
+Server ->> App: Success
+```
+
+### Destroy
+
+You can destroy the resources created with this tool by using '_Destroy_' button. It executes [extension script](#destroy-mode) in destroy mode and then executes [terraform destroy](https://developer.hashicorp.com/terraform/cli/commands/destroy)
+
+#### Destroy Flow
+
+```mermaid
+sequenceDiagram
+App ->> Server : Detroy Request
+Azure ->> Server : Pull Terraform Output
+Server ->> Azure : Extension Script (Destroy Mode)
+Azure ->> Server: Success
+Server ->> App: Success
+App ->> Server: Terraform Destroy
+Server ->> Azure: Terraform Destroy
+Azure ->> Server: Success
+Server ->> App: Success
+```
+
 ### Saving your lab
 
 You should be able to recreate simple scenarios easily. But for complex scenarios especially when you end up using [Extension Script](#extension-script) then it becomes absolutely necessary to save your work. You can use '_Save_' button in [Builder](#builder) to save your work. You will be presented with a form and following information will be requested.
@@ -145,18 +241,7 @@ function extend() {
 }
 ```
 
-```mermaid
-sequenceDiagram
-App ->> Server : Deploy Request
-Server ->> Azure : Terraform Apply
-Azure ->> Server: Success
-Server ->> App: Success
-App ->> Server: Extension Script (Deploy)
-Azure ->> Server: Pull Terraform Output
-Server ->> Azure: Exteion Script (Deploy)
-Azure ->> Server: Success
-Server ->> App: Success
-```
+_See [deployment flow](#deployment-fow)_
 
 #### Destroy Mode
 
@@ -170,18 +255,7 @@ function destroy() {
 }
 ```
 
-```mermaid
-sequenceDiagram
-App ->> Server : Detroy Request
-Azure ->> Server : Pull Terraform Output
-Server ->> Azure : Extension Script (Destroy Mode)
-Azure ->> Server: Success
-Server ->> App: Success
-App ->> Server: Terraform Destroy
-Server ->> Azure: Terraform Destroy
-Azure ->> Server: Success
-Server ->> App: Success
-```
+_See [destroy flow](#destroy-flow)_
 
 ### Environment Variables
 
@@ -464,3 +538,7 @@ EOF
 ## Builder
 
 [Builder](https://actlabs.azureedge.net/builder)
+
+## Server
+
+TODO: Add more details about server.
