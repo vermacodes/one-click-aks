@@ -17,7 +17,8 @@ func NewLoggingRepository() entity.LoggingRespoitory {
 }
 
 func getServiceClient() *aztables.ServiceClient {
-	serviceClient, err := aztables.NewServiceClientWithNoCredential(entity.SasUrl, nil)
+	SasUrl := "https://" + entity.StorageAccountName + ".table.core.windows.net/" + entity.SasToken
+	serviceClient, err := aztables.NewServiceClientWithNoCredential(SasUrl, nil)
 	if err != nil {
 		slog.Error("error get client", err)
 	}

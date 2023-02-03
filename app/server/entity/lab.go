@@ -1,5 +1,8 @@
 package entity
 
+var SasToken string
+var StorageAccountName string
+
 type TfvarResourceGroupType struct {
 	Location string `json:"location"`
 }
@@ -67,7 +70,7 @@ type TfvarConfigType struct {
 
 type Blob struct {
 	Name string `xml:"Name" json:"name"`
-	Url  string `xml:"Url" json:"url"`
+	//Url  string `xml:"Url" json:"url"`
 }
 
 // Ok. if you noted that the its named blob and should be Blobs. I've no idea whose fault is this.
@@ -127,9 +130,10 @@ type LabRepository interface {
 
 	// Public labs
 	GetEnumerationResults(typeOfLab string) (EnumerationResults, error)
-	GetLab(url string) (LabType, error)
+	GetLab(name string, typeOfLab string) (LabType, error)
 	AddLab(labId string, lab string, typeOfLab string) error
 	DeleteLab(labId string, typeOfLab string) error
+
 	// My Labs
 	GetMyLabsFromRedis() (string, error)
 	GetMyLabsFromStorageAccount(string) (string, error)

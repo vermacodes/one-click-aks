@@ -11,12 +11,17 @@ rm .terraform.lock.hcl
 
 cd ../app/server
 
-if [[ "${SAS_URL}" == "" ]]; then
+if [[ "${SAS_TOKEN}" == "" ]]; then
     echo "SAS URL missing"
     exit 1
 fi
 
-go build -ldflags "-X 'github.com/vermacodes/one-click-aks/app/server/entity.SasUrl=$SAS_URL'"
+if [[ "${STORAGE_ACCOUNT_NAME}" == "" ]]; then
+    echo "SAS URL missing"
+    exit 1
+fi
+
+go build -ldflags "-X 'github.com/vermacodes/one-click-aks/app/server/entity.SasToken=$SAS_TOKEN' -X 'github.com/vermacodes/one-click-aks/app/server/entity.StorageAccountName=$STORAGE_ACCOUNT_NAME'"
 
 cd ../..
 

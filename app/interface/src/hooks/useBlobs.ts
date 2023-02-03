@@ -4,7 +4,7 @@ import { Lab } from "../dataStructures";
 import { axiosInstance } from "../utils/axios-interceptors";
 
 function getSharedMockCases(): Promise<AxiosResponse<Lab[]>> {
-  return axiosInstance("/lab/public/mockcases");
+  return axiosInstance("/lab/protected/mockcases");
 }
 
 export function useSharedMockCases() {
@@ -46,7 +46,7 @@ export function useSharedTemplates() {
 }
 
 function getSharedLabs(): Promise<AxiosResponse<Lab[]>> {
-  return axiosInstance.get("lab/public/labexercises");
+  return axiosInstance.get("lab/protected/labexercises");
 }
 
 export function useSharedLabs() {

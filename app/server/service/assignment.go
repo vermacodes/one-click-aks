@@ -33,7 +33,7 @@ func (a *assignmentService) GetAssignments() ([]entity.Assigment, error) {
 	}
 
 	for _, element := range ar.Blobs.Blob {
-		assignment, err := a.assignmentRepository.GetAssignment(element.Url)
+		assignment, err := a.assignmentRepository.GetAssignment(element.Name)
 		if err != nil {
 			slog.Error("not able to get assignmet "+assignment.Id, err)
 			continue

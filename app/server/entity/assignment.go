@@ -19,7 +19,7 @@ type AssignmentService interface {
 type AssignmentRepository interface {
 	// List of all the available assignments.
 	GetEnumerationResults() (EnumerationResults, error)
-	GetAssignment(url string) (Assigment, error)
+	GetAssignment(name string) (Assigment, error)
 	DeleteAssignment(assignmentId string) error
 	CreateAssignment(assignmentId string, assignment string) error
 }

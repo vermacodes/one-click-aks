@@ -2,8 +2,6 @@ package entity
 
 import "github.com/Azure/azure-sdk-for-go/sdk/data/aztables"
 
-var SasUrl string
-
 type LoginRecord struct {
 	aztables.Entity
 }

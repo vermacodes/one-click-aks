@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"encoding/json"
 	"os"
 	"os/exec"
 
@@ -86,19 +87,37 @@ func (a *authRepository) DeleteAccountsFromRedis() error {
 }
 
 func (a *authRepository) IsAdmin(user string) (bool, error) {
-	return helperContains([]string{"ashisverma@microsoft.com", "evalan@microsoft.com", "amargherio@microsoft.com", "ericlucier@microsoft.com", "mnallago@microsoft.com", "akathimi@microsoft.com"}, user)
+	out, err := exec.Command("bash", "-c", "az ad group member list --group 708d0729-779a-4f47-9ce0-393b839dad4f --output json --query [].userPrincipalName").Output()
+	if err != nil {
+		return false, err
+	}
+	return helperContains(out, user)
 }
 
 func (a *authRepository) IsMentor(user string) (bool, error) {
-	return helperContains([]string{"ashisverma@microsoft.com", "evalan@microsoft.com", "amargherio@microsoft.com", "ericlucier@microsoft.com", "mnallago@microsoft.com", "akathimi@microsoft.com"}, user)
+	out, err := exec.Command("bash", "-c", "az ad group member list --group 708d0729-779a-4f47-9ce0-393b839dad4f --output json --query [].userPrincipalName").Output()
+	if err != nil {
+		return false, err
+	}
+	return helperContains(out, user)
+
+	// var empty []byte
+	// return helperContains(empty, user)
 }
 
 func (a *authRepository) DeleteAllCache() error {
 	return deleteAllRedis()
 }
 
-func helperContains(s []string, str string) (bool, error) {
-	for _, v := range s {
+func helperContains(s []byte, str string) (bool, error) {
+
+	var res []string
+	err := json.Unmarshal(s, &res)
+	if err != nil {
+		return false, err
+	}
+
+	for _, v := range res {
 		if v == str {
 			return true, nil
 		}
