@@ -110,10 +110,11 @@ You should be able to recreate simple scenarios easily. But for complex scenario
 -   Template
     <sub><sup>This is auto populated. </sup></sub>
 -   Extension Script
-    <sub><sup>This is auto populated. </sup></sub>
 
-**Update**: This will update the existing lab.
-**Save as New**: This will save as a new lab. Use this to make a copy of your existing lab.
+<sub><sup>This is auto populated. </sup></sub>
+
+-   **Update**: This will update the existing lab.
+-   **Save as New**: This will save as a new lab. Use this to make a copy of your existing lab.
 
 ## Sharing Lab.
 
