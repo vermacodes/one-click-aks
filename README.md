@@ -213,6 +213,8 @@ There are few things that almost all scripts will do. We are aware of these and 
 log() {
   echo -e "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: INFO - $*" >&1
 }
+
+log "this statement will be logged in normal font"
 ```
 
 - Green (OK) Logging
@@ -224,6 +226,8 @@ log() {
 ok() {
   echo -e "${GREEN}[$(date +'%Y-%m-%dT%H:%M:%S%z')]: INFO - $* ${NC}" >&1
 }
+
+ok "this statement will be logged in green color"
 ```
 
 - Error Logging
@@ -235,6 +239,8 @@ ok() {
 err() {
   echo -e "${RED}[$(date +'%Y-%m-%dT%H:%M:%S%z')]: ERROR - $* ${NC}" >&1
 }
+
+err "this statement wil logged in red color"
 ```
 
 In addition to these, we figured that there are few things that we will be doing over and over again in extension scripts. Ultimate goal is to add them as a flag (Switch Button) and make part of terraform, but as an interim solution they are provided as shared functions.
