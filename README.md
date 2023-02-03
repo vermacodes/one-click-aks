@@ -6,19 +6,26 @@ There are hundereds of ways that an AKS cluster can be deployed in and then thou
 
 This project runs locally on your computer and deploys AKS cluster in many different ways. (not all)
 
-## What you need?
+# Getting Started.
 
-You need a computer with docker installed on it. You can install that using instructions in docker docs. https://docs.docker.com/desktop/
+To get started, headcover to [ACT Labs Start](https://actlabs.azureedge.net/start) page and follow the simple setup wizard.
 
-## How to run?
+This setup wizard will help you with following.
 
-After docker is installed and running on your system. You can run following command in your favourtive CLI
+-   Running server on your computer.
+-   Select your Azure Subscription.
+-   Authenticate Azure CLI
+-   Create Storage Account
+    -   Storage Account will get a random generated name.
+    -   This storage account will be created in a resource group named 'repro-project' in your selected subscription.
+    -   You will see that two containers are created in this storage account.
+        -   **tfstate**: terraform state files will be stored in this container.
+        -   **labs**: the labs that you will save will be stored in this container.
 
-`docker run --pull=always -it -p 3000:3000 -p 8080:8080 ashishvermapu/repro`
+Important points to note.
 
-After the app starts running you can access it using http://localhost:3000 from your browser.
-
-## Under the hood.
+-   All your data is stored in a storage account in '_repro-project_' resource group of your subscription. If you delete this storage account, all data will be lost. We don't keep a copy of your data.
+-   Make sure there is exactly one storage account in '_repro-project_' resource group. If you create additional storage accounts in this resource-group, you will see unexpected behaviors.
 
 # Extension Script.
 
