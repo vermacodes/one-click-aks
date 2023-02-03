@@ -17,6 +17,7 @@ This setup wizard will help you with following.
 -   Authenticate Azure CLI
 -   Create Storage Account
     -   Storage Account will get a random generated name.
+    -   You can see this storage account name in settings.
     -   This storage account will be created in a resource group named 'repro-project' in your selected subscription.
     -   You will see that two containers are created in this storage account.
         -   **tfstate**: terraform state files will be stored in this container.
