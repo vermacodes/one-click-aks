@@ -97,11 +97,11 @@ This is what a lab object looks like.
 }
 ```
 
-### Deployment
+### Deploy
 
 In a nutshell this will deploy the lab. This is a two step process.
 
-- [terraform apply](https://developer.hashicorp.com/terraform/cli/commands/apply) When you hit 'Deploy' button, first, terraform part of the lab is deployed. The lab object contains 'template' object.
+- [terraform apply](https://developer.hashicorp.com/terraform/cli/commands/apply) - when you hit _'Deploy'_ button, first, terraform part of the lab is deployed. The lab object contains 'template' object. These are the values that server will translate to terraform variables and set them as environmetn variables in [server](#server). After the terraform apply is successfuly, [execention script](#extension-script) will be executed.
 
 ```json
 "template": {
@@ -137,8 +137,6 @@ In a nutshell this will deploy the lab. This is a two step process.
  }
 ```
 
-These are the values that server will translate to terraform variables and set them as environmetn variables in [server](#server). After the terraform apply is successfuly, [execention script](#extension-script) will be executed.
-
 #### Deployment Fow
 
 ```mermaid
@@ -154,7 +152,7 @@ Azure ->> Server: Success
 Server ->> App: Success
 ```
 
-- [extension script](#extension-script) Extension script is a huge topic, its covered in its own section.
+- [extension script](#extension-script) - extension script is a huge topic, its covered in its own section.
 
 _**Note:** Its important that you [Plan](#plan) before deploymnet to avoid accidently deleting stuff that you dont want to._
 
