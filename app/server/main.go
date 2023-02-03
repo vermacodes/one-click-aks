@@ -50,6 +50,8 @@ func main() {
 	router.Use(cors.New(config))
 
 	authRouter := router.Group("/")
+	//adminRouter := authRouter.Group("/")
+	mentorRouter := authRouter.Group("/")
 
 	// TODO: We are in service dependency hell down here. Should we use HTTP instead? It will but may not add noticiable latency.
 	logStreamRepository := repository.NewLogStreamRepository()
@@ -92,8 +94,9 @@ func main() {
 	handler.NewKVersionHandler(authRouter, kVersionService)
 
 	labRepository := repository.NewLabRespository()
-	labService := service.NewLabService(labRepository, kVersionService, storageAccountService)
+	labService := service.NewLabService(labRepository, kVersionService, storageAccountService, authService)
 	handler.NewLabHandler(authRouter, labService)
+	handler.NewLabHandlerMentorRequired(mentorRouter, labService)
 
 	assignmentRepository := repository.NewAssignmentRepository()
 	assignmentService := service.NewAssignmentService(assignmentRepository, authService, labService)

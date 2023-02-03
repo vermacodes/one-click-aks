@@ -24,6 +24,13 @@ func NewLabHandler(r *gin.RouterGroup, labService entity.LabService) {
 	r.GET("/lab/my", handler.GetMyLabs)
 }
 
+func NewLabHandlerMentorRequired(r *gin.RouterGroup, labService entity.LabService) {
+	handler := &labHandler{
+		labService: labService,
+	}
+	r.GET("/lab/protected/:typeOfLab", handler.GetProtectedLabs)
+}
+
 func (l *labHandler) GetLabFromRedis(c *gin.Context) {
 	lab, err := l.labService.GetLabFromRedis()
 	if err != nil {
@@ -60,6 +67,24 @@ func (l *labHandler) DeleteLabFromRedis(c *gin.Context) {
 }
 
 func (l *labHandler) GetPublicLabs(c *gin.Context) {
+	typeOfLab := c.Param("typeOfLab")
+
+	// These labs are protected, use protected API
+	if typeOfLab == "mockcases" || typeOfLab == "labexercises" {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	labs, err := l.labService.GetPublicLabs(typeOfLab)
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, labs)
+}
+
+func (l *labHandler) GetProtectedLabs(c *gin.Context) {
 	typeOfLab := c.Param("typeOfLab")
 	labs, err := l.labService.GetPublicLabs(typeOfLab)
 	if err != nil {

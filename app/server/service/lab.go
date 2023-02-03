@@ -13,13 +13,15 @@ type labService struct {
 	labRepository         entity.LabRepository
 	kVersionService       entity.KVersionService
 	storageAccountService entity.StorageAccountService // Some information is needed from storage aacount service.
+	authService           entity.AuthService
 }
 
-func NewLabService(repo entity.LabRepository, kVersionService entity.KVersionService, storageAccountService entity.StorageAccountService) entity.LabService {
+func NewLabService(repo entity.LabRepository, kVersionService entity.KVersionService, storageAccountService entity.StorageAccountService, authService entity.AuthService) entity.LabService {
 	return &labService{
 		labRepository:         repo,
 		kVersionService:       kVersionService,
 		storageAccountService: storageAccountService,
+		authService:           authService,
 	}
 }
 
@@ -78,6 +80,7 @@ func (l *labService) DeleteLabFromRedis() error {
 
 func (l *labService) GetPublicLabs(typeOfLab string) ([]entity.LabType, error) {
 	labs := []entity.LabType{}
+
 	er, err := l.labRepository.GetEnumerationResults(typeOfLab)
 	if err != nil {
 		slog.Error("Not able to get list of blobs", err)

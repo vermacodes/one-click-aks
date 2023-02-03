@@ -26,3 +26,41 @@ func AuthRequired(authService entity.AuthService) gin.HandlerFunc {
 		c.Next()
 	}
 }
+
+func MentorRequired(authService entity.AuthService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		previledges, err := authService.GetPriveledges()
+		if err != nil {
+			slog.Error("not able to get auth status", err)
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+
+		if !previledges.IsMentor {
+			slog.Info("Mentor role required.")
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+
+		c.Next()
+	}
+}
+
+func AdminRequired(authService entity.AuthService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		previledges, err := authService.GetPriveledges()
+		if err != nil {
+			slog.Error("not able to get auth status", err)
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+
+		if !previledges.IsAdmin {
+			slog.Info("Admin role required.")
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+
+		c.Next()
+	}
+}

@@ -8,6 +8,7 @@ import (
 	"os/exec"
 
 	"github.com/vermacodes/one-click-aks/app/server/entity"
+	"golang.org/x/exp/slog"
 )
 
 type assignmentRepository struct{}
@@ -65,11 +66,12 @@ func (a *assignmentRepository) GetAssignment(url string) (entity.Assigment, erro
 }
 
 func (a *assignmentRepository) DeleteAssignment(assignmentId string) error {
-	_, err := exec.Command("bash", "-c", "az storage blob delete -c repro-project-assignments -n "+assignmentId+".json --account-name ashisverma").Output()
+	_, err := exec.Command("bash", "-c", "az storage blob delete -c repro-project-assignments -n "+assignmentId+".json --account-name ashisverma --sas-token '"+entity.SasToken+"'").Output()
 	return err
 }
 
 func (a *assignmentRepository) CreateAssignment(assignmentId string, assignment string) error {
-	_, err := exec.Command("bash", "-c", "echo '"+assignment+"' | az storage blob upload --data @- -c repro-project-assignments -n "+assignmentId+".json --account-name ashisverma  --overwrite").Output()
+	slog.Info("Using SAS Token" + entity.SasToken)
+	_, err := exec.Command("bash", "-c", "echo '"+assignment+"' | az storage blob upload --data @- -c repro-project-assignments -n "+assignmentId+".json --account-name ashisverma --sas-token '"+entity.SasToken+"' --overwrite").Output()
 	return err
 }

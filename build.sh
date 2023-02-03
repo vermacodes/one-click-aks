@@ -16,7 +16,7 @@ if [[ "${SAS_URL}" == "" ]]; then
     exit 1
 fi
 
-go build -ldflags "-X 'github.com/vermacodes/one-click-aks/app/server/entity.SasUrl=$SAS_URL'"
+go build -ldflags "-X 'github.com/vermacodes/one-click-aks/app/server/entity.SasToken=$SAS_TOKEN'"
 
 cd ../..
 

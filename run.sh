@@ -11,6 +11,6 @@ fi
 
 cd ./app/server
 
-go build -ldflags "-X 'github.com/vermacodes/one-click-aks/app/server/entity.SasUrl=$SAS_URL'"
+go build -ldflags "-X 'github.com/vermacodes/one-click-aks/app/server/entity.SasToken=$SAS_TOKEN'"
 
-redis-cli flushall && export LOG_LEVEL="4" && export PORT="8081" && ./server
+redis-cli flushall && export LOG_LEVEL="0" && export PORT="8081" && ./server

@@ -1,5 +1,7 @@
 package entity
 
+var SasToken string
+
 type TfvarResourceGroupType struct {
 	Location string `json:"location"`
 }
@@ -130,6 +132,7 @@ type LabRepository interface {
 	GetLab(url string) (LabType, error)
 	AddLab(labId string, lab string, typeOfLab string) error
 	DeleteLab(labId string, typeOfLab string) error
+
 	// My Labs
 	GetMyLabsFromRedis() (string, error)
 	GetMyLabsFromStorageAccount(string) (string, error)
