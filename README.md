@@ -46,7 +46,7 @@ or maybe,
 
 You can use this tool to create and deploy labs. Labs can be saved for re-use in future, exported and shared with others and imported to the tool.
 
-To create, deploy, import or export a lab, you can use [Builder](https://actlabs.azureedge.net/builder)
+To create, deploy, import or export a lab, you can use [Builder](#builder)
 
 This is what a lab object looks like.
 
@@ -118,7 +118,7 @@ You should be able to recreate simple scenarios easily. But for complex scenario
 ## Sharing Lab.
 
 -   **Export** - You can use '_Export_' button in [Builder](#builder) to export lab to a file, which then can be shared with anyone, and they can use this to import and use.
--   **Import** - You can use '_Import_' button in [Builder](#builder) to import lab from a file. You can then [Save](##saving-your-lab) it in your templates.
+-   **Import** - You can use '_Import_' button in [Builder](#builder) to import lab from a file. You can then [Save](#saving-your-lab) it in your templates.
 -   **[Shared Templates](https://actlabs.azureedge.net/templates)** - There are some pre-built labs that you can use to get a head start.
 -   **Contributing to shared templates.** - _Coming soon_
 
@@ -237,3 +237,7 @@ In addition to these, we figured that there are few things that we will be doing
 
 -   Deploy Dummy App (HTTPBIN)
     `function deployHttpbin()`
+
+# Builder
+
+[Builder](https://actlabs.azureedge.net/builder)
