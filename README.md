@@ -204,34 +204,273 @@ Following environment variables are available for script to use. There may be ot
 
 There are few things that almost all scripts will do. We are aware of these and added them as shared functions which are available to the script and are ready for use.
 
+# Add some color
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+
+err() {
+  echo -e "${RED}[$(date +'%Y-%m-%dT%H:%M:%S%z')]: ERROR - $* ${NC}" >&1
+}
+
+log() {
+  echo -e "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: INFO - $*" >&1
+}
+
+ok() {
+  echo -e "${GREEN}[$(date +'%Y-%m-%dT%H:%M:%S%z')]: INFO - $* ${NC}" >&1
+}
+
 - Loging
     `function log()`
     Args: "string"
     Example: `log "this statement will be logged"`
+
+```bash
+log() {
+  echo -e "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: INFO - $*" >&1
+}
+```
 
 - Green (OK) Logging
     `function ok()`
     Args: "string"
     Example: `ok "this statement will be logged as INFO log in green color"`
 
+```bash
+ok() {
+  echo -e "${GREEN}[$(date +'%Y-%m-%dT%H:%M:%S%z')]: INFO - $* ${NC}" >&1
+}
+```
+
 - Error Logging
     `function err()`
     Args: "string"
     Example: `err "this error occrured"`
 
+```bash
+err() {
+  echo -e "${RED}[$(date +'%Y-%m-%dT%H:%M:%S%z')]: ERROR - $* ${NC}" >&1
+}
+```
+
 In addition to these, we figured that there are few things that we will be doing over and over again in extension scripts. Ultimate goal is to add them as a flag (Switch Button) and make part of terraform, but as an interim solution they are provided as shared functions.
 
 - Deploy ARO Cluster
-    `function deployAROCluster()`
+
+```bash
+function deployAROCluster() {
+
+    # Set the cluster name, and network name variables
+    ARO_CLUSTER_NAME="${PREFIX}-aro"
+
+    az group show --name ${RESOURCE_GROUP} --output none > /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        err "Resource Group not found. Skipped creating cluster."
+        return 1
+    fi
+
+    # Deploy the cluster
+    log "deploying aro cluster"
+    az aro create \
+    --resource-group ${RESOURCE_GROUP} \
+    --name ${ARO_CLUSTER_NAME} \
+    --location ${LOCATION} \
+    --vnet ${VNET_NAME} \
+    --master-subnet AROMasterSubnet \
+    --worker-subnet AROWorkerSubnet \
+    --no-wait
+    if [ $? -ne 0 ]; then
+        err "Command to create ARO Cluster failed."
+        return 1
+    fi
+
+    # Wait for the cluster to be ready
+    counter=0
+    ok "waiting for cluster to be created. this can take several minutes, script will wait for an hour."
+    while true; do
+        status=$(az aro show --resource-group ${RESOURCE_GROUP} --name ${ARO_CLUSTER_NAME} --query provisioningState -o tsv)
+        
+        if [[ ${status} == "Succeeded" ]]; then
+            ok "cluster created."
+            break
+        fi
+        
+        if [[ ${counter} -eq 3600 ]]; then
+            err "enough wait.. the cluster is no ready yet. please check from portal"
+            break
+        fi
+        
+        
+        counter=$((${counter}+30))
+        sleep 30
+
+        if [[ ${status} == "Creating" ]]; then
+            log "cluster state is still 'Creating'. Sleeping for 30 seconds. $((${counter}/60)) minutes passed."
+        else
+            log "Wait time didn't finish and cluster state isn't 'Creating' anymore. $((${counter}/60)) minutes passed."
+        fi
+    done
+
+    # Get the cluster credentials
+    log "cluster credentials"
+    az aro list-credentials --resource-group ${RESOURCE_GROUP} --name ${ARO_CLUSTER_NAME}
+
+    pass=$(az aro list-credentials -g ${RESOURCE_GROUP} -n ${ARO_CLUSTER_NAME} --query kubeadminPassword -o tsv)
+    apiServer=$(az aro show -g ${RESOURCE_GROUP} -n ${ARO_CLUSTER_NAME} --query apiserverProfile.url -o tsv)
+    apiServerIp=$(az aro show -g ${RESOURCE_GROUP} -n ${ARO_CLUSTER_NAME} --query apiserverProfile.ip -o tsv)
+
+    ok "Login command -> oc login $apiServer -u kubeadmin -p $pass --insecure-skip-tls-verify"
+}
+```
 
 - Delete ARO Cluster
-    `function deleteAROCluster()`
+
+```bash
+function deleteAROCluster() {
+
+    # Set the cluster name, and network name variables
+    ARO_CLUSTER_NAME="${PREFIX}-aro"
+
+    # Deploy the cluster
+    log "deleting aro cluster"
+    az aro delete \
+    --resource-group ${RESOURCE_GROUP} \
+    --name ${ARO_CLUSTER_NAME} \
+    --yes \
+    --no-wait
+    if [ $? -ne 0 ]; then
+        err "Command to delete ARO Cluster failed."
+        return 1
+    fi
+
+    # Wait for the cluster to be ready
+    counter=0
+    ok "waiting for cluster to be deleted. this can take several minutes, script will wait for an hour."
+    while true; do
+        status=$(az aro show --resource-group ${RESOURCE_GROUP} --name ${ARO_CLUSTER_NAME} --query provisioningState -o tsv)
+        
+        if [[ ${status} != "Deleting" ]]; then
+            ok "cluster deleted."
+            break
+        fi
+        
+        if [[ ${counter} -eq 3600 ]]; then
+            err "enough wait.. the cluster is not deleted yet. please investigate"
+            break
+        fi
+        
+        
+        counter=$((${counter}+30))
+        sleep 30
+
+        if [[ ${status} == "Deleting" ]]; then
+            log "cluster state is still 'Deleting'. Sleeping for 30 seconds. $((${counter}/60)) minutes passed."
+        else
+            log "Wait time didn't finish and cluster state isn't 'Deleting' anymore. $((${counter}/60)) minutes passed."
+        fi
+    done
+}
+```
 
 - Deploy Ingress Nginx Controller.
-    `deployIngressNginxController()`
+
+```bash
+function deployIngressNginxController() {
+    # Deploy Ingress Controller.
+    log "Deploying Ingress Controller"
+    NAMESPACE=ingress-basic
+
+    helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+    helm repo update
+
+    helm install ingress-nginx ingress-nginx/ingress-nginx \
+    --create-namespace \
+    --namespace $NAMESPACE
+
+    # This loop is to wait for 5 minutes to ensure the external ip was allocated to the service.
+    for i in {1..11}; do
+        log "Checking external ip - Attemp $i"
+        if [[ $i -eq 11 ]]; then
+            err "Not able to secure external ip"
+            exit 1
+        fi
+        EXTERNAL_IP=$(kubectl get svc/ingress-nginx-controller -n ingress-basic -o json | jq -r .status.loadBalancer.ingress[0].ip)
+        if [[ "$EXTERNAL_IP" != "" ]]; then
+            ok "External IP : $EXTERNAL_IP"
+            break
+        fi
+        sleep 30s
+    done
+}
+```
 
 - Deploy Dummy App (HTTPBIN)
-    `function deployHttpbin()`
+
+```bash
+function deployHttpbin() {
+cat <<EOF | kubectl apply -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpbin
+  labels:
+    app: httpbin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: httpbin
+      role: frontend
+  template:
+    metadata:
+      labels:
+        app: httpbin
+        role: frontend
+    spec:
+      containers:
+        - name: httpbin
+          image: kennethreitz/httpbin
+          resources:
+            requests:
+              cpu: 500m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: httpbin
+  labels:
+    app: httpbin
+spec:
+  selector:
+    app: httpbin
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: azure/application-gateway
+  name: httpbin-ingress-agic
+  namespace: default
+spec:
+  rules:
+  - host: httpbin-agic.evaverma.com
+    http:
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: httpbin
+              port:
+                number: 80
+EOF
+}
+```
 
 ## Builder
 
