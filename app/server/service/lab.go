@@ -88,7 +88,7 @@ func (l *labService) GetPublicLabs(typeOfLab string) ([]entity.LabType, error) {
 	}
 
 	for _, element := range er.Blobs.Blob {
-		lab, err := l.labRepository.GetLab(element.Url)
+		lab, err := l.labRepository.GetLab(element.Name, typeOfLab)
 		if err != nil {
 			slog.Error("not able to get blob from given url", err)
 			continue
