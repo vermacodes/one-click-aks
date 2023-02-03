@@ -1,48 +1,48 @@
-# One Click AKS: Simplest way to deploy Complex AKS Cluster.
+# One Click AKS: Simplest way to deploy Complex AKS Cluster
 
 Deploying Azure Kubernetes Cluster is really easy. You can create production grade cluster with couple CLI commands. So what this project brings to the table you ask.
 There are hundereds of ways that an AKS cluster can be deployed in and then thousands more to configure and meet your unique requirements. If you have to deploy AKS with differnet configurations over and over again its no more an easy task. Along comes this project.
 This project runs locally on your computer and deploys AKS cluster in many different ways. (not all)
 
-# Getting Started.
+## Getting Started
 
 To get started, headcover to [ACT Labs Start](https://actlabs.azureedge.net/start) page and follow the simple setup wizard.
 
 This setup wizard will help you with following.
 
--   Running server on your computer.
--   Select your Azure Subscription.
--   Authenticate Azure CLI
--   Create Storage Account
-    -   Storage Account will get a random generated name.
-    -   You can see this storage account name in settings.
-    -   This storage account will be created in a resource group named 'repro-project' in your selected subscription.
-    -   You will see that two containers are created in this storage account.
-        -   **tfstate**: terraform state files will be stored in this container.
-        -   **labs**: the labs that you will save will be stored in this container.
+- Running server on your computer.
+- Select your Azure Subscription.
+- Authenticate Azure CLI
+- Create Storage Account
+  - Storage Account will get a random generated name.
+  - You can see this storage account name in settings.
+  - This storage account will be created in a resource group named 'repro-project' in your selected subscription.
+  - You will see that two containers are created in this storage account.
+    - **tfstate**: terraform state files will be stored in this container.
+    - **labs**: the labs that you will save will be stored in this container.
 
-**Important points to note**
+Important points to note
 
--   All your data is stored in a storage account in '_repro-project_' resource group of your subscription. If you delete this storage account, all data will be lost. We don't keep a copy of your data.
--   Make sure there is exactly one storage account in '_repro-project_' resource group. If you create additional storage accounts in this resource-group, you will see unexpected behaviors.
+- All your data is stored in a storage account in '_repro-project_' resource group of your subscription. If you delete this storage account, all data will be lost. We don't keep a copy of your data.
+- Make sure there is exactly one storage account in '_repro-project_' resource group. If you create additional storage accounts in this resource-group, you will see unexpected behaviors.
 
-# Lab
+## Lab
 
-## What is a lab?
+### What is a lab?
 
 In simplest term a Lab is a scenario that you would want to create. For example, you may want to create an AKS cluster with following specifications.
 
--   Create a VNET
--   Create an Azure Firewall
--   Add all required Egress rules to Azure Firewall.
--   Create a Private AKS Cluster with UDR
--   Create a Jump Server in VNET with Public IP to SSH and hop to access your private cluster.
+- Create a VNET
+- Create an Azure Firewall
+- Add all required Egress rules to Azure Firewall.
+- Create a Private AKS Cluster with UDR
+- Create a Jump Server in VNET with Public IP to SSH and hop to access your private cluster.
 
 or maybe,
 
--   Create a VNET
--   Create a Private AKS Cluster with Standard LB
--   Deploy Ingress Nginx controller and a dummy app on this cluster.
+- Create a VNET
+- Create a Private AKS Cluster with Standard LB
+- Deploy Ingress Nginx controller and a dummy app on this cluster.
 
 You can use this tool to create and deploy labs. Labs can be saved for re-use in future, exported and shared with others and imported to the tool.
 
@@ -50,104 +50,98 @@ To create, deploy, import or export a lab, you can use [Builder](#builder)
 
 This is what a lab object looks like.
 
-```
+```json
 {
-	"id": "",
-	"name": "",
-	"description": "",
-	"tags": [],
-	"template": {
-		"resourceGroup": {
-			"location": "East US"
-		},
-		"virtualNetworks": [],
-		"subnets": [],
-		"jumpservers": [],
-		"networkSecurityGroups": [],
-		"kubernetesClusters": [
-			{
-			"kubernetesVersion": "1.24.9",
-			"networkPlugin": "kubenet",
-			"networkPolicy": "null",
-			"networkPluginMode": "null",
-			"outboundType": "loadBalancer",
-			"privateClusterEnabled": "false",
-			"addons": {
-				"appGateway": false,
-				"microsoftDefender": false
-			},
-			"defaultNodePool": {
-				"enableAutoScaling": false,
-				"minCount": 1,
-				"maxCount": 1
-			}
-			}
-		],
-		"firewalls": [],
-		"containerRegistries": [],
-		"appGateways": []
-	},
-	"extendScript": "removed for simplicity of docs",
-	"message": "",
-	"type": "template",
-	"createdBy": "",
-	"createdOn": "",
-	"updatedBy": "",
-	"updatedOn": ""
+ "id": "",
+ "name": "",
+ "description": "",
+ "tags": [],
+ "template": {
+  "resourceGroup": {
+   "location": "East US"
+  },
+  "virtualNetworks": [],
+  "subnets": [],
+  "jumpservers": [],
+  "networkSecurityGroups": [],
+  "kubernetesClusters": [
+   {
+   "kubernetesVersion": "1.24.9",
+   "networkPlugin": "kubenet",
+   "networkPolicy": "null",
+   "networkPluginMode": "null",
+   "outboundType": "loadBalancer",
+   "privateClusterEnabled": "false",
+   "addons": {
+    "appGateway": false,
+    "microsoftDefender": false
+   },
+   "defaultNodePool": {
+    "enableAutoScaling": false,
+    "minCount": 1,
+    "maxCount": 1
+   }
+   }
+  ],
+  "firewalls": [],
+  "containerRegistries": [],
+  "appGateways": []
+ },
+ "extendScript": "removed for simplicity of docs",
+ "message": "",
+ "type": "template",
+ "createdBy": "",
+ "createdOn": "",
+ "updatedBy": "",
+ "updatedOn": ""
 }
 ```
 
-## Saving your lab
+### Saving your lab
 
 You should be able to recreate simple scenarios easily. But for complex scenarios especially when you end up using [Extension Script](#extension-script) then it becomes absolutely necessary to save your work. You can use '_Save_' button in [Builder](#builder) to save your work. You will be presented with a form and following information will be requested.
 
--   Name
-    <sub><sup>I know it's hard to name stuff. But try your best to give one liner introduction of your lab. </sup></sub>
--   Description
-    <sub><sup>Add as much information as humanly possible. It's important that you get the idea of what this lab does when you come back later after a month and shouldn't have to read the extension script. trust me, it's important. </sup></sub>
--   Tags
-    <sub><sup>Plan is to add search feature later which will help you find labs based on tags, something like tags in stack overflow. </sup></sub>
--   Template
-    <sub><sup>This is auto populated. </sup></sub>
--   Extension Script
+- **Name:**: I know it's hard to name stuff. But try your best to give one liner introduction of your lab.
+- **Description**: Add as much information as humanly possible. It's important that you get the idea of what this lab does when you come back later after a month and shouldn't have to read the extension script. trust me, it's important.
+- **Tags**: Plan is to add search feature later which will help you find labs based on tags, something like tags in stack overflow.
+- **Template**: This is auto populated.
+- **Extension Script**: This is auto populated.
 
-<sub><sup>This is auto populated. </sup></sub>
+- **Update**: This will update the existing lab.
+- **Save as New**: This will save as a new lab. Use this to make a copy of your existing lab.
 
--   **Update**: This will update the existing lab.
--   **Save as New**: This will save as a new lab. Use this to make a copy of your existing lab.
+### Sharing Lab
 
-## Sharing Lab.
+- **Export** - You can use '_Export_' button in [Builder](#builder) to export lab to a file, which then can be shared with anyone, and they can use this to import and use.
+- **Import** - You can use '_Import_' button in [Builder](#builder) to import lab from a file. You can then [Save](#saving-your-lab) it in your templates.
+- **[Shared Templates](https://actlabs.azureedge.net/templates)** - There are some pre-built labs that you can use to get a head start.
+- **Contributing to shared templates.** - _Coming soon_
 
--   **Export** - You can use '_Export_' button in [Builder](#builder) to export lab to a file, which then can be shared with anyone, and they can use this to import and use.
--   **Import** - You can use '_Import_' button in [Builder](#builder) to import lab from a file. You can then [Save](#saving-your-lab) it in your templates.
--   **[Shared Templates](https://actlabs.azureedge.net/templates)** - There are some pre-built labs that you can use to get a head start.
--   **Contributing to shared templates.** - _Coming soon_
-
-# Extension Script.
+## Extension Script
 
 Extension script gives you the ability to go beyond what this tool can do out of the box and be really creative. You can use this to do everything that can be done using Azure CLI. Some examples use cases are:
 
--   Pulling an image from docker hub to your ACR.
--   Deploy an application to Kubernetes cluster.
--   Adding additional node pools to your cluster.
--   Ordering food online for free. Well, not that, but you get the idea.
+- Pulling an image from docker hub to your ACR.
+- Deploy an application to Kubernetes cluster.
+- Adding additional node pools to your cluster.
+- Ordering food online for free. Well, not that, but you get the idea.
 
-## How this works?
+### How this works?
 
 This script runs in two primary modes.
 
--   Deploy
--   Destroy
+- Deploy
+- Destroy
 
-### Deploy (Extend) Mode
+#### Deploy (Extend) Mode
 
 When click '**Deploy**' button, the base infra is deployed using terraform code. After that completes successfully, extension script is deployed. Both these steps happen automatically in order. Since extension script runs after terraform apply is finished. It has access to terraform output.
 When running in deploy (extend) mode, 'extend' function is called.
 
-```
+```bash
 function extend() {
-	# Add your code here to be executed after apply
-	ok "nothing to extend"
+ # Add your code here to be executed after apply
+ ok "nothing to extend"
 }
 ```
 
@@ -164,15 +158,15 @@ Azure ->> Server: Success
 Server ->> App: Success
 ```
 
-### Destroy Mode
+#### Destroy Mode
 
 When click '**Destroy**' button, first, extension script runs in destroy mode, and lets you delete the resources that were created in deploy mode. Or do any other activity that must be done gracefully before resources are destroyed.
 When running in destroy mode, 'destroy' function is called.
 
-```
+```bash
 function destroy() {
-	# Add your code here to be executed before destruction
-	ok "nothing to destroy"
+ # Add your code here to be executed before destruction
+ ok "nothing to destroy"
 }
 ```
 
@@ -189,7 +183,7 @@ Azure ->> Server: Success
 Server ->> App: Success
 ```
 
-## Environment Variables.
+### Environment Variables
 
 Following environment variables are available for script to use. There may be other variables that are not in this list. Any terraform output is automatically added as an even variable for extension script. For example, terraform output "resource_group" is automatically added as an env variable "RESOURCE_GROUP". You can see entire terraform output in the deployment logs.
 | Variable | Description |
@@ -206,39 +200,39 @@ Following environment variables are available for script to use. There may be ot
 | CLUSTER_MSI_ID | Clusters managed identity ID. |
 | KUBELET_MSI_ID | Kubelet's managed identity |
 
-## Shared Functions
+### Shared Functions
 
 There are few things that almost all scripts will do. We are aware of these and added them as shared functions which are available to the script and are ready for use.
 
--   Loging
+- Loging
     `function log()`
     Args: "string"
     Example: `log "this statement will be logged"`
 
--   Green (OK) Logging
+- Green (OK) Logging
     `function ok()`
     Args: "string"
     Example: `ok "this statement will be logged as INFO log in green color"`
 
--   Error Logging
+- Error Logging
     `function err()`
     Args: "string"
     Example: `err "this error occrured"`
 
 In addition to these, we figured that there are few things that we will be doing over and over again in extension scripts. Ultimate goal is to add them as a flag (Switch Button) and make part of terraform, but as an interim solution they are provided as shared functions.
 
--   Deploy ARO Cluster
+- Deploy ARO Cluster
     `function deployAROCluster()`
 
--   Delete ARO Cluster
+- Delete ARO Cluster
     `function deleteAROCluster()`
 
--   Deploy Ingress Nginx Controller.
+- Deploy Ingress Nginx Controller.
     `deployIngressNginxController()`
 
--   Deploy Dummy App (HTTPBIN)
+- Deploy Dummy App (HTTPBIN)
     `function deployHttpbin()`
 
-# Builder
+## Builder
 
 [Builder](https://actlabs.azureedge.net/builder)
