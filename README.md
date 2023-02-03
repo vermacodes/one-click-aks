@@ -6,7 +6,7 @@ This project runs locally on your computer and deploys AKS cluster in many diffe
 
 ## Getting Started
 
-To get started, headcover to [ACT Labs Start](https://actlabs.azureedge.net/start) page and follow the simple setup wizard.
+To get started, headover to [ACT Labs Start](https://actlabs.azureedge.net/start) page and follow the simple setup wizard.
 
 This setup wizard will help you with following.
 
