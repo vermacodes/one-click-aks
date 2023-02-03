@@ -204,23 +204,6 @@ Following environment variables are available for script to use. There may be ot
 
 There are few things that almost all scripts will do. We are aware of these and added them as shared functions which are available to the script and are ready for use.
 
-# Add some color
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-NC='\033[0m' # No Color
-
-err() {
-  echo -e "${RED}[$(date +'%Y-%m-%dT%H:%M:%S%z')]: ERROR - $* ${NC}" >&1
-}
-
-log() {
-  echo -e "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: INFO - $*" >&1
-}
-
-ok() {
-  echo -e "${GREEN}[$(date +'%Y-%m-%dT%H:%M:%S%z')]: INFO - $* ${NC}" >&1
-}
-
 - Loging
     `function log()`
     Args: "string"
