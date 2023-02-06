@@ -1,3 +1,30 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [One Click AKS: Simplest way to deploy Complex AKS Cluster](#one-click-aks-simplest-way-to-deploy-complex-aks-cluster)
+  - [Getting Started](#getting-started)
+  - [Lab](#lab)
+    - [What is a lab?](#what-is-a-lab)
+    - [Deploy](#deploy)
+      - [Deployment Fow](#deployment-fow)
+    - [Plan](#plan)
+      - [Plan Flow](#plan-flow)
+    - [Destroy](#destroy)
+      - [Destroy Flow](#destroy-flow)
+    - [Saving your lab](#saving-your-lab)
+    - [Sharing Lab](#sharing-lab)
+  - [Extension Script](#extension-script)
+    - [How this works?](#how-this-works)
+      - [Deploy (Extend) Mode](#deploy-extend-mode)
+      - [Destroy Mode](#destroy-mode)
+    - [Environment Variables](#environment-variables)
+    - [Shared Functions](#shared-functions)
+  - [Builder](#builder)
+  - [Server](#server)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # One Click AKS: Simplest way to deploy Complex AKS Cluster
 
 Deploying Azure Kubernetes Cluster is really easy. You can create production grade cluster with couple CLI commands. So what this project brings to the table you ask.
