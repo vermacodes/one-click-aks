@@ -11,6 +11,7 @@ import {
   useSetActionStatus,
 } from "../../../hooks/useActionStatus";
 import { useSetLogs } from "../../../hooks/useLogs";
+import { useResetServerCache } from "../../../hooks/useServerCache";
 import { useServerStatus } from "../../../hooks/useServerStatus";
 import Button from "../../Button";
 
@@ -29,6 +30,7 @@ export default function LoginButton({}: Props) {
   const { data: accounts, isLoading: accountsLoading } = useAccount();
   const { mutate: setLogs } = useSetLogs();
   const setActionStatus = useSetActionStatus();
+  const { mutateAsync: resetServerCacheAsync } = useResetServerCache();
 
   const navigate = useNavigate();
 
@@ -40,6 +42,19 @@ export default function LoginButton({}: Props) {
         .then((response) => {
           if (response.status !== undefined) {
             getLoginStatus();
+
+            setActionStatus
+              .mutateAsync({
+                inProgress: false,
+              })
+              .finally(() => {
+                setLogs({ isStreaming: false, logs: "" });
+              });
+
+            // Reset server cache and reload window.
+            // resetServerCacheAsync().finally(() => {
+            //   window.location.reload();
+            // });
           }
         })
         // Finally End action status and log stream.
@@ -49,11 +64,8 @@ export default function LoginButton({}: Props) {
               inProgress: false,
             })
             .finally(() => {
-              setLogs({ isStreaming: true, logs: "" });
+              setLogs({ isStreaming: false, logs: "" });
             });
-
-          // Reload Window, just for fun.
-          window.location.reload();
         });
     }
   }

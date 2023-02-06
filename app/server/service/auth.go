@@ -31,11 +31,6 @@ func NewAuthService(authRepository entity.AuthRepository, logStreamService entit
 func (a *authService) Login() (entity.LoginStatus, error) {
 
 	loginStatus := entity.LoginStatus{}
-	cmd, rPipe, wPipe, err := a.authRepository.Login()
-	if err != nil {
-		slog.Error("not able to run login command", err)
-		return loginStatus, err
-	}
 
 	// Set action status to start.
 	actionStaus, err := a.actionStatusService.GetActionStatus()
@@ -61,6 +56,13 @@ func (a *authService) Login() (entity.LoginStatus, error) {
 
 	// Stop any existing running login attempt before a new attempt.
 	if err := a.StopRunningLoginAttempt(); err != nil {
+		slog.Error("not able to stop running login attempt. this is probably cause there isn't antyhing running.", err)
+	}
+
+	// Begin Authentication
+	cmd, rPipe, wPipe, err := a.authRepository.Login()
+	if err != nil {
+		slog.Error("not able to run login command", err)
 		return loginStatus, err
 	}
 
@@ -84,7 +86,7 @@ func (a *authService) Login() (entity.LoginStatus, error) {
 	go func() {
 		//FIXME: This solution is stupid, fix it.
 		slog.Info("Ending logs stream after login in 5 seconds.")
-		time.Sleep(5 * time.Second)
+		// time.Sleep(5 * time.Second)
 		a.logStreamService.EndLogStream()
 	}()
 

@@ -22,4 +22,6 @@ type AssignmentRepository interface {
 	GetAssignment(name string) (Assigment, error)
 	DeleteAssignment(assignmentId string) error
 	CreateAssignment(assignmentId string, assignment string) error
+
+	ValidateUser(userId string) (bool, error)
 }

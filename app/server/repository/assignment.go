@@ -6,6 +6,8 @@ import (
 	"io"
 	"net/http"
 	"os/exec"
+	"strconv"
+	"strings"
 
 	"github.com/vermacodes/one-click-aks/app/server/entity"
 	"golang.org/x/exp/slog"
@@ -81,4 +83,21 @@ func (a *assignmentRepository) CreateAssignment(assignmentId string, assignment 
 	slog.Info("Using SAS Token" + entity.SasToken)
 	_, err := exec.Command("bash", "-c", "echo '"+assignment+"' | az storage blob upload --data @- -c repro-project-assignments -n "+assignmentId+".json --account-name "+entity.StorageAccountName+" --sas-token '"+entity.SasToken+"' --overwrite").Output()
 	return err
+}
+
+func (a *assignmentRepository) ValidateUser(userId string) (bool, error) {
+	out, err := exec.Command("bash", "-c", "az ad user show --id '"+userId+"' --query 'accountEnabled' --output json 2>/dev/null").Output()
+	if err != nil {
+		return false, err
+	}
+
+	outString := string(out)
+	outStringTrimmed := strings.TrimRight(outString, "\n")
+	//Convert to boolean.
+	boolVal, err := strconv.ParseBool(outStringTrimmed)
+	if err != nil {
+		return false, err
+	}
+
+	return boolVal, nil
 }

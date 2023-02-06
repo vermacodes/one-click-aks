@@ -2,6 +2,7 @@ package service
 
 import (
 	"encoding/json"
+	"errors"
 	"strings"
 
 	"github.com/vermacodes/one-click-aks/app/server/entity"
@@ -90,6 +91,18 @@ func (a *assignmentService) CreateAssignment(assignment entity.Assigment) error 
 
 	if !strings.Contains("@microsoft.com", assignment.User) {
 		assignment.User = assignment.User + "@microsoft.com"
+	}
+
+	// Validate User ID
+	valid, err := a.assignmentRepository.ValidateUser(assignment.User)
+	if err != nil {
+		slog.Error("not able to validate user id", err)
+	}
+
+	if !valid {
+		err := errors.New("user id is not valid")
+		slog.Error("user id is not valid", err)
+		return err
 	}
 
 	assignments, err := a.GetAssignments()

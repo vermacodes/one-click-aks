@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaArrowRight, FaCheck } from "react-icons/fa";
+import { FaArrowRight, FaCheck, FaTimes } from "react-icons/fa";
 import { Assignment, Lab } from "../../../../dataStructures";
 import { useCreateAssignment } from "../../../../hooks/useAssignment";
 import Button from "../../../Button";
@@ -11,22 +11,32 @@ type Props = {
 export default function CreateAssignment({ lab }: Props) {
   const [userAlias, setUserAlias] = useState<string>("");
   const [createdColor, setCreatedColor] = useState<boolean>(false);
+  const [failedColor, setFailedColor] = useState<boolean>(false);
   const {
-    mutate: createAssignment,
+    mutateAsync: createAssignment,
     isLoading: creating,
     data: createData,
+    isError,
   } = useCreateAssignment();
 
-  useEffect(() => {
-    if (createData?.status === 201) {
-      setCreatedColor(true);
-      setTimeout(() => {
-        setCreatedColor(false);
-      }, 3000);
-    }
-  }, [createData]);
+  // useEffect(() => {
+  //   if (createData?.status === 201) {
+  //     setCreatedColor(true);
+  //     setTimeout(() => {
+  //       setCreatedColor(false);
+  //     }, 3000);
+  //   }
+  // }, [createData]);
 
   function handleAssignment(lab: Lab) {
+    if (userAlias.length < 4) {
+      setFailedColor(true);
+      setTimeout(() => {
+        setFailedColor(false);
+      }, 3000);
+      return;
+    }
+
     var assignment: Assignment = {
       id: "",
       user: userAlias,
@@ -35,7 +45,21 @@ export default function CreateAssignment({ lab }: Props) {
       status: "Assigned",
     };
     setUserAlias("");
-    createAssignment(assignment);
+    createAssignment(assignment).then((response) => {
+      if (response.status === 201) {
+        setCreatedColor(true);
+        setTimeout(() => {
+          setCreatedColor(false);
+        }, 3000);
+      }
+
+      if (response.status === undefined) {
+        setFailedColor(true);
+        setTimeout(() => {
+          setFailedColor(false);
+        }, 3000);
+      }
+    });
   }
   return (
     <div className="flex flex-wrap justify-start gap-y-2">
@@ -45,29 +69,66 @@ export default function CreateAssignment({ lab }: Props) {
         onChange={(event) => setUserAlias(event.target.value)}
         value={userAlias}
       ></input>
-      <Button
-        variant={createdColor ? "success" : "primary"}
-        onClick={() => handleAssignment(lab)}
-        disabled={creating}
-      >
-        <div className="flex items-center justify-center gap-x-2">
-          {createdColor ? (
+      {createdColor && (
+        <Button variant={"success"}>
+          <div className="flex items-center justify-center gap-x-2">
             <>
               <FaCheck /> Assigned
             </>
+          </div>
+        </Button>
+      )}
+      {failedColor && (
+        <Button variant={"danger"}>
+          <div className="flex items-center justify-center gap-x-2">
+            <>
+              <FaTimes /> Failed
+            </>
+          </div>
+        </Button>
+      )}
+      {!createdColor && !failedColor && (
+        <Button
+          variant={"primary"}
+          onClick={() => handleAssignment(lab)}
+          disabled={creating || (userAlias.length > 0 && userAlias.length < 4)}
+        >
+          <div className="flex items-center justify-center gap-x-2">
+            {creating ? (
+              "Assigning.."
+            ) : (
+              <>
+                <FaArrowRight /> Assign
+              </>
+            )}
+          </div>
+        </Button>
+      )}
+      {/* <Button
+        variant={createdColor ? "success" : failedColor ? "danger" : "primary"}
+        onClick={() => handleAssignment(lab)}
+        disabled={creating || (userAlias.length > 0 && userAlias.length < 4)}
+      >
+        <div className="flex items-center justify-center gap-x-2">
+          {createdColor && (
+            <>
+              <FaCheck /> Assigned
+            </>
+          )}
+          {failedColor && (
+            <>
+              <FaCheck /> Failed
+            </>
+          )}
+          {creating ? (
+            "Assigning.."
           ) : (
             <>
-              {creating ? (
-                "Assigning.."
-              ) : (
-                <>
-                  Assign <FaArrowRight />
-                </>
-              )}
+              Assign <FaArrowRight />
             </>
           )}
         </div>
-      </Button>
+      </Button> */}
     </div>
   );
 }

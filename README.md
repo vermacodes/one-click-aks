@@ -26,6 +26,8 @@ Important points to note
 - All your data is stored in a storage account in '_repro-project_' resource group of your subscription. If you delete this storage account, all data will be lost. We don't keep a copy of your data.
 - Make sure there is exactly one storage account in '_repro-project_' resource group. If you create additional storage accounts in this resource-group, you will see unexpected behaviors.
 
+> If this is the first time you are setting up. It will take sometime to download the image. After its cached it should be faster every othertime. 
+
 ## Lab
 
 ### What is a lab?
