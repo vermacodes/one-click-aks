@@ -5,24 +5,33 @@
 
 - [Introduction](#introduction)
 - [Getting Started](#getting-started)
-- [Lab](#lab)
-  - [What is a lab?](#what-is-a-lab)
-  - [Deploy](#deploy)
-    - [Deployment Fow](#deployment-fow)
-  - [Plan](#plan)
-    - [Plan Flow](#plan-flow)
-  - [Destroy](#destroy)
-    - [Destroy Flow](#destroy-flow)
-  - [Saving your lab](#saving-your-lab)
-  - [Sharing Lab](#sharing-lab)
-- [Extension Script](#extension-script)
-  - [How this works?](#how-this-works)
-    - [Deploy (Extend) Mode](#deploy-extend-mode)
-    - [Destroy Mode](#destroy-mode)
-  - [Environment Variables](#environment-variables)
-  - [Shared Functions](#shared-functions)
-- [Builder](#builder)
 - [Server](#server)
+- [Builder](#builder)
+  - [Lab](#lab)
+  - [Template](#template)
+  - [Extension Script](#extension-script)
+    - [How this works?](#how-this-works)
+      - [Deploy (Extend) Mode](#deploy-extend-mode)
+      - [Destroy Mode](#destroy-mode)
+    - [Environment Variables](#environment-variables)
+    - [Shared Functions](#shared-functions)
+  - [Lab Lifecycle](#lab-lifecycle)
+    - [Build](#build)
+    - [Plan](#plan)
+      - [Plan Flow](#plan-flow)
+    - [Deploy](#deploy)
+      - [Deployment Fow](#deployment-fow)
+    - [Destroy](#destroy)
+      - [Destroy Flow](#destroy-flow)
+    - [Saving your lab](#saving-your-lab)
+    - [Sharing Lab](#sharing-lab)
+- [Learning](#learning)
+- [Labs](#labs)
+  - [How to create a lab exercise?](#how-to-create-a-lab-exercise)
+  - [How to assign lab exercise?](#how-to-assign-lab-exercise)
+- [Mock Cases](#mock-cases)
+  - [How to create a mock case?](#how-to-create-a-mock-case)
+  - [How to deploy a mock case?](#how-to-deploy-a-mock-case)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -54,11 +63,26 @@ Important points to note
 - All your data is stored in a storage account in '_repro-project_' resource group of your subscription. If you delete this storage account, all data will be lost. We don't keep a copy of your data.
 - Make sure there is exactly one storage account in '_repro-project_' resource group. If you create additional storage accounts in this resource-group, you will see unexpected behaviors.
 
-> If this is the first time you are setting up. It will take sometime to download the image. After its cached it should be faster every othertime. 
+> If this is the first time you are setting up. It will take sometime to download the image. After its cached it should be faster every othertime.
 
-## Lab
+## Server
 
-### What is a lab?
+The server you started in docker is a ubuntu VM with following components installed on it.
+
+- Azure CLI
+- Terraform
+- Go
+- Helm
+- Git
+- kubectl
+- openshift cli
+- redis
+
+## Builder
+
+[Builder](https://actlabs.azureedge.net/builder) is used to build a [lab](#lab)
+
+### Lab
 
 In simplest term a Lab is a scenario that you would want to create. For example, you may want to create an AKS cluster with following specifications.
 
@@ -127,11 +151,14 @@ This is what a lab object looks like.
 }
 ```
 
-### Deploy
+Lab consists of two important parts.
 
-In a nutshell this will deploy the lab. This is a two step process.
+- [Template](#template)
+- [Extension Script](#extension-script)
 
-- [terraform apply](https://developer.hashicorp.com/terraform/cli/commands/apply) - when you hit _'Deploy'_ button, first, terraform part of the lab is deployed. The lab object contains 'template' object. These are the values that server will translate to terraform variables and set them as environmetn variables in [server](#server). After the terraform apply is successfuly, [execention script](#extension-script) will be executed.
+### Template
+
+Template is a collection of objects and is part of lab object. For example in the object share above, following is the template.
 
 ```json
 "template": {
@@ -167,81 +194,11 @@ In a nutshell this will deploy the lab. This is a two step process.
  }
 ```
 
-#### Deployment Fow
+Go server running in docker container translates this template to TF_VAR environment variables which are then used by [Terraform](#builder) code to deploy resources the way desired. We use [builder](#builder) to modify the template which then influences what the targeted deployment would look like.
 
-```mermaid
-sequenceDiagram
-App ->> Server : Deploy Request
-Server ->> Azure : Terraform Apply
-Azure ->> Server: Success
-Server ->> App: Success
-App ->> Server: Extension Script (Deploy)
-Azure ->> Server: Pull Terraform Output
-Server ->> Azure: Exteion Script (Deploy)
-Azure ->> Server: Success
-Server ->> App: Success
-```
+Template is already providing us greater flexibility in acheiving complex scenarios with ease. But, its not doing it all. And, probably will never be able to. To achieve more flexibility, we have [Extension Script](#extension-script).
 
-- [extension script](#extension-script) - extension script is a huge topic, its covered in its own section.
-
-_**Note:** Its important that you [Plan](#plan) before deploymnet to avoid accidently deleting stuff that you dont want to._
-
-### Plan
-
-You can do a [`terraform plan`](https://developer.hashicorp.com/terraform/cli/commands/plan) using '_Plan_' button in [Builder](#builder). This will generate a terrafrom plan and you will be able to see output.
-
-I highly recommend to run a plan before deploymnet just to be sure you dont accidently delete stuff you dont intend to.
-
-_**Note**: [Extension script](#extension-script) is not tested/executed in plan mode_
-
-#### Plan Flow
-
-```mermaid
-sequenceDiagram
-App ->> Server : Terraform Plan
-Server ->> App: Success
-```
-
-### Destroy
-
-You can destroy the resources created with this tool by using '_Destroy_' button. It executes [extension script](#destroy-mode) in destroy mode and then executes [terraform destroy](https://developer.hashicorp.com/terraform/cli/commands/destroy)
-
-#### Destroy Flow
-
-```mermaid
-sequenceDiagram
-App ->> Server : Detroy Request
-Azure ->> Server : Pull Terraform Output
-Server ->> Azure : Extension Script (Destroy Mode)
-Azure ->> Server: Success
-Server ->> App: Success
-App ->> Server: Terraform Destroy
-Server ->> Azure: Terraform Destroy
-Azure ->> Server: Success
-Server ->> App: Success
-```
-
-### Saving your lab
-
-You should be able to recreate simple scenarios easily. But for complex scenarios especially when you end up using [Extension Script](#extension-script) then it becomes absolutely necessary to save your work. You can use '_Save_' button in [Builder](#builder) to save your work. You will be presented with a form and following information will be requested.
-
-- **Name:**: I know it's hard to name stuff. But try your best to give one liner introduction of your lab.
-- **Description**: Add as much information as humanly possible. It's important that you get the idea of what this lab does when you come back later after a month and shouldn't have to read the extension script. trust me, it's important.
-- **Tags**: Plan is to add search feature later which will help you find labs based on tags, something like tags in stack overflow.
-- **Template**: This is auto populated.
-- **Extension Script**: This is auto populated.
-
-- **Update**: This will update the existing lab.
-- **Save as New**: This will save as a new lab. Use this to make a copy of your existing lab.
-
-### Sharing Lab
-
-- **Export** - You can use '_Export_' button in [Builder](#builder) to export lab to a file, which then can be shared with anyone, and they can use this to import and use.
-- **Import** - You can use '_Import_' button in [Builder](#builder) to import lab from a file. You can then [Save](#saving-your-lab) it in your templates.
-- **[Shared Templates](https://actlabs.azureedge.net/templates)** - There are some pre-built labs that you can use to get a head start.
-- **Contributing to shared templates.** - _Coming soon_
-
-## Extension Script
+### Extension Script
 
 Extension script gives you the ability to go beyond what this tool can do out of the box and be really creative. You can use this to do everything that can be done using Azure CLI. Some examples use cases are:
 
@@ -250,14 +207,14 @@ Extension script gives you the ability to go beyond what this tool can do out of
 - Adding additional node pools to your cluster.
 - Ordering food online for free. Well, not that, but you get the idea.
 
-### How this works?
+#### How this works?
 
 This script runs in two primary modes.
 
 - Deploy
 - Destroy
 
-#### Deploy (Extend) Mode
+##### Deploy (Extend) Mode
 
 When click '**Deploy**' button, the base infra is deployed using terraform code. After that completes successfully, extension script is deployed. Both these steps happen automatically in order. Since extension script runs after terraform apply is finished. It has access to terraform output.
 When running in deploy (extend) mode, 'extend' function is called.
@@ -271,7 +228,7 @@ function extend() {
 
 _See [deployment flow](#deployment-fow)_
 
-#### Destroy Mode
+##### Destroy Mode
 
 When click '**Destroy**' button, first, extension script runs in destroy mode, and lets you delete the resources that were created in deploy mode. Or do any other activity that must be done gracefully before resources are destroyed.
 When running in destroy mode, 'destroy' function is called.
@@ -285,7 +242,7 @@ function destroy() {
 
 _See [destroy flow](#destroy-flow)_
 
-### Environment Variables
+#### Environment Variables
 
 Following environment variables are available for script to use. There may be other variables that are not in this list. Any terraform output is automatically added as an even variable for extension script. For example, terraform output "resource_group" is automatically added as an env variable "RESOURCE_GROUP". You can see entire terraform output in the deployment logs.
 | Variable | Description |
@@ -302,7 +259,7 @@ Following environment variables are available for script to use. There may be ot
 | CLUSTER_MSI_ID | Clusters managed identity ID. |
 | KUBELET_MSI_ID | Kubelet's managed identity |
 
-### Shared Functions
+#### Shared Functions
 
 There are few things that almost all scripts will do. We are aware of these and added them as shared functions which are available to the script and are ready for use.
 
@@ -563,10 +520,147 @@ EOF
 }
 ```
 
-## Builder
+### Lab Lifecycle
 
-[Builder](https://actlabs.azureedge.net/builder)
+```mermaid
+sequenceDiagram
+App ->> Server : Build
+App ->> Storage Account : Save
+Storage Account ->> App: Load To Builder
+App ->> Server: Plan
+App ->> Server: Deploy
+App ->> Server: Destroy
+```
 
-## Server
+#### Build
 
-TODO: Add more details about server.
+A lab is built using [Builder](#builder). Flags in builder can be used to build a tempalte and if needed, extension script can be used to extend it even furhter. A lab is not [saved](#saving-your-lab) by default.
+
+#### Plan
+
+You can do a [`terraform plan`](https://developer.hashicorp.com/terraform/cli/commands/plan) using '_Plan_' button in [Builder](#builder). This will generate a terrafrom plan and you will be able to see output.
+
+I highly recommend to run a plan before deploymnet just to be sure you dont accidently delete stuff you dont intend to.
+
+_**Note**: [Extension script](#extension-script) is not tested/executed in plan mode_
+
+##### Plan Flow
+
+```mermaid
+sequenceDiagram
+App ->> Server : Terraform Plan
+Server ->> App: Success
+```
+
+#### Deploy
+
+In a nutshell this will deploy the lab. This is a two step process.
+
+- [terraform apply](https://developer.hashicorp.com/terraform/cli/commands/apply) - when you hit _'Deploy'_ button, first, terraform part of the lab is deployed. The lab object contains 'template' object. These are the values that server will translate to terraform variables and set them as environment variables in [server](#server). After the terraform apply is successfuly, [execention script](#extension-script) will be executed.
+
+##### Deployment Fow
+
+```mermaid
+sequenceDiagram
+App ->> Server : Deploy Request
+Server ->> Azure : Terraform Apply
+Azure ->> Server: Success
+Server ->> App: Success
+App ->> Server: Extension Script (Deploy)
+Azure ->> Server: Pull Terraform Output
+Server ->> Azure: Exteion Script (Deploy)
+Azure ->> Server: Success
+Server ->> App: Success
+```
+
+- [extension script](#extension-script) - extension script is a huge topic, its covered in its own section.
+
+_**Note:** Its important that you [Plan](#plan) before deploymnet to avoid accidently deleting stuff that you dont want to._
+
+#### Destroy
+
+You can destroy the resources created with this tool by using '_Destroy_' button. It executes [extension script](#destroy-mode) in destroy mode and then executes [terraform destroy](https://developer.hashicorp.com/terraform/cli/commands/destroy)
+
+##### Destroy Flow
+
+```mermaid
+sequenceDiagram
+App ->> Server : Detroy Request
+Azure ->> Server : Pull Terraform Output
+Server ->> Azure : Extension Script (Destroy Mode)
+Azure ->> Server: Success
+Server ->> App: Success
+App ->> Server: Terraform Destroy
+Server ->> Azure: Terraform Destroy
+Azure ->> Server: Success
+Server ->> App: Success
+```
+
+#### Saving your lab
+
+You should be able to recreate simple scenarios easily. But for complex scenarios especially when you end up using [Extension Script](#extension-script) then it becomes absolutely necessary to save your work. You can use '_Save_' button in [Builder](#builder) to save your work. You will be presented with a form and following information will be requested.
+
+- **Name:**: I know it's hard to name stuff. But try your best to give one liner introduction of your lab.
+- **Description**: Add as much information as humanly possible. It's important that you get the idea of what this lab does when you come back later after a month and shouldn't have to read the extension script. trust me, it's important.
+- **Tags**: Plan is to add search feature later which will help you find labs based on tags, something like tags in stack overflow.
+- **Template**: This is auto populated.
+- **Extension Script**: This is auto populated.
+
+- **Update**: This will update the existing lab.
+- **Save as New**: This will save as a new lab. Use this to make a copy of your existing lab.
+
+#### Sharing Lab
+
+- **Export** - You can use '_Export_' button in [Builder](#builder) to export lab to a file, which then can be shared with anyone, and they can use this to import and use.
+- **Import** - You can use '_Import_' button in [Builder](#builder) to import lab from a file. You can then [Save](#saving-your-lab) it in your templates.
+- **[Shared Templates](https://actlabs.azureedge.net/templates)** - There are some pre-built labs that you can use to get a head start.
+- **Contributing to shared templates.** - _Coming soon_
+
+## Learning
+
+If you are going thru L100 or other internal trainings, you will be assigned labs by your mentor. Once the labs are assigned you should be able to see them here. If you dont see any labs, none is assigned to you.
+
+After a lab is assigned you can
+
+- [Deploy](#deploy)
+- Troubleshoot and fix the problem.
+- Use '_Validate_' button to check if the fix you applied is valid.
+- After successful validatio, get in touch with your mentor.
+- [Destroy](#destroy)
+
+> If you are planning to work multiple labs at once you need to use different worksapces for each lab. Check Terraform > Workspaces.
+
+## Labs
+
+> This part of tool is only accessible to ACT Readiness team. If you are not able to access/view this but should be please reachout to ACT Readiness Team.
+
+### How to create a lab exercise?
+
+Labs for Readiness traning can be built using [Builder](#builder). When saving lab, select '_labexercise_' as the type of lab. One additional requirement readiniess labs has is the validation script which is part of extension-script. You can write validation code in `function validate()` section of the script and it will be run when user hits '_Validate_' button in [Learning](#learning) section on the assigned lab. For any additional questions, please reachout to readiness team.
+
+### How to assign lab exercise?
+
+Lab can only be assigned to an engineer by a priviledged user. To assign a lab.
+
+- Navigate to [Labs](https://actlabs.azureedge.net/labs)
+- Find the lab you would want to assign.
+- Enter user's alias and hit '_Assign_' button.
+- You will see confirmation of assignment or Failure if any. If you get Failure, please ensure the user's alias is correct. If issue persists, please reachout to ACT readiness team.
+- After assignment is done, you will be able to manage [assingments here](https://actlabs.azureedge.net/assignments)
+
+## Mock Cases
+
+> This part of tool is only accessible to ACT Readiness team. If you are not able to access/view this but should be please reachout to ACT Readiness Team.
+
+### How to create a mock case?
+
+Mock cases can be built using [Builder](#builder). When saving lab, select '_mockcase_' as the type of lab. For any additional questions, please reachout to readiness team.
+
+### How to deploy a mock case?
+
+- Its not required, but recommended that you create mock cases in isolated workspaces.
+- Add a new workspace or ensure that correct work space is selected.
+- Navigate to [mock cases](https://actlabs.azureedge.net/mocks)
+- Use '_Deploy_' button to deploy the mock case that you would want to.
+- Go to Azure portal and create the case BAU.
+
