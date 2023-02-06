@@ -636,7 +636,7 @@ After a lab is assigned you can
 
 ### How to create a lab exercise?
 
-Labs for Readiness traning can be built using [Builder](#builder). When saving lab, select '_labexercise_' as the type of lab. One additional requirement readiniess labs has is the validation script which is part of extension-script. You can write validation code in `function validate()` section of the script and it will be run when user hits '_Validate_' button in [Learning](#learning) section on the assigned lab. For any additional questions, please reachout to readiness team.
+Labs for Readiness traning can be built using [Builder](#builder). When [saving lab](#saving-your-lab), select '_labexercise_' as the type of lab. One additional requirement readiniess labs has is the validation script which is part of extension-script. You can write validation code in `function validate()` section of the script and it will be run when user hits '_Validate_' button in [Learning](#learning) section on the assigned lab. For any additional questions, please reachout to readiness team.
 
 ### How to assign lab exercise?
 
@@ -654,7 +654,7 @@ Lab can only be assigned to an engineer by a priviledged user. To assign a lab.
 
 ### How to create a mock case?
 
-Mock cases can be built using [Builder](#builder). When saving lab, select '_mockcase_' as the type of lab. For any additional questions, please reachout to readiness team.
+Mock cases can be built using [Builder](#builder). When [saving lab](#saving-your-lab), select '_mockcase_' as the type of lab. For any additional questions, please reachout to readiness team.
 
 ### How to deploy a mock case?
 
