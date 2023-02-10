@@ -5,12 +5,12 @@
 export ROOT_DIR=$(pwd)
 
 if [[ "${SAS_TOKEN}" == "" ]]; then
-    echo "SAS URL missing"
+    echo "SAS TOKEN missing"
     exit 1
 fi
 
 if [[ "${STORAGE_ACCOUNT_NAME}" == "" ]]; then
-    echo "SAS URL missing"
+    echo "STORAGE ACCOUNT NAME missing"
     exit 1
 fi
 
