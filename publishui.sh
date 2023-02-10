@@ -12,7 +12,7 @@ export NVM_DIR="$HOME/.nvm"
 cd app/interface 
 
 if [[ "$1" == "" ]]; then
-    sa="ashisverma"
+    sa="actlabs"
 else
     sa=$1
 fi

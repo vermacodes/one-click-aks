@@ -1,4 +1,4 @@
-FROM ashishvermapu/repro_base
+FROM actlab.azurecr.io/repro_base
 
 WORKDIR /app
 

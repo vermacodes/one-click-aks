@@ -30,5 +30,5 @@ docker build -t repro .
 cd ./app/server
 rm server
 
-docker tag repro ashishvermapu/repro:latest
-docker push ashishvermapu/repro:latest
+docker tag repro actlab.azurecr.io/repro:latest
+docker push actlab.azurecr.io/repro:latest
