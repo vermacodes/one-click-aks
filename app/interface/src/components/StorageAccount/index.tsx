@@ -28,7 +28,9 @@ export default function StorageAccount({}: Props) {
         ) : (
           <>
             {storageAccount && storageAccount.storageAccount.name !== "" ? (
-              <p>{storageAccount.storageAccount.name}</p>
+              <p className="rounded border border-slate-500 px-3 py-1">
+                {storageAccount.storageAccount.name}
+              </p>
             ) : (
               <Button
                 variant="primary"

@@ -136,22 +136,19 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
               </button>
             </li>
             <li>
-              <button
-                className={`items-center justify-center border-b-2 border-transparent py-1 text-2xl hover:border-b-sky-400 hover:text-sky-400`}
-                onClick={() => setShowSettingsModal(!showSettingsModal)}
-              >
-                <FaCog />
-              </button>
+              <Link to={"/settings"}>
+                <button
+                  className={`items-center justify-center border-b-2 border-transparent py-1 text-2xl hover:border-b-sky-400 hover:text-sky-400`}
+                >
+                  <FaCog />
+                </button>
+              </Link>
             </li>
             <li>
               <LoginButton />
             </li>
           </ul>
         </div>
-        <Settings
-          showModal={showSettingsModal}
-          setShowModal={setShowSettingsModal}
-        />
       </div>
     </nav>
   );

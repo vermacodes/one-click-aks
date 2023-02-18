@@ -9,6 +9,7 @@ import MockCases from "./pages/MockCases";
 import Labs from "./pages/Labs";
 import Assignments from "./pages/Assignments";
 import Start from "./pages/Start";
+import Settings from "./pages/Settings";
 
 function App() {
   const [darkMode, setDarkMode] = useState<boolean>(true);
@@ -51,6 +52,7 @@ function App() {
         <Route path="/mockcases" element={<MockCases />} />
         <Route path="/assignments" element={<Assignments />} />
         <Route path="/start" element={<Start />} />
+        <Route path="/settings" element={<Settings />} />
       </Routes>
     </div>
   );
