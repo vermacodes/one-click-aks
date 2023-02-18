@@ -29,9 +29,37 @@ function list() {
     terraform state list
 }
 
+function getSecertsFromKeyVault() {
+    # Following two are already availabe.
+    export ARM_SUBSCRIPTION_ID=$(az account show --output json | jq -r .id)
+    export ARM_TENANT_ID=$(az account show --output json | jq -r .tenantId)
+
+    # Resource group need not be changed.
+    RESOURCE_GROUP_NAME="repro-project"
+
+    log "Pulling secrets from keyvault. This will take just a few moments."
+
+    # Get the name of the Key Vault in the resource group
+    KEY_VAULT_NAME=$(az keyvault list --resource-group "${RESOURCE_GROUP_NAME}" --query "[].name" -o tsv)
+
+    # Get a list of all secrets in the Key Vault
+    SECRET_NAMES=$(az keyvault secret list --vault-name "${KEY_VAULT_NAME}" --query "[].name" -o tsv)
+
+    # Loop through the list of secrets and set them as environment variables
+    for SECRET_NAME in $SECRET_NAMES
+    do
+        ENV_VAR_NAME=$(echo "$SECRET_NAME" | tr '[:lower:]' '[:upper:]' | tr '-' '_')
+        SECRET_VALUE=$(az keyvault secret show --vault-name "${KEY_VAULT_NAME}" --name "${SECRET_NAME}" --query "value" -o tsv)
+        export "${ENV_VAR_NAME}"="${SECRET_VALUE}"
+    done
+}
+
 ##
 ## Script starts here.
 ##
+
+# Getting secrets from keyvault.
+getSecertsFromKeyVault
 
 cd $root_directory/$terraform_directory
 log "Terraform Environment Variables"
