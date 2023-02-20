@@ -15,7 +15,7 @@ export default function Subscription({ section, setSection }: Props) {
         className="flex flex-col justify-center space-y-12"
         onClick={() => setSubscriptionMenu(false)}
       >
-        <h1 className="text-center text-9xl">Subscription ☁️</h1>
+        <h1 className="text-center text-8xl">Subscription ☁️</h1>
         <p className="text-3xl text-slate-500">
           Ok, select your lab subscription that you would want this tool to
           configure storage account in and deploy resources to. After selection,
@@ -27,14 +27,14 @@ export default function Subscription({ section, setSection }: Props) {
         />
         <div className="flex justify-between">
           <Button variant="primary" onClick={() => setSection("login")}>
-            {"< Previous"}
+            {"← Previous"}
           </Button>
           <Button
             variant="primary"
             disabled={!(loginStatus.data !== undefined && loginStatus.data)}
             onClick={() => setSection("storage")}
           >
-            {"Next >"}
+            {"Next →"}
           </Button>
         </div>
       </div>

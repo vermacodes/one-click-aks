@@ -62,7 +62,7 @@ export default function Server({ section, setSection }: Props) {
   return (
     <section className={`${section !== "server" && "hidden"} `}>
       <div className="flex flex-col justify-center space-y-12">
-        <h1 className="text-center text-9xl">Server 🖥️</h1>
+        <h1 className="text-center text-8xl">Server 🖥️</h1>
         {data && data.status == "OK" ? serverRunning : serverNotRunning}
         <div className="flex justify-end">
           <Button
@@ -70,7 +70,7 @@ export default function Server({ section, setSection }: Props) {
             disabled={!(data && data.status == "OK")}
             onClick={() => setSection("login")}
           >
-            {"Next >"}
+            {"Next →"}
           </Button>
         </div>
       </div>

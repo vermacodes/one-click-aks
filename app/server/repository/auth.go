@@ -15,7 +15,7 @@ func NewAuthRepository() entity.AuthRepository {
 }
 
 func (a *authRepository) Login() (*exec.Cmd, *os.File, *os.File, error) {
-	cmd := exec.Command("bash", "-c", "az login --use-device-code")
+	cmd := exec.Command(os.ExpandEnv("$ROOT_DIR") + "/scripts/service_principal_configuration.sh")
 	rPipe, wPipe, err := os.Pipe()
 	if err != nil {
 		return cmd, rPipe, wPipe, err
@@ -107,6 +107,26 @@ func (a *authRepository) IsMentor(user string) (bool, error) {
 
 func (a *authRepository) DeleteAllCache() error {
 	return deleteAllRedis()
+}
+
+func (a *authRepository) Logout() error {
+	_, err := exec.Command("bash", "-c", "az logout").Output()
+	return err
+}
+
+func (a *authRepository) ConfigureServicePrincipal() (*exec.Cmd, *os.File, *os.File, error) {
+	cmd := exec.Command(os.ExpandEnv("$ROOT_DIR") + "/scripts/service_principal_configuration.sh")
+	rPipe, wPipe, err := os.Pipe()
+	if err != nil {
+		return cmd, rPipe, wPipe, err
+	}
+	cmd.Stdout = wPipe
+	cmd.Stderr = wPipe
+	if err := cmd.Start(); err != nil {
+		return cmd, rPipe, wPipe, err
+	}
+
+	return cmd, rPipe, wPipe, nil
 }
 
 func helperContains(s []byte, str string) (bool, error) {

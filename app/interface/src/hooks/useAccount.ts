@@ -103,3 +103,11 @@ export function useGetPriviledge() {
     },
   });
 }
+
+function configureServicePrincipal() {
+  return axiosInstance.post("service-principal");
+}
+
+export function useConfigureServicePrincipal() {
+  return useMutation(configureServicePrincipal, {});
+}

@@ -4,7 +4,6 @@ action=$1
 
 source $ROOT_DIR/scripts/helper.sh
 
-
 function plan() {
     log "Planning"
     terraform plan
@@ -53,8 +52,7 @@ function getSecertsFromKeyVault() {
     fi
 
     # Loop through the list of secrets and set them as environment variables
-    for SECRET_NAME in $SECRET_NAMES
-    do
+    for SECRET_NAME in $SECRET_NAMES; do
         ENV_VAR_NAME=$(echo "$SECRET_NAME" | tr '[:lower:]' '[:upper:]' | tr '-' '_')
         SECRET_VALUE=$(az keyvault secret show --vault-name "${KEY_VAULT_NAME}" --name "${SECRET_NAME}" --query "value" -o tsv)
         if [ $? -ne 0 ]; then

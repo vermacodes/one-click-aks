@@ -29,7 +29,7 @@ function create_keyvault() {
         fi
 
         # Give the current user full access to secrets in the key vault
-        az keyvault set-policy --name "${KEY_VAULT_NAME}" --resource-group "${RESOURCE_GROUP}" --upn "${USER_NAME}" --secret-permissions get set list delete backup restore recover-purge
+        az keyvault set-policy --name "${KEY_VAULT_NAME}" --resource-group "${RESOURCE_GROUP}" --upn "${USER_NAME}" --secret-permissions get set list delete backup restore recover purge
         if [ $? -ne 0 ]; then
             err "Failed to set policy for key vault ${KEY_VAULT_NAME}"
             return 1
@@ -43,8 +43,6 @@ function create_keyvault() {
 
 # Function to create a service principal and set its credentials as secrets in the key vault
 function create_service_principal() {
-    # Define the service principal name
-    SP_NAME="${USER_ALIAS}-actlabs"
 
     log "getting key vault name in resource group ${RESOURCE_GROUP}"
     KEY_VAULT_NAME=$(az keyvault list --resource-group "${RESOURCE_GROUP}" --query "[].name" -o tsv)
@@ -53,13 +51,14 @@ function create_service_principal() {
     log "checking if secrets arm-client-id and arm-client-secret exist in key vault ${KEY_VAULT_NAME}"
 
     # Get the secrets from the key vault
-    ID_SECRET=$(az keyvault secret show --name "arm-client-id" --vault-name "${KEY_VAULT_NAME}" --query "value" -o tsv)
-    SECRET_SECRET=$(az keyvault secret show --name "arm-client-secret" --vault-name "${KEY_VAULT_NAME}" --query "value" -o tsv)
+    # Uncomment following lines to not reset the secrets if they exist in the key vault.
+    # ID_SECRET=$(az keyvault secret show --name "arm-client-id" --vault-name "${KEY_VAULT_NAME}" --query "value" -o tsv)
+    # SECRET_SECRET=$(az keyvault secret show --name "arm-client-secret" --vault-name "${KEY_VAULT_NAME}" --query "value" -o tsv)
 
-    if [[ -n "${ID_SECRET}" && -n "${SECRET_SECRET}" ]]; then
-        log "Secrets arm-client-id and arm-client-secret already exist in key vault ${KEY_VAULT_NAME}"
-        return 0
-    fi
+    # if [[ -n "${ID_SECRET}" && -n "${SECRET_SECRET}" ]]; then
+    #     log "Secrets arm-client-id and arm-client-secret already exist in key vault ${KEY_VAULT_NAME}"
+    #     return 0
+    # fi
 
     # Check if the service principal already exists
     log "checking if service principal ${SP_NAME} exists"
@@ -70,7 +69,7 @@ function create_service_principal() {
 
         # Reset the password for the existing service principal
         log "resetting password for service principal ${SP_NAME}"
-        SP_PASSWORD=$(az ad sp credential reset --name "${SP_NAME}" --query "password" -o tsv)
+        SP_PASSWORD=$(az ad sp credential reset --id "${SP_APP_ID}" --query "password" -o tsv)
         if [ $? -ne 0 ]; then
             err "Failed to reset password for service principal ${SP_NAME}"
             return 1
@@ -115,9 +114,7 @@ function create_service_principal() {
     return 0
 }
 
-function add_service_principal_as_contributor() {
-    # Define the service principal name
-    SP_NAME="${USER_ALIAS}-actlabs"
+function grant_access_to_service_principal() {
 
     # Get the service principal's objectId
     log "getting objectId for service principal ${SP_NAME}"
@@ -150,6 +147,21 @@ function add_service_principal_as_contributor() {
         log "Service principal ${SP_NAME} added as a Contributor for subscription ${SUBSCRIPTION_ID}"
     fi
 
+    # Check if the service principal is already a user access administrator for the subscription.
+    if [[ $(az role assignment list --assignee "${SP_OBJECT_ID}" --role "User Access Administrator" --scope "/subscriptions/${SUBSCRIPTION_ID}" --query "[].id" -o tsv) ]]; then
+        log "Service principal ${SP_NAME} is already a User Access Administrator for subscription ${SUBSCRIPTION_ID}"
+    else
+        # Add the service principal as a User Access Administrator for the subscription
+        az role assignment create --assignee "${SP_OBJECT_ID}" --role "User Access Administrator" --scope "/subscriptions/${SUBSCRIPTION_ID}"
+        if [ $? -ne 0 ]; then
+            err "Failed to add service principal ${SP_NAME} as a User Access Administrator for subscription ${SUBSCRIPTION_ID}"
+            return 1
+        fi
+
+        # Print a message confirming the role assignment
+        log "Service principal ${SP_NAME} added as a User Access Administrator for subscription ${SUBSCRIPTION_ID}"
+    fi
+
     return 0
 }
 
@@ -157,8 +169,10 @@ function add_service_principal_as_contributor() {
 RESOURCE_GROUP="repro-project"
 USER_NAME=$(az account show --query "user.name" -o tsv)
 USER_ALIAS=$(az account show --query user.name -o tsv | cut -d '@' -f1)
+SP_NAME="${USER_ALIAS}-actlabs"
 
 # Create the key vault
+ok "configuration started. This may take a few minutes..."
 if create_keyvault; then
     log "Key vault setup complete"
 else
@@ -175,9 +189,12 @@ else
 fi
 
 # Add the service principal as a contributor to the subscription
-if add_service_principal_as_contributor; then
+if grant_access_to_service_principal; then
     log "Service principal access setup complete"
 else
     err "Failed to add service principal as a contributor to the subscription"
     exit 1
 fi
+ok "configuration complete"
+
+sleep 2s

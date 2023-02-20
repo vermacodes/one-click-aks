@@ -287,6 +287,58 @@ func (a *authService) GetPriveledges() (entity.Priviledge, error) {
 	return privilegde, nil
 }
 
+func (a *authService) Logout() error {
+	if err := a.authRepository.Logout(); err != nil {
+		slog.Error("not able to logout", err)
+		return err
+	}
+
+	return nil
+}
+
+func (a *authService) ConfigureServicePrincipal() (entity.ServicePrincipalConfig, error) {
+	servicePrincipalConfig := entity.ServicePrincipalConfig{}
+
+	// Get service principal config from redis.
+	cmd, rPipe, wPipe, err := a.authRepository.ConfigureServicePrincipal()
+	if err != nil {
+		slog.Error("not able to run cli command to configure service principal", err)
+		return servicePrincipalConfig, err
+	}
+
+	// GO routine that takes care of running command and moving logs to redis.
+	go func(input io.ReadCloser) {
+		in := bufio.NewScanner(input)
+
+		// This will continue adding logs to existing logs.
+		// If couldn't get existing logs, then just start from scratch.
+		// If existing logs are not supposed to be shown, then client is expected to reset
+		// before using APIs.
+		logStream, err := a.logStreamService.GetLogs()
+		if err != nil {
+			slog.Error("not able to get logs", err)
+			logStream = entity.LogStream{
+				IsStreaming: true,
+				Logs:        "",
+			}
+		}
+
+		for in.Scan() {
+			logStream.Logs = logStream.Logs + fmt.Sprintf("%s\n", in.Text()) // Appening 'end' to signal stream end.
+			a.logStreamService.SetLogs(logStream)
+		}
+		input.Close()
+	}(rPipe)
+
+	err = cmd.Wait()
+	wPipe.Close()
+	a.logStreamService.EndLogStream()
+	if err == nil {
+		servicePrincipalConfig.IsServicePrincipalConfigured = true
+	}
+	return servicePrincipalConfig, err
+}
+
 func helperIsTokenValid(accessToken entity.AccessToken) (entity.LoginStatus, error) {
 	loginStatus := entity.LoginStatus{}
 

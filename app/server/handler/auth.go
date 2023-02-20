@@ -30,6 +30,7 @@ func NewAuthHandler(r *gin.RouterGroup, service entity.AuthService) {
 	r.GET("/accounts", handler.GetAccounts)
 	r.PUT("/account", handler.SetAccount)
 	r.GET("/privilege", handler.GetPrivileges)
+	r.POST("/service-principal", handler.ConfigureServicePrincipal)
 }
 
 func (a *authHandler) Login(c *gin.Context) {
@@ -95,4 +96,14 @@ func (a *authHandler) GetPrivileges(c *gin.Context) {
 		return
 	}
 	c.IndentedJSON(http.StatusOK, privilege)
+}
+
+func (a *authHandler) ConfigureServicePrincipal(c *gin.Context) {
+	servicePrincipalConfig, err := a.authService.ConfigureServicePrincipal()
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, servicePrincipalConfig)
 }
