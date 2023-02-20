@@ -15,7 +15,7 @@ func NewAuthRepository() entity.AuthRepository {
 }
 
 func (a *authRepository) Login() (*exec.Cmd, *os.File, *os.File, error) {
-	cmd := exec.Command(os.ExpandEnv("$ROOT_DIR") + "/scripts/service_principal_configuration.sh")
+	cmd := exec.Command("bash", "-c", "az login --use-device-code")
 	rPipe, wPipe, err := os.Pipe()
 	if err != nil {
 		return cmd, rPipe, wPipe, err

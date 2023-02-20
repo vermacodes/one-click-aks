@@ -1,6 +1,16 @@
 #!/bin/bash
 
-source $ROOT_DIR/scripts/helper.sh
+err() {
+  echo -e "${RED}[$(date +'%Y-%m-%dT%H:%M:%S%z')]: ERROR - $* ${NC}" >&1
+}
+
+log() {
+  echo -e "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: INFO - $*" >&1
+}
+
+ok() {
+  echo -e "${GREEN}[$(date +'%Y-%m-%dT%H:%M:%S%z')]: INFO - $* ${NC}" >&1
+}
 
 # Function to check if a key vault exists in a resource group
 # If the key vault doesn't exist, create one with a random name

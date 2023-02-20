@@ -17,4 +17,4 @@ else
     sa=$1
 fi
 
-npm run build && cd dist && az storage blob upload-batch -d '$web' --account-name ${sa} -s "." --overwrite
+npm run build && cd dist && az storage blob upload-batch -d '$web' --account-name ${sa} -s "." --overwrite --subscription ACT-CSS-Readiness
