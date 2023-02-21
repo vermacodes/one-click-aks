@@ -128,7 +128,7 @@ export default function ServicePrincipal({ section, setSection }: Props) {
               disabled={!configured}
               onClick={() => setLogs({ isStreaming: false, logs: "" })}
             >
-              {"Finish"}
+              {"Finish ✓"}
             </Button>
           </Link>
         </div>
