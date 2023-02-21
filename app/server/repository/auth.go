@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"encoding/json"
 	"os"
 	"os/exec"
 
@@ -131,10 +130,21 @@ func (a *authRepository) ConfigureServicePrincipal() (*exec.Cmd, *os.File, *os.F
 
 func helperContains(s []byte, str string) (bool, error) {
 
-	var res []string
-	err := json.Unmarshal(s, &res)
-	if err != nil {
-		return false, err
+	// var res []string
+	// err := json.Unmarshal(s, &res)
+	// if err != nil {
+	// 	return false, err
+	// }
+
+	res := []string{
+		"bparke@microsoft.com",
+		"evalan@microsoft.com",
+		"anschul@microsoft.com",
+		"akathimi@microsoft.com",
+		"mnallago@microsoft.com",
+		"amargherio@microsoft.com",
+		"ericlucier@microsoft.com",
+		"ashisverma@microsoft.com",
 	}
 
 	for _, v := range res {
