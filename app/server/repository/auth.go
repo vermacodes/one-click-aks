@@ -86,22 +86,25 @@ func (a *authRepository) DeleteAccountsFromRedis() error {
 }
 
 func (a *authRepository) IsAdmin(user string) (bool, error) {
-	out, err := exec.Command("bash", "-c", "az ad group member list --group 708d0729-779a-4f47-9ce0-393b839dad4f --output json --query [].userPrincipalName").Output()
-	if err != nil {
-		return false, err
-	}
-	return helperContains(out, user)
+	// out, err := exec.Command("bash", "-c", "az ad group member list --group 708d0729-779a-4f47-9ce0-393b839dad4f --output json --query [].userPrincipalName").Output()
+	// if err != nil {
+	// 	return false, err
+	// }
+	// return helperContains(out, user)
+
+	var empty []byte
+	return helperContains(empty, user)
 }
 
 func (a *authRepository) IsMentor(user string) (bool, error) {
-	out, err := exec.Command("bash", "-c", "az ad group member list --group 708d0729-779a-4f47-9ce0-393b839dad4f --output json --query [].userPrincipalName").Output()
-	if err != nil {
-		return false, err
-	}
-	return helperContains(out, user)
+	// out, err := exec.Command("bash", "-c", "az ad group member list --group 708d0729-779a-4f47-9ce0-393b839dad4f --output json --query [].userPrincipalName").Output()
+	// if err != nil {
+	// 	return false, err
+	// }
+	// return helperContains(out, user)
 
-	// var empty []byte
-	// return helperContains(empty, user)
+	var empty []byte
+	return helperContains(empty, user)
 }
 
 func (a *authRepository) DeleteAllCache() error {
@@ -114,7 +117,7 @@ func (a *authRepository) Logout() error {
 }
 
 func (a *authRepository) ConfigureServicePrincipal() (*exec.Cmd, *os.File, *os.File, error) {
-	cmd := exec.Command(os.ExpandEnv("$ROOT_DIR") + "/scripts/service_principal_configuration.sh")
+	cmd := exec.Command(os.ExpandEnv("$ROOT_DIR") + "/scripts/service_principal_validation.sh")
 	rPipe, wPipe, err := os.Pipe()
 	if err != nil {
 		return cmd, rPipe, wPipe, err
