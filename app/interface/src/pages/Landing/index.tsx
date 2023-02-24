@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 export default function Landing() {
   const [copy, setCopy] = useState<boolean>(false);
   const dockerCommand =
-    "docker run --pull=always -d -it -p 8080:8080 actlab.azurecr.io/repro";
+    "docker run --pull=always -d -it -p 8880:80 actlab.azurecr.io/repro";
 
   function handleCommandCopy() {
     navigator.clipboard.writeText(dockerCommand);

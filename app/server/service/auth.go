@@ -172,6 +172,14 @@ func (a *authService) GetLoginStatus() (entity.LoginStatus, error) {
 
 }
 
+func (a *authService) GetAuthToken() (string, error) {
+	out, err := a.authRepository.GetAuthToken()
+	if err != nil {
+		slog.Error("not able to get auth token", err)
+	}
+	return out, err
+}
+
 func (a *authService) GetAccount() (entity.Account, error) {
 	account := entity.Account{}
 

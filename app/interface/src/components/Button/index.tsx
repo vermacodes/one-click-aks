@@ -3,6 +3,7 @@ import { ButtonVariant } from "../../dataStructures";
 
 type Props = {
   variant: ButtonVariant;
+  hidden?: boolean;
   children?: React.ReactNode;
   onClick?(args: any): any;
   onDoubbleClick?(args: any): any;
@@ -11,6 +12,7 @@ type Props = {
 
 export default function Button({
   variant,
+  hidden,
   onClick,
   onDoubbleClick,
   disabled,
@@ -18,7 +20,9 @@ export default function Button({
 }: Props) {
   return (
     <button
-      className={`text-bold rounded border-2 px-4 py-[2px] ${
+      className={`${
+        hidden && "hidden "
+      } text-bold rounded border-2 px-4 py-[2px] ${
         variant === "primary" &&
         " border-sky-500 bg-sky-500 text-white disabled:border-slate-400 disabled:bg-slate-400 hover:border-sky-700 hover:bg-sky-700 disabled:hover:border-slate-400 disabled:hover:bg-slate-400 dark:disabled:border-slate-800 dark:disabled:bg-slate-800 dark:disabled:text-slate-500 "
       } ${

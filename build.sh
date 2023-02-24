@@ -31,4 +31,6 @@ cd ./app/server
 rm server
 
 docker tag repro actlab.azurecr.io/repro:latest
+
+az acr login --name actlab
 docker push actlab.azurecr.io/repro:latest

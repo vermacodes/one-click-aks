@@ -251,4 +251,9 @@ export type ButtonVariant =
 export type Roles = {
   userPrincipal: string;
   roles: string[];
-}
+};
+
+export type RoleMutation = {
+  userPrincipal: string;
+  role: string;
+};

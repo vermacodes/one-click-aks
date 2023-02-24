@@ -22,9 +22,8 @@ function getBaseUrl(): string {
     return baseUrlFromLocalStorage;
   }
 
-  return "http://localhost:8080/";
+  return "http://localhost:8880/";
 }
-
 
 // ACTLabs Auth Service
 
@@ -32,13 +31,12 @@ export const authAxiosInstance = axios.create({
   baseURL: getAuthServiceBaseUrl(),
 });
 
-
 // Function to get auth token. This function is called by the axios interceptor
 async function getAuthToken(): Promise<string> {
   const response = await axiosInstance.get("token", {
     // add your auth credentials here
   });
-  return response.data.token;
+  return response.data;
 }
 
 // Axios interceptor to add the auth token to outgoing requests
@@ -63,5 +61,5 @@ function getAuthServiceBaseUrl(): string {
     return baseUrlFromLocalStorage;
   }
 
-  return "http://localhost:8082/";
+  return "https://actlabs-auth.azurewebsites.net";
 }

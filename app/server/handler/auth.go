@@ -27,6 +27,7 @@ func NewAuthHandler(r *gin.RouterGroup, service entity.AuthService) {
 
 	r.GET("/login", handler.GetLoginStatus)
 	r.GET("/account", handler.GetAccount)
+	r.GET("/token", handler.GetAuthToken)
 	r.GET("/accounts", handler.GetAccounts)
 	r.PUT("/account", handler.SetAccount)
 	r.GET("/privilege", handler.GetPrivileges)
@@ -51,6 +52,16 @@ func (a *authHandler) GetLoginStatus(c *gin.Context) {
 	}
 
 	c.IndentedJSON(http.StatusOK, loginStatus)
+}
+
+func (a *authHandler) GetAuthToken(c *gin.Context) {
+	authToken, err := a.authService.GetAuthToken()
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, authToken)
 }
 
 func (a *authHandler) GetAccount(c *gin.Context) {

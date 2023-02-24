@@ -3,6 +3,7 @@ import { MdOutlineContentCopy, MdDoneOutline } from "react-icons/md";
 import { Link } from "react-router-dom";
 import AzureRegion from "../../components/AzureRegion";
 import AzureSubscription from "../../components/AzureSubscription";
+import AuthServiceEndpoint from "../../components/Config/AuthServiceEndpoint";
 import ServerEndpoint from "../../components/Config/ServerEndpoint";
 import ResetActionStatus from "../../components/ResetActionStatus";
 import ResetServerCache from "../../components/ResetServerCache";
@@ -13,7 +14,7 @@ import TfWorkspace from "../../components/TfWorkspace";
 export default function Settings() {
   const [copy, setCopy] = useState<boolean>(false);
   const dockerCommand =
-    "docker run --pull=always -d -it -p 8080:8080 actlab.azurecr.io/repro";
+    "docker run --pull=always -d -it -p 8880:80 actlab.azurecr.io/repro";
 
   const [subscriptionMenu, setSubscriptionMenu] = useState<boolean>(false);
   const [regionEdit, setRegionEdit] = useState<boolean>(false);
@@ -53,6 +54,7 @@ export default function Settings() {
         <ResetActionStatus />
         <ResetServerCache />
         <ServerEndpoint />
+        <AuthServiceEndpoint />
       </div>
     </div>
   );

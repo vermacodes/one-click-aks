@@ -3,13 +3,13 @@ import { FaCheck, FaEdit, FaTimes } from "react-icons/fa";
 
 type Props = {};
 
-export default function ServerEndpoint({}: Props) {
+export default function AuthServiceEndpoint({}: Props) {
   const [baseUrl, setBaseUrl] = useState<string>("http://localhost:8880/");
   const [showEditButton, setShowEditButton] = useState<boolean>(false);
   const [edit, setEdit] = useState<boolean>(false);
 
   useEffect(() => {
-    const baseUrlFromLocalStorage = localStorage.getItem("baseUrl");
+    const baseUrlFromLocalStorage = localStorage.getItem("authServiceBaseUrl");
     if (
       baseUrlFromLocalStorage != undefined &&
       baseUrlFromLocalStorage !== ""
@@ -51,7 +51,7 @@ export default function ServerEndpoint({}: Props) {
         <button
           className={`${!edit && "hidden"} px-1 text-green-500`}
           onClick={() => {
-            localStorage.setItem("baseUrl", baseUrl);
+            localStorage.setItem("authServiceBaseUrl", baseUrl);
             setEdit(false);
             window.location.reload();
           }}
@@ -70,8 +70,8 @@ export default function ServerEndpoint({}: Props) {
         </button>
       </div>
       <p className="text-xs">
-        Server Endpoint. You probably dont want to edit this unless you know
-        what you are doing. But, if you know, you know. Go ahead.
+        Auth Service Endpoint. You probably dont want to edit this unless you
+        know what you are doing. But, if you know, you know. Go ahead.
       </p>
     </div>
   );

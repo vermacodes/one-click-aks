@@ -2,6 +2,7 @@ import { useState } from "react";
 import { MdClose } from "react-icons/md";
 import AzureRegion from "../../components/AzureRegion";
 import AzureSubscription from "../../components/AzureSubscription";
+import AuthServiceEndpoint from "../../components/Config/AuthServiceEndpoint";
 import ServerEndpoint from "../../components/Config/ServerEndpoint";
 import EndLogStream from "../../components/EndLogStream";
 import ResetActionStatus from "../../components/ResetActionStatus";
@@ -67,6 +68,7 @@ export default function Settings({ showModal, setShowModal }: SettingsProps) {
           <ResetActionStatus />
           <ResetServerCache />
           <ServerEndpoint />
+          <AuthServiceEndpoint />
         </div>
       </div>
     </div>

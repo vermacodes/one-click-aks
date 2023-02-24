@@ -3,7 +3,6 @@ import { FaCog, FaMoon, FaServer, FaSun } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useGetPriviledge } from "../../hooks/useAccount";
 import { useServerStatus } from "../../hooks/useServerStatus";
-import Settings from "../../modals/Settings";
 import Terraform from "../../modals/Terraform";
 import LoginButton from "../Authentication/LoginButton";
 import CurrentTerraformWorkspace from "../CurrentTerraformWorkspace";
@@ -73,6 +72,13 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
                   <Link to={"/assignments"}>
                     <button className="border-b-2 border-transparent py-1 hover:border-b-2 hover:border-b-sky-400 hover:text-sky-400">
                       Assignments
+                    </button>
+                  </Link>
+                </li>
+                <li>
+                  <Link to={"/rbac"}>
+                    <button className="border-b-2 border-transparent py-1 hover:border-b-2 hover:border-b-sky-400 hover:text-sky-400">
+                      Access
                     </button>
                   </Link>
                 </li>

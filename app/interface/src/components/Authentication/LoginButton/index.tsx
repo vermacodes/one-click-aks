@@ -10,6 +10,7 @@ import {
   useActionStatus,
   useSetActionStatus,
 } from "../../../hooks/useActionStatus";
+import { useAddDefaultRoles } from "../../../hooks/useAuth";
 import { useSetLogs } from "../../../hooks/useLogs";
 import { useResetServerCache } from "../../../hooks/useServerCache";
 import { useServerStatus } from "../../../hooks/useServerStatus";
@@ -32,6 +33,8 @@ export default function LoginButton({}: Props) {
   const setActionStatus = useSetActionStatus();
   const { mutateAsync: resetServerCacheAsync } = useResetServerCache();
 
+  const defaultRoles = useAddDefaultRoles();
+
   const navigate = useNavigate();
 
   function handleLogin() {
@@ -50,6 +53,9 @@ export default function LoginButton({}: Props) {
               .finally(() => {
                 setLogs({ isStreaming: false, logs: "" });
               });
+
+            // Create Default Roles
+            defaultRoles.mutate();
 
             // Reset server cache and reload window.
             // resetServerCacheAsync().finally(() => {

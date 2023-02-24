@@ -9,6 +9,7 @@ service redis-server start
 
 chmod +x server
 export ROOT_DIR=$(pwd)
+export PORT="80"
 
 while true
 do

@@ -56,6 +56,7 @@ type AuthService interface {
 	Login() (LoginStatus, error)
 	Logout() error
 	StopRunningLoginAttempt() error
+	GetAuthToken() (string, error)
 	GetLoginStatus() (LoginStatus, error)
 	GetAccount() (Account, error)
 	GetAccounts() ([]Account, error)
@@ -76,6 +77,7 @@ type AuthRepository interface {
 	StopRunningLoginAttempt() error
 	// DeleteLoginStatusFromRedis() error
 
+	GetAuthToken() (string, error)
 	GetAccount() (string, error)
 	GetAccountFromRedis() (string, error)
 	SetAccountInRedis(val string) error
