@@ -4,7 +4,9 @@ import { FaCheck, FaEdit, FaTimes } from "react-icons/fa";
 type Props = {};
 
 export default function AuthServiceEndpoint({}: Props) {
-  const [baseUrl, setBaseUrl] = useState<string>("http://localhost:8880/");
+  const [baseUrl, setBaseUrl] = useState<string>(
+    "https://actlabs-auth.azurewebsites.net"
+  );
   const [showEditButton, setShowEditButton] = useState<boolean>(false);
   const [edit, setEdit] = useState<boolean>(false);
 
