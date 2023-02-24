@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 
 export const axiosInstance = axios.create({
   baseURL: getBaseUrl(),
@@ -23,4 +23,45 @@ function getBaseUrl(): string {
   }
 
   return "http://localhost:8080/";
+}
+
+
+// ACTLabs Auth Service
+
+export const authAxiosInstance = axios.create({
+  baseURL: getAuthServiceBaseUrl(),
+});
+
+
+// Function to get auth token. This function is called by the axios interceptor
+async function getAuthToken(): Promise<string> {
+  const response = await axiosInstance.get("token", {
+    // add your auth credentials here
+  });
+  return response.data.token;
+}
+
+// Axios interceptor to add the auth token to outgoing requests
+authAxiosInstance.interceptors.request.use(
+  async (config: AxiosRequestConfig) => {
+    const authToken = await getAuthToken();
+    if (config.headers) {
+      config.headers.Authorization = `Bearer ${authToken}`;
+    } else {
+      config.headers = { Authorization: `Bearer ${authToken}` };
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+function getAuthServiceBaseUrl(): string {
+  const baseUrlFromLocalStorage = localStorage.getItem("authServiceBaseUrl");
+  if (baseUrlFromLocalStorage != undefined && baseUrlFromLocalStorage !== "") {
+    return baseUrlFromLocalStorage;
+  }
+
+  return "http://localhost:8082/";
 }

@@ -247,3 +247,8 @@ export type ButtonVariant =
   | "danger-outline"
   | "success-outline"
   | "primary-outline-animate";
+
+export type Roles = {
+  userPrincipal: string;
+  roles: string[];
+}
