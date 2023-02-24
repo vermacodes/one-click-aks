@@ -25,9 +25,9 @@ export default function Storage({ section, setSection }: Props) {
   const storageIsSetup = (
     <div>
       <p className="text-3xl text-slate-500">
-        Great 👏. Storage is setup now. Hit 'Finish' to go to Builder and start
-        building 🏗️ stuff. Head over to settings ⚙️ to see other configurations.
-        Bye bye 👋
+        Great 👏. Storage is setup now! ⏭️ Next step is to create a service
+        principal and store its credentials in a key vault 🔑. Hit 'Next' to go
+        to Service Principal and start finish that last thing.
       </p>
     </div>
   );
@@ -68,27 +68,25 @@ export default function Storage({ section, setSection }: Props) {
   return (
     <section className={`${section !== "storage" && "hidden"} `}>
       <div className="flex flex-col justify-center space-y-12">
-        <h1 className="text-center text-9xl">Storage 💾</h1>
+        <h1 className="text-center text-8xl">Storage 💾</h1>
         {storageAccount && storageAccount.storageAccount.name !== ""
           ? storageIsSetup
           : storageIsNotSetup}
         <div className="flex justify-between">
           <Button variant="primary" onClick={() => setSection("subscription")}>
-            {"< Previous"}
+            {"← Previous"}
           </Button>
-          <Link to={"/builder"}>
-            <Button
-              variant="primary"
-              disabled={
-                storageAccount && storageAccount.storageAccount.name === ""
-              }
-              onClick={() => {
-                setSection("server");
-              }}
-            >
-              {"Finish"}
-            </Button>
-          </Link>
+          <Button
+            variant="primary"
+            disabled={
+              storageAccount && storageAccount.storageAccount.name === ""
+            }
+            onClick={() => {
+              setSection("service-principal");
+            }}
+          >
+            {"Next →"}
+          </Button>
         </div>
       </div>
     </section>

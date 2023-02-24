@@ -23,6 +23,7 @@ export default function Login({ section, setSection }: Props) {
       loginAsync().then((response) => {
         if (response.status !== undefined) {
           loginStatus.refetch();
+          setLogs({ isStreaming: false, logs: "" });
         }
       });
     }
@@ -63,13 +64,13 @@ export default function Login({ section, setSection }: Props) {
   return (
     <section className={`${section !== "login" && "hidden"} `}>
       <div className="flex flex-col justify-center space-y-12">
-        <h1 className="text-center text-9xl">Login 🥷</h1>
+        <h1 className="text-center text-8xl">Login 🥷</h1>
         {loginStatus.data !== undefined && loginStatus.data
           ? authenticated
           : unauthenticated}
         <div className="flex justify-between">
           <Button variant="primary" onClick={() => setSection("server")}>
-            {"< Previous"}
+            {"← Previous"}
           </Button>
           <Button
             variant="primary"
@@ -82,7 +83,7 @@ export default function Login({ section, setSection }: Props) {
               setSection("subscription");
             }}
           >
-            {"Next >"}
+            {"Next →"}
           </Button>
         </div>
       </div>

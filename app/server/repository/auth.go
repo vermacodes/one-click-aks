@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"encoding/json"
 	"os"
 	"os/exec"
 
@@ -87,34 +86,68 @@ func (a *authRepository) DeleteAccountsFromRedis() error {
 }
 
 func (a *authRepository) IsAdmin(user string) (bool, error) {
-	out, err := exec.Command("bash", "-c", "az ad group member list --group 708d0729-779a-4f47-9ce0-393b839dad4f --output json --query [].userPrincipalName").Output()
-	if err != nil {
-		return false, err
-	}
-	return helperContains(out, user)
+	// out, err := exec.Command("bash", "-c", "az ad group member list --group 708d0729-779a-4f47-9ce0-393b839dad4f --output json --query [].userPrincipalName").Output()
+	// if err != nil {
+	// 	return false, err
+	// }
+	// return helperContains(out, user)
+
+	var empty []byte
+	return helperContains(empty, user)
 }
 
 func (a *authRepository) IsMentor(user string) (bool, error) {
-	out, err := exec.Command("bash", "-c", "az ad group member list --group 708d0729-779a-4f47-9ce0-393b839dad4f --output json --query [].userPrincipalName").Output()
-	if err != nil {
-		return false, err
-	}
-	return helperContains(out, user)
+	// out, err := exec.Command("bash", "-c", "az ad group member list --group 708d0729-779a-4f47-9ce0-393b839dad4f --output json --query [].userPrincipalName").Output()
+	// if err != nil {
+	// 	return false, err
+	// }
+	// return helperContains(out, user)
 
-	// var empty []byte
-	// return helperContains(empty, user)
+	var empty []byte
+	return helperContains(empty, user)
 }
 
 func (a *authRepository) DeleteAllCache() error {
 	return deleteAllRedis()
 }
 
+func (a *authRepository) Logout() error {
+	_, err := exec.Command("bash", "-c", "az logout").Output()
+	return err
+}
+
+func (a *authRepository) ConfigureServicePrincipal() (*exec.Cmd, *os.File, *os.File, error) {
+	cmd := exec.Command(os.ExpandEnv("$ROOT_DIR") + "/scripts/service_principal_validation.sh")
+	rPipe, wPipe, err := os.Pipe()
+	if err != nil {
+		return cmd, rPipe, wPipe, err
+	}
+	cmd.Stdout = wPipe
+	cmd.Stderr = wPipe
+	if err := cmd.Start(); err != nil {
+		return cmd, rPipe, wPipe, err
+	}
+
+	return cmd, rPipe, wPipe, nil
+}
+
 func helperContains(s []byte, str string) (bool, error) {
 
-	var res []string
-	err := json.Unmarshal(s, &res)
-	if err != nil {
-		return false, err
+	// var res []string
+	// err := json.Unmarshal(s, &res)
+	// if err != nil {
+	// 	return false, err
+	// }
+
+	res := []string{
+		"bparke@microsoft.com",
+		"evalan@microsoft.com",
+		"anschul@microsoft.com",
+		"akathimi@microsoft.com",
+		"mnallago@microsoft.com",
+		"amargherio@microsoft.com",
+		"ericlucier@microsoft.com",
+		"ashisverma@microsoft.com",
 	}
 
 	for _, v := range res {

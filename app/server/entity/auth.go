@@ -48,18 +48,25 @@ type Priviledge struct {
 	IsMentor bool   `json:"isMentor"`
 }
 
+type ServicePrincipalConfig struct {
+	IsServicePrincipalConfigured bool `json:"isServicePrincipalConfigured"`
+}
+
 type AuthService interface {
 	Login() (LoginStatus, error)
+	Logout() error
 	StopRunningLoginAttempt() error
 	GetLoginStatus() (LoginStatus, error)
 	GetAccount() (Account, error)
 	GetAccounts() ([]Account, error)
 	SetAccount(account Account) error
 	GetPriveledges() (Priviledge, error)
+	ConfigureServicePrincipal() (ServicePrincipalConfig, error)
 }
 
 type AuthRepository interface {
 	Login() (*exec.Cmd, *os.File, *os.File, error)
+	Logout() error
 	DeleteAllCache() error
 
 	GetLoginStatus() (string, error)
@@ -83,4 +90,6 @@ type AuthRepository interface {
 
 	IsAdmin(string) (bool, error)
 	IsMentor(string) (bool, error)
+
+	ConfigureServicePrincipal() (*exec.Cmd, *os.File, *os.File, error)
 }
