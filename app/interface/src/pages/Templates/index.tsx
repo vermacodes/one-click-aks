@@ -69,8 +69,6 @@ export default function Templates() {
           </div>
         </>
       )}
-
-      <Terminal />
     </div>
   );
 }

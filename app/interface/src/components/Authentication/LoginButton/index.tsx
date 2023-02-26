@@ -83,34 +83,15 @@ export default function LoginButton({}: Props) {
   return (
     <div>
       {isLogin && !loginError ? (
-        <div className="relative inline-block text-left">
-          <button
-            className="justify-star flex h-full w-full items-center gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800"
-            onMouseEnter={() => setShowUserName(true)}
-            onMouseLeave={() => setShowUserName(false)}
-          >
-            <span>
-              <FaUserNinja />
-            </span>
-            <span>
-              {accountsLoading ? (
-                <p>Loading...</p>
-              ) : (
-                <>
-                  {accounts?.map((account) => (
-                    <div key={account.id}>
-                      {account.isDefault === true && <p>{account.user.name}</p>}
-                    </div>
-                  ))}
-                </>
-              )}
-            </span>
-          </button>
-          {/* <div
-            className={`absolute right-0 z-10 mt-1 w-56 origin-top-right rounded bg-slate-200 p-3 text-slate-900 shadow dark:bg-slate-900 dark:text-slate-100 dark:shadow-slate-300 ${
-              !showUserName && "hidden"
-            }`}
-          >
+        <button
+          className="justify-star flex h-full w-full items-center gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800"
+          onMouseEnter={() => setShowUserName(true)}
+          onMouseLeave={() => setShowUserName(false)}
+        >
+          <span>
+            <FaUserNinja />
+          </span>
+          <span>
             {accountsLoading ? (
               <p>Loading...</p>
             ) : (
@@ -122,8 +103,8 @@ export default function LoginButton({}: Props) {
                 ))}
               </>
             )}
-          </div> */}
-        </div>
+          </span>
+        </button>
       ) : (
         <button
           className="justify-star flex h-full w-full items-center gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800"
