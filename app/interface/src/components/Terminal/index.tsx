@@ -60,7 +60,7 @@ export default function Terminal() {
   }
 
   return (
-    <div className="mt-4">
+    <div className="relative mt-4">
       <div className="mb-1 flex justify-end gap-x-2 gap-y-2 divide-x divide-slate-500">
         <button
           className="disabled:text-slate-500 hover:text-sky-500 disabled:hover:text-slate-500"

@@ -29,7 +29,7 @@ export default function Settings() {
   }
 
   return (
-    <div className="my-3 mx-20 mb-2 space-y-10 divide-y divide-slate-500">
+    <div className="space-y-10 divide-y divide-slate-500">
       <div className="w-100 flex justify-between pb-2 ">
         <h1 className="text-3xl">Settings</h1>
       </div>

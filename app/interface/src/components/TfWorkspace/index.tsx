@@ -49,7 +49,7 @@ export default function TfWorkspace({
     <div className="flex flex-col gap-y-2">
       <div className="flex justify-between py-2">
         <div>
-          <h2 className="text-lg">Workspaces</h2>
+          <h2 className="text-lg">Terraform Workspaces</h2>
         </div>
         <div className="flex flex-col gap-y-2">
           <div
@@ -125,7 +125,7 @@ export default function TfWorkspace({
                 ></input>
               </div>
               <div
-                className={`absolute right-0 mt-2 h-56 w-96 origin-top-right overflow-y-auto scrollbar overflow-x-hidden ${
+                className={`absolute right-0 mt-2 h-56 w-96 origin-top-right overflow-y-auto overflow-x-hidden scrollbar ${
                   !workspaceMenu && "hidden"
                 } items-center gap-y-2 rounded border border-slate-500 bg-slate-100 p-2 dark:bg-slate-800`}
               >

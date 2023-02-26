@@ -1,5 +1,19 @@
 import { useState } from "react";
-import { FaCog, FaMoon, FaServer, FaSun } from "react-icons/fa";
+import {
+  FaClipboard,
+  FaCog,
+  FaExternalLinkAlt,
+  FaFileAlt,
+  FaFileCode,
+  FaFlask,
+  FaList,
+  FaMoon,
+  FaServer,
+  FaShieldAlt,
+  FaSun,
+  FaTools,
+  FaUserGraduate,
+} from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useGetPriviledge } from "../../hooks/useAccount";
 import { useServerStatus } from "../../hooks/useServerStatus";
@@ -21,141 +35,188 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
   const actLabsLogoImage = new URL("/actlabs_logo.svg", import.meta.url).href;
 
   return (
-    <nav className="z-100 sticky top-0 mt-0 mb-4 w-full bg-slate-100 dark:bg-slate-900">
-      <div className="flex items-center justify-between border-b py-4 px-20 hover:shadow hover:shadow-slate-500 dark:border-b-slate-700">
-        <Link to={"/"}>
-          <h1 className="flex items-center border-b-2 border-transparent text-2xl font-bold hover:border-b-sky-400 hover:text-sky-400">
-            <img src={actLabsLogoImage} className="mr-2 h-8 w-8"></img>
-            ACT Labs
-          </h1>
-        </Link>
-        <div className="flex divide-x divide-slate-300 align-middle  dark:divide-slate-700">
-          <ul className="flex gap-x-3 px-5 align-middle">
-            <li>
-              <Link to={"/builder"}>
-                <button className="border-b-2 border-transparent py-1 hover:border-b-2 hover:border-b-sky-400 hover:text-sky-400 ">
-                  Builder
-                </button>
-              </Link>
-            </li>
-            <li>
-              <Link to={"/templates"}>
-                <button className="border-b-2 border-transparent py-1 hover:border-b-2 hover:border-b-sky-400 hover:text-sky-400">
-                  Templates
-                </button>
-              </Link>
-            </li>
-            <li>
-              <Link to={"/learning"}>
-                <button className="border-b-2 border-transparent py-1 hover:border-b-2 hover:border-b-sky-400 hover:text-sky-400">
-                  Learning
-                </button>
-              </Link>
-            </li>
-            {priviledge && (priviledge.isAdmin || priviledge.isMentor) && (
-              <>
-                <li>
-                  <Link to={"/labs"}>
-                    <button className="border-b-2 border-transparent py-1 hover:border-b-2 hover:border-b-sky-400 hover:text-sky-400">
-                      Labs
-                    </button>
-                  </Link>
-                </li>
-                <li>
-                  <Link to={"/mockcases"}>
-                    <button className="border-b-2 border-transparent py-1 hover:border-b-2 hover:border-b-sky-400 hover:text-sky-400">
-                      Mocks
-                    </button>
-                  </Link>
-                </li>
-                <li>
-                  <Link to={"/assignments"}>
-                    <button className="border-b-2 border-transparent py-1 hover:border-b-2 hover:border-b-sky-400 hover:text-sky-400">
-                      Assignments
-                    </button>
-                  </Link>
-                </li>
-                <li>
-                  <Link to={"/rbac"}>
-                    <button className="border-b-2 border-transparent py-1 hover:border-b-2 hover:border-b-sky-400 hover:text-sky-400">
-                      Access
-                    </button>
-                  </Link>
-                </li>
-              </>
-            )}
-            <li>
-              <a
-                target="_blank"
-                href="https://actlabsdocs.z13.web.core.windows.net/docs/introduction"
-              >
-                <button className="border-b-2 border-transparent py-1 hover:border-b-2 hover:border-b-sky-400 hover:text-sky-400">
-                  Docs
-                </button>
-              </a>
-            </li>
-          </ul>
-          <ul className="flex gap-x-4 pl-5">
-            <li>
-              <CurrentTerraformWorkspace />
-            </li>
-            <li>
-              <Terraform />
-            </li>
-            <li>
-              <div className="relative inline-block text-left">
-                <button
-                  className={`items-center justify-center border-b-2 border-transparent py-1 text-2xl hover:border-b-sky-400 hover:text-sky-400 ${
-                    serverStatus?.status !== "OK" &&
-                    "animate-bounced text-red-500"
-                  }`}
-                  onMouseEnter={() => {
-                    setShowServerStatus(true);
-                    getServerStatus();
-                  }}
-                  onMouseLeave={() => {
-                    setShowServerStatus(false);
-                  }}
-                  onClick={() => getServerStatus()}
-                >
-                  <FaServer />
-                </button>
-                <div
-                  className={`absolute right-0 z-10 mt-1 w-36 origin-top-right rounded bg-slate-200 p-3 text-slate-900 shadow dark:bg-slate-900 dark:text-slate-100 dark:shadow-slate-300 ${
-                    !showServerStatus && "hidden"
-                  }`}
-                >
-                  <p>
-                    {serverStatus?.status !== "OK"
-                      ? "Server is not live."
-                      : "Server is live"}
-                  </p>
-                </div>
-              </div>
-            </li>
-            <li>
-              <button
-                className="items-center justify-center border-b-2 border-transparent py-1 text-2xl hover:border-b-sky-400 hover:text-sky-400"
-                onClick={() => setDarkMode(!darkMode)}
-              >
-                {darkMode ? <FaSun /> : <FaMoon />}
-              </button>
-            </li>
-            <li>
-              <Link to={"/settings"}>
-                <button
-                  className={`items-center justify-center border-b-2 border-transparent py-1 text-2xl hover:border-b-sky-400 hover:text-sky-400`}
-                >
-                  <FaCog />
-                </button>
-              </Link>
-            </li>
-            <li>
-              <LoginButton />
-            </li>
-          </ul>
-        </div>
-      </div>
+    <nav className="flex h-screen w-full min-w-max flex-col  text-slate-900 dark:text-slate-100">
+      <Title />
+      <Pages />
+      <FixedPages darkMode={darkMode} setDarkMode={setDarkMode} />
     </nav>
+  );
+}
+
+function Title() {
+  return (
+    <Link to={"/"}>
+      <h1 className="flex flex-row items-center px-8 pt-8 text-2xl font-bold hover:text-sky-500">
+        <img src="/actlabs_logo.svg" className="mr-2 h-8 w-8"></img>
+        ACT Labs
+      </h1>
+    </Link>
+  );
+}
+
+function Pages() {
+  const { data: priviledge } = useGetPriviledge();
+  return (
+    <div className="h-9/10 mt-2 flex w-full flex-col overflow-y-scroll border-b border-slate-500 px-4 scrollbar-thin scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full dark:scrollbar-thumb-slate-700">
+      <ul className="md:text-l flex w-full flex-col justify-start gap-y-2 bg-slate-100 py-2 text-sm dark:bg-slate-900 lg:text-xl">
+        <li>
+          <Link to={"/builder"}>
+            <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
+              <span>
+                <FaTools />
+              </span>
+              <span>Builder</span>
+            </button>
+          </Link>
+        </li>
+        <li>
+          <Link to={"/templates"}>
+            <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
+              <span>
+                <FaFileCode />
+              </span>
+              <span>My Labs</span>
+            </button>
+          </Link>
+        </li>
+        <li>
+          <Link to={"/learning"}>
+            <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
+              <span>
+                <FaUserGraduate />
+              </span>
+              <span>My Assignments</span>
+            </button>
+          </Link>
+        </li>
+        {priviledge && (priviledge.isAdmin || priviledge.isMentor) && (
+          <>
+            <li>
+              <Link to={"/labs"}>
+                <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
+                  <span>
+                    <FaFlask />
+                  </span>
+                  <span>Readiness Labs</span>
+                </button>
+              </Link>
+            </li>
+            <li>
+              <Link to={"/mockcases"}>
+                <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
+                  <span>
+                    <FaClipboard />
+                  </span>
+                  <span>Mock Cases</span>
+                </button>
+              </Link>
+            </li>
+            <li>
+              <Link to={"/assignments"}>
+                <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
+                  <span>
+                    <FaList />
+                  </span>
+                  <span>Assignments</span>
+                </button>
+              </Link>
+            </li>
+            <li>
+              <Link to={"/rbac"}>
+                <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
+                  <span>
+                    <FaShieldAlt />
+                  </span>
+                  <span>Access</span>
+                </button>
+              </Link>
+            </li>
+          </>
+        )}
+        <li>
+          <a
+            target="_blank"
+            href="https://actlabsdocs.z13.web.core.windows.net/docs/introduction"
+          >
+            <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
+              <span>
+                <FaExternalLinkAlt />
+              </span>
+              <span>Docs</span>
+            </button>
+          </a>
+        </li>
+      </ul>
+    </div>
+  );
+}
+
+type FixedPagesProps = {
+  darkMode: boolean;
+  setDarkMode(args: boolean): void;
+};
+
+function FixedPages({ darkMode, setDarkMode }: FixedPagesProps) {
+  const [showSettingsModal, setShowSettingsModal] = useState<boolean>(false);
+  const [showServerStatus, setShowServerStatus] = useState<boolean>(false);
+
+  const { data: serverStatus, refetch: getServerStatus } = useServerStatus();
+  return (
+    <div className="h-fit w-full flex-col p-4">
+      <ul className="md:text-l flex w-full flex-col justify-start gap-y-1 bg-slate-100 text-sm dark:bg-slate-900 lg:text-xl">
+        <li>
+          <CurrentTerraformWorkspace />
+        </li>
+        {/* <li>
+          <Terraform />
+        </li> */}
+        {/* <li>
+          <button
+            className={`flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800 ${
+              serverStatus?.status !== "OK" && "text-red-500"
+            }`}
+            onMouseEnter={() => {
+              setShowServerStatus(true);
+              getServerStatus();
+            }}
+            onMouseLeave={() => {
+              setShowServerStatus(false);
+            }}
+            onClick={() => getServerStatus()}
+          >
+            <span>
+              <FaServer />
+            </span>
+            {serverStatus?.status !== "OK"
+              ? "Server is not live."
+              : "Server is live"}
+          </button>
+        </li> */}
+        <li>
+          <button
+            className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800"
+            onClick={() => setDarkMode(!darkMode)}
+          >
+            {darkMode ? <FaSun /> : <FaMoon />}
+            {darkMode ? "Light Mode" : "Dark Mode"}
+          </button>
+        </li>
+        <li>
+          <Link to={"/settings"}>
+            <button
+              className={`flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800`}
+            >
+              <span>
+                <FaCog />
+              </span>
+              <span>Settings</span>
+            </button>
+          </Link>
+        </li>
+        <li>
+          <LoginButton />
+        </li>
+      </ul>
+    </div>
   );
 }

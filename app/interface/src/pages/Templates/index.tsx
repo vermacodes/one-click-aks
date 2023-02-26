@@ -3,6 +3,7 @@ import ExportLabButton from "../../components/Lab/Export/ExportLabButton";
 import LabCard from "../../components/Lab/LabCard";
 import LoadToBuilderButton from "../../components/Lab/LoadToBuilderButton";
 import TemplateCard from "../../components/TemplateCard";
+import Terminal from "../../components/Terminal";
 import { Lab } from "../../dataStructures";
 import { useSharedTemplates, useTemplates } from "../../hooks/useBlobs";
 import { useServerStatus } from "../../hooks/useServerStatus";
@@ -35,14 +36,14 @@ export default function Templates() {
     sharedLabsFetching
   ) {
     return (
-      <div className="my-3 mx-20 mb-2 flex gap-x-4">
+      <div className="flex gap-x-4">
         <p className="text-4xl">Loading...</p>
       </div>
     );
   }
 
   return (
-    <div className="my-3 mx-20 mb-2 flex flex-col gap-x-4">
+    <div className="flex flex-col gap-x-4">
       {/* My Labs Secion */}
       <p className="my-2 border-b-2 border-slate-500 py-4 text-4xl">My Labs</p>
       <div className="w-7/8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -68,6 +69,8 @@ export default function Templates() {
           </div>
         </>
       )}
+
+      <Terminal />
     </div>
   );
 }

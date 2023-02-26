@@ -15,7 +15,7 @@ export default function Landing() {
     }, 3000);
   }
   return (
-    <div className="gap-y-10 px-20">
+    <div className="gap-y-10">
       <h1 className="py-10 text-8xl font-bold">Head start your lab repros.</h1>
       <p className="pb-20 text-3xl text-slate-500">
         All you need to do is install docker 🐋, run server locally on your

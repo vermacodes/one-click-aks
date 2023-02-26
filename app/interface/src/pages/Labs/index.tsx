@@ -41,7 +41,7 @@ export default function Labs() {
   }
 
   return (
-    <div className="my-3 mx-20 mb-2 flex flex-col gap-x-4">
+    <div className="flex flex-col gap-x-4">
       <p className="my-2 mb-6 border-b-2 border-slate-500 py-4 text-4xl">
         Labs
       </p>

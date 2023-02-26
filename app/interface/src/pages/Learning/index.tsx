@@ -18,14 +18,14 @@ export default function Learning() {
 
   if (isLoading || isFetching) {
     return (
-      <div className="my-3 mx-20 mb-2">
+      <div className="my-3 mb-2">
         <p className="text-4xl">Loading...</p>
       </div>
     );
   }
 
   return (
-    <div className="my-3 mx-20 mb-2">
+    <div className="my-3 mb-2">
       <h1 className="my-2 mb-6 border-b-2 border-slate-500 py-4 text-4xl">
         My Learning
       </h1>

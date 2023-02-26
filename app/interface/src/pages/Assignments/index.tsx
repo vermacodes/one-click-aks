@@ -12,7 +12,7 @@ export default function Assignments({}: Props) {
   const deleteAssignment = useDeleteAssignment();
 
   return (
-    <div className="gap-y-10 px-20">
+    <div className="gap-y-10">
       <h1 className="my-2 mb-6 border-b-2 border-slate-500 py-4 text-4xl">
         Assignments
       </h1>
