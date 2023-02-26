@@ -16,7 +16,7 @@ export default function index({}: Props) {
   return (
     <>
       <button
-        className="justify-star flex h-full w-full items-center gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800"
+        className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800"
         onClick={() => setShowModal(true)}
       >
         <span>
@@ -48,7 +48,7 @@ function Modal({ showModal, setShowModal }: ModalProps) {
   if (!showModal) return null;
   return (
     <div
-      className="max-w-ful fixed inset-0 flex max-h-full justify-center bg-slate-800 dark:bg-slate-100 dark:bg-opacity-80"
+      className="max-w-ful fixed inset-0 z-20 flex max-h-full justify-center bg-slate-800 dark:bg-slate-100 dark:bg-opacity-80"
       onClick={() => {
         setShowModal(false);
       }}

@@ -50,7 +50,7 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
   if (!showModal || lab === undefined) return null;
   return (
     <div
-      className="max-w-ful -gap-x-2 fixed inset-0 flex max-h-full justify-center bg-slate-800 dark:bg-slate-100 dark:bg-opacity-80"
+      className="max-w-ful -gap-x-2 fixed inset-0 z-20 flex max-h-full justify-center bg-slate-800 dark:bg-slate-100 dark:bg-opacity-80"
       onClick={() => {
         setShowModal(false);
       }}

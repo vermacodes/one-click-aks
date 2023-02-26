@@ -27,7 +27,7 @@ export default function Learning() {
   return (
     <div className="my-3 mb-2">
       <h1 className="my-2 mb-6 border-b-2 border-slate-500 py-4 text-4xl">
-        My Learning
+        My Assignments
       </h1>
       <div className="w-7/8 grid grid-cols-3 gap-4">
         {labs &&
@@ -50,9 +50,7 @@ export default function Learning() {
           ))}
       </div>
       {labs?.length === 0 ? (
-        <p className="text-3xl">
-          Ah! No labs for you. I think you are already learned 😃
-        </p>
+        <p className="text-3xl">Ah! No labs assigned to you.😃</p>
       ) : (
         <Terminal />
       )}

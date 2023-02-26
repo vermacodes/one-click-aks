@@ -33,7 +33,7 @@ export default function MainLayout({ darkMode, setDarkMode }: Props) {
       <div className="top-0 left-0 h-screen w-1/5 min-w-fit overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-300 scrollbar-thumb-sky-500 scrollbar-thumb-rounded-full">
         <Navbar darkMode={darkMode} setDarkMode={handleSetDarkMode} />
       </div>
-      <div className="flex-1 overflow-auto bg-slate-200 p-8 scrollbar-thin scrollbar-track-slate-300 scrollbar-thumb-sky-500 scrollbar-thumb-rounded-full dark:bg-slate-800">
+      <div className="flex-1 overflow-auto bg-slate-100 p-8 scrollbar-thin scrollbar-track-slate-300 scrollbar-thumb-sky-500 scrollbar-thumb-rounded-full dark:bg-slate-800">
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/builder" element={<Builder />} />

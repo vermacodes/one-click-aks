@@ -20,7 +20,7 @@ function App() {
       className={`${
         darkMode
           ? " dark bg-slate-900 text-slate-200"
-          : " bg-slate-100 text-slate-900"
+          : " bg-slate-50 text-slate-900"
       }`}
     >
       <MainLayout darkMode={darkMode} setDarkMode={setDarkMode} />

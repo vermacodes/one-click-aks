@@ -57,15 +57,15 @@ function Title() {
 function Pages() {
   const { data: priviledge } = useGetPriviledge();
   return (
-    <div className="h-9/10 mt-2 flex w-full flex-col overflow-y-scroll border-b border-slate-500 px-4 scrollbar-thin scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full dark:scrollbar-thumb-slate-700">
-      <ul className="md:text-l flex w-full flex-col justify-start gap-y-2 bg-slate-100 py-2 text-sm dark:bg-slate-900 lg:text-xl">
+    <div className="h-9/10 mt-2 flex w-full flex-col overflow-y-scroll border-b border-slate-300 px-4 scrollbar-thin scrollbar-thumb-slate-300 scrollbar-thumb-rounded-full dark:border-slate-700 dark:scrollbar-thumb-slate-700">
+      <ul className="md:text-l flex w-full flex-col justify-start gap-y-2 py-2 text-sm lg:text-xl">
         <li>
           <Link to={"/builder"}>
             <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
               <span>
                 <FaTools />
               </span>
-              <span>Builder</span>
+              <span>Lab Builder</span>
             </button>
           </Link>
         </li>
@@ -117,7 +117,7 @@ function Pages() {
                   <span>
                     <FaList />
                   </span>
-                  <span>Assignments</span>
+                  <span>Lab Assignments</span>
                 </button>
               </Link>
             </li>
@@ -127,7 +127,7 @@ function Pages() {
                   <span>
                     <FaShieldAlt />
                   </span>
-                  <span>Access</span>
+                  <span>Access Control</span>
                 </button>
               </Link>
             </li>
@@ -142,7 +142,7 @@ function Pages() {
               <span>
                 <FaExternalLinkAlt />
               </span>
-              <span>Docs</span>
+              <span>ACT Labs Docs</span>
             </button>
           </a>
         </li>
@@ -163,7 +163,7 @@ function FixedPages({ darkMode, setDarkMode }: FixedPagesProps) {
   const { data: serverStatus, refetch: getServerStatus } = useServerStatus();
   return (
     <div className="h-fit w-full flex-col p-4">
-      <ul className="md:text-l flex w-full flex-col justify-start gap-y-1 bg-slate-100 text-sm dark:bg-slate-900 lg:text-xl">
+      <ul className="md:text-l flex w-full flex-col justify-start gap-y-1 text-sm lg:text-xl">
         <li>
           <CurrentTerraformWorkspace />
         </li>

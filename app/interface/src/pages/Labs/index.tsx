@@ -43,7 +43,7 @@ export default function Labs() {
   return (
     <div className="flex flex-col gap-x-4">
       <p className="my-2 mb-6 border-b-2 border-slate-500 py-4 text-4xl">
-        Labs
+        Readiness Labs
       </p>
       <div className="w-7/8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {labs &&
