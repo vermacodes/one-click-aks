@@ -29,32 +29,32 @@ export default function Settings() {
   }
 
   return (
-    <div className="space-y-10 divide-y divide-slate-500">
-      <div className="w-100 flex justify-between pb-2 ">
-        <h1 className="text-3xl">Settings</h1>
-      </div>
-      <StorageAccount />
-      <AzureSubscription
-        subscriptionMenu={subscriptionMenu}
-        setSubscriptionMenu={setSubscriptionMenu}
-      />
-      <AzureRegion regionEdit={regionEdit} setRegionEdit={setRegionEdit} />
-      {/* <TfInit />
+    <div className="flex flex-col gap-x-4">
+      <p className="mb-6 border-b-2 border-slate-500 py-4 text-4xl">Settings</p>
+      <div className="space-y-10 divide-y divide-slate-500">
+        <StorageAccount />
+        <AzureSubscription
+          subscriptionMenu={subscriptionMenu}
+          setSubscriptionMenu={setSubscriptionMenu}
+        />
+        <AzureRegion regionEdit={regionEdit} setRegionEdit={setRegionEdit} />
+        {/* <TfInit />
         <TfWorkspace
           workspaceMenu={workspaceMenu}
           setWorkspaceMenu={setWorkspaceMenu}
         /> */}
 
-      <TfInit />
-      <TfWorkspace
-        workspaceMenu={workspaceMenu}
-        setWorkspaceMenu={setWorkspaceMenu}
-      />
-      <div className="flex">
-        <ResetActionStatus />
-        <ResetServerCache />
-        <ServerEndpoint />
-        <AuthServiceEndpoint />
+        <TfInit />
+        <TfWorkspace
+          workspaceMenu={workspaceMenu}
+          setWorkspaceMenu={setWorkspaceMenu}
+        />
+        <div className="flex">
+          <ResetActionStatus />
+          <ResetServerCache />
+          <ServerEndpoint />
+          <AuthServiceEndpoint />
+        </div>
       </div>
     </div>
   );

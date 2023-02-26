@@ -45,7 +45,7 @@ export default function Templates() {
   return (
     <div className="flex flex-col gap-x-4">
       {/* My Labs Secion */}
-      <p className="my-2 border-b-2 border-slate-500 py-4 text-4xl">My Labs</p>
+      <p className="mb-6 border-b-2 border-slate-500 py-4 text-4xl">My Labs</p>
       <div className="w-7/8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {myLabs !== undefined &&
           myLabs.map((lab: Lab) => <TemplateCards lab={lab} key={lab.id} />)}
@@ -58,7 +58,7 @@ export default function Templates() {
       {/* Public Labs Secion */}
       {sharedLabs && sharedLabs?.length !== 0 && (
         <>
-          <p className="my-2 border-b-2 border-slate-500 py-4 text-4xl">
+          <p className="mb-6 border-b-2 border-slate-500 py-4 text-4xl">
             Public Labs
           </p>
           <div className="w-7/8 grid grid-cols-3 gap-4">

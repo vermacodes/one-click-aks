@@ -34,8 +34,8 @@ export default function MockCases() {
   }
 
   return (
-    <div className="my-3 mb-2 flex flex-col gap-x-4">
-      <p className="my-2 mb-6 border-b-2 border-slate-500 py-4 text-4xl">
+    <div className="flex flex-col gap-x-4">
+      <p className="mb-6 border-b-2 border-slate-500 py-4 text-4xl">
         Mock Cases
       </p>
       <div className="w-7/8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
