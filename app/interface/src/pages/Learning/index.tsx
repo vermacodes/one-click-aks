@@ -6,6 +6,7 @@ import ApplyButton from "../../components/Terraform/ApplyButton";
 import DestroyButton from "../../components/Terraform/DestroyButton";
 import { useGetUserAssignedLabs } from "../../hooks/useAssignment";
 import { useServerStatus } from "../../hooks/useServerStatus";
+import PageLayout from "../../layouts/PageLayout";
 import ServerError from "../ServerError";
 
 export default function Learning() {
@@ -18,17 +19,14 @@ export default function Learning() {
 
   if (isLoading || isFetching) {
     return (
-      <div className="my-3 mb-2">
+      <PageLayout heading="My Assignments">
         <p className="text-4xl">Loading...</p>
-      </div>
+      </PageLayout>
     );
   }
 
   return (
-    <div>
-      <h1 className="mb-6 border-b-2 border-slate-500 py-4 text-4xl">
-        My Assignments
-      </h1>
+    <PageLayout heading="My Assignments">
       <div className="w-7/8 grid grid-cols-3 gap-4">
         {labs &&
           labs.map((lab) => (
@@ -50,10 +48,10 @@ export default function Learning() {
           ))}
       </div>
       {labs?.length === 0 ? (
-        <p className="text-3xl">Ah! No labs assigned to you.😃</p>
+        <p className="text-3xl">Ah! No readiness labs assigned to you.😃</p>
       ) : (
         <Terminal />
       )}
-    </div>
+    </PageLayout>
   );
 }

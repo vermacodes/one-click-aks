@@ -11,6 +11,7 @@ import DestroyButton from "../../components/Terraform/DestroyButton";
 import PlanButton from "../../components/Terraform/PlanButton";
 import { Lab } from "../../dataStructures";
 import { useSharedMockCases } from "../../hooks/useBlobs";
+import PageLayout from "../../layouts/PageLayout";
 import LabBuilder from "../../modals/LabBuilder";
 
 export default function MockCases() {
@@ -27,17 +28,14 @@ export default function MockCases() {
 
   if (isLoading || isFetching) {
     return (
-      <div className="my-3 mx-20 mb-2 flex gap-x-4">
+      <PageLayout heading="Mock Cases">
         <p className="text-4xl">Loading...</p>
-      </div>
+      </PageLayout>
     );
   }
 
   return (
-    <div className="flex flex-col gap-x-4">
-      <p className="mb-6 border-b-2 border-slate-500 py-4 text-4xl">
-        Mock Cases
-      </p>
+    <PageLayout heading="Mock Cases">
       <div className="w-7/8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {labs !== undefined &&
           labs.map((lab: Lab) => (
@@ -97,6 +95,6 @@ export default function MockCases() {
           ))}
       </div>
       <Terminal />
-    </div>
+    </PageLayout>
   );
 }

@@ -4,6 +4,7 @@ import {
   useDeleteAssignment,
   useGetAssignments,
 } from "../../hooks/useAssignment";
+import PageLayout from "../../layouts/PageLayout";
 
 type Props = {};
 
@@ -12,10 +13,7 @@ export default function Assignments({}: Props) {
   const deleteAssignment = useDeleteAssignment();
 
   return (
-    <div className="gap-y-10">
-      <h1 className=" mb-6 border-b-2 border-slate-500 py-4 text-4xl">
-        Lab Assignments
-      </h1>
+    <PageLayout heading="Lab Assignments">
       <table className="w-full table-auto border-collapse  items-center space-x-2 border border-slate-500 px-4 py-2">
         <thead>
           <tr>
@@ -53,6 +51,6 @@ export default function Assignments({}: Props) {
             ))}
         </tbody>
       </table>
-    </div>
+    </PageLayout>
   );
 }

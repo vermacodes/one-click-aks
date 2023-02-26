@@ -1,17 +1,15 @@
-import React from "react";
-import { useEffect, useState } from "react";
+import { Route, Routes } from "react-router-dom";
 import Navbar from "../../components/Navbar";
-import Landing from "../../pages/Landing";
-import { Routes, Route } from "react-router-dom";
+import AccessControl from "../../pages/AccessControl";
+import Assignments from "../../pages/Assignments";
 import Builder from "../../pages/Builder";
-import Templates from "../../pages/Templates";
+import Templates from "../../pages/Labs";
+import Landing from "../../pages/Landing";
 import Learning from "../../pages/Learning";
 import MockCases from "../../pages/MockCases";
-import Labs from "../../pages/Labs";
-import Assignments from "../../pages/Assignments";
-import Start from "../../pages/Start";
+import ReadinessLabs from "../../pages/ReadinessLabs";
 import Settings from "../../pages/Settings";
-import AccessControl from "../../pages/AccessControl";
+import Start from "../../pages/Start";
 
 type Props = {
   darkMode: boolean;
@@ -37,9 +35,9 @@ export default function MainLayout({ darkMode, setDarkMode }: Props) {
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/builder" element={<Builder />} />
-          <Route path="/templates" element={<Templates />} />
+          <Route path="/labs" element={<Templates />} />
           <Route path="/learning" element={<Learning />} />
-          <Route path="/labs" element={<Labs />} />
+          <Route path="/redinesslabs" element={<ReadinessLabs />} />
           <Route path="/mockcases" element={<MockCases />} />
           <Route path="/assignments" element={<Assignments />} />
           <Route path="/start" element={<Start />} />

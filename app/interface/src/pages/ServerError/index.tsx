@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { MdOutlineContentCopy, MdDoneOutline } from "react-icons/md";
 import { Link } from "react-router-dom";
+import PageLayout from "../../layouts/PageLayout";
 
 export default function ServerError() {
   const [copy, setCopy] = useState<boolean>(false);
@@ -16,8 +17,7 @@ export default function ServerError() {
   }
 
   return (
-    <div className="my-3 mx-20 mb-2 space-y-10">
-      <h1 className="text-8xl text-rose-600">Server Error</h1>
+    <PageLayout heading="Server Error">
       <p className="text-3xl text-slate-500">
         It seems the server is not running ☹️. You need to install docker and
         run server using command below 👇. If you are new here, use 'Get
@@ -47,6 +47,6 @@ export default function ServerError() {
           </button>
         </div>
       </div>
-    </div>
+    </PageLayout>
   );
 }

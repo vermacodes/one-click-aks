@@ -1,15 +1,12 @@
 import Rbac from "../../components/Authentication/Rbac";
-import { useGetAllRoles, useGetMyRoles } from "../../hooks/useAuth";
+import PageLayout from "../../layouts/PageLayout";
 
 type Props = {};
 
 export default function AccessControl({}: Props) {
   return (
-    <div className="gap-y-10">
-      <h1 className=" mb-6 border-b-2 border-slate-500 py-4 text-4xl">
-        Access Control
-      </h1>
+    <PageLayout heading="Access Control">
       <Rbac />
-    </div>
+    </PageLayout>
   );
 }

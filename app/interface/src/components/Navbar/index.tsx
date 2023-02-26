@@ -70,12 +70,12 @@ function Pages() {
           </Link>
         </li>
         <li>
-          <Link to={"/templates"}>
+          <Link to={"/labs"}>
             <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
               <span>
                 <FaFileCode />
               </span>
-              <span>My Labs</span>
+              <span>Saved Labs</span>
             </button>
           </Link>
         </li>
@@ -92,7 +92,7 @@ function Pages() {
         {priviledge && (priviledge.isAdmin || priviledge.isMentor) && (
           <>
             <li>
-              <Link to={"/labs"}>
+              <Link to={"/redinesslabs"}>
                 <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
                   <span>
                     <FaFlask />
