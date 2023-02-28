@@ -62,7 +62,8 @@ function deploy_webapp() {
     ARM_CLIENT_SECRET=$ARM_CLIENT_SECRET \
     ARM_SUBSCRIPTION_ID=$ARM_SUBSCRIPTION_ID \
     ARM_TENANT_ID=$ARM_TENANT_ID \
-    ARM_USER_PRINCIPAL_NAME=$ARM_USER_PRINCIPAL_NAME
+    ARM_USER_PRINCIPAL_NAME=$ARM_USER_PRINCIPAL_NAME \
+    WEBSITE_PORT=80
 
   if [ $? -ne 0 ]; then
     err "Failed to add Application Settings"
@@ -182,3 +183,12 @@ else
   err "Failed to deploy WebApp"
   exit 1
 fi
+
+# Get the default domain of webapp
+log "getting default domain of webapp"
+export default_domain=$(az webapp show --name $webapp_name --resource-group $resource_group_name --query "defaultHostName" -o tsv)
+if [ $? -ne 0 ]; then
+  err "Failed to get default domain of webapp"
+  exit 1
+fi
+ok "Endpoint: https://$default_domain"

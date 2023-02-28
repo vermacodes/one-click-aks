@@ -30,11 +30,12 @@ export default function Settings() {
           workspaceMenu={workspaceMenu}
           setWorkspaceMenu={setWorkspaceMenu}
         />
+
+        <ServerEndpoint />
+        <AuthServiceEndpoint />
         <div className="flex">
           <ResetActionStatus />
           <ResetServerCache />
-          <ServerEndpoint />
-          <AuthServiceEndpoint />
         </div>
       </div>
     </PageLayout>

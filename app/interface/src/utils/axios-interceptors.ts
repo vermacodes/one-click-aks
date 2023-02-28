@@ -23,6 +23,21 @@ axiosInstance.interceptors.response.use(
   }
 );
 
+axiosInstance.interceptors.request.use(
+  async (config: AxiosRequestConfig) => {
+    const authToken = await getAuthToken();
+    if (config.headers) {
+      config.headers.Authorization = `Bearer ${authToken}`;
+    } else {
+      config.headers = { Authorization: `Bearer ${authToken}` };
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 function getBaseUrl(): string {
   const baseUrlFromLocalStorage = localStorage.getItem("baseUrl");
   if (baseUrlFromLocalStorage != undefined && baseUrlFromLocalStorage !== "") {

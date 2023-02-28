@@ -328,6 +328,7 @@ export ARM_CLIENT_ID=$(az keyvault secret show --name "arm-client-id" --vault-na
 export ARM_CLIENT_SECRET=$(az keyvault secret show --name "arm-client-secret" --vault-name "${KEY_VAULT_NAME}" --query "value" -o tsv)
 export ARM_SUBSCRIPTION_ID=$(az account show --query "id" -o tsv)
 export ARM_TENANT_ID=$(az account show --query "tenantId" -o tsv)
+export ARM_USER_PRINCIPAL_NAME=$(az account show --query "user.name" -o tsv)
 
 # delete existing docker container
 log "deleting existing docker container"
@@ -335,6 +336,6 @@ docker rm -f actlabs
 
 # Start docker container and set environment variables
 log "starting docker container"
-docker run --pull=always -d --restart unless-stopped -it -e ARM_CLIENT_ID -e ARM_CLIENT_SECRET -e ARM_SUBSCRIPTION_ID -e ARM_TENANT_ID --name actlabs -p 8880:80 actlab.azurecr.io/repro:beta
+docker run --pull=always -d --restart unless-stopped -it -e ARM_CLIENT_ID -e ARM_CLIENT_SECRET -e ARM_SUBSCRIPTION_ID -e ARM_TENANT_ID -e ARM_USER_PRINCIPAL_NAME --name actlabs -p 8880:80 actlab.azurecr.io/repro:beta
 
 ok "All done! You can now access the application at https://actlabs.azureedge.net/"

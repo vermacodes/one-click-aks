@@ -14,6 +14,12 @@ if [[ "${STORAGE_ACCOUNT_NAME}" == "" ]]; then
     exit 1
 fi
 
+export ARM_USER_PRINCIPAL_NAME=$(az account show --output json | jq -r .user.name)
+if [ $? -ne 0 ]; then
+    err "Failed to get user principal name from az cli"
+    exit 1
+fi
+
 echo "Storage Account -> ${STORAGE_ACCOUNT_NAME}"
 cd ./app/server
 

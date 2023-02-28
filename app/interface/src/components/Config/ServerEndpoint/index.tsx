@@ -19,13 +19,21 @@ export default function ServerEndpoint({}: Props) {
   }, []);
 
   return (
-    <div className="flex w-60 flex-col gap-2 p-2">
+    <div className="flex w-full justify-between gap-4 py-2">
+      <div className="flex w-full flex-col gap-2">
+        <h3 className="text-xl">Server Endpoint</h3>
+        <p className="text-xs">
+          Server Endpoint. You probably dont want to edit this unless you know
+          what you are doing. But, if you know, you know. Go ahead.
+        </p>
+      </div>
       <div
         className={`${
-          showEditButton ? "bg-rose-500 text-slate-100" : ""
-        } flex h-8 items-center justify-between rounded border-2 border-rose-500 text-rose-500`}
+          showEditButton ? " text-slate-100" : ""
+        } flex h-8 w-full items-center justify-between rounded border border-slate-500`}
         onMouseEnter={() => setShowEditButton(true)}
         onMouseLeave={() => setShowEditButton(false)}
+        onDoubleClick={() => setEdit(true)}
       >
         <p
           className={`${edit && "hidden"} items-center bg-inherit px-1`}
@@ -69,10 +77,6 @@ export default function ServerEndpoint({}: Props) {
           <FaTimes />
         </button>
       </div>
-      <p className="text-xs">
-        Server Endpoint. You probably dont want to edit this unless you know
-        what you are doing. But, if you know, you know. Go ahead.
-      </p>
     </div>
   );
 }
