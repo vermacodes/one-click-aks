@@ -36,7 +36,7 @@ export default function Learning() {
                   <ApplyButton variant="primary-outline" lab={lab}>
                     Deploy
                   </ApplyButton>
-                  <ValidateLabButton lab={lab} variant="primary-outline">
+                  <ValidateLabButton lab={lab} variant="secondary">
                     Validate
                   </ValidateLabButton>
                   <DestroyButton variant="danger-outline" lab={lab}>

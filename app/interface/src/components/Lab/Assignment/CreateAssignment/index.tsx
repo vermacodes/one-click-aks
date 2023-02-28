@@ -89,7 +89,7 @@ export default function CreateAssignment({ lab }: Props) {
       )}
       {!createdColor && !failedColor && (
         <Button
-          variant={"primary"}
+          variant={"secondary"}
           onClick={() => handleAssignment(lab)}
           disabled={creating || (userAlias.length > 0 && userAlias.length < 4)}
         >

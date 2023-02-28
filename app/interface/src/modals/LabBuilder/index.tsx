@@ -76,7 +76,7 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
       }}
     >
       <div
-        className=" my-20 w-3/4 gap-y-2 rounded bg-slate-100 p-5 scrollbar-thin scrollbar-track-slate-300 scrollbar-thumb-sky-500 dark:divide-slate-700 dark:bg-slate-900"
+        className=" my-20 w-3/4 gap-y-2 rounded bg-slate-100 p-5 scrollbar-thin  scrollbar-thumb-slate-400 dark:divide-slate-700 dark:bg-slate-900 dark:scrollbar-thumb-slate-600"
         onClick={(e) => {
           e.stopPropagation();
         }}
@@ -200,7 +200,7 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
               <textarea
                 id="message"
                 value={lab.message}
-                className="px h-24 w-full border border-slate-500 bg-inherit p-2 py-2 scrollbar-thin scrollbar-track-slate-300 scrollbar-thumb-sky-500 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500 hover:bg-slate-200 dark:hover:bg-slate-700"
+                className="px h-24 w-full border border-slate-500 bg-inherit p-2 py-2 scrollbar-thin  scrollbar-thumb-slate-400 dark:scrollbar-thumb-slate-600 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500 hover:bg-slate-200 dark:hover:bg-slate-700"
                 placeholder="This message will be displayed to the user once the lab env is setup. Think of it like case statement"
                 onChange={(event) => {
                   setLab({ ...lab, message: event.target.value });

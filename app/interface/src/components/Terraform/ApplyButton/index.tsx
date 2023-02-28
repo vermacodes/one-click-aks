@@ -38,7 +38,7 @@ export default function ApplyButton({ variant, children, lab }: Props) {
 
   return (
     <Button
-      variant={variant}
+      variant={"secondary"}
       onClick={onClickHandler}
       disabled={inProgress || lab === undefined}
     >

@@ -30,7 +30,7 @@ export default function DestroyButton({ variant, children, lab }: Props) {
 
   return (
     <Button
-      variant={variant}
+      variant={"secondary"}
       onClick={onClickHandler}
       disabled={inProgress || lab === undefined}
     >

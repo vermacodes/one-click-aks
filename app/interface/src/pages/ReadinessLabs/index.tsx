@@ -81,7 +81,7 @@ export default function ReadinessLabs() {
                       <ApplyButton variant="primary-outline" lab={lab}>
                         Deploy
                       </ApplyButton>
-                      <ValidateLabButton lab={lab} variant="primary-outline">
+                      <ValidateLabButton lab={lab} variant="secondary">
                         Validate
                       </ValidateLabButton>
                       <DestroyButton variant="danger-outline" lab={lab}>
@@ -96,7 +96,7 @@ export default function ReadinessLabs() {
                       >
                         Load To Builder
                       </LoadToBuilderButton>
-                      <DeleteLabButton lab={lab} variant="secondary-outline">
+                      <DeleteLabButton lab={lab} variant="danger-outline">
                         Delete
                       </DeleteLabButton>
                     </div>

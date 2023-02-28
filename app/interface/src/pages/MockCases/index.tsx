@@ -80,15 +80,15 @@ export default function MockCases() {
                     <ExportLabButton lab={lab} variant="secondary-outline">
                       Export
                     </ExportLabButton>
-                    <DeleteLabButton lab={lab} variant="danger-outline">
-                      Delete
-                    </DeleteLabButton>
                     <LabBuilder lab={lab} variant="secondary-outline">
                       Edit
                     </LabBuilder>
                     <LoadToBuilderButton variant="secondary-outline" lab={lab}>
                       Load To Builder
                     </LoadToBuilderButton>
+                    <DeleteLabButton lab={lab} variant="danger-outline">
+                      Delete
+                    </DeleteLabButton>
                   </div>
                 </>
               </LabCard>
