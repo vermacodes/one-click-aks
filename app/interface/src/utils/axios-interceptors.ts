@@ -1,4 +1,11 @@
+import {
+  InteractionRequiredAuthError,
+  PublicClientApplication,
+} from "@azure/msal-browser";
 import axios, { AxiosRequestConfig } from "axios";
+import { loginRequest, msalConfig } from "../authConfig";
+
+const pca = new PublicClientApplication(msalConfig);
 
 export const axiosInstance = axios.create({
   baseURL: getBaseUrl(),
@@ -33,10 +40,26 @@ export const authAxiosInstance = axios.create({
 
 // Function to get auth token. This function is called by the axios interceptor
 async function getAuthToken(): Promise<string> {
-  const response = await axiosInstance.get("token", {
-    // add your auth credentials here
-  });
-  return response.data;
+  const accounts = await pca.getAllAccounts();
+  const account = accounts[0];
+
+  try {
+    const response = await pca.acquireTokenSilent({
+      ...loginRequest,
+      account: account,
+    });
+    return response.accessToken;
+  } catch (error) {
+    if (error instanceof InteractionRequiredAuthError) {
+      const response = await pca.acquireTokenPopup({
+        ...loginRequest,
+        account: account,
+      });
+      return response.accessToken;
+    } else {
+      throw error;
+    }
+  }
 }
 
 // Axios interceptor to add the auth token to outgoing requests

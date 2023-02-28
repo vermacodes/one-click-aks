@@ -8,9 +8,9 @@ import (
 	"golang.org/x/exp/slog"
 )
 
-func AuthRequired(authService entity.AuthService) gin.HandlerFunc {
+func AuthRequired(authService entity.AuthService, logStream entity.LogStreamService) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		loginStatus, err := authService.GetLoginStatus()
+		loginStatus, err := authService.ServicePrincipalLoginStatus()
 		if err != nil {
 			slog.Error("not able to get auth status", err)
 			c.AbortWithStatus(http.StatusUnauthorized)
@@ -27,40 +27,40 @@ func AuthRequired(authService entity.AuthService) gin.HandlerFunc {
 	}
 }
 
-func MentorRequired(authService entity.AuthService) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		previledges, err := authService.GetPriveledges()
-		if err != nil {
-			slog.Error("not able to get auth status", err)
-			c.AbortWithStatus(http.StatusUnauthorized)
-			return
-		}
+// func MentorRequired(authService entity.AuthService) gin.HandlerFunc {
+// 	return func(c *gin.Context) {
+// 		previledges, err := authService.GetPriveledges()
+// 		if err != nil {
+// 			slog.Error("not able to get auth status", err)
+// 			c.AbortWithStatus(http.StatusUnauthorized)
+// 			return
+// 		}
 
-		if !previledges.IsMentor {
-			slog.Info("Mentor role required.")
-			c.AbortWithStatus(http.StatusUnauthorized)
-			return
-		}
+// 		if !previledges.IsMentor {
+// 			slog.Info("Mentor role required.")
+// 			c.AbortWithStatus(http.StatusUnauthorized)
+// 			return
+// 		}
 
-		c.Next()
-	}
-}
+// 		c.Next()
+// 	}
+// }
 
-func AdminRequired(authService entity.AuthService) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		previledges, err := authService.GetPriveledges()
-		if err != nil {
-			slog.Error("not able to get auth status", err)
-			c.AbortWithStatus(http.StatusUnauthorized)
-			return
-		}
+// func AdminRequired(authService entity.AuthService) gin.HandlerFunc {
+// 	return func(c *gin.Context) {
+// 		previledges, err := authService.GetPriveledges()
+// 		if err != nil {
+// 			slog.Error("not able to get auth status", err)
+// 			c.AbortWithStatus(http.StatusUnauthorized)
+// 			return
+// 		}
 
-		if !previledges.IsAdmin {
-			slog.Info("Admin role required.")
-			c.AbortWithStatus(http.StatusUnauthorized)
-			return
-		}
+// 		if !previledges.IsAdmin {
+// 			slog.Info("Admin role required.")
+// 			c.AbortWithStatus(http.StatusUnauthorized)
+// 			return
+// 		}
 
-		c.Next()
-	}
-}
+// 		c.Next()
+// 	}
+// }

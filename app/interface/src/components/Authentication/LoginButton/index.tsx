@@ -1,115 +1,79 @@
-import { useState } from "react";
+import { useMsal } from "@azure/msal-react";
+import { useEffect, useState } from "react";
 import { FaSignInAlt, FaUserNinja } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
-import {
-  useAccount,
-  useLogin,
-  useLoginStatus,
-} from "../../../hooks/useAccount";
-import {
-  useActionStatus,
-  useSetActionStatus,
-} from "../../../hooks/useActionStatus";
-import { useAddDefaultRoles } from "../../../hooks/useAuth";
-import { useSetLogs } from "../../../hooks/useLogs";
-import { useResetServerCache } from "../../../hooks/useServerCache";
-import { useServerStatus } from "../../../hooks/useServerStatus";
-import Button from "../../Button";
+import { loginRequest } from "../../../authConfig";
+import { GraphData } from "../../../dataStructures";
 
 type Props = {};
 
 export default function LoginButton({}: Props) {
-  const [showUserName, setShowUserName] = useState<boolean>(false);
-  const { data: serverStatus } = useServerStatus();
-  const { data: inProgress } = useActionStatus();
-  const {
-    data: isLogin,
-    refetch: getLoginStatus,
-    isError: loginError,
-  } = useLoginStatus();
-  const { mutateAsync: loginAsync } = useLogin();
-  const { data: accounts, isLoading: accountsLoading } = useAccount();
-  const { mutate: setLogs } = useSetLogs();
-  const setActionStatus = useSetActionStatus();
-  const { mutateAsync: resetServerCacheAsync } = useResetServerCache();
+  const { instance, accounts, inProgress } = useMsal();
+  const [graphResponse, setGraphResponse] = useState<GraphData | undefined>();
+  const [accessToken, setAccessToken] = useState<string>("");
+  const [tokenAcquired, setTokenAcquired] = useState<boolean>(false);
 
-  const defaultRoles = useAddDefaultRoles();
+  // call RequestAccessToken after the component has mounted
+  useEffect(() => {
+    RequestAccessToken();
+  }, []);
 
-  const navigate = useNavigate();
-
-  function handleLogin() {
-    if (!inProgress) {
-      navigate("/builder");
-      setLogs({ isStreaming: true, logs: "" });
-      loginAsync()
-        .then((response) => {
-          if (response.status !== undefined) {
-            getLoginStatus();
-
-            setActionStatus
-              .mutateAsync({
-                inProgress: false,
-              })
-              .finally(() => {
-                setLogs({ isStreaming: false, logs: "" });
-              });
-
-            // Create Default Roles
-            defaultRoles.mutate();
-
-            // Reset server cache and reload window.
-            // resetServerCacheAsync().finally(() => {
-            //   window.location.reload();
-            // });
-          }
-        })
-        // Finally End action status and log stream.
-        .finally(() => {
-          setActionStatus
-            .mutateAsync({
-              inProgress: false,
-            })
-            .finally(() => {
-              setLogs({ isStreaming: false, logs: "" });
-            });
-        });
+  useEffect(() => {
+    if (tokenAcquired) {
+      getGraphData();
     }
+  }, [tokenAcquired]);
+
+  async function getGraphData() {
+    fetch("https://graph.microsoft.com/v1.0/me", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }).then((response) => {
+      if (response.ok) {
+        response.json().then((data) => {
+          setGraphResponse(data);
+          console.log("Graph Data -> ", data);
+        });
+      } else {
+        console.log(response);
+      }
+    });
   }
 
-  if (serverStatus?.status !== "OK") {
-    return <></>;
+  function RequestAccessToken() {
+    const request = {
+      ...loginRequest,
+      account: accounts[0],
+    };
+
+    // Silently acquires an access token which is then attached to a request for Microsoft Graph data
+    instance
+      .acquireTokenSilent(request)
+      .then((response) => {
+        setAccessToken(response.accessToken);
+        setTokenAcquired(true);
+      })
+      .catch((e) => {
+        instance.acquireTokenPopup(request).then((response) => {
+          setAccessToken(response.accessToken);
+          setTokenAcquired(true);
+        });
+      });
   }
 
   return (
     <div>
-      {isLogin && !loginError ? (
-        <button
-          className="justify-star flex h-full w-full items-center gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800"
-          onMouseEnter={() => setShowUserName(true)}
-          onMouseLeave={() => setShowUserName(false)}
-        >
+      {graphResponse ? (
+        <a className="justify-star flex h-full w-full items-center gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
           <span>
             <FaUserNinja />
           </span>
-          <span>
-            {accountsLoading ? (
-              <p>Loading...</p>
-            ) : (
-              <>
-                {accounts?.map((account) => (
-                  <div key={account.id}>
-                    {account.isDefault === true && <p>{account.user.name}</p>}
-                  </div>
-                ))}
-              </>
-            )}
-          </span>
-        </button>
+          <span>{graphResponse.displayName}</span>
+        </a>
       ) : (
         <button
           className="justify-star flex h-full w-full items-center gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800"
-          onClick={() => handleLogin()}
-          disabled={inProgress}
+          onClick={() => RequestAccessToken()}
         >
           <span>
             <FaSignInAlt />

@@ -3,21 +3,18 @@ import {
   FaClipboard,
   FaCog,
   FaExternalLinkAlt,
-  FaFileAlt,
   FaFileCode,
   FaFlask,
   FaList,
   FaMoon,
-  FaServer,
   FaShieldAlt,
   FaSun,
   FaTools,
   FaUserGraduate,
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { useGetPriviledge } from "../../hooks/useAccount";
+import { useGetMyRoles } from "../../hooks/useAuth";
 import { useServerStatus } from "../../hooks/useServerStatus";
-import Terraform from "../../modals/Terraform";
 import LoginButton from "../Authentication/LoginButton";
 import CurrentTerraformWorkspace from "../CurrentTerraformWorkspace";
 
@@ -27,13 +24,6 @@ type NavbarProps = {
 };
 
 export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
-  const [showSettingsModal, setShowSettingsModal] = useState<boolean>(false);
-  const [showServerStatus, setShowServerStatus] = useState<boolean>(false);
-
-  const { data: serverStatus, refetch: getServerStatus } = useServerStatus();
-  const { data: priviledge } = useGetPriviledge();
-  const actLabsLogoImage = new URL("/actlabs_logo.svg", import.meta.url).href;
-
   return (
     <nav className="flex h-screen w-full min-w-max flex-col  text-slate-900 dark:text-slate-100">
       <Title />
@@ -55,7 +45,7 @@ function Title() {
 }
 
 function Pages() {
-  const { data: priviledge } = useGetPriviledge();
+  const { data: roles } = useGetMyRoles();
   return (
     <div className="h-9/10 mt-2 flex w-full flex-col overflow-y-scroll border-b border-slate-300 px-4 scrollbar-thin scrollbar-thumb-slate-300 scrollbar-thumb-rounded-full dark:border-slate-700 dark:scrollbar-thumb-slate-700">
       <ul className="md:text-l flex w-full flex-col justify-start gap-y-1 py-2 text-sm lg:text-xl">
@@ -89,7 +79,7 @@ function Pages() {
             </button>
           </Link>
         </li>
-        {priviledge && (priviledge.isAdmin || priviledge.isMentor) && (
+        {roles && roles.roles.includes("mentor") && (
           <>
             <li>
               <Link to={"/redinesslabs"}>
@@ -121,6 +111,10 @@ function Pages() {
                 </button>
               </Link>
             </li>
+          </>
+        )}
+        {roles && roles.roles.includes("admin") && (
+          <>
             <li>
               <Link to={"/rbac"}>
                 <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">

@@ -1,10 +1,10 @@
-import { AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Lab } from "../dataStructures";
-import { axiosInstance } from "../utils/axios-interceptors";
+import { authAxiosInstance, axiosInstance } from "../utils/axios-interceptors";
 
 function getSharedMockCases(): Promise<AxiosResponse<Lab[]>> {
-  return axiosInstance("/lab/protected/mockcases");
+  return authAxiosInstance("/lab/protected/mockcases");
 }
 
 export function useSharedMockCases() {
@@ -32,7 +32,7 @@ export function useTemplates() {
 }
 
 function getSharedTemplates(): Promise<AxiosResponse<Lab[]>> {
-  return axiosInstance("lab/public/sharedtemplates");
+  return authAxiosInstance("lab/public/sharedtemplates");
 }
 
 export function useSharedTemplates() {
@@ -46,7 +46,7 @@ export function useSharedTemplates() {
 }
 
 function getSharedLabs(): Promise<AxiosResponse<Lab[]>> {
-  return axiosInstance.get("lab/protected/labexercises");
+  return authAxiosInstance.get("lab/protected/labexercises");
 }
 
 export function useSharedLabs() {
@@ -60,7 +60,7 @@ export function useSharedLabs() {
 }
 
 function createLab(lab: Lab): Promise<AxiosResponse<Lab[]>> {
-  return axiosInstance.post("/lab", lab);
+  return authAxiosInstance.post("/lab/protected", lab);
 }
 
 // TODO: Optimistic updates
@@ -78,7 +78,7 @@ export function useCreateLab() {
 }
 
 function deleteLab(lab: Lab) {
-  return axiosInstance.delete("lab", { data: lab });
+  return authAxiosInstance.delete("lab/protected", { data: lab });
 }
 
 // TODO: Optimistic updates
@@ -90,6 +90,35 @@ export function useDeleteLab() {
       queryClient.invalidateQueries("shared-templates");
       queryClient.invalidateQueries("shared-mockcases");
       queryClient.invalidateQueries("shared-labs");
+    },
+  });
+}
+
+function createMyLab(lab: Lab): Promise<AxiosResponse<Lab[]>> {
+  return axiosInstance.post("/lab", lab);
+}
+
+// TODO: Optimistic updates
+// ?: Will it make sense to seperate create and update functions? Right now server is handling updates.
+export function useCreateMyLab() {
+  const queryClient = useQueryClient();
+  return useMutation(createMyLab, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("mytemplates");
+    },
+  });
+}
+
+function deleteMyLab(lab: Lab) {
+  return axiosInstance.delete("lab", { data: lab });
+}
+
+// TODO: Optimistic updates
+export function useDeleteMyLab() {
+  const queryClient = useQueryClient();
+  return useMutation(deleteMyLab, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("mytemplates");
     },
   });
 }

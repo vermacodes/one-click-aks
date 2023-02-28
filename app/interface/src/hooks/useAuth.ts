@@ -49,6 +49,7 @@ export function useRemoveRole() {
   return useMutation(removeRole, {
     onSuccess: () => {
       queryClient.invalidateQueries("allRoles");
+      queryClient.invalidateQueries("myRoles");
     },
   });
 }
@@ -64,6 +65,7 @@ export function useAddRole() {
   return useMutation(addRole, {
     onSuccess: () => {
       queryClient.invalidateQueries("allRoles");
+      queryClient.invalidateQueries("myRoles");
     },
   });
 }
@@ -77,6 +79,7 @@ export function useAddDefaultRoles() {
   return useMutation(addDefaultRoles, {
     onSuccess: () => {
       queryClient.invalidateQueries("allRoles");
+      queryClient.invalidateQueries("myRoles");
     },
   });
 }

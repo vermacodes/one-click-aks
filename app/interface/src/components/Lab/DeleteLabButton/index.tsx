@@ -1,7 +1,7 @@
 import React from "react";
 import { ButtonVariant, Lab } from "../../../dataStructures";
 import { useActionStatus } from "../../../hooks/useActionStatus";
-import { useDeleteLab } from "../../../hooks/useBlobs";
+import { useDeleteLab, useDeleteMyLab } from "../../../hooks/useBlobs";
 import { useSetLogs } from "../../../hooks/useLogs";
 import Button from "../../Button";
 
@@ -15,10 +15,17 @@ export default function DeleteLabButton({ variant, children, lab }: Props) {
   const { mutate: setLogs } = useSetLogs();
   const { data: inProgress } = useActionStatus();
   const { mutate: deleteLab } = useDeleteLab();
+  const { mutate: deleteMyLab } = useDeleteMyLab();
 
   function onClickHandler() {
     setLogs({ isStreaming: true, logs: "" });
-    lab && deleteLab(lab);
+    if (lab !== undefined) {
+      if (lab.type === "template") {
+        deleteMyLab(lab);
+      } else {
+        deleteLab(lab);
+      }
+    }
   }
 
   return (

@@ -3,7 +3,7 @@ import { MdDoneOutline, MdOutlineContentCopy } from "react-icons/md";
 import { Link } from "react-router-dom";
 import Button from "../../components/Button";
 import Terminal from "../../components/Terminal";
-import { useConfigureServicePrincipal } from "../../hooks/useAccount";
+//import { useConfigureServicePrincipal } from "../../hooks/useAccount";
 import { useSetLogs } from "../../hooks/useLogs";
 
 type Props = { section: string; setSection(args: string): void };
@@ -14,21 +14,21 @@ export default function ServicePrincipal({ section, setSection }: Props) {
   const command =
     "curl -sL https://raw.githubusercontent.com/vermacodes/one-click-aks/keyvault/scripts/service_principal_configuration.sh | bash";
 
-  const {
-    mutateAsync: configureServicePrincipalAsync,
-    isLoading: configureServicePrincipalLoading,
-  } = useConfigureServicePrincipal();
+  // const {
+  //   mutateAsync: configureServicePrincipalAsync,
+  //   isLoading: configureServicePrincipalLoading,
+  // } = useConfigureServicePrincipal();
 
   const { mutate: setLogs, mutateAsync: setLogsAsync } = useSetLogs();
 
   function configureServicePrincipal() {
     setLogsAsync({ isStreaming: true, logs: "" }).then((response) => {
       if (response.status === 200) {
-        configureServicePrincipalAsync().then((response) => {
-          if (response.status === 200) {
-            setConfigured(true);
-          }
-        });
+        // configureServicePrincipalAsync().then((response) => {
+        //   if (response.status === 200) {
+        //     setConfigured(true);
+        //   }
+        // });
       }
     });
   }
@@ -106,7 +106,7 @@ export default function ServicePrincipal({ section, setSection }: Props) {
         </p>
       </div>
       <div className="flex w-60 flex-col justify-center">
-        <Button
+        {/* <Button
           variant="success"
           disabled={configureServicePrincipalLoading || configured}
           onClick={() => configureServicePrincipal()}
@@ -114,7 +114,7 @@ export default function ServicePrincipal({ section, setSection }: Props) {
           {configureServicePrincipalLoading
             ? "Please wait..."
             : "Validate Service Principal"}
-        </Button>
+        </Button> */}
       </div>
     </div>
   );

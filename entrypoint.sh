@@ -11,8 +11,9 @@ chmod +x server
 export ROOT_DIR=$(pwd)
 export PORT="80"
 
-while true
-do
+echo $ARM_CLIENT_ID
+
+while true; do
     export STATUS=$(curl -s http://localhost:8080/status | jq -r .status)
     echo "$(date) : Status : $STATUS"
     if [ "$STATUS" != "OK" ]; then

@@ -11,6 +11,7 @@ import DestroyButton from "../../components/Terraform/DestroyButton";
 import PlanButton from "../../components/Terraform/PlanButton";
 import { Lab } from "../../dataStructures";
 import { useSharedMockCases } from "../../hooks/useBlobs";
+import LabGridLayout from "../../layouts/LabGridLayout";
 import PageLayout from "../../layouts/PageLayout";
 import LabBuilder from "../../modals/LabBuilder";
 
@@ -36,7 +37,7 @@ export default function MockCases() {
 
   return (
     <PageLayout heading="Mock Cases">
-      <div className="w-7/8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <LabGridLayout>
         {labs !== undefined &&
           labs.map((lab: Lab) => (
             <TemplateCard key={lab.name}>
@@ -93,7 +94,7 @@ export default function MockCases() {
               </LabCard>
             </TemplateCard>
           ))}
-      </div>
+      </LabGridLayout>
       <Terminal />
     </PageLayout>
   );

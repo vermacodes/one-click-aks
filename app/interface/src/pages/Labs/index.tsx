@@ -7,6 +7,7 @@ import Terminal from "../../components/Terminal";
 import { Lab } from "../../dataStructures";
 import { useSharedTemplates, useTemplates } from "../../hooks/useBlobs";
 import { useServerStatus } from "../../hooks/useServerStatus";
+import LabGridLayout from "../../layouts/LabGridLayout";
 import PageLayout from "../../layouts/PageLayout";
 import LabBuilder from "../../modals/LabBuilder";
 import ServerError from "../ServerError";
@@ -44,33 +45,28 @@ export default function Labs() {
   }
 
   return (
-    <div className="flex flex-col gap-x-4">
-      {/* My Labs Secion */}
-      <p className="mb-6 border-b-2 border-slate-500 py-4 text-4xl">My Labs</p>
-      <div className="w-7/8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {myLabs !== undefined &&
-          myLabs.map((lab: Lab) => <TemplateCards lab={lab} key={lab.id} />)}
-      </div>
-      <p className="text-2xl">
-        {myLabs?.length === 0 &&
-          "You have not saved any templates 🙂. To save, go to builder, build and save. 💾"}
-      </p>
-
-      {/* Public Labs Secion */}
-      {sharedLabs && sharedLabs?.length !== 0 && (
-        <>
-          <p className="mb-6 border-b-2 border-slate-500 py-4 text-4xl">
-            Public Labs
-          </p>
-          <div className="w-7/8 grid grid-cols-3 gap-4">
+    <>
+      <PageLayout heading="My Labs">
+        <LabGridLayout>
+          {myLabs !== undefined &&
+            myLabs.map((lab: Lab) => <TemplateCards lab={lab} key={lab.id} />)}
+        </LabGridLayout>
+        <p className="text-2xl">
+          {myLabs?.length === 0 &&
+            "You have not saved any templates 🙂. To save, go to builder, build and save. 💾"}
+        </p>
+      </PageLayout>
+      <PageLayout heading="Public Labs">
+        {sharedLabs && sharedLabs?.length !== 0 && (
+          <LabGridLayout>
             {sharedLabs &&
               sharedLabs.map((lab: Lab) => (
                 <TemplateCards lab={lab} key={lab.id} />
               ))}
-          </div>
-        </>
-      )}
-    </div>
+          </LabGridLayout>
+        )}
+      </PageLayout>
+    </>
   );
 }
 

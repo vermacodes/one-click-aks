@@ -17,7 +17,8 @@ func NewLoginHandler(r *gin.Engine, service entity.AuthService) {
 		authService: service,
 	}
 
-	r.POST("/login", handler.Login)
+	// r.POST("/login", handler.Login)
+	r.POST("/service-principal-login", handler.ServicePrincipalLogin)
 }
 
 func NewAuthHandler(r *gin.RouterGroup, service entity.AuthService) {
@@ -25,54 +26,73 @@ func NewAuthHandler(r *gin.RouterGroup, service entity.AuthService) {
 		authService: service,
 	}
 
-	r.GET("/login", handler.GetLoginStatus)
-	r.GET("/account", handler.GetAccount)
-	r.GET("/token", handler.GetAuthToken)
+	r.GET("/service-principal-login", handler.ServicePrincipalLogin)
+	// r.GET("/login", handler.GetLoginStatus)
+	// r.GET("/account", handler.GetAccount)
+	// r.GET("/token", handler.GetAuthToken)
 	r.GET("/accounts", handler.GetAccounts)
 	r.PUT("/account", handler.SetAccount)
-	r.GET("/privilege", handler.GetPrivileges)
-	r.POST("/service-principal", handler.ConfigureServicePrincipal)
+	// r.GET("/privilege", handler.GetPrivileges)
+	// r.POST("/service-principal", handler.ConfigureServicePrincipal)
 }
 
-func (a *authHandler) Login(c *gin.Context) {
-	w := c.Writer
-	header := w.Header()
-	header.Set("Transfer-Encoding", "chunked")
-	header.Set("Content-type", "text/html")
-	w.WriteHeader(http.StatusOK)
-	w.(http.Flusher).Flush()
-	a.authService.Login()
-}
-
-func (a *authHandler) GetLoginStatus(c *gin.Context) {
-	loginStatus, err := a.authService.GetLoginStatus()
+func (a *authHandler) ServicePrincipalLogin(c *gin.Context) {
+	LoginStatus, err := a.authService.ServicePrincipalLogin()
 	if err != nil {
 		c.Status(http.StatusInternalServerError)
 		return
 	}
-
-	c.IndentedJSON(http.StatusOK, loginStatus)
+	c.IndentedJSON(http.StatusOK, LoginStatus)
 }
 
-func (a *authHandler) GetAuthToken(c *gin.Context) {
-	authToken, err := a.authService.GetAuthToken()
+func (a *authHandler) ServicePrincipalLoginStatus(c *gin.Context) {
+	LoginStatus, err := a.authService.ServicePrincipalLoginStatus()
 	if err != nil {
 		c.Status(http.StatusInternalServerError)
 		return
 	}
-
-	c.IndentedJSON(http.StatusOK, authToken)
+	c.IndentedJSON(http.StatusOK, LoginStatus)
 }
 
-func (a *authHandler) GetAccount(c *gin.Context) {
-	account, err := a.authService.GetAccount()
-	if err != nil {
-		c.Status(http.StatusInternalServerError)
-		return
-	}
+// func (a *authHandler) Login(c *gin.Context) {
+// 	w := c.Writer
+// 	header := w.Header()
+// 	header.Set("Transfer-Encoding", "chunked")
+// 	header.Set("Content-type", "text/html")
+// 	w.WriteHeader(http.StatusOK)
+// 	w.(http.Flusher).Flush()
+// 	a.authService.Login()
+// }
 
-	c.IndentedJSON(http.StatusOK, account)
-}
+// func (a *authHandler) GetLoginStatus(c *gin.Context) {
+// 	loginStatus, err := a.authService.GetLoginStatus()
+// 	if err != nil {
+// 		c.Status(http.StatusInternalServerError)
+// 		return
+// 	}
+
+// 	c.IndentedJSON(http.StatusOK, loginStatus)
+// }
+
+// func (a *authHandler) GetAuthToken(c *gin.Context) {
+// 	authToken, err := a.authService.GetAuthToken()
+// 	if err != nil {
+// 		c.Status(http.StatusInternalServerError)
+// 		return
+// 	}
+
+// 	c.IndentedJSON(http.StatusOK, authToken)
+// }
+
+// func (a *authHandler) GetAccount(c *gin.Context) {
+// 	account, err := a.authService.GetAccount()
+// 	if err != nil {
+// 		c.Status(http.StatusInternalServerError)
+// 		return
+// 	}
+
+// 	c.IndentedJSON(http.StatusOK, account)
+// }
 
 func (a *authHandler) GetAccounts(c *gin.Context) {
 	accounts, err := a.authService.GetAccounts()
@@ -100,21 +120,21 @@ func (a *authHandler) SetAccount(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
-func (a *authHandler) GetPrivileges(c *gin.Context) {
-	privilege, err := a.authService.GetPriveledges()
-	if err != nil {
-		c.Status(http.StatusInternalServerError)
-		return
-	}
-	c.IndentedJSON(http.StatusOK, privilege)
-}
+// func (a *authHandler) GetPrivileges(c *gin.Context) {
+// 	privilege, err := a.authService.GetPriveledges()
+// 	if err != nil {
+// 		c.Status(http.StatusInternalServerError)
+// 		return
+// 	}
+// 	c.IndentedJSON(http.StatusOK, privilege)
+// }
 
-func (a *authHandler) ConfigureServicePrincipal(c *gin.Context) {
-	servicePrincipalConfig, err := a.authService.ConfigureServicePrincipal()
-	if err != nil {
-		c.Status(http.StatusInternalServerError)
-		return
-	}
+// func (a *authHandler) ConfigureServicePrincipal(c *gin.Context) {
+// 	servicePrincipalConfig, err := a.authService.ConfigureServicePrincipal()
+// 	if err != nil {
+// 		c.Status(http.StatusInternalServerError)
+// 		return
+// 	}
 
-	c.IndentedJSON(http.StatusOK, servicePrincipalConfig)
-}
+// 	c.IndentedJSON(http.StatusOK, servicePrincipalConfig)
+// }

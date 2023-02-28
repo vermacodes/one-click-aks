@@ -12,6 +12,7 @@ import DestroyButton from "../../components/Terraform/DestroyButton";
 import PlanButton from "../../components/Terraform/PlanButton";
 import { Lab } from "../../dataStructures";
 import { useSharedLabs } from "../../hooks/useBlobs";
+import LabGridLayout from "../../layouts/LabGridLayout";
 import PageLayout from "../../layouts/PageLayout";
 import LabBuilder from "../../modals/LabBuilder";
 import ServerError from "../ServerError";
@@ -42,7 +43,7 @@ export default function ReadinessLabs() {
 
   return (
     <PageLayout heading="Readiness Labs">
-      <div className="w-7/8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <LabGridLayout>
         {labs &&
           labs.map((lab: Lab) => (
             <TemplateCard key={lab.name}>
@@ -104,7 +105,7 @@ export default function ReadinessLabs() {
               </LabCard>
             </TemplateCard>
           ))}
-      </div>
+      </LabGridLayout>
       <Terminal />
     </PageLayout>
   );

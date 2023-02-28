@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Lab } from "../../dataStructures";
-import { useLoginStatus } from "../../hooks/useAccount";
 import { useDeleteLab, useLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
 import CodeEditor from "../../modals/CodeEditor";
@@ -32,20 +31,13 @@ export default function Tfvar() {
   const { mutate: setLogs } = useSetLogs();
   const { data: lab } = useLab();
   const { mutate: deleteLab } = useDeleteLab();
-  const {
-    data: isLogin,
-    refetch: getLoginStatus,
-    isError: loginError,
-  } = useLoginStatus();
 
   const [_lab, _setLab] = useState<Lab | undefined>(lab);
 
   return (
     <div
       onClick={() => setVersionMenu(false)}
-      className={`${
-        !isLogin && loginError && "hidden "
-      } rounded border border-slate-500 p-3 shadow-sm hover:border-sky-500 hover:shadow-sky-500`}
+      className={`rounded border border-slate-500 p-3 shadow-sm hover:border-sky-500 hover:shadow-sky-500`}
     >
       <div className="flex flex-wrap gap-y-2 gap-x-2">
         <CustomVnet />
@@ -72,7 +64,7 @@ export default function Tfvar() {
         <AppGateway />
         <MicrosoftDefender />
       </div>
-      <div className={`mt-4 flex gap-x-2`}>
+      <div className={`mt-4 flex flex-wrap gap-2`}>
         <PlanButton variant="success" lab={lab}>
           Plan
         </PlanButton>

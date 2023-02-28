@@ -21,8 +21,6 @@ func NewLogStreamService(logStreamRepository entity.LogStreamRepository) entity.
 
 func (l *logStreamService) SetLogs(logStream entity.LogStream) error {
 
-	slog.Info("setting logs stream")
-
 	// this is a hack to continue the logs from where they are right now.
 	if logStream.Logs == "continue" {
 		prevLogStream, err := l.GetLogs()

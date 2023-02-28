@@ -30,7 +30,7 @@ docker build -t repro .
 cd ./app/server
 rm server
 
-docker tag repro actlab.azurecr.io/repro:latest
+docker tag repro actlab.azurecr.io/repro:beta
 
 az acr login --name actlab
-docker push actlab.azurecr.io/repro:latest
+docker push actlab.azurecr.io/repro:beta
