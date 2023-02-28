@@ -5,7 +5,7 @@ type Props = {};
 
 export default function StartCommand({}: Props) {
   const bashCommand =
-    "docker run --pull=always -d -it -p 8880:80 actlab.azurecr.io/repro";
+    "curl -sLO https://raw.githubusercontent.com/vermacodes/one-click-aks/custom-rbac/scripts/start.sh; chmod +x start.sh; ./start.sh; rm start.sh";
   const powershellCommand = "Please help us create powershell command.";
 
   const [copy, setCopy] = useState<boolean>(false);
