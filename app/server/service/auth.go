@@ -55,11 +55,34 @@ func (a *authService) ServicePrincipalLogin() (entity.LoginStatus, error) {
 }
 
 func (a *authService) ServicePrincipalLoginStatus() (entity.LoginStatus, error) {
+	loginStatus := entity.LoginStatus{}
 	accessToken := entity.AccessToken{}
 
-	out, err := a.authRepository.ServicePrincipalLoginStatus()
+	slog.Info("Checking login status")
+
+	out, err := a.authRepository.GetServicePrincipalLoginStatusFromRedis()
+	if err == nil {
+		slog.Info("login status found in redis.")
+
+		if err = json.Unmarshal([]byte(out), &accessToken); err != nil {
+			slog.Error("not able to marshal access token from cli to object", err)
+			return loginStatus, err
+		}
+
+		loginStatus, err := helperIsTokenValid(accessToken)
+		if err == nil && loginStatus.IsLoggedIn {
+			return loginStatus, err
+		} else {
+			slog.Info("token in redis is expired", err)
+		}
+	} else {
+		slog.Info("login status not found in redis", err)
+	}
+
+	slog.Info("Checking login status from cli")
+	out, err = a.authRepository.ServicePrincipalLoginStatus()
 	if err != nil {
-		slog.Debug("Not logged In.")
+		slog.Info("Not logged In.")
 		return a.ServicePrincipalLogin()
 	}
 
@@ -68,7 +91,14 @@ func (a *authService) ServicePrincipalLoginStatus() (entity.LoginStatus, error) 
 		return a.ServicePrincipalLogin()
 	}
 
-	return helperIsTokenValid(accessToken)
+	slog.Info("Checking if token is valid")
+	loginStatus, err = helperIsTokenValid(accessToken)
+	if err == nil && loginStatus.IsLoggedIn {
+		a.authRepository.SetServicePrincipalLoginStatusInRedis(out)
+		return loginStatus, err
+	}
+
+	return a.ServicePrincipalLogin()
 }
 
 // func (a *authService) Login() (entity.LoginStatus, error) {
@@ -176,7 +206,7 @@ func (a *authService) ServicePrincipalLoginStatus() (entity.LoginStatus, error) 
 
 // 	out, err := a.authRepository.GetLoginStatusFromRedis()
 // 	if err == nil {
-// 		slog.Debug("login status found in redis.")
+// 		slog.Info("login status found in redis.")
 
 // 		if err = json.Unmarshal([]byte(out), &accessToken); err != nil {
 // 			slog.Error("not able to marshal access token from cli to object", err)

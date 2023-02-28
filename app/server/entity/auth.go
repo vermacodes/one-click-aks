@@ -66,6 +66,8 @@ type AuthService interface {
 type AuthRepository interface {
 	ServicePrincipalLogin() (string, error)
 	ServicePrincipalLoginStatus() (string, error)
+	GetServicePrincipalLoginStatusFromRedis() (string, error)
+	SetServicePrincipalLoginStatusInRedis(val string) error
 	// Login() (*exec.Cmd, *os.File, *os.File, error)
 	// Logout() error
 	// DeleteAllCache() error

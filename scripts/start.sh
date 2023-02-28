@@ -152,13 +152,13 @@ function create_service_principal() {
 
     # Get the secrets from the key vault
     # Uncomment lines below to not reset credentials if they already exist
-    # ID_SECRET=$(az keyvault secret show --name "arm-client-id" --vault-name "${KEY_VAULT_NAME}" --query "value" -o tsv)
-    # SECRET_SECRET=$(az keyvault secret show --name "arm-client-secret" --vault-name "${KEY_VAULT_NAME}" --query "value" -o tsv)
+    ID_SECRET=$(az keyvault secret show --name "arm-client-id" --vault-name "${KEY_VAULT_NAME}" --query "value" -o tsv)
+    SECRET_SECRET=$(az keyvault secret show --name "arm-client-secret" --vault-name "${KEY_VAULT_NAME}" --query "value" -o tsv)
 
-    # if [[ -n "${ID_SECRET}" && -n "${SECRET_SECRET}" ]]; then
-    #     log "Secrets arm-client-id and arm-client-secret already exist in key vault ${KEY_VAULT_NAME}"
-    #     return 0
-    # fi
+    if [[ -n "${ID_SECRET}" && -n "${SECRET_SECRET}" ]]; then
+        log "Secrets arm-client-id and arm-client-secret already exist in key vault ${KEY_VAULT_NAME}"
+        return 0
+    fi
 
     # Check if the service principal already exists
     log "checking if service principal ${SP_NAME} exists"

@@ -22,6 +22,14 @@ func (a *authRepository) ServicePrincipalLoginStatus() (string, error) {
 	return string(out), err
 }
 
+func (a *authRepository) GetServicePrincipalLoginStatusFromRedis() (string, error) {
+	return getRedis("spLoginStatus")
+}
+
+func (a *authRepository) SetServicePrincipalLoginStatusInRedis(val string) error {
+	return setRedis("spLoginStatus", val)
+}
+
 // func (a *authRepository) Login() (*exec.Cmd, *os.File, *os.File, error) {
 // 	cmd := exec.Command("bash", "-c", "az login --use-device-code")
 // 	rPipe, wPipe, err := os.Pipe()
