@@ -18,7 +18,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
       <BrowserRouter>
         <QueryClientProvider client={queryClient}>
           <App />
-          <ReactQueryDevtools initialIsOpen={false} />
+          <ReactQueryDevtools initialIsOpen={false} position={"bottom-right"} />
         </QueryClientProvider>
       </BrowserRouter>
     </MsalProvider>
