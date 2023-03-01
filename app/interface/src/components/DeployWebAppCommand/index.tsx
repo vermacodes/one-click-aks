@@ -1,11 +1,11 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { MdDoneOutline, MdOutlineContentCopy } from "react-icons/md";
 
 type Props = {};
 
-export default function StartCommand({}: Props) {
+export default function DeployWebAppCommand({}: Props) {
   const bashCommand =
-    "curl -sLO https://raw.githubusercontent.com/vermacodes/one-click-aks/custom-rbac/scripts/start.sh; chmod +x start.sh; ./start.sh; rm start.sh";
+    "curl -sLO https://raw.githubusercontent.com/vermacodes/one-click-aks/custom-rbac/scripts/deploy_webapp.sh; chmod +x deploy_webapp.sh; ./deploy_webapp.sh; rm deploy_webapp.sh";
   const powershellCommand = "Please help us create powershell command.";
 
   const [copy, setCopy] = useState<boolean>(false);

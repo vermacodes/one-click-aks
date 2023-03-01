@@ -17,6 +17,22 @@ ok() {
   echo -e "${GREEN}[$(date +'%Y-%m-%dT%H:%M:%S%z')]: INFO - $* ${NC}" >&1
 }
 
+# Function to ask user if current subscription is correct
+# user must hit enter to continue, any other input will exit the script
+function confirm_subscription() {
+  # Get the current subscription
+  CURRENT_SUBSCRIPTION=$(az account show --query "name" -o tsv)
+
+  # Ask the user if the current subscription is correct
+  echo -en "Is the current subscription ${GREEN}${CURRENT_SUBSCRIPTION}${NC} correct? (y/n) "
+  read -n 1 -r
+  echo
+  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    err "Please select the correct subscription and try again"
+    exit 1
+  fi
+}
+
 # This script deploys Azure WebApp and add Application Settings.
 function deploy_webapp() {
   # Creating App Service Plan
@@ -84,6 +100,13 @@ function deploy_webapp() {
     return 1
   fi
 
+  # add health check
+  az webapp config set \
+    --name $webapp_name \
+    --resource-group $resource_group_name \
+    --subscription $ARM_SUBSCRIPTION_ID \
+    --generic-configurations '{"healthCheckPath":"/'status'"}'
+
   return 0
 }
 
@@ -131,12 +154,24 @@ function get_secrets_from_keyvault() {
 # Script starts here                                       #
 ############################################################
 
+# Confirm subscription
+if confirm_subscription; then
+  log "Subscription confirmed"
+else
+  err "Failed to confirm subscription"
+  exit 1
+fi
+
 # setting known variables.
 log "Setting known variables"
 export resource_group_name="repro-project"
 export docker_image_name="actlab.azurecr.io/repro:beta"
-export app_service_plan_name="repro-project-app-service-plan-$(openssl rand -hex 3)"
-export webapp_name="repro-project-webapp-$(openssl rand -hex 3)"
+
+# Get user alias
+user_alias=$(az ad signed-in-user show --query "userPrincipalName" -o tsv | cut -d "@" -f 1)
+
+export app_service_plan_name="${user_alias}-app-service-plan-$(openssl rand -hex 3)"
+export webapp_name="${user_alias}-webapp-$(openssl rand -hex 3)"
 
 # Get the name of the Key Vault in the resource group
 log "Getting Key Vault name"
@@ -192,3 +227,13 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 ok "Endpoint: https://$default_domain"
+
+# Verify the webapp is running
+# Use curl to verify the webapp is running; keep trying for 5 minutes, 10 seconds apart
+log "verifying webapp is running"
+curl --silent --fail --show-error --max-time 10 --retry 30 --retry-delay 10 https://$default_domain/status
+if [ $? -ne 0 ]; then
+  err "Failed to verify webapp is running"
+  exit 1
+fi
+ok "WebApp is running"

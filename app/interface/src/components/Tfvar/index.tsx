@@ -37,7 +37,7 @@ export default function Tfvar() {
   return (
     <div
       onClick={() => setVersionMenu(false)}
-      className={`rounded border border-slate-500 p-3 shadow-sm hover:border-sky-500 hover:shadow-sky-500`}
+      className={`rounded bg-slate-50 p-3 outline-1 outline-sky-500 hover:outline dark:bg-slate-900`}
     >
       <div className="flex flex-wrap gap-y-2 gap-x-2">
         <CustomVnet />

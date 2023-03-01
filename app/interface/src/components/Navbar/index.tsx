@@ -7,6 +7,7 @@ import {
   FaFlask,
   FaList,
   FaMoon,
+  FaPeopleCarry,
   FaShieldAlt,
   FaSun,
   FaTools,
@@ -60,12 +61,22 @@ function Pages() {
           </Link>
         </li>
         <li>
-          <Link to={"/labs"}>
+          <Link to={"/mylabs"}>
             <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
               <span>
                 <FaFileCode />
               </span>
-              <span>Saved Labs</span>
+              <span>My Saved Labs</span>
+            </button>
+          </Link>
+        </li>
+        <li>
+          <Link to={"/publiclabs"}>
+            <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
+              <span>
+                <FaPeopleCarry />
+              </span>
+              <span>Public Labs</span>
             </button>
           </Link>
         </li>

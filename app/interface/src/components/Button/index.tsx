@@ -24,16 +24,16 @@ export default function Button({
         hidden && "hidden "
       } text-bold rounded border-2 px-4 py-[2px] ${
         variant === "primary" &&
-        " border-sky-500 bg-sky-500 text-white disabled:border-slate-400 disabled:bg-slate-400 hover:border-sky-700 hover:bg-sky-700 disabled:hover:border-slate-400 disabled:hover:bg-slate-400 dark:disabled:border-slate-800 dark:disabled:bg-slate-800 dark:disabled:text-slate-500 "
+        " border-sky-500 bg-sky-500 text-white disabled:border-slate-400 disabled:bg-slate-400 hover:border-sky-700 hover:bg-sky-700 disabled:hover:border-slate-400 disabled:hover:bg-slate-400 dark:disabled:border-slate-700 dark:disabled:bg-slate-700 dark:disabled:text-slate-500 "
       } ${
         variant === "secondary" &&
-        " border-slate-500 bg-slate-500 text-white disabled:border-slate-400 disabled:bg-slate-400 hover:border-slate-700 hover:bg-slate-700 disabled:hover:border-slate-400 disabled:hover:bg-slate-400 dark:disabled:border-slate-800 dark:disabled:bg-slate-800 dark:disabled:text-slate-500 "
+        " border-slate-500 bg-slate-500 text-white disabled:border-slate-400 disabled:bg-slate-400 hover:border-slate-700 hover:bg-slate-700 disabled:hover:border-slate-400 disabled:hover:bg-slate-400 dark:disabled:border-slate-700 dark:disabled:bg-slate-700 dark:disabled:text-slate-500 "
       } ${
         variant === "danger" &&
-        " border-rose-500 bg-rose-500 text-white disabled:border-slate-400 disabled:bg-slate-400 hover:border-rose-700 hover:bg-rose-700 disabled:hover:border-slate-400 disabled:hover:bg-slate-400 dark:disabled:border-slate-800 dark:disabled:bg-slate-800 dark:disabled:text-slate-500 "
+        " border-rose-500 bg-rose-500 text-white disabled:border-slate-400 disabled:bg-slate-400 hover:border-rose-700 hover:bg-rose-700 disabled:hover:border-slate-400 disabled:hover:bg-slate-400 dark:disabled:border-slate-700 dark:disabled:bg-slate-700 dark:disabled:text-slate-500 "
       } ${
         variant === "success" &&
-        " border-green-500 bg-green-500 text-white disabled:border-slate-400 disabled:bg-slate-400 hover:border-green-700 hover:bg-green-700 disabled:hover:border-slate-400 disabled:hover:bg-slate-400 dark:disabled:border-slate-800 dark:disabled:bg-slate-800 dark:disabled:text-slate-500 "
+        " border-green-500 bg-green-500 text-white disabled:border-slate-400 disabled:bg-slate-400 hover:border-green-700 hover:bg-green-700 disabled:hover:border-slate-400 disabled:hover:bg-slate-400 dark:disabled:border-slate-700 dark:disabled:bg-slate-700 dark:disabled:text-slate-500 "
       } ${
         variant === "primary-outline" &&
         " border-sky-500 text-sky-500 disabled:border-slate-400 disabled:text-slate-400 hover:border-sky-500 hover:bg-sky-500  hover:text-slate-100 disabled:hover:border-slate-400 disabled:hover:bg-inherit disabled:hover:text-slate-400 dark:disabled:border-slate-700 dark:disabled:text-slate-500 "

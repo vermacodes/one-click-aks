@@ -3,13 +3,15 @@ import Navbar from "../../components/Navbar";
 import AccessControl from "../../pages/AccessControl";
 import Assignments from "../../pages/Assignments";
 import Builder from "../../pages/Builder";
-import Templates from "../../pages/Labs";
+import Templates from "../../pages/SavedLabs";
 import Landing from "../../pages/Landing";
 import Learning from "../../pages/Learning";
 import MockCases from "../../pages/MockCases";
 import ReadinessLabs from "../../pages/ReadinessLabs";
 import Settings from "../../pages/Settings";
 import Start from "../../pages/Start";
+import SavedLabs from "../../pages/SavedLabs";
+import PublicLabs from "../../pages/PublicLabs";
 
 type Props = {
   darkMode: boolean;
@@ -31,11 +33,12 @@ export default function MainLayout({ darkMode, setDarkMode }: Props) {
       <div className="top-0 left-0 h-screen w-1/5 min-w-fit overflow-y-auto overflow-x-hidden scrollbar-thin  scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full dark:scrollbar-thumb-slate-600">
         <Navbar darkMode={darkMode} setDarkMode={handleSetDarkMode} />
       </div>
-      <div className="flex-1 overflow-auto bg-slate-100 px-4 scrollbar-thin  scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full dark:bg-slate-800 dark:scrollbar-thumb-slate-600">
+      <div className="flex-1 overflow-auto bg-slate-200 px-4 scrollbar-thin  scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full dark:bg-slate-800 dark:scrollbar-thumb-slate-600">
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/builder" element={<Builder />} />
-          <Route path="/labs" element={<Templates />} />
+          <Route path="/mylabs" element={<SavedLabs />} />
+          <Route path="/publiclabs" element={<PublicLabs />} />
           <Route path="/learning" element={<Learning />} />
           <Route path="/redinesslabs" element={<ReadinessLabs />} />
           <Route path="/mockcases" element={<MockCases />} />
