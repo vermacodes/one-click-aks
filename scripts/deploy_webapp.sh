@@ -24,7 +24,7 @@ function deploy_webapp() {
     --name $app_service_plan_name \
     --resource-group $resource_group_name \
     --subscription $ARM_SUBSCRIPTION_ID \
-    --sku B1 \
+    --sku B3 \
     --is-linux
 
   if [ $? -ne 0 ]; then

@@ -30,9 +30,7 @@ export default function AuthServiceEndpoint({}: Props) {
         </p>
       </div>
       <div
-        className={`${
-          showEditButton ? " text-slate-100" : ""
-        } flex h-8 w-full items-center justify-between rounded border border-slate-500`}
+        className={`flex h-8 w-full items-center justify-between rounded border border-slate-500`}
         onMouseEnter={() => setShowEditButton(true)}
         onMouseLeave={() => setShowEditButton(false)}
         onDoubleClick={() => setEdit(true)}
@@ -51,9 +49,7 @@ export default function AuthServiceEndpoint({}: Props) {
           onChange={(event) => setBaseUrl(event.target.value)}
         />
         <button
-          className={`${!showEditButton && "hidden"} ${
-            edit && "hidden"
-          } px-1 text-slate-100`}
+          className={`${!showEditButton && "hidden"} ${edit && "hidden"} px-1`}
           onClick={() => setEdit(true)}
         >
           <FaEdit />
