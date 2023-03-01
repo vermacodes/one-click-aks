@@ -9,6 +9,7 @@ type Props = {};
 export default function LoginButton({}: Props) {
   const { instance, accounts, inProgress } = useMsal();
   const [graphResponse, setGraphResponse] = useState<GraphData | undefined>();
+  const [profilePhotoUrl, setProfilePhotoUrl] = useState<string>("");
   const [accessToken, setAccessToken] = useState<string>("");
   const [tokenAcquired, setTokenAcquired] = useState<boolean>(false);
 
@@ -20,6 +21,7 @@ export default function LoginButton({}: Props) {
   useEffect(() => {
     if (tokenAcquired) {
       getGraphData();
+      getProfilePhoto();
     }
   }, [tokenAcquired]);
 
@@ -33,6 +35,22 @@ export default function LoginButton({}: Props) {
         response.json().then((data) => {
           setGraphResponse(data);
           console.log("Graph Data -> ", data);
+        });
+      } else {
+        console.log(response);
+      }
+    });
+  }
+
+  async function getProfilePhoto() {
+    fetch("https://graph.microsoft.com/v1.0/me/photo/$value", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }).then((response) => {
+      if (response.ok) {
+        response.blob().then((data) => {
+          setProfilePhotoUrl(URL.createObjectURL(data));
         });
       } else {
         console.log(response);
@@ -66,7 +84,15 @@ export default function LoginButton({}: Props) {
       {graphResponse ? (
         <a className="justify-star flex h-full w-full items-center gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
           <span>
-            <FaUserNinja />
+            {profilePhotoUrl === "" ? (
+              <FaUserNinja />
+            ) : (
+              <img
+                className="h-8 w-8 rounded-full"
+                src={profilePhotoUrl}
+                alt="Profile Picture"
+              />
+            )}
           </span>
           <span>{graphResponse.displayName}</span>
         </a>
