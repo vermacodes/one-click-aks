@@ -12,7 +12,7 @@ export default function Landing() {
           <h1 className="text-8xl font-bold">Head start your lab repros.</h1>
           <p className="pt-10 text-3xl text-slate-500">
             Build and deploy labs in minutes ⌚. Get a head start with labs
-            built and tested by angels. 😇
+            built and tested by AKS Ninjas. 🥷
           </p>
           <div className="pt-32 text-2xl">
             <a
