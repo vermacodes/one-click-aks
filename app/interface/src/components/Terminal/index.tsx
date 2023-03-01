@@ -79,7 +79,7 @@ export default function Terminal() {
           />
         </div>
       </div>
-      <div className="mb-5 h-1/2 max-h-[500px] min-h-[500px] overflow-y-auto rounded border border-slate-400 bg-slate-900  p-4 text-sm text-slate-100 shadow shadow-slate-300  scrollbar-thin scrollbar-thumb-slate-400 scrollbar-thumb-rounded hover:border-sky-500 dark:border-slate-600 dark:shadow-slate-700 dark:scrollbar-thumb-slate-600 dark:hover:border-sky-500">
+      <div className="mb-5 h-1/2 max-h-[500px] min-h-[500px] overflow-y-auto rounded border border-slate-900 bg-slate-900  p-4 text-sm text-slate-100 shadow shadow-slate-300  scrollbar-thin scrollbar-thumb-slate-400 scrollbar-thumb-rounded hover:border-sky-500 dark:shadow-slate-700 dark:scrollbar-thumb-slate-600 dark:hover:border-sky-500">
         <pre
           dangerouslySetInnerHTML={{ __html: updateLogs() }}
           style={{ padding: "10px", whiteSpace: "pre-wrap" }}
