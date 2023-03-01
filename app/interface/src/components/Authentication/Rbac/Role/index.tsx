@@ -30,7 +30,7 @@ export default function Role({ roleRecord }: Props) {
   }
 
   return (
-    <div className="flex items-center justify-between rounded border border-slate-500 p-4">
+    <div className="flex items-center justify-between rounded border border-slate-500 bg-slate-50 p-4 dark:bg-slate-900">
       <div className="text-xl">{roleRecord.userPrincipal}</div>
       <div className="flex gap-x-2">
         {roleRecord.roles.map((role) => (

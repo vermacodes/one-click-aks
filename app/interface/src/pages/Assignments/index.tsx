@@ -14,7 +14,7 @@ export default function Assignments({}: Props) {
 
   return (
     <PageLayout heading="Lab Assignments">
-      <table className="w-full table-auto border-collapse  items-center space-x-2 border border-slate-500 px-4 py-2">
+      <table className="w-full table-auto border-collapse items-center space-x-2 border border-slate-500 bg-slate-50 px-4 py-2 dark:bg-slate-900">
         <thead>
           <tr>
             <th className="border-collapse  items-center space-x-2 border border-slate-500 px-4 py-2">
