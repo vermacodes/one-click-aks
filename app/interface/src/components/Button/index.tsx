@@ -48,16 +48,16 @@ export default function Button({
         " border-1 border-green-500 py-1 text-green-500 disabled:border-slate-400 disabled:text-slate-400 hover:border-green-500 hover:bg-green-500  hover:text-slate-100 disabled:hover:border-slate-400 disabled:hover:bg-inherit disabled:hover:text-slate-400 dark:disabled:border-slate-700 dark:disabled:text-slate-500 "
       } ${
         variant === "primary-text" &&
-        " border-1 border-slate-50 py-1 hover:border-sky-500 hover:bg-sky-500 hover:bg-opacity-20 dark:border-slate-900"
+        " border-1 border-slate-50 py-1 hover:border-sky-500 hover:bg-sky-500 hover:bg-opacity-20 dark:border-slate-900 dark:hover:border-sky-500"
       } ${
         variant === "secondary-text" &&
-        " border-1 border-slate-50 py-1 hover:border-slate-500 hover:bg-slate-500 hover:bg-opacity-20 dark:border-slate-900"
+        " border-1 border-slate-50 py-1 hover:border-slate-500 hover:bg-slate-500 hover:bg-opacity-20 dark:border-slate-900 dark:hover:border-slate-500"
       } ${
         variant === "danger-text" &&
-        " border-1 border-slate-50 py-1 hover:border-rose-500 hover:bg-rose-500 hover:bg-opacity-20 dark:border-slate-900"
+        " border-1 border-slate-50 py-1 hover:border-rose-500 hover:bg-rose-500 hover:bg-opacity-20 dark:border-slate-900 dark:hover:border-rose-500"
       } ${
         variant === "success-text" &&
-        " border-1 border-slate-50 py-1 hover:border-green-500 hover:bg-green-500 hover:bg-opacity-20 dark:border-slate-900"
+        " border-1 border-slate-50 py-1 hover:border-green-500 hover:bg-green-500 hover:bg-opacity-20 dark:border-slate-900 hover:dark:border-green-500"
       } ${
         variant === "primary-icon" &&
         " border-1 rounded-full border-slate-50 py-3 hover:bg-sky-500 hover:bg-opacity-20 dark:border-slate-900"
