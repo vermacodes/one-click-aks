@@ -1,5 +1,6 @@
 import Editor from "@monaco-editor/react";
 import { useEffect, useState } from "react";
+import { FaPlus } from "react-icons/fa";
 
 import Button from "../../components/Button";
 import { ButtonVariant, Lab } from "../../dataStructures";
@@ -19,9 +20,15 @@ export default function CodeEditor({ children, variant, lab }: Props) {
 
   return (
     <>
-      <Button variant={variant} onClick={() => setShowModal(true)}>
+      <button
+        className={`flex items-center gap-3 rounded py-1 px-3 text-lg hover:bg-sky-500 hover:bg-opacity-20`}
+        onClick={() => setShowModal(true)}
+      >
+        <span>
+          <FaPlus />
+        </span>
         {children}
-      </Button>
+      </button>
       <Modal _lab={lab} showModal={showModal} setShowModal={setShowModal} />
     </>
   );

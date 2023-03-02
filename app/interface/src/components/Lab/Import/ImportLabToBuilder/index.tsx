@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { FaUpload } from "react-icons/fa";
 import { Lab } from "../../../../dataStructures";
 import { useActionStatus } from "../../../../hooks/useActionStatus";
 import { useSetLab } from "../../../../hooks/useLab";
@@ -43,8 +44,11 @@ export default function ImportLabToBuilder({}: Props) {
     <>
       <label
         htmlFor="file_input"
-        className="text-bold rounded border-2 border-slate-500 bg-slate-500 px-4 py-[2px] text-white disabled:border-slate-400 disabled:bg-slate-400 hover:cursor-pointer hover:border-slate-700 hover:bg-slate-700 disabled:hover:border-slate-400 disabled:hover:bg-slate-400 dark:disabled:border-slate-800 dark:disabled:bg-slate-800 dark:disabled:text-slate-500"
+        className={`flex items-center gap-3 rounded py-1 px-3 text-lg hover:bg-sky-500 hover:bg-opacity-20`}
       >
+        <span>
+          <FaUpload />
+        </span>
         Import
       </label>
       <input

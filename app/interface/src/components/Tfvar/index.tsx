@@ -1,4 +1,11 @@
 import { useState } from "react";
+import {
+  FaArrowCircleLeft,
+  FaBackward,
+  FaReact,
+  FaRedo,
+  FaTimes,
+} from "react-icons/fa";
 import { Lab } from "../../dataStructures";
 import { useDeleteLab, useLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
@@ -64,7 +71,7 @@ export default function Tfvar() {
         <AppGateway />
         <MicrosoftDefender />
       </div>
-      <div className={`mt-4 flex flex-wrap gap-2`}>
+      <div className={`mt-12 flex flex-wrap gap-2`}>
         <PlanButton variant="success" lab={lab}>
           Plan
         </PlanButton>
@@ -76,16 +83,19 @@ export default function Tfvar() {
         </DestroyButton>
         <CodeEditor variant="secondary">Extention</CodeEditor>
         <LabBuilder variant="secondary">Save</LabBuilder>
-        <Button
-          variant="secondary"
+        <button
+          className={`flex items-center gap-3 rounded py-1 px-3 text-lg hover:bg-sky-500 hover:bg-opacity-20`}
           onClick={() => {
             setLogs({ isStreaming: false, logs: "" });
             deleteLab();
           }}
         >
+          <span>
+            <FaRedo />
+          </span>
           Reset
-        </Button>
-        <ExportLabInBuilder variant="secondary">Export</ExportLabInBuilder>
+        </button>
+        <ExportLabInBuilder variant="secondary">Downlaod</ExportLabInBuilder>
         <ImportLabToBuilder />
       </div>
     </div>
