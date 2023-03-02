@@ -11,7 +11,7 @@ export default function ServerError() {
           server is not running ☹️.
         </p>
 
-        <div className="flex flex-col items-center gap-10">
+        <div className="flex w-full flex-col items-center gap-10">
           <div className="pt-32 text-2xl">
             <a
               href="https://actlabsdocs.z13.web.core.windows.net/docs/getting-started"
@@ -21,11 +21,11 @@ export default function ServerError() {
               Get Started
             </a>
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex w-full flex-col gap-2">
             <h3 className="text-xl">Run on Docker</h3>
             <StartCommand />
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex w-full flex-col gap-2">
             <h3 className="text-xl">Deploy as WebApp</h3>
             <DeployWebAppCommand />
           </div>

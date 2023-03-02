@@ -19,6 +19,8 @@ export default function Settings() {
   return (
     <PageLayout heading="Settings">
       <div className="mb-4 flex flex-col gap-4">
+        <ServerEndpoint />
+        <AuthServiceEndpoint />
         <StorageAccount />
         <AzureSubscription
           subscriptionMenu={subscriptionMenu}
@@ -31,9 +33,6 @@ export default function Settings() {
           workspaceMenu={workspaceMenu}
           setWorkspaceMenu={setWorkspaceMenu}
         />
-
-        <ServerEndpoint />
-        <AuthServiceEndpoint />
         <SettingsItemLayout>
           <div className="flex">
             <ResetActionStatus />
