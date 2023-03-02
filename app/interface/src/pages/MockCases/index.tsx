@@ -50,7 +50,7 @@ export default function MockCases() {
                       <PlanButton variant="primary" lab={lab}>
                         Plan
                       </PlanButton>
-                      <ApplyButton variant="primary-text" lab={lab}>
+                      <ApplyButton variant="primary-outline" lab={lab}>
                         Deploy
                       </ApplyButton>
                       <DestroyButton variant="danger-text" lab={lab}>
