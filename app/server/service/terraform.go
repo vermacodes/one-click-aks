@@ -64,12 +64,12 @@ func (t *terraformService) Init() error {
 func (t *terraformService) Plan(lab entity.LabType) error {
 
 	// Logging
-	account, err := t.authService.GetAccount()
-	if err != nil {
-		slog.Error("Not able to get account", err)
-	} else {
-		t.loggingService.PlanRecord(account.User, lab)
-	}
+	// account, err := t.authService.GetAccount()
+	// if err != nil {
+	// 	slog.Error("Not able to get account", err)
+	// } else {
+	// 	t.loggingService.PlanRecord(account.User, lab)
+	// }
 
 	return helperTerraformAction(t, lab.Template, "plan")
 }
@@ -77,12 +77,12 @@ func (t *terraformService) Plan(lab entity.LabType) error {
 func (t *terraformService) Apply(lab entity.LabType) error {
 
 	// Logging
-	account, err := t.authService.GetAccount()
-	if err != nil {
-		slog.Error("Not able to get account", err)
-	} else {
-		t.loggingService.DeploymentRecord(account.User, lab)
-	}
+	// account, err := t.authService.GetAccount()
+	// if err != nil {
+	// 	slog.Error("Not able to get account", err)
+	// } else {
+	// 	t.loggingService.DeploymentRecord(account.User, lab)
+	// }
 
 	// Invalidate workspace cache
 	if err := t.workspaceService.DeleteAllWorkspaceFromRedis(); err != nil {

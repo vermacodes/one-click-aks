@@ -70,12 +70,14 @@ function getSecertsFromKeyVault() {
 ##
 
 # Getting secrets from keyvault.
-if getSecertsFromKeyVault; then
-    ok "Secrets pulled from keyvault."
-else
-    err "Failed to pull secrets from keyvault."
-    exit 1
-fi
+# if getSecertsFromKeyVault; then
+#     ok "Secrets pulled from keyvault."
+# else
+#     err "Failed to pull secrets from keyvault."
+#     exit 1
+# fi
+
+export ARM_SUBSCRIPTION_ID=$(az account show --output json | jq -r .id)
 
 cd $root_directory/$terraform_directory
 log "Terraform Environment Variables"

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Button from "../../components/Button";
 import Terminal from "../../components/Terminal";
-import { useLogin, useLoginStatus } from "../../hooks/useAccount";
 import { useActionStatus } from "../../hooks/useActionStatus";
 import { useLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
@@ -10,9 +9,7 @@ type Props = { section: string; setSection(args: string): void };
 
 export default function Login({ section, setSection }: Props) {
   const [showTerminal, setShowTerminal] = useState<boolean>(false);
-  const loginStatus = useLoginStatus();
   const { data: inProgress } = useActionStatus();
-  const { mutateAsync: loginAsync, isLoading: loginLoading } = useLogin();
   const { mutate: setLogs } = useSetLogs();
   const { data: lab } = useLab();
 
@@ -20,12 +17,12 @@ export default function Login({ section, setSection }: Props) {
     if (!inProgress) {
       setShowTerminal(true);
       setLogs({ isStreaming: true, logs: "" });
-      loginAsync().then((response) => {
-        if (response.status !== undefined) {
-          loginStatus.refetch();
-          setLogs({ isStreaming: false, logs: "" });
-        }
-      });
+      // loginAsync().then((response) => {
+      //   if (response.status !== undefined) {
+      //     loginStatus.refetch();
+      //     setLogs({ isStreaming: false, logs: "" });
+      //   }
+      // });
     }
   }
 
@@ -38,7 +35,7 @@ export default function Login({ section, setSection }: Props) {
   );
   const unauthenticated = (
     <div className="flex flex-col items-center space-y-4">
-      <p className="text-3xl text-slate-500">
+      {/* <p className="text-3xl text-slate-500">
         Now that the server is up and running 👍. You need to login 🔐 to Azure
         CLI running in the docker container to be able to do stuff. Hit "Login"
         button below and follow instructions in terminal that will pop up. Did I
@@ -58,12 +55,12 @@ export default function Login({ section, setSection }: Props) {
       <div className="w-full">
         {showTerminal &&
           !(loginStatus.data !== undefined && loginStatus.data) && <Terminal />}
-      </div>
+      </div> */}
     </div>
   );
   return (
     <section className={`${section !== "login" && "hidden"} `}>
-      <div className="flex flex-col justify-center space-y-12">
+      {/* <div className="flex flex-col justify-center space-y-12">
         <h1 className="text-center text-8xl">Login 🥷</h1>
         {loginStatus.data !== undefined && loginStatus.data
           ? authenticated
@@ -86,7 +83,7 @@ export default function Login({ section, setSection }: Props) {
             {"Next →"}
           </Button>
         </div>
-      </div>
+      </div> */}
     </section>
   );
 }

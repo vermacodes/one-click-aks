@@ -4,71 +4,41 @@ import LabCard from "../../components/Lab/LabCard";
 import LoadToBuilderButton from "../../components/Lab/LoadToBuilderButton";
 import TemplateCard from "../../components/TemplateCard";
 import { Lab } from "../../dataStructures";
-import { useSharedTemplates, useTemplates } from "../../hooks/useBlobs";
+import { useSharedTemplates } from "../../hooks/useBlobs";
 import { useServerStatus } from "../../hooks/useServerStatus";
+import LabGridLayout from "../../layouts/LabGridLayout";
+import PageLayout from "../../layouts/PageLayout";
 import LabBuilder from "../../modals/LabBuilder";
 import ServerError from "../ServerError";
 
-export default function Templates() {
+export default function PublicLabs() {
   const {
     data: sharedLabs,
     isLoading: sharedLabsLoading,
     isFetching: sharedLabsFetching,
   } = useSharedTemplates();
 
-  const {
-    data: myLabs,
-    isLoading: myLabsLoading,
-    isFetching: myLabsFetching,
-  } = useTemplates();
-
-  const { data: serverStatus } = useServerStatus();
-
-  if (serverStatus?.status !== "OK") {
-    return <ServerError />;
-  }
-
-  if (
-    myLabsLoading ||
-    myLabsFetching ||
-    sharedLabsLoading ||
-    sharedLabsFetching
-  ) {
+  if (sharedLabsLoading || sharedLabsFetching) {
     return (
-      <div className="my-3 mx-20 mb-2 flex gap-x-4">
+      <PageLayout heading="Public Labs">
         <p className="text-4xl">Loading...</p>
-      </div>
+      </PageLayout>
     );
   }
 
   return (
-    <div className="my-3 mx-20 mb-2 flex flex-col gap-x-4">
-      {/* My Labs Secion */}
-      <p className="my-2 border-b-2 border-slate-500 py-4 text-4xl">My Labs</p>
-      <div className="w-7/8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {myLabs !== undefined &&
-          myLabs.map((lab: Lab) => <TemplateCards lab={lab} key={lab.id} />)}
-      </div>
-      <p className="text-2xl">
-        {myLabs?.length === 0 &&
-          "You have not saved any templates 🙂. To save, go to builder, build and save. 💾"}
-      </p>
-
-      {/* Public Labs Secion */}
-      {sharedLabs && sharedLabs?.length !== 0 && (
-        <>
-          <p className="my-2 border-b-2 border-slate-500 py-4 text-4xl">
-            Public Labs
-          </p>
-          <div className="w-7/8 grid grid-cols-3 gap-4">
+    <>
+      <PageLayout heading="Public Labs">
+        {sharedLabs && sharedLabs?.length !== 0 && (
+          <LabGridLayout>
             {sharedLabs &&
               sharedLabs.map((lab: Lab) => (
                 <TemplateCards lab={lab} key={lab.id} />
               ))}
-          </div>
-        </>
-      )}
-    </div>
+          </LabGridLayout>
+        )}
+      </PageLayout>
+    </>
   );
 }
 

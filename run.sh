@@ -14,9 +14,15 @@ if [[ "${STORAGE_ACCOUNT_NAME}" == "" ]]; then
     exit 1
 fi
 
+export ARM_USER_PRINCIPAL_NAME=$(az account show --output json | jq -r .user.name)
+if [ $? -ne 0 ]; then
+    err "Failed to get user principal name from az cli"
+    exit 1
+fi
+
 echo "Storage Account -> ${STORAGE_ACCOUNT_NAME}"
 cd ./app/server
 
 go build -ldflags "-X 'github.com/vermacodes/one-click-aks/app/server/entity.SasToken=$SAS_TOKEN' -X 'github.com/vermacodes/one-click-aks/app/server/entity.StorageAccountName=$STORAGE_ACCOUNT_NAME'"
 
-redis-cli flushall && export LOG_LEVEL="0" && export PORT="8081" && ./server
+redis-cli flushall && export LOG_LEVEL="0" && export PORT="8881" && ./server

@@ -34,6 +34,34 @@ func (l *labRepository) GetExtendScriptTemplate() (string, error) {
 	return string(out), err
 }
 
+func (l *labRepository) GetMyLabsFromRedis() (string, error) {
+	return getRedis("mylabs")
+}
+
+func (l *labRepository) GetMyLabsFromStorageAccount(storageAccountName string) (string, error) {
+	out, err := exec.Command("bash", "-c", "az storage blob list -c labs --account-name "+storageAccountName+" --output json").Output()
+	return string(out), err
+}
+
+func (l *labRepository) GetMyLabFromStorageAccount(storageAccountName string, blobName string) (string, error) {
+	out, err := exec.Command("bash", "-c", "az storage blob download -c labs -n "+blobName+" --account-name "+storageAccountName+" --file /tmp/"+blobName+" > /dev/null 2>&1 && cat /tmp/"+blobName+" && rm /tmp/"+blobName).Output()
+	return string(out), err
+}
+
+func (l *labRepository) AddMyLab(storageAccountName string, labId string, lab string) error {
+	_, err := exec.Command("bash", "-c", "echo '"+lab+"' | az storage blob upload --data @- -c labs -n "+labId+".json --account-name "+storageAccountName+" --overwrite").Output()
+	return err
+}
+
+func (l *labRepository) DeleteLabsFromRedis() error {
+	return nil
+}
+
+func (l *labRepository) DeleteMyLab(labId string, storageAccountName string) error {
+	_, err := exec.Command("bash", "-c", "az storage blob delete -c labs -n "+labId+".json --account-name "+storageAccountName).Output()
+	return err
+}
+
 func (l *labRepository) GetEnumerationResults(typeOfLab string) (entity.EnumerationResults, error) {
 	er := entity.EnumerationResults{}
 
@@ -79,42 +107,4 @@ func (l *labRepository) GetLab(name string, typeOfLab string) (entity.LabType, e
 	}
 
 	return lab, nil
-}
-
-func (l *labRepository) AddLab(labId string, lab string, typeOfLab string) error {
-	_, err := exec.Command("bash", "-c", "echo '"+lab+"' | az storage blob upload --data @- -c repro-project-"+typeOfLab+"s -n "+labId+".json --account-name "+entity.StorageAccountName+" --sas-token '"+entity.SasToken+"' --overwrite").Output()
-	return err
-}
-
-func (l *labRepository) DeleteLab(labId string, typeOfLab string) error {
-	_, err := exec.Command("bash", "-c", "az storage blob delete -c repro-project-"+typeOfLab+"s -n "+labId+".json --account-name "+entity.StorageAccountName+" --sas-token '"+entity.SasToken+"'").Output()
-	return err
-}
-
-func (l *labRepository) GetMyLabsFromRedis() (string, error) {
-	return getRedis("mylabs")
-}
-
-func (l *labRepository) GetMyLabsFromStorageAccount(storageAccountName string) (string, error) {
-	out, err := exec.Command("bash", "-c", "az storage blob list -c labs --account-name "+storageAccountName+" --output json").Output()
-	return string(out), err
-}
-
-func (l *labRepository) GetMyLabFromStorageAccount(storageAccountName string, blobName string) (string, error) {
-	out, err := exec.Command("bash", "-c", "az storage blob download -c labs -n "+blobName+" --account-name "+storageAccountName+" --file /tmp/"+blobName+" > /dev/null 2>&1 && cat /tmp/"+blobName+" && rm /tmp/"+blobName).Output()
-	return string(out), err
-}
-
-func (l *labRepository) AddMyLab(storageAccountName string, labId string, lab string) error {
-	_, err := exec.Command("bash", "-c", "echo '"+lab+"' | az storage blob upload --data @- -c labs -n "+labId+".json --account-name "+storageAccountName+" --overwrite").Output()
-	return err
-}
-
-func (l *labRepository) DeleteLabsFromRedis() error {
-	return nil
-}
-
-func (l *labRepository) DeleteMyLab(labId string, storageAccountName string) error {
-	_, err := exec.Command("bash", "-c", "az storage blob delete -c labs -n "+labId+".json --account-name "+storageAccountName).Output()
-	return err
 }

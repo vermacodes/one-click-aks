@@ -11,6 +11,8 @@ import DestroyButton from "../../components/Terraform/DestroyButton";
 import PlanButton from "../../components/Terraform/PlanButton";
 import { Lab } from "../../dataStructures";
 import { useSharedMockCases } from "../../hooks/useBlobs";
+import LabGridLayout from "../../layouts/LabGridLayout";
+import PageLayout from "../../layouts/PageLayout";
 import LabBuilder from "../../modals/LabBuilder";
 
 export default function MockCases() {
@@ -27,18 +29,15 @@ export default function MockCases() {
 
   if (isLoading || isFetching) {
     return (
-      <div className="my-3 mx-20 mb-2 flex gap-x-4">
+      <PageLayout heading="Mock Cases">
         <p className="text-4xl">Loading...</p>
-      </div>
+      </PageLayout>
     );
   }
 
   return (
-    <div className="my-3 mx-20 mb-2 flex flex-col gap-x-4">
-      <p className="my-2 mb-6 border-b-2 border-slate-500 py-4 text-4xl">
-        Mock Cases
-      </p>
-      <div className="w-7/8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <PageLayout heading="Mock Cases">
+      <LabGridLayout>
         {labs !== undefined &&
           labs.map((lab: Lab) => (
             <TemplateCard key={lab.name}>
@@ -81,22 +80,22 @@ export default function MockCases() {
                     <ExportLabButton lab={lab} variant="secondary-outline">
                       Export
                     </ExportLabButton>
-                    <DeleteLabButton lab={lab} variant="danger-outline">
-                      Delete
-                    </DeleteLabButton>
                     <LabBuilder lab={lab} variant="secondary-outline">
                       Edit
                     </LabBuilder>
                     <LoadToBuilderButton variant="secondary-outline" lab={lab}>
                       Load To Builder
                     </LoadToBuilderButton>
+                    <DeleteLabButton lab={lab} variant="danger-outline">
+                      Delete
+                    </DeleteLabButton>
                   </div>
                 </>
               </LabCard>
             </TemplateCard>
           ))}
-      </div>
+      </LabGridLayout>
       <Terminal />
-    </div>
+    </PageLayout>
   );
 }

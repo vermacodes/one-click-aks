@@ -33,7 +33,7 @@ export default function PlanButton({ variant, children, lab }: Props) {
 
   return (
     <Button
-      variant={variant}
+      variant={"secondary"}
       onClick={onClickHandler}
       disabled={inProgress || lab === undefined}
     >

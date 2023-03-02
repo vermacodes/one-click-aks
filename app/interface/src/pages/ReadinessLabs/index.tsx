@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { FaArrowRight } from "react-icons/fa";
-import Button from "../../components/Button";
 import CreateAssignment from "../../components/Lab/Assignment/CreateAssignment";
 import DeleteLabButton from "../../components/Lab/DeleteLabButton";
 import LabCard from "../../components/Lab/LabCard";
@@ -13,10 +12,12 @@ import DestroyButton from "../../components/Terraform/DestroyButton";
 import PlanButton from "../../components/Terraform/PlanButton";
 import { Lab } from "../../dataStructures";
 import { useSharedLabs } from "../../hooks/useBlobs";
+import LabGridLayout from "../../layouts/LabGridLayout";
+import PageLayout from "../../layouts/PageLayout";
 import LabBuilder from "../../modals/LabBuilder";
 import ServerError from "../ServerError";
 
-export default function Labs() {
+export default function ReadinessLabs() {
   const [more, setMore] = useState<string>("");
   const { data: labs, isLoading, isFetching, isError } = useSharedLabs();
 
@@ -30,9 +31,9 @@ export default function Labs() {
 
   if (isLoading || isFetching) {
     return (
-      <div className="my-3 mx-20 mb-2">
+      <PageLayout heading="Readiness Labs">
         <p className="text-4xl">Loading...</p>
-      </div>
+      </PageLayout>
     );
   }
 
@@ -41,11 +42,8 @@ export default function Labs() {
   }
 
   return (
-    <div className="my-3 mx-20 mb-2 flex flex-col gap-x-4">
-      <p className="my-2 mb-6 border-b-2 border-slate-500 py-4 text-4xl">
-        Labs
-      </p>
-      <div className="w-7/8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <PageLayout heading="Readiness Labs">
+      <LabGridLayout>
         {labs &&
           labs.map((lab: Lab) => (
             <TemplateCard key={lab.name}>
@@ -83,7 +81,7 @@ export default function Labs() {
                       <ApplyButton variant="primary-outline" lab={lab}>
                         Deploy
                       </ApplyButton>
-                      <ValidateLabButton lab={lab} variant="primary-outline">
+                      <ValidateLabButton lab={lab} variant="secondary">
                         Validate
                       </ValidateLabButton>
                       <DestroyButton variant="danger-outline" lab={lab}>
@@ -98,7 +96,7 @@ export default function Labs() {
                       >
                         Load To Builder
                       </LoadToBuilderButton>
-                      <DeleteLabButton lab={lab} variant="secondary-outline">
+                      <DeleteLabButton lab={lab} variant="danger-outline">
                         Delete
                       </DeleteLabButton>
                     </div>
@@ -107,8 +105,8 @@ export default function Labs() {
               </LabCard>
             </TemplateCard>
           ))}
-      </div>
+      </LabGridLayout>
       <Terminal />
-    </div>
+    </PageLayout>
   );
 }

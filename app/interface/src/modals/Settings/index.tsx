@@ -2,6 +2,7 @@ import { useState } from "react";
 import { MdClose } from "react-icons/md";
 import AzureRegion from "../../components/AzureRegion";
 import AzureSubscription from "../../components/AzureSubscription";
+import AuthServiceEndpoint from "../../components/Config/AuthServiceEndpoint";
 import ServerEndpoint from "../../components/Config/ServerEndpoint";
 import EndLogStream from "../../components/EndLogStream";
 import ResetActionStatus from "../../components/ResetActionStatus";
@@ -34,7 +35,7 @@ export default function Settings({ showModal, setShowModal }: SettingsProps) {
       }}
     >
       <div
-        className=" my-20 w-3/4 gap-y-2 divide-y divide-slate-300 overflow-auto rounded bg-slate-100 p-5 scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-sky-500 dark:divide-slate-700 dark:bg-slate-900"
+        className=" my-20 w-3/4 gap-y-2 divide-y divide-slate-300 overflow-auto rounded bg-slate-100 p-5 scrollbar-thin  scrollbar-thumb-slate-400 dark:divide-slate-700 dark:bg-slate-900 dark:scrollbar-thumb-slate-600"
         onClick={(e) => {
           e.stopPropagation();
           setSubscriptionMenu(false);
@@ -67,6 +68,7 @@ export default function Settings({ showModal, setShowModal }: SettingsProps) {
           <ResetActionStatus />
           <ResetServerCache />
           <ServerEndpoint />
+          <AuthServiceEndpoint />
         </div>
       </div>
     </div>

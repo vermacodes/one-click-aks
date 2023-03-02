@@ -1,6 +1,7 @@
 import Terminal from "../../components/Terminal";
 import Tfvar from "../../components/Tfvar";
 import { useServerStatus } from "../../hooks/useServerStatus";
+import PageLayout from "../../layouts/PageLayout";
 import ServerError from "../ServerError";
 
 export default function Builder() {
@@ -11,9 +12,9 @@ export default function Builder() {
   }
 
   return (
-    <div className="my-3 mx-20 mb-2">
+    <PageLayout heading="Lab Builder">
       <Tfvar />
       <Terminal />
-    </div>
+    </PageLayout>
   );
 }

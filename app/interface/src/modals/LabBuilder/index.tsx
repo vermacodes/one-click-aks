@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { MdClose } from "react-icons/md";
 import Button from "../../components/Button";
 import { ButtonVariant, Lab } from "../../dataStructures";
-import { useGetPriviledge } from "../../hooks/useAccount";
-import { useCreateLab } from "../../hooks/useBlobs";
+import { useGetMyRoles } from "../../hooks/useAuth";
+import { useCreateLab, useCreateMyLab } from "../../hooks/useBlobs";
 import { useLab } from "../../hooks/useLab";
 
 type Props = {
@@ -35,8 +35,9 @@ type ModalProps = {
 function Modal({ _lab, showModal, setShowModal }: ModalProps) {
   const [tag, setTag] = useState<string>("");
   const { data: labInMemory, refetch } = useLab();
-  const { mutate: createLab, isLoading: creatingLab } = useCreateLab();
-  const { data: priviledge } = useGetPriviledge();
+  const { mutate: createLab } = useCreateLab();
+  const { mutate: createMyLab } = useCreateMyLab();
+  const { data: roles } = useGetMyRoles();
   const [lab, setLab] = useState<Lab>({
     id: "",
     name: "",
@@ -69,13 +70,13 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
   if (!showModal || lab === undefined) return null;
   return (
     <div
-      className="max-w-ful -gap-x-2 fixed inset-0 flex max-h-full justify-center bg-slate-800 dark:bg-slate-100 dark:bg-opacity-80"
+      className="max-w-ful -gap-x-2 fixed inset-0 z-20 flex max-h-full justify-center bg-slate-800 dark:bg-slate-100 dark:bg-opacity-80"
       onClick={() => {
         setShowModal(false);
       }}
     >
       <div
-        className=" my-20 w-3/4 gap-y-2 rounded bg-slate-100 p-5 scrollbar-thin scrollbar-track-slate-300 scrollbar-thumb-sky-500 dark:divide-slate-700 dark:bg-slate-900"
+        className=" my-20 w-3/4 gap-y-2 rounded bg-slate-100 p-5 scrollbar-thin  scrollbar-thumb-slate-400 dark:divide-slate-700 dark:bg-slate-900 dark:scrollbar-thumb-slate-600"
         onClick={(e) => {
           e.stopPropagation();
         }}
@@ -169,26 +170,27 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
             }}
           />
         </div>
-        {priviledge && (priviledge.isAdmin || priviledge.isMentor) && (
-          <>
-            <div className="my-4">
-              <label htmlFor="labtype">Type</label>
-              <select
-                id="labtype"
-                defaultValue={lab.type}
-                className="px w-full appearance-none border border-slate-500 bg-slate-100 p-2 py-2 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-700"
-                onChange={(event) => {
-                  setLab({ ...lab, type: event.target.value });
-                }}
-              >
-                <option value={"template"}>Template</option>
-                <option value={"sharedtemplate"}>Shared Template</option>
-                <option value={"labexercise"}>Lab Exercise</option>
-                <option value={"mockcase"}>Mock Case</option>
-              </select>
-            </div>
-            {/* Enable this on UI after implementation */}
-            {/* <div
+        {roles &&
+          (roles.roles.includes("admin") || roles.roles.includes("mentor")) && (
+            <>
+              <div className="my-4">
+                <label htmlFor="labtype">Type</label>
+                <select
+                  id="labtype"
+                  defaultValue={lab.type}
+                  className="px w-full appearance-none border border-slate-500 bg-slate-100 p-2 py-2 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-700"
+                  onChange={(event) => {
+                    setLab({ ...lab, type: event.target.value });
+                  }}
+                >
+                  <option value={"template"}>Template</option>
+                  <option value={"sharedtemplate"}>Shared Template</option>
+                  <option value={"labexercise"}>Lab Exercise</option>
+                  <option value={"mockcase"}>Mock Case</option>
+                </select>
+              </div>
+              {/* Enable this on UI after implementation */}
+              {/* <div
               className={`my-4 ${
                 (lab.type === "template" || lab.type === "sharedtemplate") &&
                 "hidden"
@@ -198,15 +200,15 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
               <textarea
                 id="message"
                 value={lab.message}
-                className="px h-24 w-full border border-slate-500 bg-inherit p-2 py-2 scrollbar-thin scrollbar-track-slate-300 scrollbar-thumb-sky-500 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500 hover:bg-slate-200 dark:hover:bg-slate-700"
+                className="px h-24 w-full border border-slate-500 bg-inherit p-2 py-2 scrollbar-thin  scrollbar-thumb-slate-400 dark:scrollbar-thumb-slate-600 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500 hover:bg-slate-200 dark:hover:bg-slate-700"
                 placeholder="This message will be displayed to the user once the lab env is setup. Think of it like case statement"
                 onChange={(event) => {
                   setLab({ ...lab, message: event.target.value });
                 }}
               />
             </div> */}
-          </>
-        )}
+            </>
+          )}
         <div className="flex justify-end gap-x-4">
           <Button
             variant="secondary-outline"
@@ -217,7 +219,7 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
           <Button
             variant="primary"
             onClick={() => {
-              createLab(lab);
+              lab.type === "template" ? createMyLab(lab) : createLab(lab);
               setShowModal(false);
             }}
           >
@@ -228,7 +230,7 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
               variant="primary"
               onClick={() => {
                 lab.id = "";
-                createLab(lab);
+                lab.type === "template" ? createMyLab(lab) : createLab(lab);
                 setShowModal(false);
               }}
             >

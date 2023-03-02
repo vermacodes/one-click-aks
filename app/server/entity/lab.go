@@ -111,8 +111,6 @@ type LabService interface {
 	// Public Labs
 	// Includes = sharedlabs, labexercises, mockcases.
 	GetPublicLabs(typeOfLab string) ([]LabType, error)
-	AddPublicLab(LabType) error
-	DeletePublicLab(LabType) error
 
 	// Private Labs
 	// Includes labs that are saved in your own subscription.
@@ -131,8 +129,6 @@ type LabRepository interface {
 	// Public labs
 	GetEnumerationResults(typeOfLab string) (EnumerationResults, error)
 	GetLab(name string, typeOfLab string) (LabType, error)
-	AddLab(labId string, lab string, typeOfLab string) error
-	DeleteLab(labId string, typeOfLab string) error
 
 	// My Labs
 	GetMyLabsFromRedis() (string, error)

@@ -1,10 +1,10 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Assignment, Lab } from "../dataStructures";
-import { axiosInstance } from "../utils/axios-interceptors";
+import { authAxiosInstance, axiosInstance } from "../utils/axios-interceptors";
 
 function getAssignments(): Promise<AxiosResponse<Assignment[]>> {
-  return axiosInstance("assignment");
+  return authAxiosInstance("assignment");
 }
 
 export function useGetAssignments() {
@@ -16,7 +16,7 @@ export function useGetAssignments() {
 }
 
 function createAssignment(assignment: Assignment) {
-  return axiosInstance.post("assignment", assignment);
+  return authAxiosInstance.post("assignment", assignment);
 }
 
 export function useCreateAssignment() {
@@ -30,7 +30,7 @@ export function useCreateAssignment() {
 }
 
 function deleteAssignment(assignment: Assignment) {
-  return axiosInstance.delete(`assignment`, { data: assignment });
+  return authAxiosInstance.delete(`assignment`, { data: assignment });
 }
 
 export function useDeleteAssignment() {
@@ -44,7 +44,7 @@ export function useDeleteAssignment() {
 }
 
 function getUserAssignedLabs(): Promise<AxiosResponse<Lab[]>> {
-  return axiosInstance.get("assignment/my");
+  return authAxiosInstance.get("assignment/my");
 }
 
 export function useGetUserAssignedLabs() {

@@ -50,13 +50,13 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
   if (!showModal || lab === undefined) return null;
   return (
     <div
-      className="max-w-ful -gap-x-2 fixed inset-0 flex max-h-full justify-center bg-slate-800 dark:bg-slate-100 dark:bg-opacity-80"
+      className="max-w-ful -gap-x-2 fixed inset-0 z-20 flex max-h-full justify-center bg-slate-800 dark:bg-slate-100 dark:bg-opacity-80"
       onClick={() => {
         setShowModal(false);
       }}
     >
       <div
-        className="w-screen gap-y-2 rounded bg-slate-100 p-5 scrollbar-thin scrollbar-track-slate-300 scrollbar-thumb-sky-500 dark:divide-slate-700 dark:bg-slate-900"
+        className="w-screen gap-y-2 rounded bg-slate-100 p-5 scrollbar-thin  scrollbar-thumb-slate-400 dark:divide-slate-700 dark:bg-slate-900 dark:scrollbar-thumb-slate-600"
         onClick={(e) => {
           e.stopPropagation();
         }}

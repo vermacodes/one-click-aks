@@ -247,3 +247,27 @@ export type ButtonVariant =
   | "danger-outline"
   | "success-outline"
   | "primary-outline-animate";
+
+export type Roles = {
+  userPrincipal: string;
+  roles: string[];
+};
+
+export type RoleMutation = {
+  userPrincipal: string;
+  role: string;
+};
+
+export type GraphData = {
+  businessPhones: string[];
+  displayName: string;
+  givenName: string;
+  jobTitle: string;
+  mail: string;
+  mobilePhone: string;
+  officeLocation: string;
+  preferredLanguage: string;
+  surname: string;
+  userPrincipalName: string;
+  id: string;
+};

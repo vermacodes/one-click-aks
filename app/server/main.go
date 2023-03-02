@@ -45,13 +45,13 @@ func main() {
 	router.SetTrustedProxies(nil)
 
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://localhost:3000", "http://localhost:5173", "https://ashisverma.z13.web.core.windows.net", "https://actlabs.z13.web.core.windows.net", "https://actlabs.azureedge.net", "https://*.azurewebsites.net"}
+	config.AllowOrigins = []string{"http://localhost:3000", "http://localhost:5173", "https://ashisverma.z13.web.core.windows.net", "https://actlabs.z13.web.core.windows.net", "https://actlabsbeta.z13.web.core.windows.net", "https://actlabs.azureedge.net", "https://*.azurewebsites.net"}
+	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}
+	config.AllowHeaders = []string{"Authorization", "Content-Type"}
 
 	router.Use(cors.New(config))
 
 	authRouter := router.Group("/")
-	//adminRouter := authRouter.Group("/")
-	mentorRouter := authRouter.Group("/")
 
 	// TODO: We are in service dependency hell down here. Should we use HTTP instead? It will but may not add noticiable latency.
 	logStreamRepository := repository.NewLogStreamRepository()
@@ -73,7 +73,7 @@ func main() {
 	authService := service.NewAuthService(authRepository, logStreamService, actionStatusService, loggingService)
 	handler.NewLoginHandler(router, authService)
 
-	authRouter.Use(middleware.AuthRequired(authService))
+	authRouter.Use(middleware.AuthRequired(authService, logStreamService))
 
 	handler.NewAuthHandler(authRouter, authService)
 
@@ -96,11 +96,6 @@ func main() {
 	labRepository := repository.NewLabRespository()
 	labService := service.NewLabService(labRepository, kVersionService, storageAccountService, authService)
 	handler.NewLabHandler(authRouter, labService)
-	handler.NewLabHandlerMentorRequired(mentorRouter, labService)
-
-	assignmentRepository := repository.NewAssignmentRepository()
-	assignmentService := service.NewAssignmentService(assignmentRepository, authService, labService)
-	handler.NewAssignmentHandler(authRouter, assignmentService)
 
 	terraformRepository := repository.NewTerraformRepository()
 	terraformService := service.NewTerraformService(terraformRepository, labService, workspaceService, logStreamService, actionStatusService, kVersionService, storageAccountService, loggingService, authService)

@@ -6,6 +6,7 @@ import ApplyButton from "../../components/Terraform/ApplyButton";
 import DestroyButton from "../../components/Terraform/DestroyButton";
 import { useGetUserAssignedLabs } from "../../hooks/useAssignment";
 import { useServerStatus } from "../../hooks/useServerStatus";
+import PageLayout from "../../layouts/PageLayout";
 import ServerError from "../ServerError";
 
 export default function Learning() {
@@ -18,17 +19,14 @@ export default function Learning() {
 
   if (isLoading || isFetching) {
     return (
-      <div className="my-3 mx-20 mb-2">
+      <PageLayout heading="My Assignments">
         <p className="text-4xl">Loading...</p>
-      </div>
+      </PageLayout>
     );
   }
 
   return (
-    <div className="my-3 mx-20 mb-2">
-      <h1 className="my-2 mb-6 border-b-2 border-slate-500 py-4 text-4xl">
-        My Learning
-      </h1>
+    <PageLayout heading="My Assignments">
       <div className="w-7/8 grid grid-cols-3 gap-4">
         {labs &&
           labs.map((lab) => (
@@ -38,7 +36,7 @@ export default function Learning() {
                   <ApplyButton variant="primary-outline" lab={lab}>
                     Deploy
                   </ApplyButton>
-                  <ValidateLabButton lab={lab} variant="primary-outline">
+                  <ValidateLabButton lab={lab} variant="secondary">
                     Validate
                   </ValidateLabButton>
                   <DestroyButton variant="danger-outline" lab={lab}>
@@ -50,12 +48,10 @@ export default function Learning() {
           ))}
       </div>
       {labs?.length === 0 ? (
-        <p className="text-3xl">
-          Ah! No labs for you. I think you are already learned 😃
-        </p>
+        <p className="text-3xl">Ah! No readiness labs assigned to you.😃</p>
       ) : (
         <Terminal />
       )}
-    </div>
+    </PageLayout>
   );
 }

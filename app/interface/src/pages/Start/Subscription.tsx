@@ -1,13 +1,13 @@
 import { useState } from "react";
 import AzureSubscription from "../../components/AzureSubscription";
 import Button from "../../components/Button";
-import { useLoginStatus } from "../../hooks/useAccount";
+//import { useLoginStatus } from "../../hooks/useAccount";
 
 type Props = { section: string; setSection(args: string): void };
 
 export default function Subscription({ section, setSection }: Props) {
   const [subscriptionMenu, setSubscriptionMenu] = useState<boolean>(false);
-  const loginStatus = useLoginStatus();
+  //const loginStatus = useLoginStatus();
 
   return (
     <section className={`${section !== "subscription" && "hidden"} `}>
@@ -31,7 +31,7 @@ export default function Subscription({ section, setSection }: Props) {
           </Button>
           <Button
             variant="primary"
-            disabled={!(loginStatus.data !== undefined && loginStatus.data)}
+            //disabled={!(loginStatus.data !== undefined && loginStatus.data)}
             onClick={() => setSection("storage")}
           >
             {"Next →"}

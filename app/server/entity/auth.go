@@ -1,10 +1,5 @@
 package entity
 
-import (
-	"os"
-	"os/exec"
-)
-
 type User struct {
 	Name string `json:"name"`
 	Type string `json:"type"`
@@ -30,10 +25,6 @@ type LoginStatus struct {
 	IsLoggedIn bool `json:"isLoggedIn"`
 }
 
-type LoginMessage struct {
-	LoginMessage string `json:"loginMessage"`
-}
-
 type AccessToken struct {
 	AccessToken  string `json:"accessToken"`
 	ExpiresOn    string `json:"expiresOn"`
@@ -42,54 +33,28 @@ type AccessToken struct {
 	TokenType    string `json:"tokenType"`
 }
 
-type Priviledge struct {
-	User     string `json:"user"`
-	IsAdmin  bool   `json:"isAdmin"`
-	IsMentor bool   `json:"isMentor"`
-}
-
 type ServicePrincipalConfig struct {
 	IsServicePrincipalConfigured bool `json:"isServicePrincipalConfigured"`
 }
 
 type AuthService interface {
-	Login() (LoginStatus, error)
-	Logout() error
-	StopRunningLoginAttempt() error
-	GetLoginStatus() (LoginStatus, error)
-	GetAccount() (Account, error)
+	ServicePrincipalLogin() (LoginStatus, error)
+	ServicePrincipalLoginStatus() (LoginStatus, error)
+
 	GetAccounts() ([]Account, error)
 	SetAccount(account Account) error
-	GetPriveledges() (Priviledge, error)
-	ConfigureServicePrincipal() (ServicePrincipalConfig, error)
 }
 
 type AuthRepository interface {
-	Login() (*exec.Cmd, *os.File, *os.File, error)
-	Logout() error
-	DeleteAllCache() error
-
-	GetLoginStatus() (string, error)
-	GetLoginStatusFromRedis() (string, error)
-	SetLoginStatusInRedis(string) error
-
-	StopRunningLoginAttempt() error
-	// DeleteLoginStatusFromRedis() error
-
-	GetAccount() (string, error)
-	GetAccountFromRedis() (string, error)
-	SetAccountInRedis(val string) error
+	ServicePrincipalLogin() (string, error)
+	ServicePrincipalLoginStatus() (string, error)
+	GetServicePrincipalLoginStatusFromRedis() (string, error)
+	SetServicePrincipalLoginStatusInRedis(val string) error
 
 	GetAccounts() (string, error)
 	GetAccountsFromRedis() (string, error)
 	SetAccountsInRedis(val string) error
 
 	SetAccount(accountId string) error
-	DeleteAccountFromRedis() error
 	DeleteAccountsFromRedis() error
-
-	IsAdmin(string) (bool, error)
-	IsMentor(string) (bool, error)
-
-	ConfigureServicePrincipal() (*exec.Cmd, *os.File, *os.File, error)
 }

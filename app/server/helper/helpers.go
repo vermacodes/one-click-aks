@@ -2,8 +2,14 @@ package helper
 
 import (
 	"crypto/rand"
+	"encoding/base64"
+	"encoding/json"
+	"errors"
+	"strings"
 	"unicode"
 	"unsafe"
+
+	"golang.org/x/exp/slog"
 )
 
 var alphabet = []byte("abcdefghijklmnopqrstuvwxyz0123456789")
@@ -27,4 +33,39 @@ func CamelToConventional(s string) string {
 		result = append(result, unicode.ToLower(runes[i]))
 	}
 	return string(result)
+}
+
+func GetUserPrincipalFromMSALAuthToken(token string) (string, error) {
+
+	// Split the token into its parts
+	tokenParts := strings.Split(token, ".")
+	if len(tokenParts) < 2 {
+		err := errors.New("invalid token format")
+		slog.Error("invalid token format", err)
+		return "", err
+	}
+
+	// Decode the token
+	decodedToken, err := base64.StdEncoding.DecodeString(tokenParts[1] + strings.Repeat("=", (4-len(tokenParts[1])%4)%4))
+	if err != nil {
+		slog.Error("not able to decode token -> ", err)
+		return "", err
+	}
+
+	// Extract the user principal name from the decoded token
+	var tokenJSON map[string]interface{}
+	err = json.Unmarshal(decodedToken, &tokenJSON)
+	if err != nil {
+		slog.Error("not able to unmarshal token -> ", err)
+		return "", err
+	}
+
+	userPrincipal, ok := tokenJSON["upn"].(string)
+	if !ok {
+		err := errors.New("user principal name not found in token")
+		slog.Error("user principal name not found in token", err)
+		return "", err
+	}
+
+	return userPrincipal, nil
 }

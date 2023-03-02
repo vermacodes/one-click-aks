@@ -18,17 +18,9 @@ func NewLabHandler(r *gin.RouterGroup, labService entity.LabService) {
 	r.GET("/lab", handler.GetLabFromRedis)
 	r.PUT("/lab", handler.SetLabInRedis)
 	r.DELETE("/lab/redis", handler.DeleteLabFromRedis)
-	r.POST("/lab", handler.AddLab)
-	r.DELETE("/lab", handler.DeleteLab)
-	r.GET("/lab/public/:typeOfLab", handler.GetPublicLabs)
+	r.POST("/lab", handler.AddMyLab)
+	r.DELETE("/lab", handler.DeleteMyLab)
 	r.GET("/lab/my", handler.GetMyLabs)
-}
-
-func NewLabHandlerMentorRequired(r *gin.RouterGroup, labService entity.LabService) {
-	handler := &labHandler{
-		labService: labService,
-	}
-	r.GET("/lab/protected/:typeOfLab", handler.GetProtectedLabs)
 }
 
 func (l *labHandler) GetLabFromRedis(c *gin.Context) {
@@ -66,35 +58,6 @@ func (l *labHandler) DeleteLabFromRedis(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-func (l *labHandler) GetPublicLabs(c *gin.Context) {
-	typeOfLab := c.Param("typeOfLab")
-
-	// These labs are protected, use protected API
-	if typeOfLab == "mockcases" || typeOfLab == "labexercises" {
-		c.Status(http.StatusBadRequest)
-		return
-	}
-
-	labs, err := l.labService.GetPublicLabs(typeOfLab)
-	if err != nil {
-		c.Status(http.StatusInternalServerError)
-		return
-	}
-
-	c.IndentedJSON(http.StatusOK, labs)
-}
-
-func (l *labHandler) GetProtectedLabs(c *gin.Context) {
-	typeOfLab := c.Param("typeOfLab")
-	labs, err := l.labService.GetPublicLabs(typeOfLab)
-	if err != nil {
-		c.Status(http.StatusInternalServerError)
-		return
-	}
-
-	c.IndentedJSON(http.StatusOK, labs)
-}
-
 func (l *labHandler) GetMyLabs(c *gin.Context) {
 	labs, err := l.labService.GetMyLabs()
 	if err != nil {
@@ -105,45 +68,31 @@ func (l *labHandler) GetMyLabs(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, labs)
 }
 
-func (l *labHandler) AddLab(c *gin.Context) {
+func (l *labHandler) AddMyLab(c *gin.Context) {
 	lab := entity.LabType{}
 	if err := c.Bind(&lab); err != nil {
 		c.Status(http.StatusBadRequest)
 		return
 	}
 
-	if lab.Type == "template" {
-		if err := l.labService.AddMyLab(lab); err != nil {
-			c.Status(http.StatusInternalServerError)
-			return
-		}
-	} else {
-		if err := l.labService.AddPublicLab(lab); err != nil {
-			c.Status(http.StatusInternalServerError)
-			return
-		}
+	if err := l.labService.AddMyLab(lab); err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
 	}
 
 	c.Status(http.StatusCreated)
 }
 
-func (l *labHandler) DeleteLab(c *gin.Context) {
+func (l *labHandler) DeleteMyLab(c *gin.Context) {
 	lab := entity.LabType{}
 	if err := c.Bind(&lab); err != nil {
 		c.Status(http.StatusBadRequest)
 		return
 	}
 
-	if lab.Type == "template" {
-		if err := l.labService.DeleteMyLab(lab); err != nil {
-			c.Status(http.StatusInternalServerError)
-			return
-		}
-	} else {
-		if err := l.labService.DeletePublicLab(lab); err != nil {
-			c.Status(http.StatusInternalServerError)
-			return
-		}
+	if err := l.labService.DeleteMyLab(lab); err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
 	}
 
 	c.Status(http.StatusNoContent)
