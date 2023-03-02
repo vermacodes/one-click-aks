@@ -23,7 +23,7 @@ export default function LoginButton({}: Props) {
       getGraphData();
       getProfilePhoto();
     }
-  }, [tokenAcquired]);
+  }, [tokenAcquired, accessToken]);
 
   async function getGraphData() {
     fetch("https://graph.microsoft.com/v1.0/me", {
