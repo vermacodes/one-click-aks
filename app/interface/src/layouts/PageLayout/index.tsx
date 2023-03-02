@@ -5,7 +5,7 @@ type Props = {
 
 export default function PageLayout({ heading, children }: Props) {
   return (
-    <div>
+    <div className="mb-4">
       {heading && (
         <h1 className="mb-6 border-b-2 border-slate-500 py-4 text-4xl">
           {heading}
