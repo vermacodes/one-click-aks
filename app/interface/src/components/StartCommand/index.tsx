@@ -5,7 +5,7 @@ type Props = {};
 
 export default function StartCommand({}: Props) {
   const bashCommand =
-    "curl -sLO https://raw.githubusercontent.com/vermacodes/one-click-aks/custom-rbac/scripts/start.sh; chmod +x start.sh; ./start.sh; rm start.sh";
+    "curl -o actlab.sh -sLO https://aka.ms/ACTLabStart; chmod +x actlab.sh; ./actlab.sh; rm actlab.sh";
   const powershellCommand = "Please help us create powershell command.";
 
   const [copy, setCopy] = useState<boolean>(false);
