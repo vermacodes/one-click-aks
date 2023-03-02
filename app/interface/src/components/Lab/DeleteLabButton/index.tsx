@@ -1,4 +1,5 @@
 import React from "react";
+import { FaTrash } from "react-icons/fa";
 import { ButtonVariant, Lab } from "../../../dataStructures";
 import { useActionStatus } from "../../../hooks/useActionStatus";
 import { useDeleteLab, useDeleteMyLab } from "../../../hooks/useBlobs";
@@ -34,6 +35,9 @@ export default function DeleteLabButton({ variant, children, lab }: Props) {
       onClick={onClickHandler}
       disabled={inProgress || lab === undefined}
     >
+      <span>
+        <FaTrash />
+      </span>
       {children}
     </Button>
   );

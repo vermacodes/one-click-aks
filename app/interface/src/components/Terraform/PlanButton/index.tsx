@@ -33,8 +33,8 @@ export default function PlanButton({ variant, children, lab }: Props) {
   }
 
   return (
-    <button
-      className={`flex items-center gap-3 rounded py-1 px-3 text-lg hover:bg-sky-500 hover:bg-opacity-20`}
+    <Button
+      variant={variant}
       onClick={onClickHandler}
       disabled={inProgress || lab === undefined}
     >
@@ -42,6 +42,6 @@ export default function PlanButton({ variant, children, lab }: Props) {
         <FaFile />
       </span>
       {children}
-    </button>
+    </Button>
   );
 }

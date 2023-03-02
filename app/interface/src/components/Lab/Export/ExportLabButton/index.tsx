@@ -20,14 +20,11 @@ export default function ExportLabButton({ variant, lab, children }: Props) {
   }
 
   return (
-    <button
-      className={`flex items-center gap-3 rounded py-1 px-3 text-lg hover:bg-sky-500 hover:bg-opacity-20`}
-      onClick={handleDownload}
-    >
+    <Button variant={variant} onClick={handleDownload}>
       <span>
         <FaDownload />
       </span>
       {children}
-    </button>
+    </Button>
   );
 }

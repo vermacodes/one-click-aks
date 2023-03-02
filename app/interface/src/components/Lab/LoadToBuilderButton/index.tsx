@@ -1,4 +1,5 @@
 import React from "react";
+import { FaTools, FaUps } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { ButtonVariant, Lab } from "../../../dataStructures";
 import { useActionStatus } from "../../../hooks/useActionStatus";
@@ -47,6 +48,9 @@ export default function LoadToBuilderButton({ variant, children, lab }: Props) {
       onClick={onClickHandler}
       disabled={lab === undefined}
     >
+      <span>
+        <FaTools />
+      </span>
       {children}
     </Button>
   );

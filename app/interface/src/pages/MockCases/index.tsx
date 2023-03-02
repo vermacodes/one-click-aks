@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaArrowRight } from "react-icons/fa";
+import { FaArrowDown, FaArrowRight, FaEllipsisV } from "react-icons/fa";
 import DeleteLabButton from "../../components/Lab/DeleteLabButton";
 import ExportLabButton from "../../components/Lab/Export/ExportLabButton";
 import LabCard from "../../components/Lab/LabCard";
@@ -14,6 +14,8 @@ import { useSharedMockCases } from "../../hooks/useBlobs";
 import LabGridLayout from "../../layouts/LabGridLayout";
 import PageLayout from "../../layouts/PageLayout";
 import LabBuilder from "../../modals/LabBuilder";
+import { Menu } from "@headlessui/react";
+import Button from "../../components/Button";
 
 export default function MockCases() {
   const [more, setMore] = useState<string>("");
@@ -43,50 +45,46 @@ export default function MockCases() {
             <TemplateCard key={lab.name}>
               <LabCard lab={lab}>
                 <>
-                  <div className="flex flex-wrap justify-end gap-1">
-                    <PlanButton variant="success-outline" lab={lab}>
-                      Plan
-                    </PlanButton>
-                    <ApplyButton variant="primary-outline" lab={lab}>
-                      Deploy
-                    </ApplyButton>
-                    <DestroyButton variant="danger-outline" lab={lab}>
-                      Destroy
-                    </DestroyButton>
-                  </div>
-
-                  <div
-                    className={`${
-                      lab.id === more
-                        ? "text-slate-900 dark:text-slate-100"
-                        : "text-slate-500"
-                    } mt-4 flex items-center justify-between border-t border-slate-500 py-2 text-sm transition-all duration-500 hover:text-sky-500`}
-                    onClick={() => handleShowMore(lab)}
-                  >
-                    <div>More Actions</div>
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex justify-start gap-2">
+                      <PlanButton variant="primary" lab={lab}>
+                        Plan
+                      </PlanButton>
+                      <ApplyButton variant="primary-text" lab={lab}>
+                        Deploy
+                      </ApplyButton>
+                      <DestroyButton variant="danger-text" lab={lab}>
+                        Destroy
+                      </DestroyButton>
+                    </div>
                     <div
-                      className={` ${
-                        lab.id === more ? "rotate-90" : ""
-                      } transition-transform duration-500 `}
+                      className={`${
+                        more === lab.id && "rotate-90"
+                      } transition-all duration-500`}
                     >
-                      <FaArrowRight />
+                      <Button
+                        variant="primary-icon"
+                        onClick={() => handleShowMore(lab)}
+                      >
+                        <FaArrowRight />
+                      </Button>
                     </div>
                   </div>
                   <div
                     className={`${
                       lab.id === more ? "max-h-40" : "max-h-0"
-                    } flex flex-wrap justify-end gap-1 gap-x-1 overflow-hidden transition-all duration-500`}
+                    } flex flex-wrap justify-between gap-1 gap-x-1 overflow-hidden transition-all duration-500`}
                   >
-                    <ExportLabButton lab={lab} variant="secondary-outline">
+                    <ExportLabButton lab={lab} variant="secondary-text">
                       Export
                     </ExportLabButton>
-                    <LabBuilder lab={lab} variant="secondary-outline">
+                    <LabBuilder lab={lab} variant="secondary-text">
                       Edit
                     </LabBuilder>
-                    <LoadToBuilderButton variant="secondary-outline" lab={lab}>
+                    <LoadToBuilderButton variant="secondary-text" lab={lab}>
                       Load To Builder
                     </LoadToBuilderButton>
-                    <DeleteLabButton lab={lab} variant="danger-outline">
+                    <DeleteLabButton lab={lab} variant="danger-text">
                       Delete
                     </DeleteLabButton>
                   </div>
