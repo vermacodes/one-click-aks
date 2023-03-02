@@ -72,9 +72,11 @@ export default function LoginButton({}: Props) {
         setTokenAcquired(true);
       })
       .catch((e) => {
-        instance.acquireTokenPopup(request).then((response) => {
-          setAccessToken(response.accessToken);
-          setTokenAcquired(true);
+        instance.acquireTokenRedirect(request).then(() => {
+          instance.acquireTokenSilent(request).then((response) => {
+            setAccessToken(response.accessToken);
+            setTokenAcquired(true);
+          });
         });
       });
   }
