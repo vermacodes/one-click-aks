@@ -8,6 +8,7 @@ import { axiosInstance } from "../../utils/axios-interceptors";
 import { useQueryClient } from "react-query";
 import { useInit } from "../../hooks/useTerraform";
 import { useLab } from "../../hooks/useLab";
+import SettingsItemLayout from "../../layouts/SettingsItemLayout";
 
 type Props = {};
 
@@ -29,7 +30,7 @@ export default function TfInit({}: Props) {
   }
 
   return (
-    <div>
+    <SettingsItemLayout>
       <div className="flex items-center justify-between py-2">
         <h2 className="text-lg">Initialize Terraform</h2>
         <Button variant="primary" onClick={initHandler} disabled={inProgress}>
@@ -43,6 +44,6 @@ export default function TfInit({}: Props) {
         </p>
         <p className="text-xs text-slate-700 dark:text-slate-300"></p>
       </div>
-    </div>
+    </SettingsItemLayout>
   );
 }

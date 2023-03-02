@@ -61,7 +61,7 @@ function TemplateCards({ lab }: TemplateCardsProps) {
         <>
           <div className="flex justify-start gap-1">
             <LoadToBuilderButton lab={lab} variant="primary">
-              Load To Builder
+              Open
             </LoadToBuilderButton>
             <ExportLabButton lab={lab} variant="secondary-text">
               Export

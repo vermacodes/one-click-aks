@@ -58,7 +58,7 @@ function TemplateCards({ lab }: TemplateCardsProps) {
           <div className="flex items-center justify-between gap-2">
             <div className="flex justify-start gap-2">
               <LoadToBuilderButton lab={lab} variant="primary">
-                Load To Builder
+                Open
               </LoadToBuilderButton>
               <ExportLabButton lab={lab} variant="secondary-text">
                 Export

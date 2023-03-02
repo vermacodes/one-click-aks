@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 import { useAccount, useSetAccount } from "../../hooks/useAccount";
+import SettingsItemLayout from "../../layouts/SettingsItemLayout";
 type Props = {
   subscriptionMenu: boolean;
   setSubscriptionMenu(args: boolean): void;
@@ -19,7 +20,7 @@ export default function AzureSubscription({
   const { mutate: setAccount } = useSetAccount();
 
   return (
-    <div>
+    <SettingsItemLayout>
       <div className="w-100 gap-x-reverse flex items-center justify-between gap-x-2 py-2">
         <h2 className="text-lg">Azure Subscription</h2>
         <div className="relative inline-block text-left">
@@ -44,7 +45,7 @@ export default function AzureSubscription({
             </p>
           </div>
           <div
-            className={`absolute right-0 z-10 mt-2 h-56 w-96 origin-top-right overflow-y-auto overflow-x-hidden scrollbar ${
+            className={`absolute right-0 z-10 mt-2 h-56 w-96 origin-top-right overflow-y-auto scrollbar overflow-x-hidden ${
               !subscriptionMenu && "hidden"
             } items-center gap-y-2 rounded border bg-slate-100 p-2 dark:bg-slate-800`}
           >
@@ -69,6 +70,6 @@ export default function AzureSubscription({
           </div>
         </div>
       </div>
-    </div>
+    </SettingsItemLayout>
   );
 }

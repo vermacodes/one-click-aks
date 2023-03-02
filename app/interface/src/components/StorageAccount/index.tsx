@@ -2,6 +2,7 @@ import {
   useConfigureStorageAccount,
   useGetStorageAccount,
 } from "../../hooks/useStorageAccount";
+import SettingsItemLayout from "../../layouts/SettingsItemLayout";
 import Button from "../Button";
 type Props = {};
 
@@ -20,7 +21,7 @@ export default function StorageAccount({}: Props) {
   } = useConfigureStorageAccount();
 
   return (
-    <div>
+    <SettingsItemLayout>
       <div className="w-100 gap-x-reverse flex items-center justify-between gap-x-2 py-2">
         <h2 className="text-lg">Storage Account</h2>
         {fetchingStorageAccount || getStorageAccountLoading ? (
@@ -53,6 +54,6 @@ export default function StorageAccount({}: Props) {
           - Before you configure, make sure your lab subscription is selected.
         </p>
       </div>
-    </div>
+    </SettingsItemLayout>
   );
 }

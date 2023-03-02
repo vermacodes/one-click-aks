@@ -87,7 +87,7 @@ export default function ReadinessLabs() {
                         Edit
                       </LabBuilder>
                       <LoadToBuilderButton variant="secondary-text" lab={lab}>
-                        Load To Builder
+                        Open
                       </LoadToBuilderButton>
                       <DeleteLabButton lab={lab} variant="danger-text">
                         Delete
