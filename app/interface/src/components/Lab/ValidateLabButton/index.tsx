@@ -1,4 +1,5 @@
 import React from "react";
+import { FaCheck } from "react-icons/fa";
 import { ButtonVariant, Lab } from "../../../dataStructures";
 import { useActionStatus } from "../../../hooks/useActionStatus";
 import { useSetLogs } from "../../../hooks/useLogs";
@@ -27,6 +28,9 @@ export default function ValidateLabButton({ variant, children, lab }: Props) {
       onClick={onClickHandler}
       disabled={inProgress || lab === undefined}
     >
+      <span>
+        <FaCheck />
+      </span>
       {children}
     </Button>
   );

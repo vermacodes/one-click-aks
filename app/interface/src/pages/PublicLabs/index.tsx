@@ -64,11 +64,6 @@ function TemplateCards({ lab }: TemplateCardsProps) {
                 Export
               </ExportLabButton>
             </div>
-            <div>
-              <Button variant="primary-icon">
-                <FaArrowRight />
-              </Button>
-            </div>
           </div>
         </>
       </LabCard>

@@ -4,6 +4,7 @@ import { Lab } from "../../../../dataStructures";
 import { useActionStatus } from "../../../../hooks/useActionStatus";
 import { useSetLab } from "../../../../hooks/useLab";
 import { useSetLogs } from "../../../../hooks/useLogs";
+import Button from "../../../Button";
 
 type Props = {};
 
@@ -42,14 +43,13 @@ export default function ImportLabToBuilder({}: Props) {
 
   return (
     <>
-      <label
-        htmlFor="file_input"
-        className={`flex items-center gap-3 rounded py-1 px-3 text-lg hover:bg-sky-500 hover:bg-opacity-20`}
-      >
-        <span>
-          <FaUpload />
-        </span>
-        Import
+      <label htmlFor="file_input">
+        <Button variant="secondary-text">
+          <span>
+            <FaUpload />
+          </span>
+          Import
+        </Button>
       </label>
       <input
         id="file_input"

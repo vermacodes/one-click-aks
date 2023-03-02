@@ -72,19 +72,19 @@ export default function Tfvar() {
         <MicrosoftDefender />
       </div>
       <div className={`mt-12 flex flex-wrap gap-2`}>
-        <PlanButton variant="success" lab={lab}>
+        <PlanButton variant="success-text" lab={lab}>
           Plan
         </PlanButton>
-        <ApplyButton variant="primary" lab={lab}>
+        <ApplyButton variant="primary-text" lab={lab}>
           Deploy
         </ApplyButton>
-        <DestroyButton variant="danger" lab={lab}>
+        <DestroyButton variant="danger-text" lab={lab}>
           Destroy
         </DestroyButton>
-        <CodeEditor variant="secondary">Extention</CodeEditor>
-        <LabBuilder variant="secondary">Save</LabBuilder>
-        <button
-          className={`flex items-center gap-3 rounded py-1 px-3 text-lg hover:bg-sky-500 hover:bg-opacity-20`}
+        <CodeEditor variant="secondary-text">Extention</CodeEditor>
+        <LabBuilder variant="secondary-text">Save</LabBuilder>
+        <Button
+          variant="secondary-text"
           onClick={() => {
             setLogs({ isStreaming: false, logs: "" });
             deleteLab();
@@ -94,8 +94,10 @@ export default function Tfvar() {
             <FaRedo />
           </span>
           Reset
-        </button>
-        <ExportLabInBuilder variant="secondary">Downlaod</ExportLabInBuilder>
+        </Button>
+        <ExportLabInBuilder variant="secondary-text">
+          Downlaod
+        </ExportLabInBuilder>
         <ImportLabToBuilder />
       </div>
     </div>

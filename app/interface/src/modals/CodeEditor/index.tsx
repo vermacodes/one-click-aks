@@ -20,15 +20,12 @@ export default function CodeEditor({ children, variant, lab }: Props) {
 
   return (
     <>
-      <button
-        className={`flex items-center gap-3 rounded py-1 px-3 text-lg hover:bg-sky-500 hover:bg-opacity-20`}
-        onClick={() => setShowModal(true)}
-      >
+      <Button variant="secondary-text" onClick={() => setShowModal(true)}>
         <span>
           <FaPlus />
         </span>
         {children}
-      </button>
+      </Button>
       <Modal _lab={lab} showModal={showModal} setShowModal={setShowModal} />
     </>
   );

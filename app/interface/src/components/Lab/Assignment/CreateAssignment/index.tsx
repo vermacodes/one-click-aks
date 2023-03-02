@@ -62,7 +62,7 @@ export default function CreateAssignment({ lab }: Props) {
     });
   }
   return (
-    <div className="flex flex-wrap justify-start gap-y-2">
+    <div className="flex justify-start gap-y-2">
       <input
         className="mr-4 rounded border border-slate-500 bg-inherit px-2 py-1"
         placeholder="Enter user alias"
