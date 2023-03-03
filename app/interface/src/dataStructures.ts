@@ -246,7 +246,12 @@ export type ButtonVariant =
   | "secondary-outline"
   | "danger-outline"
   | "success-outline"
-  | "primary-outline-animate";
+  | "primary-outline-animate"
+  | "primary-text"
+  | "secondary-text"
+  | "danger-text"
+  | "success-text"
+  | "primary-icon";
 
 export type Roles = {
   userPrincipal: string;

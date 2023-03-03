@@ -1,34 +1,44 @@
+import { useState } from "react";
+import Button from "../../components/Button";
 import DeployWebAppCommand from "../../components/DeployWebAppCommand";
 import StartCommand from "../../components/StartCommand";
 import PageLayout from "../../layouts/PageLayout";
 
 export default function ServerError() {
+  const [showStartCommand, setShowStartCommand] = useState<boolean>(false);
   return (
     <PageLayout heading="Server Error">
-      <div className="flex flex-col items-center gap-4">
+      <div className="flex flex-col gap-8 pb-12">
+        <p className="text-3xl text-rose-500">Error: Server Not Reachable 😟</p>
         <p className="text-3xl text-slate-500">
           This part of ACT Labs require server to be running. But, it seems the
-          server is not running ☹️.
+          server is not running.
         </p>
-
-        <div className="flex flex-col items-center gap-10">
-          <div className="pt-32 text-2xl">
-            <a
-              href="https://actlabsdocs.z13.web.core.windows.net/docs/getting-started"
-              target={"_blank"}
-              className="rounded bg-purple-500 py-2 px-8 text-slate-100 outline outline-purple-500 hover:bg-purple-600 hover:outline-purple-600"
-            >
-              Get Started
-            </a>
-          </div>
-          <div className="flex flex-col gap-2">
-            <h3 className="text-xl">Run on Docker</h3>
-            <StartCommand />
-          </div>
-          <div className="flex flex-col gap-2">
-            <h3 className="text-xl">Deploy as WebApp</h3>
-            <DeployWebAppCommand />
-          </div>
+        <p className="text-3xl text-slate-500">
+          <a
+            href="https://actlabsdocs.z13.web.core.windows.net/docs/introduction"
+            target={"_blank"}
+            className="text-sky-500 underline"
+          >
+            Learn more
+          </a>{" "}
+          about deploying configuring the server in ACT Labs Docs or deploy
+          using either of the following options.
+        </p>
+      </div>
+      <div className={`flex flex-col gap-10`}>
+        {/* <Link to={"/start"}>
+          <button className="rounded-full border-2 border-transparent bg-sky-500 py-2 px-10 text-white hover:border-2 hover:border-sky-500 hover:bg-inherit hover:text-sky-500 md:text-base xl:text-2xl">
+            Get Started
+          </button>
+        </Link> */}
+        <div className="flex flex-col gap-2">
+          <h3 className="text-xl">Run on Docker</h3>
+          <StartCommand />
+        </div>
+        <div className="flex flex-col gap-2">
+          <h3 className="text-xl">Deploy as WebApp</h3>
+          <DeployWebAppCommand />
         </div>
       </div>
     </PageLayout>

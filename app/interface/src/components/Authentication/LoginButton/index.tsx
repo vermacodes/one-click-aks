@@ -23,7 +23,7 @@ export default function LoginButton({}: Props) {
       getGraphData();
       getProfilePhoto();
     }
-  }, [tokenAcquired]);
+  }, [tokenAcquired, accessToken]);
 
   async function getGraphData() {
     fetch("https://graph.microsoft.com/v1.0/me", {
@@ -72,9 +72,11 @@ export default function LoginButton({}: Props) {
         setTokenAcquired(true);
       })
       .catch((e) => {
-        instance.acquireTokenPopup(request).then((response) => {
-          setAccessToken(response.accessToken);
-          setTokenAcquired(true);
+        instance.acquireTokenRedirect(request).then(() => {
+          instance.acquireTokenSilent(request).then((response) => {
+            setAccessToken(response.accessToken);
+            setTokenAcquired(true);
+          });
         });
       });
   }

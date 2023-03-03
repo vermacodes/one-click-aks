@@ -59,19 +59,16 @@ function TemplateCards({ lab }: TemplateCardsProps) {
     <TemplateCard key={lab.name}>
       <LabCard lab={lab}>
         <>
-          <div className="flex flex-wrap justify-end gap-1">
-            <DeleteLabButton lab={lab} variant="danger-outline">
-              Delete
-            </DeleteLabButton>
-            <LabBuilder lab={lab} variant="secondary-outline">
-              Edit
-            </LabBuilder>
-            <ExportLabButton lab={lab} variant="secondary-outline">
+          <div className="flex justify-start gap-1">
+            <LoadToBuilderButton lab={lab} variant="primary">
+              Open
+            </LoadToBuilderButton>
+            <ExportLabButton lab={lab} variant="secondary-text">
               Export
             </ExportLabButton>
-            <LoadToBuilderButton lab={lab} variant="primary-outline">
-              Load To Builder
-            </LoadToBuilderButton>
+            <DeleteLabButton lab={lab} variant="danger-text">
+              Delete
+            </DeleteLabButton>
           </div>
         </>
       </LabCard>

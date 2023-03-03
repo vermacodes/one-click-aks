@@ -1,5 +1,6 @@
 import Editor from "@monaco-editor/react";
 import { useEffect, useState } from "react";
+import { FaSave } from "react-icons/fa";
 import { MdClose } from "react-icons/md";
 import Button from "../../components/Button";
 import { ButtonVariant, Lab } from "../../dataStructures";
@@ -19,6 +20,9 @@ export default function LabBuilder({ children, variant, lab }: Props) {
   return (
     <>
       <Button variant={variant} onClick={() => setShowModal(true)}>
+        <span>
+          <FaSave />
+        </span>
         {children}
       </Button>
       <Modal _lab={lab} showModal={showModal} setShowModal={setShowModal} />

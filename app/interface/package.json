@@ -11,6 +11,7 @@
   "dependencies": {
     "@azure/msal-browser": "^2.33.0",
     "@azure/msal-react": "^1.5.3",
+    "@headlessui/react": "^1.7.12",
     "@monaco-editor/react": "^4.4.6",
     "ansi-to-html": "^0.7.2",
     "axios": "^1.1.3",

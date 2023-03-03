@@ -1,4 +1,5 @@
 import React from "react";
+import { FaPlane, FaRocket } from "react-icons/fa";
 import { ButtonVariant, Lab } from "../../../dataStructures";
 import { useActionStatus } from "../../../hooks/useActionStatus";
 import { useSetLogs } from "../../../hooks/useLogs";
@@ -38,10 +39,13 @@ export default function ApplyButton({ variant, children, lab }: Props) {
 
   return (
     <Button
-      variant={"secondary"}
+      variant={variant}
       onClick={onClickHandler}
       disabled={inProgress || lab === undefined}
     >
+      <span className="text-base">
+        <FaRocket />
+      </span>
       {children}
     </Button>
   );

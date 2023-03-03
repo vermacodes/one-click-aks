@@ -4,6 +4,7 @@ import { useLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
 import { usePreference, useSetPreference } from "../../hooks/usePreference";
 import { useGetStorageAccount } from "../../hooks/useStorageAccount";
+import SettingsItemLayout from "../../layouts/SettingsItemLayout";
 type Props = { regionEdit: boolean; setRegionEdit(args: boolean): void };
 
 export default function AzureRegion({ regionEdit, setRegionEdit }: Props) {
@@ -42,68 +43,70 @@ export default function AzureRegion({ regionEdit, setRegionEdit }: Props) {
   }
 
   return (
-    <div
-      className={`w-100 gap-x-reverse flex items-center justify-between gap-x-2 py-2 ${
-        (fetchingStorageAccount ||
-          storageAccount === undefined ||
-          storageAccount.storageAccount.name === "") &&
-        " text-slate-400"
-      }`}
-    >
-      <h2 className="text-lg">Azure Region</h2>
+    <SettingsItemLayout>
       <div
-        className={`${
-          regionEdit && "hidden"
-        } flex w-96 items-center justify-between rounded border border-slate-500 p-2`}
-        onDoubleClick={(e) => {
-          !(
-            fetchingStorageAccount ||
+        className={`w-100 gap-x-reverse flex items-center justify-between gap-x-2 py-2 ${
+          (fetchingStorageAccount ||
             storageAccount === undefined ||
-            storageAccount.storageAccount.name === ""
-          ) && setRegionEdit(true);
-          preference && setAzureRegion(preference?.azureRegion);
-        }}
+            storageAccount.storageAccount.name === "") &&
+          " text-slate-400"
+        }`}
       >
-        {isLoading ? (
-          <p>Loading...</p>
-        ) : (
-          <>
-            <p>{preference ? preference.azureRegion : "Add a region."}</p>
-            <p className="text-xs">Doubble click to edit.</p>
-          </>
-        )}
-      </div>
-      <div
-        className={`${
-          !regionEdit && "hidden"
-        } flex w-96 items-center justify-between gap-x-2 rounded border border-slate-500`}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <input
-          type="text"
-          className="block h-10 w-full bg-inherit px-2 text-inherit"
-          placeholder="Azure Region"
-          value={azureRegion}
-          disabled={
-            fetchingStorageAccount ||
-            storageAccount === undefined ||
-            storageAccount.storageAccount.name === ""
-          }
-          onChange={handleAzureRegion}
-        />
-        {/* <button
+        <h2 className="text-lg">Azure Region</h2>
+        <div
+          className={`${
+            regionEdit && "hidden"
+          } flex w-96 items-center justify-between rounded border border-slate-500 p-2`}
+          onDoubleClick={(e) => {
+            !(
+              fetchingStorageAccount ||
+              storageAccount === undefined ||
+              storageAccount.storageAccount.name === ""
+            ) && setRegionEdit(true);
+            preference && setAzureRegion(preference?.azureRegion);
+          }}
+        >
+          {isLoading ? (
+            <p>Loading...</p>
+          ) : (
+            <>
+              <p>{preference ? preference.azureRegion : "Add a region."}</p>
+              <p className="text-xs">Doubble click to edit.</p>
+            </>
+          )}
+        </div>
+        <div
+          className={`${
+            !regionEdit && "hidden"
+          } flex w-96 items-center justify-between gap-x-2 rounded border border-slate-500`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <input
+            type="text"
+            className="block h-10 w-full bg-inherit px-2 text-inherit"
+            placeholder="Azure Region"
+            value={azureRegion}
+            disabled={
+              fetchingStorageAccount ||
+              storageAccount === undefined ||
+              storageAccount.storageAccount.name === ""
+            }
+            onChange={handleAzureRegion}
+          />
+          {/* <button
           className="p-2 text-2xl hover:text-red-500"
           onClick={() => setRegionEdit(false)}
         >
           <FaTimes />
         </button> */}
-        <button
-          className="p-2 text-2xl hover:text-sky-500"
-          onClick={() => handleOnClick()}
-        >
-          <FaCheck />
-        </button>
+          <button
+            className="p-2 text-2xl hover:text-sky-500"
+            onClick={() => handleOnClick()}
+          >
+            <FaCheck />
+          </button>
+        </div>
       </div>
-    </div>
+    </SettingsItemLayout>
   );
 }

@@ -9,6 +9,7 @@ import StorageAccount from "../../components/StorageAccount";
 import TfInit from "../../components/TfInit";
 import TfWorkspace from "../../components/TfWorkspace";
 import PageLayout from "../../layouts/PageLayout";
+import SettingsItemLayout from "../../layouts/SettingsItemLayout";
 
 export default function Settings() {
   const [subscriptionMenu, setSubscriptionMenu] = useState<boolean>(false);
@@ -17,7 +18,9 @@ export default function Settings() {
 
   return (
     <PageLayout heading="Settings">
-      <div className="space-y-10 divide-y divide-slate-500">
+      <div className="mb-4 flex flex-col gap-4">
+        <ServerEndpoint />
+        <AuthServiceEndpoint />
         <StorageAccount />
         <AzureSubscription
           subscriptionMenu={subscriptionMenu}
@@ -30,13 +33,12 @@ export default function Settings() {
           workspaceMenu={workspaceMenu}
           setWorkspaceMenu={setWorkspaceMenu}
         />
-
-        <ServerEndpoint />
-        <AuthServiceEndpoint />
-        <div className="flex">
-          <ResetActionStatus />
-          <ResetServerCache />
-        </div>
+        <SettingsItemLayout>
+          <div className="flex">
+            <ResetActionStatus />
+            <ResetServerCache />
+          </div>
+        </SettingsItemLayout>
       </div>
     </PageLayout>
   );

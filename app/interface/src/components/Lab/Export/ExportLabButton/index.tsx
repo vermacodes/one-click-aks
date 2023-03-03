@@ -1,4 +1,5 @@
 import { saveAs } from "file-saver";
+import { FaDownload } from "react-icons/fa";
 import { ButtonVariant, Lab } from "../../../../dataStructures";
 import Button from "../../../Button";
 
@@ -20,6 +21,9 @@ export default function ExportLabButton({ variant, lab, children }: Props) {
 
   return (
     <Button variant={variant} onClick={handleDownload}>
+      <span>
+        <FaDownload />
+      </span>
       {children}
     </Button>
   );

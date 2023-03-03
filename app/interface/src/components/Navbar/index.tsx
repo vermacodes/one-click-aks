@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   FaClipboard,
   FaCog,
@@ -11,13 +10,15 @@ import {
   FaShieldAlt,
   FaSun,
   FaTools,
+  FaTrash,
   FaUserGraduate,
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useGetMyRoles } from "../../hooks/useAuth";
-import { useServerStatus } from "../../hooks/useServerStatus";
+import { useLab } from "../../hooks/useLab";
 import LoginButton from "../Authentication/LoginButton";
 import CurrentTerraformWorkspace from "../CurrentTerraformWorkspace";
+import DestroyButton from "../Terraform/DestroyButton";
 
 type NavbarProps = {
   darkMode: boolean;
@@ -162,10 +163,8 @@ type FixedPagesProps = {
 };
 
 function FixedPages({ darkMode, setDarkMode }: FixedPagesProps) {
-  const [showSettingsModal, setShowSettingsModal] = useState<boolean>(false);
-  const [showServerStatus, setShowServerStatus] = useState<boolean>(false);
+  const { data: lab } = useLab();
 
-  const { data: serverStatus, refetch: getServerStatus } = useServerStatus();
   return (
     <div className="h-fit w-full flex-col p-4">
       <ul className="md:text-l flex w-full flex-col justify-start gap-y-1 text-sm lg:text-xl">
@@ -173,29 +172,12 @@ function FixedPages({ darkMode, setDarkMode }: FixedPagesProps) {
           <CurrentTerraformWorkspace />
         </li>
         {/* <li>
-          <Terraform />
-        </li> */}
-        {/* <li>
-          <button
-            className={`flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800 ${
-              serverStatus?.status !== "OK" && "text-red-500"
-            }`}
-            onMouseEnter={() => {
-              setShowServerStatus(true);
-              getServerStatus();
-            }}
-            onMouseLeave={() => {
-              setShowServerStatus(false);
-            }}
-            onClick={() => getServerStatus()}
-          >
+          <DestroyButton variant="secondary-text" navbarButton={true} lab={lab}>
             <span>
-              <FaServer />
+              <FaTrash />
             </span>
-            {serverStatus?.status !== "OK"
-              ? "Server is not live."
-              : "Server is live"}
-          </button>
+            Terraform Destroy
+          </DestroyButton>
         </li> */}
         <li>
           <button
