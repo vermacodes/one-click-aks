@@ -30,15 +30,16 @@ export default function Landing() {
           </div>
         </div>
         <div
-          className={` ${
-            !showStartCommand && "hidden "
-          } " gap-10" flex flex-col`}
+          className={` ${!showStartCommand && "hidden "} flex flex-col gap-10`}
         >
-          {/* <Link to={"/start"}>
-          <button className="rounded-full border-2 border-transparent bg-sky-500 py-2 px-10 text-white hover:border-2 hover:border-sky-500 hover:bg-inherit hover:text-sky-500 md:text-base xl:text-2xl">
-            Get Started
-          </button>
-        </Link> */}
+          <p className="pt-10 text-3xl text-slate-500">
+            You need to host the backend of this app. Use one of following two
+            options to do that and then configure the endpoint in{" "}
+            <a href="/settings" className="text-sky-500 underline">
+              app settings
+            </a>
+            .
+          </p>
           <div className="flex flex-col gap-2">
             <h3 className="text-xl">Run on Docker</h3>
             <StartCommand />
