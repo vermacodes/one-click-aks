@@ -8,11 +8,17 @@ import Button from "../../Button";
 
 type Props = {
   variant: ButtonVariant;
+  navbarButton?: boolean;
   children: React.ReactNode;
   lab: Lab | undefined;
 };
 
-export default function DestroyButton({ variant, children, lab }: Props) {
+export default function DestroyButton({
+  variant,
+  navbarButton,
+  children,
+  lab,
+}: Props) {
   const { mutate: setLogs } = useSetLogs();
   const { mutate: destroy } = useDestroy();
   const { mutateAsync: destroyExtendAsync } = useDestroyExtend();
@@ -27,6 +33,19 @@ export default function DestroyButton({ variant, children, lab }: Props) {
         }
       });
     }
+  }
+
+  // This is used by Navbar
+  if (navbarButton) {
+    return (
+      <button
+        className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base disabled:cursor-not-allowed disabled:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-800"
+        onClick={onClickHandler}
+        disabled={inProgress || lab === undefined}
+      >
+        {children}
+      </button>
+    );
   }
 
   return (
