@@ -19,6 +19,13 @@ export default function ServerEndpoint({}: Props) {
     }
   }, []);
 
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    localStorage.setItem("baseUrl", baseUrl);
+    setEdit(false);
+    window.location.reload();
+  }
+
   return (
     <SettingsItemLayout>
       <div className="flex w-full justify-between gap-4 py-2">
@@ -41,13 +48,16 @@ export default function ServerEndpoint({}: Props) {
           >
             {baseUrl}
           </p>
-          <input
-            className={`${
-              !edit && "hidden"
-            } h-full w-full bg-inherit px-1 outline-none`}
-            value={baseUrl}
-            onChange={(event) => setBaseUrl(event.target.value)}
-          />
+          <form
+            className={`${!edit && "hidden"} h-full w-full bg-inherit px-1`}
+            onSubmit={(e) => handleSubmit(e)}
+          >
+            <input
+              className={`h-full w-full bg-inherit outline-none`}
+              value={baseUrl}
+              onChange={(event) => setBaseUrl(event.target.value)}
+            />
+          </form>
           <button
             className={`${!showEditButton && "hidden"} ${
               edit && "hidden"
