@@ -271,7 +271,7 @@ function deploy_webapp() {
       return 1
     fi
 
-    log "pelase wait..."
+    log "please wait..."
 
     # Loop until webapp is deleted
     while true; do
@@ -538,7 +538,7 @@ log "Endpoint: https://$default_domain"
 
 # Verify the webapp is running
 # Use curl to verify the webapp is running; keep trying for 5 minutes, 10 seconds apart
-log "verifying webapp is running"
+log "verifying webapp is running. this will take just a few moments. please wait..."
 curl --silent --fail --show-error --max-time 10 --retry 30 --retry-delay 10 https://$default_domain/status
 if [ $? -ne 0 ]; then
   err "Failed to verify webapp is running"
