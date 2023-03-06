@@ -3,15 +3,15 @@ import Navbar from "../../components/Navbar";
 import AccessControl from "../../pages/AccessControl";
 import Assignments from "../../pages/Assignments";
 import Builder from "../../pages/Builder";
-import Templates from "../../pages/SavedLabs";
+import LabPage from "../../pages/LabPage";
 import Landing from "../../pages/Landing";
 import Learning from "../../pages/Learning";
 import MockCases from "../../pages/MockCases";
+import PublicLabs from "../../pages/PublicLabs";
 import ReadinessLabs from "../../pages/ReadinessLabs";
+import SavedLabs from "../../pages/SavedLabs";
 import Settings from "../../pages/Settings";
 import Start from "../../pages/Start";
-import SavedLabs from "../../pages/SavedLabs";
-import PublicLabs from "../../pages/PublicLabs";
 
 type Props = {
   darkMode: boolean;
@@ -42,6 +42,7 @@ export default function MainLayout({ darkMode, setDarkMode }: Props) {
           <Route path="/builder" element={<Builder />} />
           <Route path="/mylabs" element={<SavedLabs />} />
           <Route path="/publiclabs" element={<PublicLabs />} />
+          <Route path="/lab/:type/:id" element={<LabPage />} />
           <Route path="/learning" element={<Learning />} />
           <Route path="/redinesslabs" element={<ReadinessLabs />} />
           <Route path="/mockcases" element={<MockCases />} />

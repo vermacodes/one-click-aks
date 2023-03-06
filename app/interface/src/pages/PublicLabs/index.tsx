@@ -1,4 +1,10 @@
-import { FaArrowRight, FaChevronRight, FaEllipsisV } from "react-icons/fa";
+import {
+  FaArrowRight,
+  FaChevronRight,
+  FaCopy,
+  FaEllipsisV,
+  FaShare,
+} from "react-icons/fa";
 import Button from "../../components/Button";
 import DeleteLabButton from "../../components/Lab/DeleteLabButton";
 import ExportLabButton from "../../components/Lab/Export/ExportLabButton";
@@ -51,6 +57,12 @@ type TemplateCardsProps = {
 };
 
 function TemplateCards({ lab }: TemplateCardsProps) {
+  function copyLinkToLab(lab: Lab) {
+    navigator.clipboard.writeText(
+      `${window.location.origin}/lab/sharedtemplate/${lab.id}`
+    );
+  }
+
   return (
     <TemplateCard key={lab.name}>
       <LabCard lab={lab}>
@@ -63,6 +75,15 @@ function TemplateCards({ lab }: TemplateCardsProps) {
               <ExportLabButton lab={lab} variant="secondary-text">
                 Export
               </ExportLabButton>
+              <Button
+                variant="secondary-text"
+                onClick={() => copyLinkToLab(lab)}
+              >
+                <span>
+                  <FaShare />
+                </span>
+                Share
+              </Button>
             </div>
           </div>
         </>

@@ -19,7 +19,8 @@ export default function LoginButton({}: Props) {
   }, []);
 
   useEffect(() => {
-    if (tokenAcquired) {
+    if (tokenAcquired || accessToken !== "") {
+      console.log("Getting Graph Data Inner");
       getGraphData();
       getProfilePhoto();
     }
@@ -58,7 +59,7 @@ export default function LoginButton({}: Props) {
     });
   }
 
-  function RequestAccessToken() {
+  async function RequestAccessToken() {
     const request = {
       ...loginRequest,
       account: accounts[0],
@@ -72,12 +73,7 @@ export default function LoginButton({}: Props) {
         setTokenAcquired(true);
       })
       .catch((e) => {
-        instance.acquireTokenRedirect(request).then(() => {
-          instance.acquireTokenSilent(request).then((response) => {
-            setAccessToken(response.accessToken);
-            setTokenAcquired(true);
-          });
-        });
+        instance.acquireTokenRedirect(request);
       });
   }
 
