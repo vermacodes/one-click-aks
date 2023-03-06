@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { FaShare } from "react-icons/fa";
 import { useParams } from "react-router-dom";
+import Button from "../../components/Button";
 import ExportLabButton from "../../components/Lab/Export/ExportLabButton";
 import LabCard from "../../components/Lab/LabCard";
 import LoadToBuilderButton from "../../components/Lab/LoadToBuilderButton";
@@ -14,6 +16,7 @@ type Props = {};
 export default function LabPage({}: Props) {
   const { type, id } = useParams();
   const [lab, setLab] = useState<Lab | undefined>(undefined);
+  const [copied, setCopied] = useState(false);
 
   const {
     data: sharedLabs,
@@ -30,6 +33,18 @@ export default function LabPage({}: Props) {
       });
     }
   }, [sharedLabs]);
+
+  function copyLinkToLab(lab: Lab) {
+    navigator.clipboard.writeText(
+      `${window.location.origin}/lab/sharedtemplate/${lab.id}`
+    );
+
+    // Set copied to true for 2 seconds
+    setCopied(true);
+    setTimeout(() => {
+      setCopied(false);
+    }, 2000);
+  }
 
   if (sharedLabsLoading || sharedLabsFetching) {
     return <PageLayout heading="Loading..." children={undefined}></PageLayout>;
@@ -56,6 +71,15 @@ export default function LabPage({}: Props) {
                 <ExportLabButton lab={lab} variant="secondary-text">
                   Export
                 </ExportLabButton>
+                <Button
+                  variant={`${copied ? "success-text" : "secondary-text"}`}
+                  onClick={() => copyLinkToLab(lab)}
+                >
+                  <span>
+                    <FaShare />
+                  </span>
+                  {copied ? "Done" : "Share"}
+                </Button>
               </div>
             </div>
           </>

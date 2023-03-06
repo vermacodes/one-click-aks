@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   FaArrowRight,
   FaChevronRight,
@@ -57,10 +58,17 @@ type TemplateCardsProps = {
 };
 
 function TemplateCards({ lab }: TemplateCardsProps) {
+  const [copied, setCopied] = useState(false);
   function copyLinkToLab(lab: Lab) {
     navigator.clipboard.writeText(
       `${window.location.origin}/lab/sharedtemplate/${lab.id}`
     );
+
+    // Set copied to true for 2 seconds
+    setCopied(true);
+    setTimeout(() => {
+      setCopied(false);
+    }, 2000);
   }
 
   return (
@@ -76,13 +84,13 @@ function TemplateCards({ lab }: TemplateCardsProps) {
                 Export
               </ExportLabButton>
               <Button
-                variant="secondary-text"
+                variant={`${copied ? "success-text" : "secondary-text"}`}
                 onClick={() => copyLinkToLab(lab)}
               >
                 <span>
                   <FaShare />
                 </span>
-                Share
+                {copied ? "Done" : "Share"}
               </Button>
             </div>
           </div>
