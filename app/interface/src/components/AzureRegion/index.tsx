@@ -10,8 +10,14 @@ type Props = { regionEdit: boolean; setRegionEdit(args: boolean): void };
 export default function AzureRegion({ regionEdit, setRegionEdit }: Props) {
   const [azureRegion, setAzureRegion] = useState<string>("");
 
-  const { data: preference, isLoading } = usePreference();
-  const { mutate: setPreferece } = useSetPreference();
+  const {
+    data: preference,
+    isLoading: loadingPreference,
+    isFetching: fetchingPreference,
+  } = usePreference();
+
+  const { mutate: setPreferece, isLoading: settingPreference } =
+    useSetPreference();
   const { data: lab } = useLab();
   const { mutate: setLogs } = useSetLogs();
 
@@ -26,7 +32,13 @@ export default function AzureRegion({ regionEdit, setRegionEdit }: Props) {
     setAzureRegion(event.target.value);
   }
 
+  function handleOnSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    handleOnClick();
+  }
+
   function handleOnClick() {
+    setRegionEdit(false);
     if (preference !== undefined) {
       setPreferece({
         ...preference,
@@ -66,8 +78,8 @@ export default function AzureRegion({ regionEdit, setRegionEdit }: Props) {
             preference && setAzureRegion(preference?.azureRegion);
           }}
         >
-          {isLoading ? (
-            <p>Loading...</p>
+          {loadingPreference || fetchingPreference || settingPreference ? (
+            <p>Please wait...</p>
           ) : (
             <>
               <p>{preference ? preference.azureRegion : "Add a region."}</p>
@@ -81,18 +93,23 @@ export default function AzureRegion({ regionEdit, setRegionEdit }: Props) {
           } flex w-96 items-center justify-between gap-x-2 rounded border border-slate-500`}
           onClick={(e) => e.stopPropagation()}
         >
-          <input
-            type="text"
+          <form
             className="block h-10 w-full bg-inherit px-2 text-inherit"
-            placeholder="Azure Region"
-            value={azureRegion}
-            disabled={
-              fetchingStorageAccount ||
-              storageAccount === undefined ||
-              storageAccount.storageAccount.name === ""
-            }
-            onChange={handleAzureRegion}
-          />
+            onSubmit={(e) => handleOnSubmit(e)}
+          >
+            <input
+              type="text"
+              className="h-10 w-full bg-inherit text-inherit outline-none"
+              placeholder="Azure Region"
+              value={azureRegion}
+              disabled={
+                fetchingStorageAccount ||
+                storageAccount === undefined ||
+                storageAccount.storageAccount.name === ""
+              }
+              onChange={handleAzureRegion}
+            />
+          </form>
           {/* <button
           className="p-2 text-2xl hover:text-red-500"
           onClick={() => setRegionEdit(false)}

@@ -37,7 +37,7 @@ export default function ServerEndpoint({}: Props) {
           </p>
         </div>
         <div
-          className={`flex h-8 w-full items-center justify-between rounded border border-slate-500`}
+          className={`flex h-10 w-full items-center justify-between rounded border border-slate-500`}
           onMouseEnter={() => setShowEditButton(true)}
           onMouseLeave={() => setShowEditButton(false)}
           onDoubleClick={() => setEdit(true)}

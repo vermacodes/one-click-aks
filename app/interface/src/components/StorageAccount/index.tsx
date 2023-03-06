@@ -29,7 +29,7 @@ export default function StorageAccount({}: Props) {
         ) : (
           <>
             {storageAccount && storageAccount.storageAccount.name !== "" ? (
-              <p className="rounded border border-slate-500 px-3 py-1">
+              <p className="h-10 items-center rounded border border-slate-500 px-3 py-1">
                 {storageAccount.storageAccount.name}
               </p>
             ) : (
