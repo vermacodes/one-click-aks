@@ -427,11 +427,11 @@ function get_secrets_from_keyvault() {
 ############################################################
 
 # Confirm subscription
-gap
-if ! confirm_subscription; then
-  err "Failed to confirm subscription"
-  exit 1
-fi
+# gap
+# if ! confirm_subscription; then
+#   err "Failed to confirm subscription"
+#   exit 1
+# fi
 
 # setting known variables.
 gap
