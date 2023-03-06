@@ -4,8 +4,9 @@ import { MdDoneOutline, MdOutlineContentCopy } from "react-icons/md";
 type Props = {};
 
 export default function DeployWebAppCommand({}: Props) {
-  const bashCommand =
-    "curl -o actlab.sh -sLO https://aka.ms/ACTLabsWebAppDeploy; chmod +x actlab.sh; ./actlab.sh; rm actlab.sh";
+  // const bashCommand =
+  //   "curl -o actlab.sh -sLO https://aka.ms/ACTLabsWebAppDeploy; chmod +x actlab.sh; ./actlab.sh; rm actlab.sh";
+  const bashCommand = "curl -sL https://aka.ms/ACTLabsWebAppDeploy | bash";
   const powershellCommand = "Please help us create powershell command.";
 
   const [copy, setCopy] = useState<boolean>(false);

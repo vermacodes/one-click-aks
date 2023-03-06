@@ -272,12 +272,12 @@ USER_ALIAS=$(az account show --query user.name -o tsv | cut -d '@' -f1)
 SP_NAME="${USER_ALIAS}-actlabs"
 
 # Confirm subscription
-if confirm_subscription; then
-    log "Subscription confirmed"
-else
-    err "Failed to confirm subscription"
-    exit 1
-fi
+# if confirm_subscription; then
+#     log "Subscription confirmed"
+# else
+#     err "Failed to confirm subscription"
+#     exit 1
+# fi
 
 # Create the resource group
 ok "configuration started. This may take a few minutes..."
