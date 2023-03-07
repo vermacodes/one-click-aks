@@ -158,32 +158,39 @@ func helperTerraformAction(t *terraformService, tfvar entity.TfvarConfigType, ac
 	t.actionStatusService.SetActionStatus(actionStaus)
 
 	// Getting current logs.
-	logStream, err := t.logStreamService.GetLogs()
-	if err != nil {
+	if _, err := t.logStreamService.GetLogs(); err != nil {
 		slog.Error("not able to get current logs", err)
-		logStream = entity.LogStream{
-			Logs:        "",
-			IsStreaming: true,
-		}
+		return err
 	}
+
+	// if err != nil {
+	// 	slog.Error("not able to get current logs", err)
+	// 	logStream = entity.LogStream{
+	// 		Logs:        "",
+	// 		IsStreaming: true,
+	// 	}
+	// 	return err
+	// }
 
 	// GO routine that takes care of running command and moving logs to redis.
 	go func(input io.ReadCloser) {
 		in := bufio.NewScanner(input)
 
 		// Begin streaming logs if not already.
-		logStream.IsStreaming = true
+		// logStream.IsStreaming = true
 
 		for in.Scan() {
-			logStream.Logs = logStream.Logs + fmt.Sprintf("%s\n", in.Text()) // Appening 'end' to signal stream end.
-			t.logStreamService.SetLogs(logStream)
+			// Appending logs to redis.
+			t.logStreamService.AppendLogs(fmt.Sprintf("%s\n", in.Text()))
+			// logStream.Logs = logStream.Logs + fmt.Sprintf("%s\n", in.Text()) // Appening 'end' to signal stream end.
+			// t.logStreamService.SetLogs(logStream)
 		}
 		input.Close()
 	}(rPipe)
 
 	err = cmd.Wait()
 	wPipe.Close()
-	t.logStreamService.EndLogStream()
+	//t.logStreamService.EndLogStream()
 
 	actionStaus.InProgress = false
 	t.actionStatusService.SetActionStatus(actionStaus)
@@ -233,25 +240,33 @@ func helperExecuteScript(t *terraformService, script string, mode string) error 
 		// If couldn't get existing logs, then just start from scratch.
 		// If existing logs are not supposed to be shown, then client is expected to reset
 		// before using APIs.
-		logStream, err := t.logStreamService.GetLogs()
-		if err != nil {
-			slog.Error("not able to get logs", err)
-			logStream = entity.LogStream{
-				IsStreaming: true,
-				Logs:        "",
-			}
+		// Getting current logs.
+		if _, err := t.logStreamService.GetLogs(); err != nil {
+			slog.Error("not able to get current logs", err)
+			return
 		}
 
+		// logStream, err := t.logStreamService.GetLogs()
+		// if err != nil {
+		// 	slog.Error("not able to get logs", err)
+		// 	logStream = entity.LogStream{
+		// 		IsStreaming: true,
+		// 		Logs:        "",
+		// 	}
+		// }
+
 		for in.Scan() {
-			logStream.Logs = logStream.Logs + fmt.Sprintf("%s\n", in.Text()) // Appening 'end' to signal stream end.
-			t.logStreamService.SetLogs(logStream)
+			// Appending logs to redis.
+			t.logStreamService.AppendLogs(fmt.Sprintf("%s\n", in.Text()))
+			// logStream.Logs = logStream.Logs + fmt.Sprintf("%s\n", in.Text()) // Appening 'end' to signal stream end.
+			// t.logStreamService.SetLogs(logStream)
 		}
 		input.Close()
 	}(rPipe)
 
 	err = cmd.Wait()
 	wPipe.Close()
-	t.logStreamService.EndLogStream()
+	//t.logStreamService.EndLogStream()
 
 	actionStaus.InProgress = false
 	t.actionStatusService.SetActionStatus(actionStaus)

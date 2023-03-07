@@ -2,7 +2,7 @@ import React from "react";
 import { FaTrash } from "react-icons/fa";
 import { ButtonVariant, Lab } from "../../../dataStructures";
 import { useActionStatus } from "../../../hooks/useActionStatus";
-import { useSetLogs } from "../../../hooks/useLogs";
+import { useEndStream, useSetLogs } from "../../../hooks/useLogs";
 import { useDestroy, useDestroyExtend } from "../../../hooks/useTerraform";
 import Button from "../../Button";
 
@@ -20,16 +20,19 @@ export default function DestroyButton({
   lab,
 }: Props) {
   const { mutate: setLogs } = useSetLogs();
-  const { mutate: destroy } = useDestroy();
+  const { mutateAsync: destroyAsync } = useDestroy();
   const { mutateAsync: destroyExtendAsync } = useDestroyExtend();
   const { data: inProgress } = useActionStatus();
+  const { mutate: endLogStream } = useEndStream();
 
   function onClickHandler() {
     setLogs({ isStreaming: true, logs: "" });
     if (lab !== undefined) {
       destroyExtendAsync(lab).then((response) => {
         if (response.status !== undefined) {
-          destroy(lab);
+          destroyAsync(lab).then((response) => {
+            endLogStream();
+          });
         }
       });
     }

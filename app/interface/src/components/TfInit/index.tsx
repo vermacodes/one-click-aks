@@ -3,7 +3,7 @@ import {
   useActionStatus,
   useSetActionStatus,
 } from "../../hooks/useActionStatus";
-import { useSetLogs } from "../../hooks/useLogs";
+import { useEndStream, useSetLogs } from "../../hooks/useLogs";
 import { axiosInstance } from "../../utils/axios-interceptors";
 import { useQueryClient } from "react-query";
 import { useInit } from "../../hooks/useTerraform";
@@ -16,8 +16,9 @@ export default function TfInit({}: Props) {
   const { data: inProgress } = useActionStatus();
   const { mutate: setActionStatus } = useSetActionStatus();
   const { mutate: setLogs } = useSetLogs();
+  const { mutate: endLogStream } = useEndStream();
   const queryClient = useQueryClient();
-  const { mutate: tfInit } = useInit();
+  const { mutateAsync: tfInitAsync } = useInit();
   const { data: lab } = useLab();
 
   function initHandler() {
@@ -26,7 +27,7 @@ export default function TfInit({}: Props) {
     //   queryClient.invalidateQueries("get-action-status");
     // }, 50);
     setLogs({ isStreaming: true, logs: "" });
-    lab && tfInit(lab);
+    lab && tfInitAsync(lab).then(() => endLogStream());
   }
 
   return (

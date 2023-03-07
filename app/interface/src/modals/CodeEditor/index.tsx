@@ -6,7 +6,7 @@ import Button from "../../components/Button";
 import { ButtonVariant, Lab } from "../../dataStructures";
 import { useActionStatus } from "../../hooks/useActionStatus";
 import { useLab, useSetLab } from "../../hooks/useLab";
-import { useSetLogs } from "../../hooks/useLogs";
+import { useEndStream, useSetLogs } from "../../hooks/useLogs";
 import { useExtend } from "../../hooks/useTerraform";
 
 type Props = {
@@ -41,9 +41,10 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
   const [_extendScript, setExtendScript] = useState<string>();
   const { data: lab } = useLab();
   const { mutate: setLab } = useSetLab();
-  const { mutate: extend } = useExtend();
+  const { mutateAsync: extendAsync } = useExtend();
   const { data: inProgress } = useActionStatus();
   const { mutate: setLogs } = useSetLogs();
+  const { mutate: endLogStream } = useEndStream();
 
   useEffect(() => {
     if (lab !== undefined) {
@@ -82,7 +83,9 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
                 // Run
                 if (lab !== undefined && !inProgress) {
                   setLogs({ isStreaming: true, logs: "" });
-                  extend(lab);
+                  extendAsync(lab).then(() => {
+                    endLogStream();
+                  });
                 }
               }}
             >

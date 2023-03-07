@@ -2,7 +2,7 @@ import React from "react";
 import { FaPlane, FaRocket } from "react-icons/fa";
 import { ButtonVariant, Lab } from "../../../dataStructures";
 import { useActionStatus } from "../../../hooks/useActionStatus";
-import { useSetLogs } from "../../../hooks/useLogs";
+import { useEndStream, useSetLogs } from "../../../hooks/useLogs";
 import { usePreference } from "../../../hooks/usePreference";
 import { useApply, useExtend } from "../../../hooks/useTerraform";
 import Button from "../../Button";
@@ -16,9 +16,11 @@ type Props = {
 export default function ApplyButton({ variant, children, lab }: Props) {
   const { mutate: setLogs } = useSetLogs();
   const { mutateAsync: applyAsync } = useApply();
-  const { mutate: extend } = useExtend();
+  const { mutateAsync: extendAsync } = useExtend();
   const { data: inProgress } = useActionStatus();
   const { data: preference } = usePreference();
+
+  const { mutate: endLogStream } = useEndStream();
 
   function onClickHandler() {
     if (lab !== undefined) {
@@ -30,10 +32,11 @@ export default function ApplyButton({ variant, children, lab }: Props) {
       setLogs({ isStreaming: true, logs: "" });
       applyAsync(lab).then((response) => {
         if (response.status !== undefined) {
-          extend(lab);
+          extendAsync(lab).then((response) => {
+            endLogStream();
+          });
         }
       });
-      //extend(lab);
     }
   }
 

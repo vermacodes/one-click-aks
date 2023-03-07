@@ -37,3 +37,55 @@ export function useSetLogs() {
     },
   });
 }
+
+function appendLogs(log: string) {
+  return axiosInstance.put("logs/append", log);
+}
+
+export function useAppendLogs() {
+  const queryClient = useQueryClient();
+  return useMutation(appendLogs, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("get-logs");
+    },
+  });
+}
+
+function clearLogs() {
+  return axiosInstance.delete("logs");
+}
+
+export function useClearLogs() {
+  const queryClient = useQueryClient();
+  return useMutation(clearLogs, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("get-logs");
+    },
+  });
+}
+
+function startStream() {
+  return axiosInstance.put("logs/startstream");
+}
+
+export function useStartStream() {
+  const queryClient = useQueryClient();
+  return useMutation(startStream, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("get-logs");
+    },
+  });
+}
+
+function endStream() {
+  return axiosInstance.put("logs/endstream");
+}
+
+export function useEndStream() {
+  const queryClient = useQueryClient();
+  return useMutation(endStream, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("get-logs");
+    },
+  });
+}

@@ -1,7 +1,7 @@
 import { TerraformWorkspace } from "../../dataStructures";
 import { useActionStatus } from "../../hooks/useActionStatus";
 import { useLab } from "../../hooks/useLab";
-import { useSetLogs } from "../../hooks/useLogs";
+import { useEndStream, useSetLogs } from "../../hooks/useLogs";
 import { useDestroy } from "../../hooks/useTerraform";
 import {
   useAddWorkspace,
@@ -19,6 +19,7 @@ export default function TfResources({}: Props) {
   const { data: resources, isFetching: fetchingResources } = useGetResources();
   const { data: lab } = useLab();
   const { mutate: setLogs } = useSetLogs();
+  const { mutate: endLogStream } = useEndStream();
   const {
     data: workspaces,
     isFetching: fetchingWorkspaces,
@@ -33,7 +34,7 @@ export default function TfResources({}: Props) {
 
   function destroyHandler() {
     setLogs({ isStreaming: true, logs: "" });
-    lab && destroy(lab);
+    lab && destroyAsync(lab).then(() => endLogStream());
   }
 
   async function getSelectedWorkspace(): Promise<TerraformWorkspace> {
@@ -64,6 +65,7 @@ export default function TfResources({}: Props) {
               () => {
                 // Delete workspace.
                 deleteWorkspace(workspace);
+                endLogStream();
               }
             );
           })

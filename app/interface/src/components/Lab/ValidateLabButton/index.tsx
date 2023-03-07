@@ -2,7 +2,7 @@ import React from "react";
 import { FaCheck } from "react-icons/fa";
 import { ButtonVariant, Lab } from "../../../dataStructures";
 import { useActionStatus } from "../../../hooks/useActionStatus";
-import { useSetLogs } from "../../../hooks/useLogs";
+import { useEndStream, useSetLogs } from "../../../hooks/useLogs";
 import { useValidate } from "../../../hooks/useTerraform";
 import Button from "../../Button";
 
@@ -14,12 +14,16 @@ type Props = {
 
 export default function ValidateLabButton({ variant, children, lab }: Props) {
   const { mutate: setLogs } = useSetLogs();
+  const { mutate: endLogStream } = useEndStream();
   const { data: inProgress } = useActionStatus();
-  const { mutate: validate } = useValidate();
+  const { mutateAsync: validateAsync } = useValidate();
 
   function onClickHandler() {
     setLogs({ isStreaming: true, logs: "" });
-    lab && validate(lab);
+    lab &&
+      validateAsync(lab).then(() => {
+        endLogStream();
+      });
   }
 
   return (

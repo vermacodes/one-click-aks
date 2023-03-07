@@ -19,6 +19,7 @@ func NewLogStreamHandler(r *gin.Engine, service entity.LogStreamService) {
 	r.GET("/logs", handler.GetLogs)
 	r.PUT("/logs", handler.SetLogs)
 	r.PUT("/logs/append", handler.AppendLogs)
+	r.DELETE("/logs", handler.DeleteLogs)
 	r.PUT("/logs/startstream", handler.StartLogStream)
 	r.PUT("/logs/endstream", handler.EndLogStream)
 }
@@ -42,6 +43,15 @@ func (l *logStreamHandler) AppendLogs(c *gin.Context) {
 
 	if err := l.logStreamService.AppendLogs(logs); err != nil {
 		c.Status(http.StatusNotFound)
+		return
+	}
+
+	c.Status(http.StatusOK)
+}
+
+func (l *logStreamHandler) DeleteLogs(c *gin.Context) {
+	if err := l.logStreamService.ClearLogs(); err != nil {
+		c.Status(http.StatusInternalServerError)
 		return
 	}
 

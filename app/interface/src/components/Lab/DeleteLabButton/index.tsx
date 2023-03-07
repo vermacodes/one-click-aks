@@ -19,7 +19,7 @@ export default function DeleteLabButton({ variant, children, lab }: Props) {
   const { mutate: deleteMyLab } = useDeleteMyLab();
 
   function onClickHandler() {
-    setLogs({ isStreaming: true, logs: "" });
+    //setLogs({ isStreaming: true, logs: "" });
     if (lab !== undefined) {
       if (lab.type === "template") {
         deleteMyLab(lab);
