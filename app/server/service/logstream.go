@@ -19,6 +19,37 @@ func NewLogStreamService(logStreamRepository entity.LogStreamRepository) entity.
 	}
 }
 
+func (l *logStreamService) AppendLogs(logs string) error {
+	logStream := entity.LogStream{}
+	logStream, err := l.GetLogs()
+	if err != nil {
+		slog.Info("not able to get logs from redis. setting new")
+		logStream.Logs = ""
+	}
+
+	logStream.Logs += logs
+
+	if err := l.SetLogs(logStream); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (l *logStreamService) ClearLogs() error {
+
+	defaultLogStream := entity.LogStream{
+		IsStreaming: false,
+		Logs:        "",
+	}
+
+	if err := l.SetLogs(defaultLogStream); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (l *logStreamService) SetLogs(logStream entity.LogStream) error {
 
 	// this is a hack to continue the logs from where they are right now.

@@ -70,7 +70,7 @@ func main() {
 	handler.NewRedisHandler(router, redisService)
 
 	authRepository := repository.NewAuthRepository()
-	authService := service.NewAuthService(authRepository, logStreamService, actionStatusService, loggingService)
+	authService := service.NewAuthService(authRepository, actionStatusService, loggingService)
 	handler.NewLoginHandler(router, authService)
 
 	authRouter.Use(middleware.AuthRequired(authService, logStreamService))

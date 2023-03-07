@@ -18,6 +18,7 @@ func NewLogStreamHandler(r *gin.Engine, service entity.LogStreamService) {
 
 	r.GET("/logs", handler.GetLogs)
 	r.PUT("/logs", handler.SetLogs)
+	r.PUT("/logs/append", handler.AppendLogs)
 	r.PUT("/logs/startstream", handler.StartLogStream)
 	r.PUT("/logs/endstream", handler.EndLogStream)
 }
@@ -30,6 +31,21 @@ func (l *logStreamHandler) GetLogs(c *gin.Context) {
 	}
 
 	c.IndentedJSON(http.StatusOK, logStream)
+}
+
+func (l *logStreamHandler) AppendLogs(c *gin.Context) {
+	var logs string
+	if err := c.Bind(&logs); err != nil {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	if err := l.logStreamService.AppendLogs(logs); err != nil {
+		c.Status(http.StatusNotFound)
+		return
+	}
+
+	c.Status(http.StatusOK)
 }
 
 func (l *logStreamHandler) SetLogs(c *gin.Context) {
