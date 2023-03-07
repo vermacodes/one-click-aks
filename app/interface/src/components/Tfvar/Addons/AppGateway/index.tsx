@@ -37,15 +37,6 @@ export default function AppGateway() {
     return <></>;
   }
 
-  // Reset to empty if not found. This probably ensures backward compatibility.
-  // if (
-
-  //   lab.template.kubernetesClusters[0].addons.appGateway === null ||
-  //   lab.template.kubernetesClusters[0].addons.appGateway === undefined
-  // ) {
-  //   lab.template.kubernetesClusters[0].addons.appGateway = false;
-  // }
-
   // If still loading then display disabled flag.
   if (labIsLoading || labIsFetching) {
     return (

@@ -19,15 +19,6 @@ export default function CreateAssignment({ lab }: Props) {
     isError,
   } = useCreateAssignment();
 
-  // useEffect(() => {
-  //   if (createData?.status === 201) {
-  //     setCreatedColor(true);
-  //     setTimeout(() => {
-  //       setCreatedColor(false);
-  //     }, 3000);
-  //   }
-  // }, [createData]);
-
   function handleAssignment(lab: Lab) {
     if (userAlias.length < 4) {
       setFailedColor(true);
@@ -104,31 +95,6 @@ export default function CreateAssignment({ lab }: Props) {
           </div>
         </Button>
       )}
-      {/* <Button
-        variant={createdColor ? "success" : failedColor ? "danger" : "primary"}
-        onClick={() => handleAssignment(lab)}
-        disabled={creating || (userAlias.length > 0 && userAlias.length < 4)}
-      >
-        <div className="flex items-center justify-center gap-x-2">
-          {createdColor && (
-            <>
-              <FaCheck /> Assigned
-            </>
-          )}
-          {failedColor && (
-            <>
-              <FaCheck /> Failed
-            </>
-          )}
-          {creating ? (
-            "Assigning.."
-          ) : (
-            <>
-              Assign <FaArrowRight />
-            </>
-          )}
-        </div>
-      </Button> */}
     </div>
   );
 }

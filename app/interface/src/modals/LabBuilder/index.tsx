@@ -155,9 +155,6 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
             value={lab.template && JSON.stringify(lab.template, null, 4)}
             theme="vs-dark"
             defaultValue="// some comment"
-            // onChange={(value) => {
-            //   value && setLab({ ...lab, template: value });
-            // }}
           />
         </div>
         <div className={`my-4 h-60 space-y-1`}>

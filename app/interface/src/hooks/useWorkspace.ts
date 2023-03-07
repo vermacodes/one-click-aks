@@ -46,34 +46,6 @@ export function useAddWorkspace() {
       queryClient.invalidateQueries("list-terraform-workspaces");
       queryClient.invalidateQueries("get-resources");
     },
-    //
-    // Following section does optimistic updates. But they are not very cool when it comes to updating workspaces.
-    // Keeping code just in case we would want to enable those in a better way in future.
-    //
-    // onMutate: async (newWorkspace: TerraformWorkspace) => {
-    //   await queryClient.cancelQueries("list-terraform-workspaces");
-    //   const prevWorkspaces: AxiosResponse<TerraformWorkspace[]> | undefined =
-    //     queryClient.getQueryData("list-terraform-workspaces");
-    //   if (prevWorkspaces !== undefined) {
-    //     prevWorkspaces.data.forEach((workspace) => {
-    //       workspace.selected = false;
-    //     });
-
-    //     queryClient.setQueryData("list-terraform-workspaces", {
-    //       ...prevWorkspaces,
-    //       data: [...prevWorkspaces.data, newWorkspace],
-    //     });
-    //   }
-    //   return { prevWorkspaces, newWorkspace };
-    // },
-    // onError: (error, newWorkspace, context) => {
-    //   queryClient.setQueryData(
-    //     "list-terraform-workspaces",
-    //     context?.prevWorkspaces
-    //   );
-    //   queryClient.invalidateQueries("list-terraform-workspaces");
-    //   queryClient.invalidateQueries("get-resources");
-    // },
   });
 }
 
@@ -82,40 +54,7 @@ export function useSelectWorkspace() {
   return useMutation(selectWorkspace, {
     onSuccess: () => {
       queryClient.invalidateQueries("list-terraform-workspaces");
-      //queryClient.invalidateQueries("get-resources");
     },
-    //
-    // Following section does optimistic updates. But they are not very cool when it comes to updating workspaces.
-    // Keeping code just in case we would want to enable those in a better way in future.
-    //
-    // onMutate: async (selectedWorkspace: TerraformWorkspace) => {
-    //   await queryClient.cancelQueries("list-terraform-workspaces");
-    //   const prevWorkspaces: AxiosResponse<TerraformWorkspace[]> | undefined =
-    //     queryClient.getQueryData("list-terraform-workspaces");
-    //   if (prevWorkspaces !== undefined) {
-    //     prevWorkspaces.data.forEach((workspace) => {
-    //       if (workspace.name === selectedWorkspace.name) {
-    //         workspace.selected = true;
-    //       } else {
-    //         workspace.selected = false;
-    //       }
-    //     });
-
-    //     queryClient.setQueryData("list-terraform-workspaces", {
-    //       prevWorkspaces,
-    //       data: [...prevWorkspaces.data],
-    //     });
-    //   }
-    //   return { prevWorkspaces, selectedWorkspace };
-    // },
-    // onError: (error, selectedWorkspace, context) => {
-    //   queryClient.setQueryData(
-    //     "list-terraform-workspaces",
-    //     context?.prevWorkspaces
-    //   );
-    //   queryClient.invalidateQueries("list-terraform-workspaces");
-    //   queryClient.invalidateQueries("get-resources");
-    // },
   });
 }
 

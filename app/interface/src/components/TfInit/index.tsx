@@ -22,10 +22,6 @@ export default function TfInit({}: Props) {
   const { data: lab } = useLab();
 
   function initHandler() {
-    // queryClient.setQueryData("get-action-status", { inProgress: true });
-    // setTimeout(() => {
-    //   queryClient.invalidateQueries("get-action-status");
-    // }, 50);
     setLogs({ isStreaming: true, logs: "" });
     lab && tfInitAsync(lab).then(() => endLogStream());
   }

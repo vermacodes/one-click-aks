@@ -27,11 +27,6 @@ export default function ServerError() {
         </p>
       </div>
       <div className={`flex flex-col gap-10`}>
-        {/* <Link to={"/start"}>
-          <button className="rounded-full border-2 border-transparent bg-sky-500 py-2 px-10 text-white hover:border-2 hover:border-sky-500 hover:bg-inherit hover:text-sky-500 md:text-base xl:text-2xl">
-            Get Started
-          </button>
-        </Link> */}
         <div className="flex flex-col gap-2">
           <h3 className="text-xl">Run on Docker</h3>
           <StartCommand />

@@ -17,12 +17,6 @@ export default function Login({ section, setSection }: Props) {
     if (!inProgress) {
       setShowTerminal(true);
       setLogs({ isStreaming: true, logs: "" });
-      // loginAsync().then((response) => {
-      //   if (response.status !== undefined) {
-      //     loginStatus.refetch();
-      //     setLogs({ isStreaming: false, logs: "" });
-      //   }
-      // });
     }
   }
 

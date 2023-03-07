@@ -39,14 +39,6 @@ export default function MicrosoftDefender({}: Props) {
     return <></>;
   }
 
-  // Reset to empty if not found. This probably ensures backward compatibility.
-  // if (
-  //   lab.template.kubernetesClusters[0].addons.microsoftDefender === null ||
-  //   lab.template.kubernetesClusters[0].addons.microsoftDefender === undefined
-  // ) {
-  //   lab.template.kubernetesClusters[0].addons.microsoftDefender = false;
-  // }
-
   // If still loading then display disabled flag.
   if (labIsLoading || labIsFetching) {
     return (
