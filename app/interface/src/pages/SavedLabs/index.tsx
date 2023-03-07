@@ -8,7 +8,7 @@ import { useTemplates } from "../../hooks/useBlobs";
 import { useServerStatus } from "../../hooks/useServerStatus";
 import LabGridLayout from "../../layouts/LabGridLayout";
 import PageLayout from "../../layouts/PageLayout";
-import LabBuilder from "../../modals/LabBuilder";
+import LabBuilder from "../../modals/SaveLabModal";
 import ServerError from "../ServerError";
 
 export default function SavedLabs() {

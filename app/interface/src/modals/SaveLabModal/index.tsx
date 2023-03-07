@@ -14,7 +14,7 @@ type Props = {
   lab?: Lab;
 };
 
-export default function LabBuilder({ children, variant, lab }: Props) {
+export default function SaveLabModal({ children, variant, lab }: Props) {
   const [showModal, setShowModal] = useState<boolean>(false);
 
   return (
@@ -80,7 +80,7 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
       }}
     >
       <div
-        className=" my-20 w-3/4 gap-y-2 rounded bg-slate-100 p-5 scrollbar-thin  scrollbar-thumb-slate-400 dark:divide-slate-700 dark:bg-slate-900 dark:scrollbar-thumb-slate-600"
+        className="w-screen gap-y-2 rounded bg-slate-100 p-5 px-10 scrollbar-thin  scrollbar-thumb-slate-400 dark:divide-slate-700 dark:bg-slate-900 dark:scrollbar-thumb-slate-600"
         onClick={(e) => {
           e.stopPropagation();
         }}

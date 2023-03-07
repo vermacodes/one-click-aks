@@ -1,6 +1,6 @@
 import Editor from "@monaco-editor/react";
 import { useEffect, useState } from "react";
-import { FaPlus } from "react-icons/fa";
+import { FaArrowCircleLeft, FaCheck, FaPlus, FaRedo, FaRocket, FaSave, FaTimes } from "react-icons/fa";
 
 import Button from "../../components/Button";
 import { ButtonVariant, Lab } from "../../dataStructures";
@@ -15,7 +15,7 @@ type Props = {
   lab?: Lab;
 };
 
-export default function CodeEditor({ children, variant, lab }: Props) {
+export default function CodeEditorModal({ children, variant, lab }: Props) {
   const [showModal, setShowModal] = useState<boolean>(false);
 
   return (
@@ -70,7 +70,7 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
           <h1 className="flex items-center text-xl">Extension Script</h1>
           <div className="flex gap-x-2">
             <Button
-              variant="secondary-outline"
+              variant="secondary-text"
               disabled={inProgress}
               onClick={() => {
                 // Save
@@ -89,31 +89,35 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
                 }
               }}
             >
-              Run in Extend Mode
+              <span><FaRocket /></span>
+              Run
             </Button>
             <Button
-              variant="secondary-outline"
+              variant="secondary-text"
               onClick={() => {
                 setExtendScript(lab.extendScript);
               }}
             >
+              <span><FaRedo /></span>
               Reset
             </Button>
             <Button
-              variant="secondary-outline"
+              variant="secondary-text"
               onClick={() => {
                 _extendScript &&
                   setLab({ ...lab, extendScript: _extendScript });
               }}
             >
+              <span><FaSave /></span>
               Save
             </Button>
             <Button
-              variant="danger-outline"
+              variant="danger-text"
               onClick={() => {
                 setShowModal(false);
               }}
             >
+              <span><FaTimes /></span>
               Close
             </Button>
             <Button
@@ -122,8 +126,9 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
                 _extendScript &&
                   setLab({ ...lab, extendScript: _extendScript });
               }}
-              variant="primary-outline"
+              variant="primary"
             >
+              <span><FaCheck /></span>
               Save & Close
             </Button>
           </div>

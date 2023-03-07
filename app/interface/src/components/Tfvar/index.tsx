@@ -9,8 +9,8 @@ import {
 import { Lab } from "../../dataStructures";
 import { useDeleteLab, useLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
-import CodeEditor from "../../modals/CodeEditor";
-import LabBuilder from "../../modals/LabBuilder";
+import CodeEditor from "../../modals/CodeEditorModal";
+import LabBuilder from "../../modals/SaveLabModal";
 import Button from "../Button";
 import ExportLabInBuilder from "../Lab/Export/ExportLabInBuilder";
 import ImportLabToBuilder from "../Lab/Import/ImportLabToBuilder";
