@@ -69,6 +69,17 @@ func (l *logStreamService) GetLogs() (entity.LogStream, error) {
 	return logStream, nil
 }
 
+func (l *logStreamService) StartLogStream() {
+	slog.Info("starting log stream")
+	logStream, err := l.GetLogs()
+	if err != nil {
+		slog.Error("not able to get current logs", err)
+		return
+	}
+	logStream.IsStreaming = true // Setting streaming to true.
+	l.SetLogs(logStream)
+}
+
 func (l *logStreamService) EndLogStream() {
 	slog.Info("ending log stream")
 	logStream, err := l.GetLogs()
@@ -80,17 +91,6 @@ func (l *logStreamService) EndLogStream() {
 	logStream.Logs = logStream.Logs + fmt.Sprintf("%s\n", "end") // Appening 'end' to signal stream end.
 	l.SetLogs(logStream)
 
-	// go func() {
-	// 	time.Sleep(5 * time.Second)
-	// 	logStream, err := l.GetLogs()
-	// 	if err != nil {
-	// 		slog.Error("not able to get current logs", err)
-	// 		return
-	// 	}
-	// 	logStream.IsStreaming = false                                // Setting streaming to false.
-	// 	logStream.Logs = logStream.Logs + fmt.Sprintf("%s\n", "end") // Appening 'end' to signal stream end.
-	// 	l.SetLogs(logStream)
-	// }()
 }
 
 // Encodes the Logs and conver object to sting.

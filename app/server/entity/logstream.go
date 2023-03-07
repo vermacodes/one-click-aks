@@ -8,6 +8,7 @@ type LogStream struct {
 type LogStreamService interface {
 	SetLogs(logStream LogStream) error
 	GetLogs() (LogStream, error)
+	StartLogStream()
 	EndLogStream()
 }
 
