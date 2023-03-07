@@ -96,10 +96,10 @@ func (t *terraformService) Apply(lab entity.LabType) error {
 }
 
 func (t *terraformService) Extend(lab entity.LabType, mode string) error {
-	if lab.ExtendScript == "" {
-		t.logStreamService.EndLogStream()
-		return nil
-	}
+	// if lab.ExtendScript == "" {
+	// 	t.logStreamService.EndLogStream()
+	// 	return nil
+	// }
 
 	// Getting back redacted values
 	if lab.ExtendScript == "redacted" {
