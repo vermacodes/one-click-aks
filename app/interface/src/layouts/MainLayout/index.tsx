@@ -11,7 +11,6 @@ import PublicLabs from "../../pages/PublicLabs";
 import ReadinessLabs from "../../pages/ReadinessLabs";
 import SavedLabs from "../../pages/SavedLabs";
 import Settings from "../../pages/Settings";
-import Start from "../../pages/Start";
 
 type Props = {
   darkMode: boolean;
