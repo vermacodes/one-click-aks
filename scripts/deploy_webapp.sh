@@ -324,6 +324,7 @@ function deploy_webapp() {
 
       sleep 30s
     else
+      log "WebApp deployed successfully"
       break
     fi
   done
