@@ -41,7 +41,7 @@ function confirm_subscription() {
 # If the resource group doesn't exist, create one
 function create_resource_group() {
   # Check if the resource group exists
-  RG_EXISTS=$(az group exists --name "${RESOURCE_GROUP}")
+  RG_EXISTS=$(az group exists --name "${RESOURCE_GROUP} --output tsv")
 
   if [[ "${RG_EXISTS}" == "true" ]]; then
     log "resource group ${RESOURCE_GROUP} already exists"
