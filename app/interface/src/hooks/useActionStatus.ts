@@ -1,6 +1,7 @@
+import { AxiosResponse } from "axios";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { ActionStatusType } from "../dataStructures";
+import { ActionStatusType, TerraformOperation } from "../dataStructures";
 import { axiosInstance } from "../utils/axios-interceptors";
 
 function getActionStatus() {
@@ -37,5 +38,28 @@ export function useSetActionStatus() {
     onSuccess: () => {
       queryClient.invalidateQueries("get-action-status");
     },
+  });
+}
+
+function getTerraformOperation(id: string): Promise<AxiosResponse<TerraformOperation>> {
+  return axiosInstance.get(`terraformoperation/${id}`);
+}
+
+export function useGetTerraformOperation(operationId: string) {
+  const [refetchInterval, setRefecthInterval] = useState<false | number>(false);
+  return useQuery(["get-terraform-operation", operationId], () => getTerraformOperation(operationId), {
+    refetchInterval: refetchInterval,
+    select : (data): TerraformOperation => {
+        return data.data;
+    },
+    onSuccess: (data: TerraformOperation ) => {
+      if (data.operationStatus === "inprogress") {
+        setRefecthInterval(5000);
+      } else {
+        setRefecthInterval(false);
+      }
+    },
+    enabled: operationId !== "",
+    staleTime: 2000,
   });
 }

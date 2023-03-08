@@ -36,7 +36,9 @@ export default function AzureSubscription({
             ) : (
               <>
                 {accounts?.map((account) => (
-                  <>{account.isDefault === true && <p>{account.name}</p>}</>
+                  <div key={account.id}>
+                    {account.isDefault === true && <p>{account.name}</p>}
+                  </div>
                 ))}
               </>
             )}

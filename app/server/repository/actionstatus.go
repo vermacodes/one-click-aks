@@ -14,3 +14,11 @@ func (a *actionStatusRepository) GetActionStatus() (string, error) {
 func (a *actionStatusRepository) SetActionStatus(val string) error {
 	return setRedis("actionstatus", val)
 }
+
+func (a *actionStatusRepository) SetTerraformOperation(id string, val string) error {
+	return setRedis(id, val)
+}
+
+func (a *actionStatusRepository) GetTerraformOperation(id string) (string, error) {
+	return getRedis(id)
+}

@@ -92,3 +92,33 @@ func (a *actionStatusService) SetActionEnd() error {
 
 	return nil
 }
+
+func (a *actionStatusService) SetTerraformOperation(terraformOperation entity.TerraformOperation) error {
+	val, err := json.Marshal(terraformOperation)
+	if err != nil {
+		slog.Error("not able to marshal object to string", err)
+		return err
+	}
+
+	if err = a.actionStatusRepository.SetTerraformOperation(terraformOperation.OperationId, string(val)); err != nil {
+		slog.Error("not able to set terraform operation in redis", err)
+	}
+
+	return nil
+}
+
+func (a *actionStatusService) GetTerraformOperation(id string) (entity.TerraformOperation, error) {
+	terraformOperation := entity.TerraformOperation{}
+	val, err := a.actionStatusRepository.GetTerraformOperation(id)
+	if err != nil {
+		slog.Error("terraform operation not found in redis", err)
+		return terraformOperation, err
+	}
+
+	if err = json.Unmarshal([]byte(val), &terraformOperation); err != nil {
+		slog.Error("not able to translate terraform operation string to object", err)
+		return terraformOperation, err
+	}
+
+	return terraformOperation, nil
+}

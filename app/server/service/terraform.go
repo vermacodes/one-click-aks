@@ -7,6 +7,7 @@ import (
 	"io"
 
 	"github.com/vermacodes/one-click-aks/app/server/entity"
+	"github.com/vermacodes/one-click-aks/app/server/helper"
 	"golang.org/x/exp/slog"
 )
 
@@ -95,6 +96,43 @@ func (t *terraformService) Apply(lab entity.LabType) error {
 	//TODO : Extenstion script
 }
 
+func (t *terraformService) ApplyAsync(lab entity.LabType) (entity.TerraformOperation, error) {
+
+	terraformOperation := entity.TerraformOperation{
+		OperationId:     helper.Generate(32),
+		OperationType:   "apply",
+		OperationStatus: "inprogress",
+	}
+
+	if err := t.actionStatusService.SetTerraformOperation(terraformOperation); err != nil {
+		slog.Error("not able to set terraform operation", err)
+		return terraformOperation, err
+	}
+
+	// Go routine to apply.
+	go func() error {
+		if err := t.Apply(lab); err != nil {
+			slog.Error("not able to apply", err)
+			terraformOperation.OperationStatus = "failed"
+			if err := t.actionStatusService.SetTerraformOperation(terraformOperation); err != nil {
+				slog.Error("not able to update terraform operation", err)
+				return err
+			}
+		}
+
+		terraformOperation.OperationStatus = "completed"
+		if err := t.actionStatusService.SetTerraformOperation(terraformOperation); err != nil {
+			slog.Error("not able to update terraform operation", err)
+			return err
+		}
+
+		return nil
+	}()
+
+	return terraformOperation, nil
+
+}
+
 func (t *terraformService) Extend(lab entity.LabType, mode string) error {
 	// if lab.ExtendScript == "" {
 	// 	t.logStreamService.EndLogStream()
@@ -111,6 +149,41 @@ func (t *terraformService) Extend(lab entity.LabType, mode string) error {
 		return helperExecuteScript(t, lab.ExtendScript, mode)
 	}
 	return helperExecuteScript(t, lab.ExtendScript, mode)
+}
+
+func (t *terraformService) ApplyAsyncExtend(lab entity.LabType, mode string) (entity.TerraformOperation, error) {
+	terraformOperation := entity.TerraformOperation{
+		OperationId:     helper.Generate(32),
+		OperationType:   "applyextend",
+		OperationStatus: "inprogress",
+	}
+
+	if err := t.actionStatusService.SetTerraformOperation(terraformOperation); err != nil {
+		slog.Error("not able to set terraform operation", err)
+		return terraformOperation, err
+	}
+
+	// Go routine to apply extend.
+	go func() error {
+		if err := t.Extend(lab, mode); err != nil {
+			slog.Error("not able to apply", err)
+			terraformOperation.OperationStatus = "failed"
+			if err := t.actionStatusService.SetTerraformOperation(terraformOperation); err != nil {
+				slog.Error("not able to update terraform operation", err)
+				return err
+			}
+		}
+
+		terraformOperation.OperationStatus = "completed"
+		if err := t.actionStatusService.SetTerraformOperation(terraformOperation); err != nil {
+			slog.Error("not able to update terraform operation", err)
+			return err
+		}
+
+		return nil
+	}()
+
+	return terraformOperation, nil
 }
 
 func (t *terraformService) Destroy(lab entity.LabType) error {

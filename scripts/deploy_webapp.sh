@@ -441,7 +441,7 @@ function get_secrets_from_keyvault() {
 # setting known variables.
 gap
 log "📝 setting variables"
-DOCKER_IMAGE="ashishvermapu/repro"
+DOCKER_IMAGE="ashishvermapu:beta"
 RESOURCE_GROUP="repro-project"
 
 ARM_SUBSCRIPTION_ID=$(az account show --query id --output tsv)

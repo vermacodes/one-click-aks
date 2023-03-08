@@ -276,3 +276,9 @@ export type GraphData = {
   userPrincipalName: string;
   id: string;
 };
+
+export type TerraformOperation = {
+  operationId: string;
+  operationType: string;
+  operationStatus: "inprogress" | "failed" | "completed" | "undefined";
+}
