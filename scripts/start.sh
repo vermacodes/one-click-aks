@@ -336,6 +336,6 @@ docker rm -f actlabs
 
 # Start docker container and set environment variables
 log "starting docker container"
-docker run --pull=always -d --restart unless-stopped -it -e ARM_CLIENT_ID -e ARM_CLIENT_SECRET -e ARM_SUBSCRIPTION_ID -e ARM_TENANT_ID -e ARM_USER_PRINCIPAL_NAME --name actlabs -p 8880:80 actlab.azurecr.io/repro:beta
+docker run --pull=always -d --restart unless-stopped -it -e ARM_CLIENT_ID -e ARM_CLIENT_SECRET -e ARM_SUBSCRIPTION_ID -e ARM_TENANT_ID -e ARM_USER_PRINCIPAL_NAME --name actlabs -p 8880:80 actlab.azurecr.io/repro
 
 ok "All done! You can now access the application at https://actlabs.azureedge.net/"
