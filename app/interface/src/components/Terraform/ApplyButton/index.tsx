@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { FaPlane, FaRocket } from "react-icons/fa";
+import { FaRocket } from "react-icons/fa";
 import {
   ButtonVariant,
   Lab,
@@ -12,10 +12,8 @@ import {
 import { useEndStream, useSetLogs } from "../../../hooks/useLogs";
 import { usePreference } from "../../../hooks/usePreference";
 import {
-  useApply,
   useApplyAsync,
   useApplyAsyncExtend,
-  useExtend,
 } from "../../../hooks/useTerraform";
 import Button from "../../Button";
 
@@ -26,50 +24,52 @@ type Props = {
 };
 
 export default function ApplyButton({ variant, children, lab }: Props) {
-  const [tfOpState, setTfOpState] = React.useState<TerraformOperation>({
-    operationId: "",
-    operationStatus: "undefined",
-    operationType: "",
-  });
+  const [terraformOperationState, setTerraformOperationState] =
+    React.useState<TerraformOperation>({
+      operationId: "",
+      operationStatus: "",
+      operationType: "",
+    });
 
   const [labState, setLabState] = React.useState<Lab | undefined>(undefined);
 
   const { mutate: setLogs } = useSetLogs();
-  const { mutateAsync: applyAsync } = useApply();
-  const { mutateAsync: applyAsync_ } = useApplyAsync();
+  const { mutateAsync: applyAsync } = useApplyAsync();
   const { mutateAsync: applyAsyncExtend } = useApplyAsyncExtend();
-  const { mutateAsync: extendAsync } = useExtend();
   const { data: inProgress } = useActionStatus();
   const { data: preference } = usePreference();
   const { data: terraformOperation } = useGetTerraformOperation(
-    tfOpState.operationId
+    terraformOperationState.operationId
   );
 
   const { mutate: endLogStream } = useEndStream();
 
   useEffect(() => {
-    if (tfOpState.operationType === "apply") {
-      console.log("TF OP STATE: ", tfOpState);
-      if (tfOpState.operationStatus === "completed") {
+    if (terraformOperationState.operationType === "apply") {
+      if (terraformOperationState.operationStatus === "completed") {
         labState &&
           applyAsyncExtend(labState).then((response) => {
             if (response.status !== undefined) {
-              setTfOpState(response.data);
+              setTerraformOperationState(response.data);
             }
           });
-      } else if (tfOpState.operationStatus === "failed") {
+      } else if (terraformOperationState.operationStatus === "failed") {
         endLogStream();
       }
-    } else if (tfOpState.operationType === "applyextend") {
+    } else if (terraformOperationState.operationType === "applyextend") {
       if (
-        tfOpState.operationStatus === "completed" ||
-        tfOpState.operationStatus === "failed"
+        terraformOperationState.operationStatus === "completed" ||
+        terraformOperationState.operationStatus === "failed"
       ) {
-        setTfOpState({ ...tfOpState, operationStatus: "undefined" });
+        setTerraformOperationState({
+          operationId: "",
+          operationStatus: "",
+          operationType: "",
+        });
         endLogStream();
       }
     }
-  }, [tfOpState]);
+  }, [terraformOperationState]);
 
   function onClickHandler() {
     if (lab !== undefined) {
@@ -85,9 +85,9 @@ export default function ApplyButton({ variant, children, lab }: Props) {
       setLogs({ isStreaming: true, logs: "" });
 
       // apply terraform
-      applyAsync_(lab).then((response) => {
+      applyAsync(lab).then((response) => {
         if (response.status !== undefined) {
-          setTfOpState(response.data);
+          setTerraformOperationState(response.data);
         }
       });
     }
@@ -95,9 +95,10 @@ export default function ApplyButton({ variant, children, lab }: Props) {
 
   if (
     terraformOperation !== undefined &&
-    terraformOperation.operationStatus !== tfOpState.operationStatus
+    terraformOperation.operationStatus !==
+      terraformOperationState.operationStatus
   ) {
-    setTfOpState(terraformOperation);
+    setTerraformOperationState(terraformOperation);
   }
 
   return (

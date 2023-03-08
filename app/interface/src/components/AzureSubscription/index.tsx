@@ -56,17 +56,16 @@ export default function AzureSubscription({
             ) : (
               <>
                 {accounts?.map((account) => (
-                  <>
+                  <div key={account.id}>
                     {account.isDefault !== true && (
                       <div
-                        key={account.id}
                         className="items-center rounded p-2 hover:bg-sky-500 hover:text-slate-100"
                         onClick={() => setAccount(account)}
                       >
                         {account.name}
                       </div>
                     )}
-                  </>
+                  </div>
                 ))}
               </>
             )}
