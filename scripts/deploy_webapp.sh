@@ -255,6 +255,10 @@ function grant_access_to_service_principal() {
   return 0
 }
 
+function deploy_azure_container_instance() {
+  az container create --resource-group $RESOURCE_GROUP --name $ACI_NAME --image $ACI_IMAGE --dns-name-label $ACI_DNS_NAME --ports 80 --location $LOCATION --subscription $ARM_SUBSCRIPTION_ID --environment-variables
+}
+
 # This script deploys Azure WebApp and add Application Settings.
 function deploy_webapp() {
 
