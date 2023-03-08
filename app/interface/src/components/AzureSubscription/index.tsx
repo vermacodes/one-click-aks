@@ -59,6 +59,7 @@ export default function AzureSubscription({
                   <>
                     {account.isDefault !== true && (
                       <div
+                        key={account.id}
                         className="items-center rounded p-2 hover:bg-sky-500 hover:text-slate-100"
                         onClick={() => setAccount(account)}
                       >

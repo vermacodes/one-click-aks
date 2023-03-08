@@ -48,18 +48,18 @@ export default function ApplyButton({ variant, children, lab }: Props) {
   const { mutate: endLogStream } = useEndStream();
 
   useEffect(() => {
-    if (
-      tfOpState.operationType === "apply" &&
-      labState !== undefined &&
-      (tfOpState.operationStatus === "completed" ||
-        tfOpState.operationStatus === "failed")
-    ) {
-      applyAsyncExtend(labState).then((response) => {
-        if (response.status !== undefined) {
-          setTfOpState(response.data);
-          console.log("Status -> ", response.data.operationStatus);
-        }
-      });
+    if (tfOpState.operationType === "apply") {
+      console.log("TF OP STATE: ", tfOpState);
+      if (tfOpState.operationStatus === "completed") {
+        labState &&
+          applyAsyncExtend(labState).then((response) => {
+            if (response.status !== undefined) {
+              setTfOpState(response.data);
+            }
+          });
+      } else if (tfOpState.operationStatus === "failed") {
+        endLogStream();
+      }
     } else if (tfOpState.operationType === "applyextend") {
       if (
         tfOpState.operationStatus === "completed" ||

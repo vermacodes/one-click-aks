@@ -14,7 +14,7 @@ export PORT="80"
 echo $ARM_CLIENT_ID
 
 while true; do
-    export STATUS=$(curl -s http://localhost:8080/status | jq -r .status)
+    export STATUS=$(curl -s http://localhost:${PORT}/status | jq -r .status)
     echo "$(date) : Status : $STATUS"
     if [ "$STATUS" != "OK" ]; then
         echo "$(date) : App Started."

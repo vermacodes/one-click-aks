@@ -9,7 +9,10 @@ export default function Rbac({}: Props) {
 
   return (
     <div className="flex flex-col gap-y-2">
-      {roles && roles.map((role) => <Role roleRecord={role} />)}
+      {roles &&
+        roles.map((role) => (
+          <Role roleRecord={role} key={role.userPrincipal} />
+        ))}
     </div>
   );
 }

@@ -356,23 +356,23 @@ function deploy_webapp() {
     ARM_SUBSCRIPTION_ID=$ARM_SUBSCRIPTION_ID \
     ARM_TENANT_ID=$ARM_TENANT_ID \
     ARM_USER_PRINCIPAL_NAME=$ARM_USER_PRINCIPAL_NAME \
-    WEBSITE_PORT=80
+    WEBSITE_PORT=80 >/dev/null 2>&1
 
   if [ $? -ne 0 ]; then
     err "Failed to add Application Settings"
 
-    # Deleting WebApp
-    # az webapp delete \
-    #   --name $WEBAPP_NAME \
-    #   --resource-group $RESOURCE_GROUP \
-    #   --subscription $ARM_SUBSCRIPTION_ID >/dev/null 2>&1
+    Deleting WebApp
+    az webapp delete \
+      --name $WEBAPP_NAME \
+      --resource-group $RESOURCE_GROUP \
+      --subscription $ARM_SUBSCRIPTION_ID >/dev/null 2>&1
 
-    # # Deleting App Service Plan
-    # az appservice plan delete \
-    #   --name $APP_SERVICE_PLAN_NAME \
-    #   --resource-group $RESOURCE_GROUP \
-    #   --subscription $ARM_SUBSCRIPTION_ID \
-    #   --yes >/dev/null 2>&1
+    # Deleting App Service Plan
+    az appservice plan delete \
+      --name $APP_SERVICE_PLAN_NAME \
+      --resource-group $RESOURCE_GROUP \
+      --subscription $ARM_SUBSCRIPTION_ID \
+      --yes >/dev/null 2>&1
     return 1
   fi
 
@@ -441,7 +441,7 @@ function get_secrets_from_keyvault() {
 # setting known variables.
 gap
 log "📝 setting variables"
-DOCKER_IMAGE="ashishvermapu:beta"
+DOCKER_IMAGE="ashishvermapu/repro:beta"
 RESOURCE_GROUP="repro-project"
 
 ARM_SUBSCRIPTION_ID=$(az account show --query id --output tsv)
