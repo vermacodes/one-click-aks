@@ -103,7 +103,9 @@ export default function TfWorkspace({
                         <>
                           {workspaces?.map(
                             (workspace) =>
-                              workspace.selected && <p>{workspace.name}</p>
+                              workspace.selected && (
+                                <p key={workspace.name}>{workspace.name}</p>
+                              )
                           )}
                         </>
                       )}

@@ -41,7 +41,7 @@ function confirm_subscription() {
 # If the resource group doesn't exist, create one
 function create_resource_group() {
   # Check if the resource group exists
-  RG_EXISTS=$(az group exists --name "${RESOURCE_GROUP} --output tsv")
+  RG_EXISTS=$(az group exists --name "${RESOURCE_GROUP}" --output tsv)
 
   if [[ "${RG_EXISTS}" == "true" ]]; then
     log "resource group ${RESOURCE_GROUP} already exists"
@@ -356,23 +356,23 @@ function deploy_webapp() {
     ARM_SUBSCRIPTION_ID=$ARM_SUBSCRIPTION_ID \
     ARM_TENANT_ID=$ARM_TENANT_ID \
     ARM_USER_PRINCIPAL_NAME=$ARM_USER_PRINCIPAL_NAME \
-    WEBSITE_PORT=80
+    WEBSITE_PORT=80 >/dev/null 2>&1
 
   if [ $? -ne 0 ]; then
     err "Failed to add Application Settings"
 
-    # Deleting WebApp
-    # az webapp delete \
-    #   --name $WEBAPP_NAME \
-    #   --resource-group $RESOURCE_GROUP \
-    #   --subscription $ARM_SUBSCRIPTION_ID >/dev/null 2>&1
+    Deleting WebApp
+    az webapp delete \
+      --name $WEBAPP_NAME \
+      --resource-group $RESOURCE_GROUP \
+      --subscription $ARM_SUBSCRIPTION_ID >/dev/null 2>&1
 
-    # # Deleting App Service Plan
-    # az appservice plan delete \
-    #   --name $APP_SERVICE_PLAN_NAME \
-    #   --resource-group $RESOURCE_GROUP \
-    #   --subscription $ARM_SUBSCRIPTION_ID \
-    #   --yes >/dev/null 2>&1
+    # Deleting App Service Plan
+    az appservice plan delete \
+      --name $APP_SERVICE_PLAN_NAME \
+      --resource-group $RESOURCE_GROUP \
+      --subscription $ARM_SUBSCRIPTION_ID \
+      --yes >/dev/null 2>&1
     return 1
   fi
 
@@ -544,7 +544,7 @@ log "Endpoint: https://$default_domain"
 # Verify the webapp is running
 # Use curl to verify the webapp is running; keep trying for 5 minutes, 10 seconds apart
 log "verifying webapp is running. this will take just a few moments. please wait..."
-curl --silent --fail --show-error --max-time 10 --retry 30 --retry-delay 10 https://$default_domain/status
+curl --silent --fail --show-error --max-time 10 --retry 30 --retry-delay 10 https://$default_domain/status >/dev/null 2>&1
 if [ $? -ne 0 ]; then
   err "Failed to verify webapp is running"
   exit 1

@@ -18,6 +18,7 @@ func NewActionStatusHanlder(r *gin.Engine, service entity.ActionStatusService) {
 
 	r.GET("/actionstatus", handler.GetActionStatus)
 	r.PUT("/actionstatus", handler.SetActionStatus)
+	r.GET("/terraformoperation/:id", handler.GetTerraformOperationStatus)
 }
 
 func (a *actionStatusHandler) GetActionStatus(c *gin.Context) {
@@ -39,4 +40,15 @@ func (a *actionStatusHandler) SetActionStatus(c *gin.Context) {
 
 	a.actionStatusService.SetActionStatus(actionStatus)
 	c.Status(http.StatusOK)
+}
+
+func (a *actionStatusHandler) GetTerraformOperationStatus(c *gin.Context) {
+	terraformOperationId := c.Param("id")
+	terraformOperation, err := a.actionStatusService.GetTerraformOperation(terraformOperationId)
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, terraformOperation)
 }

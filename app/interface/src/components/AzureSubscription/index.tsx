@@ -36,7 +36,9 @@ export default function AzureSubscription({
             ) : (
               <>
                 {accounts?.map((account) => (
-                  <>{account.isDefault === true && <p>{account.name}</p>}</>
+                  <div key={account.id}>
+                    {account.isDefault === true && <p>{account.name}</p>}
+                  </div>
                 ))}
               </>
             )}
@@ -54,7 +56,7 @@ export default function AzureSubscription({
             ) : (
               <>
                 {accounts?.map((account) => (
-                  <>
+                  <div key={account.id}>
                     {account.isDefault !== true && (
                       <div
                         className="items-center rounded p-2 hover:bg-sky-500 hover:text-slate-100"
@@ -63,7 +65,7 @@ export default function AzureSubscription({
                         {account.name}
                       </div>
                     )}
-                  </>
+                  </div>
                 ))}
               </>
             )}

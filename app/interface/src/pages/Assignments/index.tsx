@@ -26,7 +26,10 @@ export default function Assignments({}: Props) {
         <tbody>
           {assignments &&
             assignments.map((assignment) => (
-              <tr className="hover:bg-slate-100 hover:dark:bg-slate-800">
+              <tr
+                key={assignment.id}
+                className="hover:bg-slate-100 hover:dark:bg-slate-800"
+              >
                 <td className="space-x-2 px-4 py-2">{assignment.labName}</td>
                 <td className="space-x-2 px-4 py-2">{assignment.user}</td>
                 <td className="space-x-2 px-4 py-2">{assignment.status}</td>

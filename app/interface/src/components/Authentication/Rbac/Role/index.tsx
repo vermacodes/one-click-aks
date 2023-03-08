@@ -34,7 +34,10 @@ export default function Role({ roleRecord }: Props) {
       <div className="text-xl">{roleRecord.userPrincipal}</div>
       <div className="flex gap-x-2">
         {roleRecord.roles.map((role) => (
-          <div className="flex items-center justify-between gap-4 rounded bg-slate-200 py-1 px-4 dark:bg-slate-800">
+          <div
+            key={role}
+            className="flex items-center justify-between gap-4 rounded bg-slate-200 py-1 px-4 dark:bg-slate-800"
+          >
             <div className="text-lg">{role}</div>
             <button
               onClick={() => handleRemoveRole(roleRecord.userPrincipal, role)}

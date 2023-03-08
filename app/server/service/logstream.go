@@ -73,8 +73,6 @@ func (l *logStreamService) SetLogs(logStream entity.LogStream) error {
 
 func (l *logStreamService) GetLogs() (entity.LogStream, error) {
 
-	slog.Info("getting logs stream")
-
 	logStreamString, err := l.logStreamRepository.GetLogsFromRedis()
 	if err != nil {
 		slog.Error("not able to get logs from redis", err)

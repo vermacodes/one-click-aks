@@ -1,10 +1,20 @@
-import React from "react";
-import { FaPlane, FaRocket } from "react-icons/fa";
-import { ButtonVariant, Lab } from "../../../dataStructures";
-import { useActionStatus } from "../../../hooks/useActionStatus";
+import React, { useEffect } from "react";
+import { FaRocket } from "react-icons/fa";
+import {
+  ButtonVariant,
+  Lab,
+  TerraformOperation,
+} from "../../../dataStructures";
+import {
+  useActionStatus,
+  useGetTerraformOperation,
+} from "../../../hooks/useActionStatus";
 import { useEndStream, useSetLogs } from "../../../hooks/useLogs";
 import { usePreference } from "../../../hooks/usePreference";
-import { useApply, useExtend } from "../../../hooks/useTerraform";
+import {
+  useApplyAsync,
+  useApplyAsyncExtend,
+} from "../../../hooks/useTerraform";
 import Button from "../../Button";
 
 type Props = {
@@ -14,30 +24,88 @@ type Props = {
 };
 
 export default function ApplyButton({ variant, children, lab }: Props) {
+  const [terraformOperationState, setTerraformOperationState] =
+    React.useState<TerraformOperation>({
+      operationId: "",
+      operationStatus: "",
+      operationType: "",
+    });
+
+  const [labState, setLabState] = React.useState<Lab | undefined>(undefined);
+
   const { mutate: setLogs } = useSetLogs();
-  const { mutateAsync: applyAsync } = useApply();
-  const { mutateAsync: extendAsync } = useExtend();
+  const { mutateAsync: applyAsync } = useApplyAsync();
+  const { mutateAsync: applyAsyncExtend } = useApplyAsyncExtend();
   const { data: inProgress } = useActionStatus();
   const { data: preference } = usePreference();
+  const { data: terraformOperation } = useGetTerraformOperation(
+    terraformOperationState.operationId
+  );
 
   const { mutate: endLogStream } = useEndStream();
 
-  function onClickHandler() {
-    if (lab !== undefined) {
-      // Apply Preference
-      if (lab.template !== undefined && preference !== undefined) {
-        lab.template.resourceGroup.location = preference.azureRegion;
-      }
-
-      setLogs({ isStreaming: true, logs: "" });
-      applyAsync(lab).then((response) => {
-        if (response.status !== undefined) {
-          extendAsync(lab).then((response) => {
-            endLogStream();
+  useEffect(() => {
+    console.log("terraformOperationState", terraformOperationState);
+    if (terraformOperationState.operationType === "apply") {
+      if (terraformOperationState.operationStatus === "completed") {
+        labState &&
+          applyAsyncExtend(labState).then((response) => {
+            if (response.status !== undefined) {
+              setTerraformOperationState(response.data);
+            }
           });
-        }
-      });
+      } else if (terraformOperationState.operationStatus === "failed") {
+        setTerraformOperationState({
+          operationId: "",
+          operationStatus: "",
+          operationType: "",
+        });
+        endLogStream();
+      }
+    } else if (terraformOperationState.operationType === "extend") {
+      if (
+        terraformOperationState.operationStatus === "completed" ||
+        terraformOperationState.operationStatus === "failed"
+      ) {
+        setTerraformOperationState({
+          operationId: "",
+          operationStatus: "",
+          operationType: "",
+        });
+        endLogStream();
+      }
     }
+  }, [terraformOperationState]);
+
+  function onClickHandler() {
+    if (lab === undefined) {
+      return;
+    }
+    // update lab's azure region based on users preference
+    if (lab.template !== undefined && preference !== undefined) {
+      lab.template.resourceGroup.location = preference.azureRegion;
+    }
+
+    // update lab state
+    setLabState(lab);
+
+    // start streaming of logs.
+    setLogs({ isStreaming: true, logs: "" });
+
+    // apply terraform
+    applyAsync(lab).then(
+      (response) =>
+        response.status !== undefined &&
+        setTerraformOperationState(response.data)
+    );
+  }
+
+  if (
+    terraformOperation !== undefined &&
+    terraformOperation.operationStatus !==
+      terraformOperationState.operationStatus
+  ) {
+    setTerraformOperationState(terraformOperation);
   }
 
   return (

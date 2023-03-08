@@ -141,3 +141,84 @@ export function useDestroy() {
     },
   });
 }
+
+
+function applyAsync(lab: Lab) {
+  return axiosInstance.post("applyasync", lab);
+}
+
+export function useApplyAsync() {
+  const queryClient = useQueryClient();
+  return useMutation(applyAsync, {
+    onMutate: async () => {
+      await queryClient.cancelQueries("get-action-status");
+      setTimeout(() => {
+        queryClient.invalidateQueries("get-action-status");
+      }, 100);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries("list-terraform-workspaces");
+      queryClient.invalidateQueries("get-resources");
+    },
+  });
+}
+
+function applyAsyncExtend(lab: Lab) {
+  return axiosInstance.post("applyasync/extend", lab);
+}
+
+export function useApplyAsyncExtend() {
+  const queryClient = useQueryClient();
+  return useMutation(applyAsyncExtend, {
+    onMutate: async () => {
+      await queryClient.cancelQueries("get-action-status");
+      setTimeout(() => {
+        queryClient.invalidateQueries("get-action-status");
+      }, 100);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries("list-terraform-workspaces");
+      queryClient.invalidateQueries("get-resources");
+    },
+  });
+}
+
+function destroyAsync(lab: Lab) {
+  return axiosInstance.post("destroyasync", lab);
+}
+
+export function useDestroyAsync() {
+  const queryClient = useQueryClient();
+  return useMutation(destroyAsync, {
+    onMutate: async () => {
+      await queryClient.cancelQueries("get-action-status");
+      setTimeout(() => {
+        queryClient.invalidateQueries("get-action-status");
+      }, 100);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries("list-terraform-workspaces");
+      queryClient.invalidateQueries("get-resources");
+    },
+  });
+}
+
+function destroyAsyncExtend(lab: Lab) {
+  return axiosInstance.post("destroyasync/extend", lab);
+}
+
+export function useDestroyAsyncExtend() {
+  const queryClient = useQueryClient();
+  return useMutation(destroyAsyncExtend, {
+    onMutate: async () => {
+      await queryClient.cancelQueries("get-action-status");
+      setTimeout(() => {
+        queryClient.invalidateQueries("get-action-status");
+      }, 100);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries("list-terraform-workspaces");
+      queryClient.invalidateQueries("get-resources");
+    },
+  });
+}
