@@ -20,7 +20,6 @@ export default function LoginButton({}: Props) {
 
   useEffect(() => {
     if (tokenAcquired || accessToken !== "") {
-      console.log("Getting Graph Data Inner");
       getGraphData();
       getProfilePhoto();
     }
@@ -35,10 +34,7 @@ export default function LoginButton({}: Props) {
       if (response.ok) {
         response.json().then((data) => {
           setGraphResponse(data);
-          console.log("Graph Data -> ", data);
         });
-      } else {
-        console.log(response);
       }
     });
   }
@@ -53,8 +49,6 @@ export default function LoginButton({}: Props) {
         response.blob().then((data) => {
           setProfilePhotoUrl(URL.createObjectURL(data));
         });
-      } else {
-        console.log(response);
       }
     });
   }
