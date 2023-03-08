@@ -441,7 +441,7 @@ function get_secrets_from_keyvault() {
 # setting known variables.
 gap
 log "📝 setting variables"
-DOCKER_IMAGE="ashishvermapu/repro:beta"
+DOCKER_IMAGE="ashishvermapu/repro"
 RESOURCE_GROUP="repro-project"
 
 ARM_SUBSCRIPTION_ID=$(az account show --query id --output tsv)
@@ -544,7 +544,7 @@ log "Endpoint: https://$default_domain"
 # Verify the webapp is running
 # Use curl to verify the webapp is running; keep trying for 5 minutes, 10 seconds apart
 log "verifying webapp is running. this will take just a few moments. please wait..."
-curl --silent --fail --show-error --max-time 10 --retry 30 --retry-delay 10 https://$default_domain/status
+curl --silent --fail --show-error --max-time 10 --retry 30 --retry-delay 10 https://$default_domain/status >/dev/null 2>&1
 if [ $? -ne 0 ]; then
   err "Failed to verify webapp is running"
   exit 1
