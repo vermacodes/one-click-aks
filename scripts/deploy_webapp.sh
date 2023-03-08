@@ -358,17 +358,17 @@ function deploy_webapp() {
     err "Failed to add Application Settings"
 
     # Deleting WebApp
-    az webapp delete \
-      --name $WEBAPP_NAME \
-      --resource-group $RESOURCE_GROUP \
-      --subscription $ARM_SUBSCRIPTION_ID >/dev/null 2>&1
+    # az webapp delete \
+    #   --name $WEBAPP_NAME \
+    #   --resource-group $RESOURCE_GROUP \
+    #   --subscription $ARM_SUBSCRIPTION_ID >/dev/null 2>&1
 
-    # Deleting App Service Plan
-    az appservice plan delete \
-      --name $APP_SERVICE_PLAN_NAME \
-      --resource-group $RESOURCE_GROUP \
-      --subscription $ARM_SUBSCRIPTION_ID \
-      --yes >/dev/null 2>&1
+    # # Deleting App Service Plan
+    # az appservice plan delete \
+    #   --name $APP_SERVICE_PLAN_NAME \
+    #   --resource-group $RESOURCE_GROUP \
+    #   --subscription $ARM_SUBSCRIPTION_ID \
+    #   --yes >/dev/null 2>&1
     return 1
   fi
 
