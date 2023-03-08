@@ -130,8 +130,8 @@ function create_keyvault() {
     fi
 
     # Give the current user full access to secrets in the key vault
-    log "granting full access to secrets in key vault ${KEY_VAULT_NAME} to user ${USER_NAME}"
-    az keyvault set-policy --name "${KEY_VAULT_NAME}" --resource-group "${RESOURCE_GROUP}" --upn "${USER_NAME}" --secret-permissions get set list delete backup restore recover purge
+    log "granting full access to secrets in key vault ${KEY_VAULT_NAME} to user ${ARM_USER_PRINCIPAL_NAME}"
+    az keyvault set-policy --name "${KEY_VAULT_NAME}" --resource-group "${RESOURCE_GROUP}" --upn "${ARM_USER_PRINCIPAL_NAME}" --secret-permissions get set list delete backup restore recover purge
     if [ $? -ne 0 ]; then
       err "failed to set policy for key vault ${KEY_VAULT_NAME}"
       return 1
@@ -160,7 +160,7 @@ function create_service_principal() {
 
   if [[ -n "${ID_SECRET}" && -n "${SECRET_SECRET}" ]]; then
     log "secrets arm-client-id and arm-client-secret already exist in key vault ${KEY_VAULT_NAME}"
-    log "to reset the credentials, delete the secrets from the key vault and run this script again"
+    log "to reset the credentials, delete the key vault and run this script again"
     return 0
   fi
 
