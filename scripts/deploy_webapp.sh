@@ -351,7 +351,7 @@ function deploy_webapp() {
     ARM_SUBSCRIPTION_ID=$ARM_SUBSCRIPTION_ID \
     ARM_TENANT_ID=$ARM_TENANT_ID \
     ARM_USER_PRINCIPAL_NAME=$ARM_USER_PRINCIPAL_NAME \
-    WEBSITE_PORT=80 >/dev/null 2>&1
+    WEBSITE_PORT=80
 
   if [ $? -ne 0 ]; then
     err "Failed to add Application Settings"
