@@ -182,3 +182,43 @@ export function useApplyAsyncExtend() {
     },
   });
 }
+
+function destroyAsync(lab: Lab) {
+  return axiosInstance.post("destroyasync", lab);
+}
+
+export function useDestroyAsync() {
+  const queryClient = useQueryClient();
+  return useMutation(destroyAsync, {
+    onMutate: async () => {
+      await queryClient.cancelQueries("get-action-status");
+      setTimeout(() => {
+        queryClient.invalidateQueries("get-action-status");
+      }, 100);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries("list-terraform-workspaces");
+      queryClient.invalidateQueries("get-resources");
+    },
+  });
+}
+
+function destroyAsyncExtend(lab: Lab) {
+  return axiosInstance.post("destroyasync/extend", lab);
+}
+
+export function useDestroyAsyncExtend() {
+  const queryClient = useQueryClient();
+  return useMutation(destroyAsyncExtend, {
+    onMutate: async () => {
+      await queryClient.cancelQueries("get-action-status");
+      setTimeout(() => {
+        queryClient.invalidateQueries("get-action-status");
+      }, 100);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries("list-terraform-workspaces");
+      queryClient.invalidateQueries("get-resources");
+    },
+  });
+}

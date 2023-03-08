@@ -21,9 +21,11 @@ func NewTerraformHandler(r *gin.RouterGroup, service entity.TerraformService) {
 	r.POST("/apply", handler.Apply)
 	r.POST("/applyasync", handler.ApplyAsync)
 	r.POST("/destroy", handler.Destroy)
+	r.POST("/destroyasync", handler.DestroyAsync)
 	r.POST("/apply/extend", handler.ApplyExtend)
 	r.POST("/applyasync/extend", handler.ApplyAsyncExtend)
 	r.POST("/destroy/extend", handler.DestroyExtend)
+	r.POST("/destroyasync/extend", handler.DestroyAsyncExtend)
 	r.POST("/validate", handler.Validate)
 }
 
@@ -122,7 +124,7 @@ func (t *terraformHandler) ApplyAsyncExtend(c *gin.Context) {
 		return
 	}
 
-	terraformOperation, err := t.terraformService.ApplyAsyncExtend(lab, "apply")
+	terraformOperation, err := t.terraformService.ExtendAsync(lab, "apply")
 	if err != nil {
 		c.Status(http.StatusInternalServerError)
 		return
@@ -167,6 +169,38 @@ func (t *terraformHandler) Destroy(c *gin.Context) {
 	w.(http.Flusher).Flush()
 
 	t.terraformService.Destroy(lab)
+}
+
+func (t *terraformHandler) DestroyAsync(c *gin.Context) {
+	lab := entity.LabType{}
+	if err := c.Bind(&lab); err != nil {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	terraformOperation, err := t.terraformService.DestroyAsync(lab)
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.IndentedJSON(http.StatusAccepted, terraformOperation)
+}
+
+func (t *terraformHandler) DestroyAsyncExtend(c *gin.Context) {
+	lab := entity.LabType{}
+	if err := c.Bind(&lab); err != nil {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	terraformOperation, err := t.terraformService.ExtendAsync(lab, "destroy")
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.IndentedJSON(http.StatusAccepted, terraformOperation)
 }
 
 func (t *terraformHandler) Validate(c *gin.Context) {

@@ -93,7 +93,6 @@ func (t *terraformService) Apply(lab entity.LabType) error {
 
 	return helperTerraformAction(t, lab.Template, "apply")
 
-	//TODO : Extenstion script
 }
 
 func (t *terraformService) ApplyAsync(lab entity.LabType) (entity.TerraformOperation, error) {
@@ -110,23 +109,22 @@ func (t *terraformService) ApplyAsync(lab entity.LabType) (entity.TerraformOpera
 	}
 
 	// Go routine to apply.
-	go func() error {
+	go func() {
 		if err := t.Apply(lab); err != nil {
 			slog.Error("not able to apply", err)
 			terraformOperation.OperationStatus = "failed"
 			if err := t.actionStatusService.SetTerraformOperation(terraformOperation); err != nil {
 				slog.Error("not able to update terraform operation", err)
-				return err
 			}
+			return
 		}
 
 		terraformOperation.OperationStatus = "completed"
+		slog.Info("terraform operation completed")
 		if err := t.actionStatusService.SetTerraformOperation(terraformOperation); err != nil {
 			slog.Error("not able to update terraform operation", err)
-			return err
 		}
 
-		return nil
 	}()
 
 	return terraformOperation, nil
@@ -151,10 +149,10 @@ func (t *terraformService) Extend(lab entity.LabType, mode string) error {
 	return helperExecuteScript(t, lab.ExtendScript, mode)
 }
 
-func (t *terraformService) ApplyAsyncExtend(lab entity.LabType, mode string) (entity.TerraformOperation, error) {
+func (t *terraformService) ExtendAsync(lab entity.LabType, mode string) (entity.TerraformOperation, error) {
 	terraformOperation := entity.TerraformOperation{
 		OperationId:     helper.Generate(32),
-		OperationType:   "applyextend",
+		OperationType:   "extend",
 		OperationStatus: "inprogress",
 	}
 
@@ -164,23 +162,20 @@ func (t *terraformService) ApplyAsyncExtend(lab entity.LabType, mode string) (en
 	}
 
 	// Go routine to apply extend.
-	go func() error {
+	go func() {
 		if err := t.Extend(lab, mode); err != nil {
-			slog.Error("not able to apply", err)
+			slog.Error("not able to run extend script", err)
 			terraformOperation.OperationStatus = "failed"
 			if err := t.actionStatusService.SetTerraformOperation(terraformOperation); err != nil {
 				slog.Error("not able to update terraform operation", err)
-				return err
 			}
+			return
 		}
 
 		terraformOperation.OperationStatus = "completed"
 		if err := t.actionStatusService.SetTerraformOperation(terraformOperation); err != nil {
 			slog.Error("not able to update terraform operation", err)
-			return err
 		}
-
-		return nil
 	}()
 
 	return terraformOperation, nil
@@ -194,6 +189,39 @@ func (t *terraformService) Destroy(lab entity.LabType) error {
 	}
 
 	return helperTerraformAction(t, lab.Template, "destroy")
+}
+
+func (t *terraformService) DestroyAsync(lab entity.LabType) (entity.TerraformOperation, error) {
+	terraformOperation := entity.TerraformOperation{
+		OperationId:     helper.Generate(32),
+		OperationType:   "destroy",
+		OperationStatus: "inprogress",
+	}
+
+	if err := t.actionStatusService.SetTerraformOperation(terraformOperation); err != nil {
+		slog.Error("not able to set terraform operation", err)
+		return terraformOperation, err
+	}
+
+	// Go routine to destroy.
+	go func() {
+		if err := t.Destroy(lab); err != nil {
+			slog.Error("not able to destroy", err)
+			terraformOperation.OperationStatus = "failed"
+			if err := t.actionStatusService.SetTerraformOperation(terraformOperation); err != nil {
+				slog.Error("not able to update terraform operation", err)
+			}
+			return
+		}
+
+		terraformOperation.OperationStatus = "completed"
+		if err := t.actionStatusService.SetTerraformOperation(terraformOperation); err != nil {
+			slog.Error("not able to update terraform operation", err)
+		}
+
+	}()
+
+	return terraformOperation, nil
 }
 
 func helperTerraformAction(t *terraformService, tfvar entity.TfvarConfigType, action string) error {
@@ -267,6 +295,8 @@ func helperTerraformAction(t *terraformService, tfvar entity.TfvarConfigType, ac
 
 	actionStaus.InProgress = false
 	t.actionStatusService.SetActionStatus(actionStaus)
+
+	slog.Error("Error", err)
 
 	return err
 }

@@ -45,6 +45,7 @@ export default function ApplyButton({ variant, children, lab }: Props) {
   const { mutate: endLogStream } = useEndStream();
 
   useEffect(() => {
+    console.log("terraformOperationState", terraformOperationState);
     if (terraformOperationState.operationType === "apply") {
       if (terraformOperationState.operationStatus === "completed") {
         labState &&
@@ -54,9 +55,14 @@ export default function ApplyButton({ variant, children, lab }: Props) {
             }
           });
       } else if (terraformOperationState.operationStatus === "failed") {
+        setTerraformOperationState({
+          operationId: "",
+          operationStatus: "",
+          operationType: "",
+        });
         endLogStream();
       }
-    } else if (terraformOperationState.operationType === "applyextend") {
+    } else if (terraformOperationState.operationType === "extend") {
       if (
         terraformOperationState.operationStatus === "completed" ||
         terraformOperationState.operationStatus === "failed"
@@ -72,25 +78,26 @@ export default function ApplyButton({ variant, children, lab }: Props) {
   }, [terraformOperationState]);
 
   function onClickHandler() {
-    if (lab !== undefined) {
-      // update lab's azure region based on users preference
-      if (lab.template !== undefined && preference !== undefined) {
-        lab.template.resourceGroup.location = preference.azureRegion;
-      }
-
-      // update lab state
-      setLabState(lab);
-
-      // start streaming of logs.
-      setLogs({ isStreaming: true, logs: "" });
-
-      // apply terraform
-      applyAsync(lab).then((response) => {
-        if (response.status !== undefined) {
-          setTerraformOperationState(response.data);
-        }
-      });
+    if (lab === undefined) {
+      return;
     }
+    // update lab's azure region based on users preference
+    if (lab.template !== undefined && preference !== undefined) {
+      lab.template.resourceGroup.location = preference.azureRegion;
+    }
+
+    // update lab state
+    setLabState(lab);
+
+    // start streaming of logs.
+    setLogs({ isStreaming: true, logs: "" });
+
+    // apply terraform
+    applyAsync(lab).then(
+      (response) =>
+        response.status !== undefined &&
+        setTerraformOperationState(response.data)
+    );
   }
 
   if (
