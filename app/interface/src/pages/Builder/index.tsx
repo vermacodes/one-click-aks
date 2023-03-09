@@ -8,13 +8,27 @@ import ServerError from "../ServerError";
 export default function Builder() {
   const { data: serverStatus } = useServerStatus();
   const { data: lab } = useLab();
-  
+
   if (serverStatus?.status !== "OK") {
     return <ServerError />;
   }
 
+  if (lab === undefined || lab === null) {
+    return (
+      <PageLayout heading="Lab Builder">
+        <p className="text-4xl">Loading...</p>
+      </PageLayout>
+    );
+  }
+
   return (
-    <PageLayout heading={lab && lab.name !== "" ? "Lab Builder - " + lab.name : "Lab Builder - New Lab"}>
+    <PageLayout
+      heading={
+        lab && lab.name !== ""
+          ? "Lab Builder - " + lab.name
+          : "Lab Builder - New Lab"
+      }
+    >
       <Tfvar />
       <Terminal />
     </PageLayout>
