@@ -196,13 +196,13 @@ function create_service_principal() {
 
   # Set the service principal credentials as secrets in the key vault
   log "setting secrets arm-client-id and arm-client-secret in key vault ${KEY_VAULT_NAME}"
-  az keyvault secret set --name "arm-client-id" --vault-name "${KEY_VAULT_NAME}" --value "${SP_APP_ID} --output none"
+  az keyvault secret set --name "arm-client-id" --vault-name "${KEY_VAULT_NAME}" --value "${SP_APP_ID}" --output none
   if [ $? -ne 0 ]; then
     err "failed to set secret arm-client-id in key vault ${KEY_VAULT_NAME}"
     return 1
   fi
 
-  az keyvault secret set --name "arm-client-secret" --vault-name "${KEY_VAULT_NAME}" --value "${SP_PASSWORD} --output none"
+  az keyvault secret set --name "arm-client-secret" --vault-name "${KEY_VAULT_NAME}" --value "${SP_PASSWORD}" --output none
   if [ $? -ne 0 ]; then
     err "failed to set secret arm-client-secret in key vault ${KEY_VAULT_NAME}"
     return 1
@@ -275,7 +275,7 @@ function deploy_webapp() {
       return 1
     fi
 
-    log "please wait..."
+    log "Please wait..."
 
     # Loop until webapp is deleted
     while true; do
