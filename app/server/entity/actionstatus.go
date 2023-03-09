@@ -8,6 +8,9 @@ type TerraformOperation struct {
 	OperationId     string `json:"operationId"`
 	OperationType   string `json:"operationType"`
 	OperationStatus string `json:"operationStatus"`
+	LabId           string `json:"labId"`
+	LabName         string `json:"labName"`
+	LabType         string `json:"labType"`
 }
 
 type ActionStatusService interface {

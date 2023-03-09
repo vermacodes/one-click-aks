@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { RoleMutation, Roles } from "../dataStructures";
+import { RoleMutation, Roles, TerraformOperation } from "../dataStructures";
 import { authAxiosInstance } from "../utils/axios-interceptors";
 
 function getRoles(userPrincipal: string | undefined): Promise<Roles> {
@@ -81,5 +81,17 @@ export function useAddDefaultRoles() {
       queryClient.invalidateQueries("allRoles");
       queryClient.invalidateQueries("myRoles");
     },
+  });
+}
+
+function operationRecord(operationRecord: TerraformOperation) {
+  return authAxiosInstance.post(`logging/operation`, operationRecord)
+}
+
+export function useOperationRecord() {
+  return useMutation(operationRecord, {
+    onSuccess: () => {
+      console.log("Operation logged")
+    }
   });
 }

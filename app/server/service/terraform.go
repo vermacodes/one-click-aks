@@ -101,6 +101,9 @@ func (t *terraformService) ApplyAsync(lab entity.LabType) (entity.TerraformOpera
 		OperationId:     helper.Generate(32),
 		OperationType:   "apply",
 		OperationStatus: "inprogress",
+		LabId:           lab.Id,
+		LabName:         lab.Name,
+		LabType:         lab.Type,
 	}
 
 	if err := t.actionStatusService.SetTerraformOperation(terraformOperation); err != nil {
@@ -154,6 +157,9 @@ func (t *terraformService) ExtendAsync(lab entity.LabType, mode string) (entity.
 		OperationId:     helper.Generate(32),
 		OperationType:   "extend",
 		OperationStatus: "inprogress",
+		LabId:           lab.Id,
+		LabName:         lab.Name,
+		LabType:         lab.Type,
 	}
 
 	if err := t.actionStatusService.SetTerraformOperation(terraformOperation); err != nil {
@@ -196,6 +202,9 @@ func (t *terraformService) DestroyAsync(lab entity.LabType) (entity.TerraformOpe
 		OperationId:     helper.Generate(32),
 		OperationType:   "destroy",
 		OperationStatus: "inprogress",
+		LabId:           lab.Id,
+		LabName:         lab.Name,
+		LabType:         lab.Type,
 	}
 
 	if err := t.actionStatusService.SetTerraformOperation(terraformOperation); err != nil {

@@ -9,6 +9,7 @@ import {
   useActionStatus,
   useGetTerraformOperation,
 } from "../../../hooks/useActionStatus";
+import { useOperationRecord } from "../../../hooks/useAuth";
 import { useEndStream, useSetLogs } from "../../../hooks/useLogs";
 import { usePreference } from "../../../hooks/usePreference";
 import {
@@ -37,6 +38,9 @@ export default function DestroyButton({
       operationId: "",
       operationStatus: "",
       operationType: "",
+      labId: "",
+      labName: "",
+      labType: "",
     });
 
   const [labState, setLabState] = React.useState<Lab | undefined>(undefined);
@@ -50,9 +54,9 @@ export default function DestroyButton({
   const { data: terraformOperation } = useGetTerraformOperation(
     terraformOperationState.operationId
   );
+  const { mutate: operationRecord } = useOperationRecord();
 
   useEffect(() => {
-    console.log(terraformOperationState);
     if (terraformOperationState.operationType === "extend") {
       if (terraformOperationState.operationStatus === "completed") {
         labState &&
@@ -73,9 +77,17 @@ export default function DestroyButton({
           operationId: "",
           operationStatus: "",
           operationType: "",
+          labId: "",
+          labName: "",
+          labType: "",
         });
         endLogStream();
       }
+    }
+
+    // Logging
+    if (terraformOperationState.operationId !== "") {
+      operationRecord(terraformOperationState);
     }
   }, [terraformOperationState]);
 

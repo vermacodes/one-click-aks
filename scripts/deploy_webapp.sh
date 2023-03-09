@@ -313,25 +313,25 @@ function deploy_webapp() {
     --plan $APP_SERVICE_PLAN_NAME \
     --deployment-container-image-name $DOCKER_IMAGE >/dev/null 2>&1
 
-  sleep 30s
+  # sleep 30s
 
-  # if this fails then try for 2 more times in loop
-  for i in {1..5}; do
-    if [ $? -ne 0 ]; then
-      log "Failed to deploy WebApp, trying again"
-      az webapp create \
-        --name $WEBAPP_NAME \
-        --resource-group $RESOURCE_GROUP \
-        --subscription $ARM_SUBSCRIPTION_ID \
-        --plan $APP_SERVICE_PLAN_NAME \
-        --deployment-container-image-name $DOCKER_IMAGE >/dev/null 2>&1
+  # # if this fails then try for 2 more times in loop
+  # for i in {1..5}; do
+  #   if [ $? -ne 0 ]; then
+  #     log "Failed to deploy WebApp, trying again"
+  #     az webapp create \
+  #       --name $WEBAPP_NAME \
+  #       --resource-group $RESOURCE_GROUP \
+  #       --subscription $ARM_SUBSCRIPTION_ID \
+  #       --plan $APP_SERVICE_PLAN_NAME \
+  #       --deployment-container-image-name $DOCKER_IMAGE >/dev/null 2>&1
 
-      sleep 30s
-    else
-      log "WebApp deployed successfully"
-      break
-    fi
-  done
+  #     sleep 30s
+  #   else
+  #     log "WebApp deployed successfully"
+  #     break
+  #   fi
+  # done
 
   if [ $? -ne 0 ]; then
     err "Failed to deploy WebApp"
@@ -356,7 +356,7 @@ function deploy_webapp() {
     ARM_SUBSCRIPTION_ID=$ARM_SUBSCRIPTION_ID \
     ARM_TENANT_ID=$ARM_TENANT_ID \
     ARM_USER_PRINCIPAL_NAME=$ARM_USER_PRINCIPAL_NAME \
-    WEBSITE_PORT=80 >/dev/null 2>&1
+    WEBSITES_PORT=80 >/dev/null 2>&1
 
   if [ $? -ne 0 ]; then
     err "Failed to add Application Settings"

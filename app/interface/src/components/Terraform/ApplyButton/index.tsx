@@ -9,6 +9,7 @@ import {
   useActionStatus,
   useGetTerraformOperation,
 } from "../../../hooks/useActionStatus";
+import { useOperationRecord } from "../../../hooks/useAuth";
 import { useEndStream, useSetLogs } from "../../../hooks/useLogs";
 import { usePreference } from "../../../hooks/usePreference";
 import {
@@ -29,6 +30,9 @@ export default function ApplyButton({ variant, children, lab }: Props) {
       operationId: "",
       operationStatus: "",
       operationType: "",
+      labId: "",
+      labName: "",
+      labType: "",
     });
 
   const [labState, setLabState] = React.useState<Lab | undefined>(undefined);
@@ -41,11 +45,10 @@ export default function ApplyButton({ variant, children, lab }: Props) {
   const { data: terraformOperation } = useGetTerraformOperation(
     terraformOperationState.operationId
   );
-
+  const { mutate: operationRecord } = useOperationRecord();
   const { mutate: endLogStream } = useEndStream();
 
   useEffect(() => {
-    console.log("terraformOperationState", terraformOperationState);
     if (terraformOperationState.operationType === "apply") {
       if (terraformOperationState.operationStatus === "completed") {
         labState &&
@@ -59,6 +62,9 @@ export default function ApplyButton({ variant, children, lab }: Props) {
           operationId: "",
           operationStatus: "",
           operationType: "",
+          labId: "",
+          labName: "",
+          labType: "",
         });
         endLogStream();
       }
@@ -71,9 +77,17 @@ export default function ApplyButton({ variant, children, lab }: Props) {
           operationId: "",
           operationStatus: "",
           operationType: "",
+          labId: "",
+          labName: "",
+          labType: "",
         });
         endLogStream();
       }
+    }
+
+    // Logging
+    if (terraformOperationState.operationId !== "") {
+      operationRecord(terraformOperationState);
     }
   }, [terraformOperationState]);
 

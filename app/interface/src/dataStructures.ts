@@ -281,4 +281,7 @@ export type TerraformOperation = {
   operationId: string;
   operationType: string;
   operationStatus: "inprogress" | "failed" | "completed" | "";
+  labId: string;
+  labName: string;
+  labType: string;
 }
