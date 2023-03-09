@@ -361,7 +361,7 @@ function deploy_webapp() {
   if [ $? -ne 0 ]; then
     err "Failed to add Application Settings"
 
-    Deleting WebApp
+    # Deleting WebApp
     az webapp delete \
       --name $WEBAPP_NAME \
       --resource-group $RESOURCE_GROUP \
