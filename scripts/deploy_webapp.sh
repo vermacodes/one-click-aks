@@ -109,10 +109,10 @@ function create_storage_account() {
 # and give the current user full access to secrets in the key vault
 function create_keyvault() {
   # Check if the key vault exists in the resource group
-  KV_EXISTS=$(az keyvault list --resource-group "${RESOURCE_GROUP}" --query "[].name" -o tsv)
+  KEY_VAULT_NAME=$(az keyvault list --resource-group "${RESOURCE_GROUP}" --query "[].name" -o tsv)
 
-  if [[ -n "${KV_EXISTS}" ]]; then
-    log "key vault already exists with name ${KV_EXISTS}"
+  if [[ -n "${KEY_VAULT_NAME}" ]]; then
+    log "key vault already exists with name ${KEY_VAULT_NAME}"
 
     ID_SECRET=$(az keyvault secret show --name "arm-client-id" --vault-name "${KEY_VAULT_NAME}" --query "value" -o tsv)
 
