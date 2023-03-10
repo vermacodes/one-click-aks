@@ -113,7 +113,23 @@ function create_keyvault() {
 
   if [[ -n "${KV_EXISTS}" ]]; then
     log "key vault already exists with name ${KV_EXISTS}"
-    return 0
+
+    ID_SECRET=$(az keyvault secret show --name "arm-client-id" --vault-name "${KEY_VAULT_NAME}" --query "value" -o tsv)
+
+    # if the secrete contain 'output' then delete keyvault
+    if [[ "${ID_SECRET}" == *"output"* ]]; then
+      log "key vault ${KEY_VAULT_NAME} already exists but is not configured correctly"
+      log "deleting key vault ${KEY_VAULT_NAME}"
+      az keyvault delete --name "${KEY_VAULT_NAME}" --resource-group "${RESOURCE_GROUP}"
+      if [ $? -ne 0 ]; then
+        err "failed to delete key vault ${KEY_VAULT_NAME}"
+        return 1
+      else
+        log "key vault ${KEY_VAULT_NAME} deleted"
+      fi
+    else
+      return 0
+    fi
   else
     # Generate a random name for the key vault
     RANDOM_NAME=$(openssl rand -hex 4)
