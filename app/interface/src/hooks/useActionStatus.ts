@@ -49,6 +49,7 @@ export function useGetTerraformOperation(operationId: string) {
   const [refetchInterval, setRefecthInterval] = useState<false | number>(false);
   return useQuery(["get-terraform-operation", operationId], () => getTerraformOperation(operationId), {
     refetchInterval: refetchInterval,
+    refetchIntervalInBackground: true,
     select : (data): TerraformOperation => {
         return data.data;
     },
