@@ -336,6 +336,9 @@ docker rm -f actlabs
 
 # Start docker container and set environment variables
 log "starting docker container"
-docker run --pull=always -d --restart unless-stopped -it -e ARM_CLIENT_ID -e ARM_CLIENT_SECRET -e ARM_SUBSCRIPTION_ID -e ARM_TENANT_ID -e ARM_USER_PRINCIPAL_NAME --name actlabs -p 8880:80 ashishvermapu/repro
-
+docker run --pull=always -d --restart unless-stopped -it -e ARM_CLIENT_ID -e ARM_CLIENT_SECRET -e ARM_SUBSCRIPTION_ID -e ARM_TENANT_ID -e ARM_USER_PRINCIPAL_NAME --name actlabs -p 8880:80 -v ${HOME}/.azure:/root/.azure ashishvermapu/repro
+if [ $? -ne 0 ]; then
+    err "Failed to start docker container"
+    exit 1
+fi
 ok "All done! You can now access the application at https://actlabs.azureedge.net/"
