@@ -4,7 +4,8 @@ import { MdDoneOutline, MdOutlineContentCopy } from "react-icons/md";
 type Props = {};
 
 export default function DeployWebAppCommand({}: Props) {
-  const bashCommand = "curl -o actlab.sh -sLO https://aka.ms/ACTLabsWebAppDeploy; chmod +x actlab.sh; ./actlab.sh; rm actlab.sh";
+  const bashCommand =
+    "curl -o actlab.sh -sLO https://aka.ms/ACTLabsWebAppDeploy; chmod +x actlab.sh; ./actlab.sh; rm actlab.sh";
   const powershellCommand = "Please help us create powershell command.";
 
   const [copy, setCopy] = useState<boolean>(false);
@@ -16,14 +17,14 @@ export default function DeployWebAppCommand({}: Props) {
     setCopy(true);
     setTimeout(() => {
       setCopy(false);
-    }, 3000);
+    }, 2000);
   }
 
   return (
     <div
-      className={`flex w-full flex-col gap-4 rounded border border-slate-300 bg-slate-900 text-slate-50 dark:border-slate-700 dark:bg-slate-900 ${
+      className={`flex w-full flex-col gap-4 rounded border-slate-300 bg-slate-900 text-slate-50 dark:border-slate-700 dark:bg-slate-900 ${
         copy
-          ? "border-green-500 bg-green-200 dark:bg-green-700"
+          ? "border-green-500 bg-green-700 bg-opacity-80 dark:bg-green-700"
           : "border-slate-400 dark:border-slate-600"
       }`}
     >

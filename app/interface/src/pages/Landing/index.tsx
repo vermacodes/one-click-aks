@@ -57,7 +57,8 @@ export default function Landing() {
               </div>
               <div>
                 <a
-                  href="/"
+                  href="https://actlabsdocs.z13.web.core.windows.net/docs/getting-started"
+                  target={"_blank"}
                   className="w-fit whitespace-nowrap rounded-full bg-slate-200 py-2 px-8 text-2xl text-blue-700 hover:bg-slate-300"
                 >
                   Get Started
@@ -121,15 +122,21 @@ export default function Landing() {
               </div>
             </div>
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-10">
             <h1 className="text-3xl">
               Already setup? Here are the commands to quick start and/or upgrade
               →
             </h1>
-            <h2 className="text-2xl">Docker</h2>
-            <StartCommand />
-            <h2 className="text-2xl">WebApp</h2>
-            <DeployWebAppCommand />
+            <div className="grid grid-cols-2 gap-4 text-slate-50">
+              <div className="to flex flex-col gap-4 rounded bg-gradient-to-r from-blue-600 to-purple-600 p-4 pb-10">
+                <h2 className="text-2xl">Docker</h2>
+                <StartCommand />
+              </div>
+              <div className="to flex flex-col gap-4 rounded bg-gradient-to-r from-sky-600 to-emerald-600 p-4 pb-10">
+                <h2 className="text-2xl">WebApp</h2>
+                <DeployWebAppCommand />
+              </div>
+            </div>
           </div>
         </div>
         {/* <div className="flex h-screen min-w-full flex-col gap-4">
