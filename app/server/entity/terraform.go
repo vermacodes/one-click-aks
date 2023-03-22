@@ -20,12 +20,12 @@ type TerraformService interface {
 	// This is async and doesnt stream logs.
 	ApplyAsync(LabType) (TerraformOperation, error)
 
-	// Executes shell script to run extention of infra.
+	// Executes shell script to run extension of infra.
 	// runs against selected workspace. This doesnt send any response body
 	// and logs are streamed.
 	Extend(LabType, string) error
 
-	// Executes shell script to run extention of infra.
+	// Executes shell script to run extension of infra.
 	// runs against selected workspace. This is async and doesnt stream logs.
 	ExtendAsync(LabType, string) (TerraformOperation, error)
 

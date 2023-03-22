@@ -81,7 +81,7 @@ export default function Tfvar() {
         <DestroyButton variant="danger-text" lab={lab}>
           Destroy
         </DestroyButton>
-        <CodeEditor variant="secondary-text">Extention</CodeEditor>
+        <CodeEditor variant="secondary-text">Extension</CodeEditor>
         <LabBuilder variant="secondary-text">Save</LabBuilder>
         <Button
           variant="secondary-text"
@@ -96,7 +96,7 @@ export default function Tfvar() {
           Reset
         </Button>
         <ExportLabInBuilder variant="secondary-text">
-          Downlaod
+          Download
         </ExportLabInBuilder>
         <ImportLabToBuilder />
       </div>
