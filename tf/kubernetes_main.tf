@@ -24,6 +24,13 @@ resource "azurerm_role_assignment" "identity_operator" {
   role_definition_name = "Managed Identity Operator"
 }
 
+resource "azurerm_role_assignment" "network_contributor" {
+  count                = var.kubernetes_clusters == null ? 0 : length(var.kubernetes_clusters)
+  principal_id         = azurerm_user_assigned_identity.ccp_identity[count.index].principal_id
+  scope                = azurerm_resource_group.this.id
+  role_definition_name = "Network Contributor"
+}
+
 resource "azurerm_kubernetes_cluster" "this" {
   count                   = var.kubernetes_clusters == null ? 0 : length(var.kubernetes_clusters)
   name                    = module.naming.kubernetes_cluster.name
