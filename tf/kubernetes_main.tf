@@ -102,9 +102,9 @@ resource "azurerm_role_assignment" "ingress_app_gateway_rg_reader" {
   role_definition_name = "Reader"
 }
 
-resource "azurerm_role_assignment" "ingress_app_gateway_contributor" {
+resource "azurerm_role_assignment" "ingress_app_gateway_network_contributor" {
   count                = var.kubernetes_clusters == null ? 0 : length(var.kubernetes_clusters) == 0 ? 0 : var.kubernetes_clusters[0].addons.app_gateway ? 1 : 0
   principal_id         = azurerm_kubernetes_cluster.this[count.index].ingress_application_gateway[count.index].ingress_application_gateway_identity[count.index].object_id
-  scope                = azurerm_kubernetes_cluster.this[count.index].ingress_application_gateway[count.index].effective_gateway_id
-  role_definition_name = "Contributor"
+  scope                = azurerm_resource_group.this.id
+  role_definition_name = "Network Contributor"
 }
