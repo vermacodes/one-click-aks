@@ -21,11 +21,11 @@ export default function KubernetesCluster() {
   // The default value that kubernetes cluster will carry.
   function defaultValue(): TfvarKubernetesClusterType {
     var defaultVersion = "";
-    kubernetesVersion?.orchestrators.forEach((o) => {
-      if (o.default) {
-        defaultVersion = o.orchestratorVersion;
-      }
-    });
+    if (kubernetesVersion && kubernetesVersion.values) {
+      defaultVersion = Object.keys(
+        kubernetesVersion.values[0].patchVersions
+      )[0];
+    }
 
     return {
       kubernetesVersion: defaultVersion,

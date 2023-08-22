@@ -204,11 +204,15 @@ export type Privildge = {
   isMentor: boolean;
 };
 
+// export type KubernetesOrchestrators = {
+//   id: string;
+//   name: string;
+//   orchestrators: Orchestrator[];
+//   type: string;
+// };
+
 export type KubernetesOrchestrators = {
-  id: string;
-  name: string;
-  orchestrators: Orchestrator[];
-  type: string;
+  values: Value[];
 };
 
 export type Orchestrator = {
@@ -228,6 +232,23 @@ export type Upgrade = {
   orchestratorType: OrchestratorType;
   orchestratorVersion: string;
 };
+
+type PatchVersions = {
+  [key: string]: {
+    upgrades: string[];
+  };
+};
+
+export type Capabilities = {
+	SupportPlan: string[]
+}
+
+export type Value = {
+	capabilities:  Capabilities;
+	isPreview: any;
+	patchVersions: PatchVersions;
+	version: string;
+}
 
 export type ServerStatus = {
   status: "" | "OK";

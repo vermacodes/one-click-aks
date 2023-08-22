@@ -11,7 +11,7 @@ type Orchestrator struct {
 	IsPreview           interface{} `json:"isPreview"`
 	OrchestratorType    string      `json:"orchestratorType"`
 	OrchestratorVersion string      `json:"orchestratorVersion"`
-	Upgrades            []Upgrade   `json:"upgrades"`
+	Upgrades            []string    `json:"upgrades"`
 }
 
 type KubernetesOrchestrator struct {
@@ -21,8 +21,27 @@ type KubernetesOrchestrator struct {
 	Type          string         `json:"type"`
 }
 
+type PatchVersions map[string]struct {
+	Upgrades []string `json:"upgrades"`
+}
+
+type Capabilities struct {
+	SupportPlan []string `json:"supportPlan"`
+}
+
+type Value struct {
+	Capabilities  Capabilities  `json:"capabilities"`
+	IsPreview     interface{}   `json:"isPreview"`
+	PatchVersions PatchVersions `json:"patchVersions"`
+	Version       string        `json:"version"`
+}
+
+type KubernetesVersions struct {
+	Values []Value `json:"values"`
+}
+
 type KVersionService interface {
-	GetOrchestrator() (KubernetesOrchestrator, error)
+	GetOrchestrator() (KubernetesVersions, error)
 	GetDefaultVersion() string
 }
 
