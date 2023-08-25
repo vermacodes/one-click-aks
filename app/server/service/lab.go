@@ -221,6 +221,7 @@ func helperDefaultLab(l *labService) (entity.LabType, error) {
 	var defaultAddons = entity.TfvarAddonsType{
 		AppGateway:        false,
 		MicrosoftDefender: false,
+		VirtualNode:       false,
 	}
 
 	var defaultKubernetesClusters = []entity.TfvarKubernetesClusterType{

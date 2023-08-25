@@ -30,6 +30,7 @@ export default function CustomVnet() {
           lab.template.firewalls = [];
           if (lab.template.kubernetesClusters.length > 0) {
             lab.template.kubernetesClusters[0].addons.appGateway = false;
+            lab.template.kubernetesClusters[0].addons.virtualNode = false;
             lab.template.kubernetesClusters[0].privateClusterEnabled = "false";
             lab.template.kubernetesClusters[0].outboundType = "loadBalancer";
           }

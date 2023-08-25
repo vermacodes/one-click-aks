@@ -20,6 +20,7 @@ export default function AzureCNI() {
           lab.template.kubernetesClusters[0].networkPlugin = "kubenet";
           lab.template.kubernetesClusters[0].networkPolicy = "null";
           lab.template.kubernetesClusters[0].networkPluginMode = "null";
+          lab.template.kubernetesClusters[0].addons.virtualNode = false;
         } else {
           lab.template.kubernetesClusters[0].networkPlugin = "azure";
           lab.template.kubernetesClusters[0].networkPolicy = "azure";

@@ -16,6 +16,7 @@ type TfvarDefaultNodePoolType struct {
 type TfvarAddonsType struct {
 	AppGateway        bool `json:"appGateway"`
 	MicrosoftDefender bool `json:"microsoftDefender"`
+	VirtualNode       bool `json:"virtualNode"`
 }
 
 type TfvarKubernetesClusterType struct {

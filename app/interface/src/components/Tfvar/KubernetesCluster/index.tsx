@@ -37,6 +37,7 @@ export default function KubernetesCluster() {
       addons: {
         appGateway: false,
         microsoftDefender: false,
+        virtualNode: false,
       },
       defaultNodePool: {
         enableAutoScaling: false,

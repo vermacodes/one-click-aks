@@ -31,6 +31,7 @@ import KubernetesVersion from "./KubernetesVersion";
 import NetworkPluginMode from "./NetworkProfile/NetworkPluginMode";
 import PrivateCluster from "./PrivateCluster";
 import UserDefinedRouting from "./UserDefinedRouting";
+import VirtualNode from "./Addons/VirtualNode";
 
 export default function Tfvar() {
   const [versionMenu, setVersionMenu] = useState<boolean>(false);
@@ -70,6 +71,7 @@ export default function Tfvar() {
         <UserDefinedRouting />
         <AppGateway />
         <MicrosoftDefender />
+        <VirtualNode />
       </div>
       <div className={`mt-12 flex flex-wrap gap-2`}>
         <PlanButton variant="success-text" lab={lab}>

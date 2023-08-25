@@ -10,6 +10,7 @@ variable "kubernetes_clusters" {
     addons = object({
       app_gateway        = bool
       microsoft_defender = bool
+      virtual_node       = bool
     })
     default_node_pool = object({
       enable_auto_scaling = bool

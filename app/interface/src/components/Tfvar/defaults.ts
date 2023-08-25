@@ -24,6 +24,7 @@ export const defautlKubernetesCluster = {
   addons: {
     appGateway: false,
     microsoftDefender: false,
+    virtualNode: false,
   },
   defaultNodePool: {
     enableAutoScaling: true,
@@ -47,6 +48,7 @@ export const defaultTfvarConfig: TfvarConfigType = {
       addons: {
         appGateway: false,
         microsoftDefender: false,
+        virtualNode: false,
       },
       defaultNodePool: {
         enableAutoScaling: false,
@@ -84,6 +86,10 @@ export const defaultTfvarConfig: TfvarConfigType = {
     {
       addressPrefixes: ["10.1.6.0/24"],
       name: "AROWorkerSubnet",
+    },
+    {
+      addressPrefixes: ["10.1.7.0/24"],
+      name: "KubernetesVirtualNodeSubnet",
     },
   ],
   networkSecurityGroups: [{}],
