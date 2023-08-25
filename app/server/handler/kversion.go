@@ -17,6 +17,7 @@ func NewKVersionHandler(r *gin.RouterGroup, service entity.KVersionService) {
 	}
 
 	r.GET("/kubernetesorchestrators", handler.GetOrchestrator)
+	r.GET("/kubernetesdefaultversion", handler.GetDefaultVersion)
 }
 
 func (k *kVerisonHandler) GetOrchestrator(c *gin.Context) {
@@ -27,4 +28,15 @@ func (k *kVerisonHandler) GetOrchestrator(c *gin.Context) {
 	}
 
 	c.IndentedJSON(http.StatusOK, kubernetesOrchestrator)
+}
+
+// Default Kubernetes Version
+func (k *kVerisonHandler) GetDefaultVersion(c *gin.Context) {
+	defaultVersion := k.kVersionService.GetDefaultVersion()
+	if defaultVersion == "" {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, defaultVersion)
 }

@@ -43,6 +43,7 @@ type KubernetesVersions struct {
 type KVersionService interface {
 	GetOrchestrator() (KubernetesVersions, error)
 	GetDefaultVersion() string
+	DoesVersionExist(string) bool
 }
 
 type KVersionRepository interface {
