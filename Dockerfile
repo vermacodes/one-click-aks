@@ -8,7 +8,7 @@ RUN chmod +x ./entrypoint.sh
 
 ADD /app/server/server ./
 ADD /tf ./tf
-ADD /scripts ./scriptsk
+ADD /scripts ./scripts
 
 EXPOSE 8080/tcp
 EXPOSE 443/tcp
