@@ -101,6 +101,10 @@ func main() {
 	terraformService := service.NewTerraformService(terraformRepository, labService, workspaceService, logStreamService, actionStatusService, kVersionService, storageAccountService, loggingService, authService)
 	handler.NewTerraformHandler(authRouter, terraformService)
 
+	deploymentRepository := repository.NewDeploymentRepository()
+	deploymentService := service.NewDeploymentService(deploymentRepository)
+	handler.NewDeploymentHandler(authRouter, deploymentService)
+
 	router.GET("/status", status)
 	router.Run()
 }

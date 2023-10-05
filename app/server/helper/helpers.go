@@ -9,6 +9,8 @@ import (
 	"unicode"
 	"unsafe"
 
+	"github.com/Azure/azure-sdk-for-go/sdk/data/aztables"
+	"github.com/vermacodes/one-click-aks/app/server/entity"
 	"golang.org/x/exp/slog"
 )
 
@@ -68,4 +70,15 @@ func GetUserPrincipalFromMSALAuthToken(token string) (string, error) {
 	}
 
 	return userPrincipal, nil
+}
+
+func GetServiceClient() *aztables.ServiceClient {
+
+	SasUrl := "https://" + entity.StorageAccountName + ".table.core.windows.net/" + entity.SasToken
+	serviceClient, err := aztables.NewServiceClientWithNoCredential(SasUrl, nil)
+	if err != nil {
+		slog.Error("error get client", err)
+	}
+
+	return serviceClient
 }
