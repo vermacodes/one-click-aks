@@ -19,10 +19,10 @@ export default function Deployment() {
     >
       <div className="flex justify-between">
         <div className="flex flex-wrap items-center gap-y-2 gap-x-2">
-          <h1 className="text-xl">
+          {/* <h1 className="text-xl">
             <SiTerraform />
           </h1>
-          <h1 className="text-xl">Workspace:</h1>
+          <h1 className="text-xl">Workspace →</h1>
           <h1 className="text-xl text-sky-500">
             {data &&
               data.map((workspace) => (
@@ -30,7 +30,8 @@ export default function Deployment() {
                   {workspace.selected && workspace.name}
                 </div>
               ))}
-          </h1>
+          </h1> */}
+          <CurrentTerraformWorkspace />
         </div>
         <div className="flex flex-wrap gap-y-2 gap-x-2">
           <Checkbox
@@ -45,8 +46,8 @@ export default function Deployment() {
           >
             8 Hours
           </div>
-          <Button variant="success-text">Add</Button>
-          <Button variant="primary-text">View</Button>
+          <Button variant="primary-text">Add</Button>
+          <Button variant="secondary-text">View</Button>
           <Button variant="danger-text">Delete</Button>
         </div>
       </div>
