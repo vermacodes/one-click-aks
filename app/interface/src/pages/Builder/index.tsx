@@ -1,3 +1,4 @@
+import Deployment from "../../components/Deployment";
 import Terminal from "../../components/Terminal";
 import Tfvar from "../../components/Tfvar";
 import { useLab } from "../../hooks/useLab";
@@ -29,6 +30,7 @@ export default function Builder() {
           : "Lab Builder - New Lab"
       }
     >
+      <Deployment />
       <Tfvar />
       <Terminal />
     </PageLayout>

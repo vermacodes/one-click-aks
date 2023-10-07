@@ -54,6 +54,7 @@ export default function LoginButton({}: Props) {
   }
 
   async function RequestAccessToken() {
+    await instance.handleRedirectPromise();
     const request = {
       ...loginRequest,
       account: accounts[0],

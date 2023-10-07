@@ -6,7 +6,7 @@ import { axiosInstance } from "../utils/axios-interceptors";
 function terraformWorkspaceList(): Promise<
   AxiosResponse<TerraformWorkspace[]>
 > {
-  return axiosInstance("workspace");
+  return axiosInstance.get("workspace");
 }
 
 function selectWorkspace(workspace: TerraformWorkspace) {
@@ -32,7 +32,14 @@ export function useTerraformWorkspace() {
       return data.data;
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries("get-resources");
+      console.log("fetching terraform workspace is success" + data)
+      if (data === undefined) {
+        //queryClient.invalidateQueries("list-terraform-workspaces");
+      }
+    },
+    onError: (error) => {
+      console.log("error fetching terraform workspaces" + error);
+      queryClient.invalidateQueries("list-terraform-workspaces");
     },
     staleTime: 6000000,
     cacheTime: 6000000,
