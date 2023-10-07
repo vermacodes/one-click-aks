@@ -62,7 +62,8 @@ export default function VirtualNode({}: Props) {
       lab.template.kubernetesClusters.length > 0 &&
       lab.template.kubernetesClusters[0].addons &&
       lab.template.kubernetesClusters[0].addons.virtualNode === false) ||
-    lab.template.kubernetesClusters[0].networkPlugin !== "azure"
+    (lab.template.kubernetesClusters.length > 0 &&
+      lab.template.kubernetesClusters[0].networkPlugin !== "azure")
   ) {
     checked = false;
   }
