@@ -20,7 +20,6 @@ export default function SelectedDeployment() {
   const { data: terraformWorkspace } = useTerraformWorkspace();
   const { data: selectedTerraformWorkspace } = useSelectedTerraformWorkspace();
   const { data: deployments } = useGetMyDeployments();
-  const { mutate: addDeployment } = useAddDeployment();
   const { mutateAsync: asyncUpsertDeployment } = useUpsertDeployment();
 
   function handleAutoDeleteChange(deployment: DeploymentType) {
@@ -28,25 +27,6 @@ export default function SelectedDeployment() {
       ...deployment,
       deploymentAutoDelete: !deployment.deploymentAutoDelete,
     });
-  }
-  function handleAddDeployment() {
-    var selectedTerraformWorkspace = terraformWorkspace?.find(
-      (workspace) => workspace.selected === true
-    );
-
-    if (lab != undefined && selectedTerraformWorkspace != undefined) {
-      var newDeployment: DeploymentType = {
-        deploymentId: "",
-        deploymentUserId: "",
-        deploymentWorkspace: selectedTerraformWorkspace?.name,
-        deploymentAutoDelete: false,
-        deploymentAutoDeleteUnixTime: 0,
-        deploymentStatus: "notstarted",
-        deploymentLab: lab,
-      };
-
-      addDeployment(newDeployment);
-    }
   }
 
   if (
@@ -82,26 +62,27 @@ export default function SelectedDeployment() {
                   </h1>
                   {/* <CurrentTerraformWorkspace /> */}
                 </div>
-                <div className="flex flex-wrap gap-y-2 gap-x-2">
-                  <Checkbox
-                    id="auto-delete"
-                    label="Auto Delete"
-                    checked={deployment.deploymentAutoDelete}
-                    handleOnChange={() => handleAutoDeleteChange(deployment)}
-                    disabled={false}
-                  />
-                  <div
-                    className={`flex w-32 items-center justify-between rounded border border-slate-500 px-2 py-1`}
-                  >
-                    8 Hours
+                <div className="flex flex-wrap gap-y-2 gap-x-4 divide-x divide-slate-500">
+                  <div className="flex flex-wrap gap-x-2">
+                    <Checkbox
+                      id="auto-delete"
+                      label="Auto Delete"
+                      checked={deployment.deploymentAutoDelete}
+                      handleOnChange={() => handleAutoDeleteChange(deployment)}
+                      disabled={false}
+                    />
+                    <div
+                      className={`flex w-32 items-center justify-between rounded border border-slate-500 px-2 py-1`}
+                    >
+                      8 Hours
+                    </div>
                   </div>
-                  <Button variant="primary-text" onClick={handleAddDeployment}>
-                    Add
-                  </Button>
-                  <AddTerraformWorkspace />
-                  <Link to={"/deployments"}>
-                    <Button variant="secondary-text">View All</Button>
-                  </Link>
+                  <div className="flex flex-wrap gap-x-2 pl-2">
+                    <AddTerraformWorkspace />
+                    <Link to={"/deployments"}>
+                      <Button variant="secondary-text">View Deployments</Button>
+                    </Link>
+                  </div>
                 </div>
               </div>
             )
