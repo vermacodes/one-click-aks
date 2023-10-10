@@ -7,6 +7,7 @@ import {
   FaList,
   FaMoon,
   FaPeopleCarry,
+  FaRocket,
   FaShieldAlt,
   FaSun,
   FaTools,
@@ -58,6 +59,16 @@ function Pages() {
                 <FaTools />
               </span>
               <span>Lab Builder</span>
+            </button>
+          </Link>
+        </li>
+        <li>
+          <Link to={"/deployments"}>
+            <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
+              <span>
+                <FaRocket />
+              </span>
+              <span>Deployments</span>
             </button>
           </Link>
         </li>

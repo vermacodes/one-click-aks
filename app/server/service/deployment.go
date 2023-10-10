@@ -28,6 +28,10 @@ func (d *DeploymentService) AddDeployment(deployment entity.Deployment) error {
 	return d.deploymentRepository.AddDeployment(deployment)
 }
 
+func (d *DeploymentService) UpdateDeployment(deployment entity.Deployment) error {
+	return d.deploymentRepository.UpdateDeployment(deployment)
+}
+
 func (d *DeploymentService) DeleteDeployment(userId string, workspace string) error {
 	return d.deploymentRepository.DeleteDeployment(userId, workspace)
 }

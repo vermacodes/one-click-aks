@@ -41,6 +41,7 @@ export function useInit() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries("list-terraform-workspaces");
+      queryClient.invalidateQueries("get-selected-terraform-workspace");
       queryClient.invalidateQueries("get-resources");
     },
   });
@@ -57,6 +58,7 @@ export function usePlan() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries("list-terraform-workspaces");
+      queryClient.invalidateQueries("get-selected-terraform-workspace");
       queryClient.invalidateQueries("get-resources");
     },
   });
@@ -73,6 +75,7 @@ export function useApply() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries("list-terraform-workspaces");
+      queryClient.invalidateQueries("get-selected-terraform-workspace");
       queryClient.invalidateQueries("get-resources");
     },
   });
@@ -89,6 +92,7 @@ export function useExtend() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries("list-terraform-workspaces");
+      queryClient.invalidateQueries("get-selected-terraform-workspace");
       queryClient.invalidateQueries("get-resources");
     },
   });
@@ -105,6 +109,7 @@ export function useDestroyExtend() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries("list-terraform-workspaces");
+      queryClient.invalidateQueries("get-selected-terraform-workspace");
       queryClient.invalidateQueries("get-resources");
     },
   });
@@ -121,6 +126,7 @@ export function useValidate() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries("list-terraform-workspaces");
+      queryClient.invalidateQueries("get-selected-terraform-workspace");
       queryClient.invalidateQueries("get-resources");
     },
   });
@@ -137,6 +143,7 @@ export function useDestroy() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries("list-terraform-workspaces");
+      queryClient.invalidateQueries("get-selected-terraform-workspace");
       queryClient.invalidateQueries("get-resources");
     },
   });
@@ -158,6 +165,7 @@ export function useApplyAsync() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries("list-terraform-workspaces");
+      queryClient.invalidateQueries("get-selected-terraform-workspace");
       queryClient.invalidateQueries("get-resources");
     },
   });
@@ -178,6 +186,7 @@ export function useApplyAsyncExtend() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries("list-terraform-workspaces");
+      queryClient.invalidateQueries("get-selected-terraform-workspace");
       queryClient.invalidateQueries("get-resources");
     },
   });
@@ -198,6 +207,7 @@ export function useDestroyAsync() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries("list-terraform-workspaces");
+      queryClient.invalidateQueries("get-selected-terraform-workspace");
       queryClient.invalidateQueries("get-resources");
     },
   });
@@ -218,6 +228,7 @@ export function useDestroyAsyncExtend() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries("list-terraform-workspaces");
+      queryClient.invalidateQueries("get-selected-terraform-workspace");
       queryClient.invalidateQueries("get-resources");
     },
   });

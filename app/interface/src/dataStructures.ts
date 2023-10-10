@@ -307,3 +307,13 @@ export type TerraformOperation = {
   labName: string;
   labType: string;
 }
+
+export type DeploymentType = {
+  deploymentId: string;
+  deploymentUserId: string;
+  deploymentWorkspace: string;
+  deploymentStatus: "inprogress" | "failed" | "completed" | "notstarted";
+  deploymentLab: Lab
+  deploymentAutoDelete: boolean;
+  deploymentAutoDeleteUnixTime: number;
+}

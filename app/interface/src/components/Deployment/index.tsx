@@ -1,16 +1,17 @@
-import { useState } from "react";
-import Button from "../Button";
-import Checkbox from "../Checkbox";
-import CurrentTerraformWorkspace from "../CurrentTerraformWorkspace";
-import { useTerraformWorkspace } from "../../hooks/useWorkspace";
 import { SiTerraform } from "react-icons/si";
+import { DeploymentType } from "../../dataStructures";
+import Checkbox from "../Checkbox";
+import Button from "../Button";
 
-export default function Deployment() {
-  const [autoDelete, setAutoDelete] = useState(false);
-  const { data } = useTerraformWorkspace();
+type Props = {
+  deployment: DeploymentType;
+};
 
-  function handleAutoDeleteChange() {
-    setAutoDelete(!autoDelete);
+export default function Deployment({ deployment }: Props) {
+  function handleAutoDeleteChange() {}
+
+  function handleAddDeployment(args: any) {
+    throw new Error("Function not implemented.");
   }
 
   return (
@@ -19,25 +20,15 @@ export default function Deployment() {
     >
       <div className="flex justify-between">
         <div className="flex flex-wrap items-center gap-y-2 gap-x-2">
-          {/* <h1 className="text-xl">
-            <SiTerraform />
-          </h1>
-          <h1 className="text-xl">Workspace →</h1>
           <h1 className="text-xl text-sky-500">
-            {data &&
-              data.map((workspace) => (
-                <div key={workspace.name}>
-                  {workspace.selected && workspace.name}
-                </div>
-              ))}
-          </h1> */}
-          <CurrentTerraformWorkspace />
+            {deployment.deploymentWorkspace}
+          </h1>
         </div>
         <div className="flex flex-wrap gap-y-2 gap-x-2">
           <Checkbox
             id="auto-delete"
             label="Auto Delete"
-            checked={autoDelete}
+            checked={deployment.deploymentAutoDelete}
             handleOnChange={handleAutoDeleteChange}
             disabled={false}
           />
@@ -46,8 +37,13 @@ export default function Deployment() {
           >
             8 Hours
           </div>
-          <Button variant="primary-text">Add</Button>
-          <Button variant="secondary-text">View</Button>
+          <Button
+            variant="primary-text"
+            disabled={deployment.deploymentWorkspace === "dev"}
+            onClick={handleAddDeployment}
+          >
+            Select
+          </Button>
           <Button variant="danger-text">Delete</Button>
         </div>
       </div>

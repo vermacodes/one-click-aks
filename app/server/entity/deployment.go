@@ -1,20 +1,16 @@
 package entity
 
 import (
-	"time"
-
 	"github.com/Azure/azure-sdk-for-go/sdk/data/aztables"
 )
 
 type Deployment struct {
-	Id                 string    `json:"id"`
-	Name               string    `json:"name"`
-	UserId             string    `json:"userId"`
-	Workspace          string    `json:"workspace"`
-	Lab                LabType   `json:"lab"`
-	AutoDelete         bool      `json:"autoDelete"`
-	AutoDeleteTime     time.Time `json:"autoDeleteTime"`
-	AutoDeleteTimeUnix int64     `json:"autoDeleteTimeUnix"`
+	DeploymentId                 string  `json:"deploymentId"`
+	DeploymentUserId             string  `json:"deploymentUserId"`
+	DeploymentWorkspace          string  `json:"deploymentWorkspace"`
+	DeploymentLab                LabType `json:"deploymentLab"`
+	DeploymentAutoDelete         bool    `json:"deploymentAutoDelete"`
+	DeploymentAutoDeleteUnixTime int64   `json:"deploymentAutoDeleteUnixTime"`
 }
 
 type DeploymentEntry struct {
@@ -27,6 +23,7 @@ type DeploymentService interface {
 	GetMyDeployments(string) ([]Deployment, error)
 	GetDeployment(string, string) (Deployment, error)
 	AddDeployment(Deployment) error
+	UpdateDeployment(Deployment) error
 	DeleteDeployment(string, string) error
 }
 
@@ -35,5 +32,6 @@ type DeploymentRepository interface {
 	GetMyDeployments(string) ([]Deployment, error)
 	GetDeployment(string, string) (Deployment, error)
 	AddDeployment(Deployment) error
+	UpdateDeployment(Deployment) error
 	DeleteDeployment(string, string) error
 }

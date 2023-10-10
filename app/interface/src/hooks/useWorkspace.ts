@@ -32,14 +32,26 @@ export function useTerraformWorkspace() {
       return data.data;
     },
     onSuccess: (data) => {
-      console.log("fetching terraform workspace is success" + data)
-      if (data === undefined) {
-        //queryClient.invalidateQueries("list-terraform-workspaces");
+      queryClient.invalidateQueries("get-resources")
+    },
+    staleTime: 6000000,
+    cacheTime: 6000000,
+  });
+}
+
+export function useSelectedTerraformWorkspace() {
+  const queryClient = useQueryClient();
+  return useQuery("get-selected-terraform-workspace", terraformWorkspaceList, {
+    select: (data): TerraformWorkspace => {
+      var selectedWorkspace = data.data.find((workspace) => workspace.selected);
+      if (selectedWorkspace) {
+        return selectedWorkspace;
+      } else {
+        return data.data[0];
       }
     },
-    onError: (error) => {
-      console.log("error fetching terraform workspaces" + error);
-      queryClient.invalidateQueries("list-terraform-workspaces");
+    onSuccess: (data) => {
+      queryClient.invalidateQueries("get-resources")
     },
     staleTime: 6000000,
     cacheTime: 6000000,
@@ -51,6 +63,7 @@ export function useAddWorkspace() {
   return useMutation(addWorkspace, {
     onSuccess: () => {
       queryClient.invalidateQueries("list-terraform-workspaces");
+      queryClient.invalidateQueries("get-selected-terraform-workspace");  
       queryClient.invalidateQueries("get-resources");
     },
   });
@@ -61,6 +74,7 @@ export function useSelectWorkspace() {
   return useMutation(selectWorkspace, {
     onSuccess: () => {
       queryClient.invalidateQueries("list-terraform-workspaces");
+      queryClient.invalidateQueries("get-selected-terraform-workspace");
     },
   });
 }
@@ -70,6 +84,7 @@ export function useDeleteWorkspace() {
   return useMutation(deleteWorkspace, {
     onSuccess: () => {
       queryClient.invalidateQueries("list-terraform-workspaces");
+      queryClient.invalidateQueries("get-selected-terraform-workspace");
       queryClient.invalidateQueries("get-resources");
     },
   });

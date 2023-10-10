@@ -97,8 +97,8 @@ func (d *deploymentRepository) AddDeployment(deployment entity.Deployment) error
 
 	deploymentEntry := entity.DeploymentEntry{
 		Entity: aztables.Entity{
-			PartitionKey: deployment.UserId,
-			RowKey:       deployment.UserId + "-" + deployment.Workspace,
+			PartitionKey: deployment.DeploymentUserId,
+			RowKey:       deployment.DeploymentUserId + "-" + deployment.DeploymentWorkspace,
 		},
 		Deployment: string(marshalledDeployment),
 	}
@@ -110,6 +110,38 @@ func (d *deploymentRepository) AddDeployment(deployment entity.Deployment) error
 	}
 
 	_, err = client.AddEntity(context.TODO(), marshalled, nil)
+	if err != nil {
+		slog.Error("error adding deployment record ", err)
+		return err
+	}
+
+	return nil
+}
+
+func (d *deploymentRepository) UpdateDeployment(deployment entity.Deployment) error {
+	client := helper.GetServiceClient().NewClient("Deployments")
+
+	marshalledDeployment, err := json.Marshal(deployment)
+	if err != nil {
+		slog.Error("error occurred marshalling the deployment record.", err)
+		return err
+	}
+
+	deploymentEntry := entity.DeploymentEntry{
+		Entity: aztables.Entity{
+			PartitionKey: deployment.DeploymentUserId,
+			RowKey:       deployment.DeploymentUserId + "-" + deployment.DeploymentWorkspace,
+		},
+		Deployment: string(marshalledDeployment),
+	}
+
+	marshalled, err := json.Marshal(deploymentEntry)
+	if err != nil {
+		slog.Error("error occurred marshalling the deployment record.", err)
+		return err
+	}
+
+	_, err = client.UpsertEntity(context.TODO(), marshalled, nil)
 	if err != nil {
 		slog.Error("error adding deployment record ", err)
 		return err
