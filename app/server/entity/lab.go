@@ -118,6 +118,7 @@ type LabService interface {
 	GetMyLabs() ([]LabType, error)
 	AddMyLab(LabType) error
 	DeleteMyLab(lab LabType) error
+	HelperDefaultLab() (LabType, error)
 }
 
 type LabRepository interface {

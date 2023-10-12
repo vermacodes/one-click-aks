@@ -30,6 +30,9 @@ export function useAddDeployment() {
     return useMutation(addDeployment, {
         onSuccess: () => {
             queryClient.invalidateQueries("list-deployments");
+            queryClient.invalidateQueries("list-terraform-workspaces");     
+            queryClient.invalidateQueries("get-selected-terraform-workspace");
+            queryClient.invalidateQueries("get-resources");
         },
     });
 }
@@ -40,6 +43,26 @@ export function useUpsertDeployment() {
     return useMutation(upsertDeployment, {
         onSuccess: () => {
             queryClient.invalidateQueries("list-deployments");
+            queryClient.invalidateQueries("list-terraform-workspaces");     
+            queryClient.invalidateQueries("get-selected-terraform-workspace");
+            queryClient.invalidateQueries("get-resources");
         },
     });
+}
+
+// delete deployment
+export function useDeleteDeployment() {
+    const queryClient = useQueryClient();
+    return useMutation(
+        (workspaceName: string) =>
+            axiosInstance.delete(`deployments/${workspaceName}`),
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries("list-deployments");
+                queryClient.invalidateQueries("list-terraform-workspaces");     
+                queryClient.invalidateQueries("get-selected-terraform-workspace");
+                queryClient.invalidateQueries("get-resources");
+            },
+        }
+    );
 }

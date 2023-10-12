@@ -34,7 +34,7 @@ func (l *labService) GetLabFromRedis() (entity.LabType, error) {
 
 		slog.Error("lab not found in redis. Setting default.", err)
 
-		defaultLab, err := helperDefaultLab(l)
+		defaultLab, err := l.HelperDefaultLab()
 		if err != nil {
 			slog.Error("not able to genereate default lab", err)
 			return lab, err
@@ -206,7 +206,7 @@ func (l *labService) GetPublicLabs(typeOfLab string) ([]entity.LabType, error) {
 	return labs, nil
 }
 
-func helperDefaultLab(l *labService) (entity.LabType, error) {
+func (l *labService) HelperDefaultLab() (entity.LabType, error) {
 
 	var defaultResourceGroup = entity.TfvarResourceGroupType{
 		Location: "East US",

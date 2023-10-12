@@ -6,6 +6,8 @@ import { useGetMyDeployments } from "../../hooks/useDeployments";
 import { useTerraformWorkspace } from "../../hooks/useWorkspace";
 import PageLayout from "../../layouts/PageLayout";
 import Button from "../../components/Button";
+import Terminal from "../../components/Terminal";
+import CreateNewDeployment from "../../components/Deployments/CreateNewDeployment";
 
 export default function Deployments() {
   const { data } = useTerraformWorkspace();
@@ -14,10 +16,12 @@ export default function Deployments() {
   return (
     <PageLayout heading="Deployments">
       <div className={`mb-3 flex justify-end space-x-4 rounded`}>
-        <AddTerraformWorkspace />
         <Link to="/builder">
-          <Button variant="secondary-text">Lab Builder</Button>
+          <Button variant="secondary-outline">Open Lab Builder</Button>
         </Link>
+        <CreateNewDeployment variant="primary-outline">
+          Create New Deployment
+        </CreateNewDeployment>
       </div>
       {deployments &&
         deployments.length > 0 &&
@@ -26,6 +30,7 @@ export default function Deployments() {
             <Deployment deployment={deployment} />
           </>
         ))}
+      <Terminal />
     </PageLayout>
   );
 }

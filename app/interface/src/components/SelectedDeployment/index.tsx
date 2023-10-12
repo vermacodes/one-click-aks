@@ -14,6 +14,7 @@ import { useLab } from "../../hooks/useLab";
 import { DeploymentType } from "../../dataStructures";
 import { Link } from "react-router-dom";
 import AddTerraformWorkspace from "../AddTerraformWorkspace";
+import CreateNewDeployment from "../Deployments/CreateNewDeployment";
 
 export default function SelectedDeployment() {
   const { data: lab } = useLab();
@@ -36,6 +37,26 @@ export default function SelectedDeployment() {
   ) {
     return <></>;
   }
+
+  // TODO
+  //if none of the deployments are for the selected workspace, add a new deployment
+  // if (
+  //   deployments.filter(
+  //     (deployment: DeploymentType) =>
+  //       deployment.deploymentWorkspace === selectedTerraformWorkspace?.name
+  //   ).length === 0
+  // ) {
+  //   const newDeployment: DeploymentType = {
+  //     deploymentId: "",
+  //     deploymentAutoDelete: false,
+  //     deploymentWorkspace: selectedTerraformWorkspace?.name || "",
+  //     deploymentLab: lab,
+  //     deploymentStatus: "notstarted",
+  //     deploymentUserId: "",
+  //     deploymentAutoDeleteUnixTime: 0,
+  //   };
+  //   asyncUpsertDeployment(newDeployment);
+  // }
 
   return (
     <div
@@ -78,10 +99,12 @@ export default function SelectedDeployment() {
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-x-2 pl-2">
-                    <AddTerraformWorkspace />
                     <Link to={"/deployments"}>
                       <Button variant="secondary-text">View Deployments</Button>
                     </Link>
+                    <CreateNewDeployment variant="primary">
+                      New Deployment
+                    </CreateNewDeployment>
                   </div>
                 </div>
               </div>

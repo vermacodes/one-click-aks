@@ -5,7 +5,10 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"os"
+	"strconv"
 	"strings"
+	"time"
 	"unicode"
 	"unsafe"
 
@@ -81,4 +84,50 @@ func GetServiceClient() *aztables.ServiceClient {
 	}
 
 	return serviceClient
+}
+
+func PollAndDeleteDeployments(interval time.Duration, deploymentService entity.DeploymentService) {
+	dataChannel := make(chan []entity.Deployment)
+	go func() {
+		for {
+			deployments := FetchDeploymentsToBeDeleted(deploymentService)
+			dataChannel <- deployments
+			time.Sleep(interval)
+			slog.Info("polling for deployments to be deleted found " + strconv.Itoa(len(deployments)) + " deployments")
+		}
+	}()
+
+	for {
+		deployments := <-dataChannel
+		for _, deployment := range deployments {
+			slog.Info("deleting deployment " + deployment.DeploymentWorkspace)
+			// if err := deploymentService.DeleteDeployment(deployment.DeploymentUserId, deployment.DeploymentWorkspace); err != nil {
+			// 	slog.Error("not able to delete deployment", err)
+			// }
+		}
+	}
+}
+
+func FetchDeploymentsToBeDeleted(deploymentService entity.DeploymentService) []entity.Deployment {
+	//Get user principal from env variable.
+	userPrincipal := os.Getenv("ARM_USER_PRINCIPAL_NAME")
+
+	//Get all deployments.
+	deployments, err := deploymentService.GetMyDeployments(userPrincipal)
+	if err != nil {
+		slog.Error("not able to get deployments", err)
+		return nil
+	}
+
+	// Filter deployments where auto delete is true and auto delete unix time is less than current unix time.
+	var deploymentsToBeDeleted []entity.Deployment
+
+	for _, deployment := range deployments {
+		currentEpochTime := time.Now().Unix()
+		if deployment.DeploymentAutoDelete && deployment.DeploymentAutoDeleteUnixTime < currentEpochTime && deployment.DeploymentAutoDeleteUnixTime != 0 {
+			deploymentsToBeDeleted = append(deploymentsToBeDeleted, deployment)
+		}
+	}
+
+	return deploymentsToBeDeleted
 }

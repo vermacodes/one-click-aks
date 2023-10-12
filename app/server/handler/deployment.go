@@ -20,10 +20,10 @@ func NewDeploymentHandler(r *gin.RouterGroup, service entity.DeploymentService) 
 
 	//r.GET("/deployments", handler.GetDeployments)
 	r.GET("/deployments/my", handler.GetMyDeployments)
-	r.GET("/deployments/:userId/:workspace", handler.GetDeployment)
+	r.GET("/deployments/:workspace", handler.GetDeployment)
 	r.POST("/deployments", handler.AddDeployment)
 	r.PUT("/deployments", handler.UpdateDeployment)
-	r.DELETE("/deployments/:userId/:workspace", handler.DeleteDeployment)
+	r.DELETE("/deployments/:workspace", handler.DeleteDeployment)
 }
 
 func (d *deploymentHandler) GetMyDeployments(c *gin.Context) {
@@ -100,10 +100,14 @@ func (d *deploymentHandler) UpdateDeployment(c *gin.Context) {
 }
 
 func (d *deploymentHandler) DeleteDeployment(c *gin.Context) {
-	userId := c.Param("userId")
 	workspace := c.Param("workspace")
 
-	if err := d.deploymentService.DeleteDeployment(userId, workspace); err != nil {
+	// Get auth token from authorization header to get userPrincipal
+	authToken := c.GetHeader("Authorization")
+	authToken = strings.Split(authToken, "Bearer ")[1]
+	userPrincipal, _ := helper.GetUserPrincipalFromMSALAuthToken(authToken)
+
+	if err := d.deploymentService.DeleteDeployment(userPrincipal, workspace); err != nil {
 		c.Status(http.StatusInternalServerError)
 		return
 	}
