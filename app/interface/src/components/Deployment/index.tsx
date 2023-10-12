@@ -38,7 +38,7 @@ export default function Deployment({ deployment }: Props) {
       asyncUpsertDeployment({
         ...deployment,
         deploymentAutoDelete: !deployment.deploymentAutoDelete,
-        deploymentAutoDeleteUnixTime: Math.floor(Date.now() / 1000) + 10,
+        deploymentAutoDeleteUnixTime: Math.floor(Date.now() / 1000) + 30,
       });
       return;
     }
@@ -58,7 +58,8 @@ export default function Deployment({ deployment }: Props) {
             {deployment.deploymentWorkspace}
           </h1>
         </div>
-        <div className="flex flex-wrap gap-y-2 gap-x-2">
+        <div className="flex flex-wrap items-center gap-y-2 gap-x-2">
+          <p>{deployment.deploymentStatus}</p>
           <Checkbox
             id={"auto-destroy-" + deployment.deploymentWorkspace}
             label="Auto Destroy"

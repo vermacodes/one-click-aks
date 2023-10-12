@@ -8,6 +8,7 @@ type Deployment struct {
 	DeploymentId                 string  `json:"deploymentId"`
 	DeploymentUserId             string  `json:"deploymentUserId"`
 	DeploymentWorkspace          string  `json:"deploymentWorkspace"`
+	DeploymentStatus             string  `json:"deploymentStatus"`
 	DeploymentLab                LabType `json:"deploymentLab"`
 	DeploymentAutoDelete         bool    `json:"deploymentAutoDelete"`
 	DeploymentAutoDeleteUnixTime int64   `json:"deploymentAutoDeleteUnixTime"`

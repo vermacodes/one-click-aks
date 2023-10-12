@@ -86,7 +86,7 @@ func GetServiceClient() *aztables.ServiceClient {
 	return serviceClient
 }
 
-func PollAndDeleteDeployments(interval time.Duration, deploymentService entity.DeploymentService) {
+func PollAndDeleteDeployments(interval time.Duration, deploymentService entity.DeploymentService, terraformService entity.TerraformService, actionStatusService entity.ActionStatusService, logstreamService entity.LogStreamService) {
 	dataChannel := make(chan []entity.Deployment)
 	go func() {
 		for {
@@ -101,9 +101,49 @@ func PollAndDeleteDeployments(interval time.Duration, deploymentService entity.D
 		deployments := <-dataChannel
 		for _, deployment := range deployments {
 			slog.Info("deleting deployment " + deployment.DeploymentWorkspace)
-			// if err := deploymentService.DeleteDeployment(deployment.DeploymentUserId, deployment.DeploymentWorkspace); err != nil {
-			// 	slog.Error("not able to delete deployment", err)
-			// }
+
+			actionStatus, err := actionStatusService.GetActionStatus()
+			if err != nil {
+				slog.Error("not able to get action status", err)
+				return
+			}
+
+			if actionStatus.InProgress {
+				slog.Info("action in progress. waiting.")
+				time.Sleep(5 * time.Second)
+				actionStatus, err = actionStatusService.GetActionStatus()
+				if err != nil {
+					slog.Error("not able to get action status", err)
+					return
+				}
+			}
+			logstreamService.StartLogStream()
+
+			// Update deployment status to deleting.
+			deployment.DeploymentStatus = "deleting"
+			if err := deploymentService.UpdateDeployment(deployment); err != nil {
+				slog.Error("not able to update deployment", err)
+				return
+			}
+
+			//Run extend script in 'destroy' mode.
+			if err := terraformService.Extend(deployment.DeploymentLab, "destroy"); err != nil {
+				slog.Error("not able to run extend script", err)
+				return
+			}
+
+			// Run terraform destroy.
+			if _, err := terraformService.DestroyAsync(deployment.DeploymentLab); err != nil {
+				slog.Error("not able to run terraform destroy", err)
+				return
+			}
+
+			//Delete deployment record.
+			if err := deploymentService.DeleteDeployment(deployment.DeploymentUserId, deployment.DeploymentWorkspace); err != nil {
+				slog.Error("not able to delete deployment", err)
+			}
+
+			logstreamService.EndLogStream()
 		}
 	}
 }
@@ -124,7 +164,7 @@ func FetchDeploymentsToBeDeleted(deploymentService entity.DeploymentService) []e
 
 	for _, deployment := range deployments {
 		currentEpochTime := time.Now().Unix()
-		if deployment.DeploymentAutoDelete && deployment.DeploymentAutoDeleteUnixTime < currentEpochTime && deployment.DeploymentAutoDeleteUnixTime != 0 {
+		if deployment.DeploymentAutoDelete && deployment.DeploymentAutoDeleteUnixTime < currentEpochTime && deployment.DeploymentAutoDeleteUnixTime != 0 && deployment.DeploymentStatus != "deleting" && deployment.DeploymentStatus != "deleted" {
 			deploymentsToBeDeleted = append(deploymentsToBeDeleted, deployment)
 		}
 	}
