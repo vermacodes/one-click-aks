@@ -327,7 +327,8 @@ function deploy_webapp() {
     --resource-group $RESOURCE_GROUP \
     --subscription $ARM_SUBSCRIPTION_ID \
     --plan $APP_SERVICE_PLAN_NAME \
-    --deployment-container-image-name $DOCKER_IMAGE >/dev/null 2>&1
+    --deployment-container-image-name $DOCKER_IMAGE \
+    --debug
 
   # sleep 30s
 
@@ -488,7 +489,13 @@ fi
 
 SP_NAME="${USER_ALIAS}-actlabs"
 APP_SERVICE_PLAN_NAME="${USER_ALIAS}-app-service-plan-actlabs"
-WEBAPP_NAME="${USER_ALIAS}-webapp-actlabs"
+
+# if ARM_USER_PRINCIPAL_NAME contains fdpo.onmicrosoft.com then curt different part
+if [[ "${ARM_USER_PRINCIPAL_NAME}" == *"fdpo.onmicrosoft.com"* ]]; then
+  WEBAPP_NAME="${USER_ALIAS}-webapp-actlabs-fdpo"
+else
+  WEBAPP_NAME="${USER_ALIAS}-webapp-actlabs"
+fi
 
 # Create the resource group
 gap
