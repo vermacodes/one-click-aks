@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import MainLayout from "./layouts/MainLayout";
 import { WebSocketContext } from "./WebSocketContext";
 import { ActionStatusType } from "./dataStructures";
+import ReconnectingWebSocket from "reconnecting-websocket";
 
 function App() {
   const [darkMode, setDarkMode] = useState<boolean>(true);
@@ -20,15 +21,15 @@ function App() {
     }
 
     // Action Status Socket
-    const actionStatusSocket = new WebSocket(
+    const actionStatusWs = new ReconnectingWebSocket(
       "ws://localhost:8881/actionstatusws"
     );
-    actionStatusSocket.onmessage = (event) => {
+    actionStatusWs.onmessage = (event: any) => {
       setActionStatus(JSON.parse(event.data));
     };
 
     return () => {
-      actionStatusSocket.close();
+      actionStatusWs.close();
     };
   }, []);
 
