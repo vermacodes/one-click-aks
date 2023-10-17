@@ -8,7 +8,6 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/vermacodes/one-click-aks/app/server/handler"
-	"github.com/vermacodes/one-click-aks/app/server/helper"
 	"github.com/vermacodes/one-click-aks/app/server/middleware"
 	"github.com/vermacodes/one-click-aks/app/server/repository"
 	"github.com/vermacodes/one-click-aks/app/server/service"
@@ -103,11 +102,11 @@ func main() {
 	handler.NewTerraformHandler(authRouter, terraformService)
 
 	deploymentRepository := repository.NewDeploymentRepository()
-	deploymentService := service.NewDeploymentService(deploymentRepository, labService)
+	deploymentService := service.NewDeploymentService(deploymentRepository, labService, terraformService, actionStatusService, logStreamService)
 	handler.NewDeploymentHandler(authRouter, deploymentService)
 
 	// take seconds and multiply with 1000000000 and pass it to the function.
-	go helper.PollAndDeleteDeployments(60000000000, deploymentService, terraformService, actionStatusService, logStreamService)
+	go deploymentService.PollAndDeleteDeployments(60000000000)
 
 	router.GET("/status", status)
 	router.Run()

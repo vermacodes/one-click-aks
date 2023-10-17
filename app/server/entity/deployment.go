@@ -1,6 +1,8 @@
 package entity
 
 import (
+	"time"
+
 	"github.com/Azure/azure-sdk-for-go/sdk/data/aztables"
 )
 
@@ -27,6 +29,8 @@ type DeploymentService interface {
 	AddDeployment(Deployment) error
 	UpdateDeployment(Deployment) error
 	DeleteDeployment(string, string) error
+	PollAndDeleteDeployments(time.Duration) error
+	FetchDeploymentsToBeDeleted() []Deployment
 }
 
 type DeploymentRepository interface {
