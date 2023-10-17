@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { FaRocket } from "react-icons/fa";
 import {
   ButtonVariant,
+  DeploymentType,
   Lab,
   TerraformOperation,
 } from "../../../dataStructures";
@@ -17,6 +18,18 @@ import {
   useApplyAsyncExtend,
 } from "../../../hooks/useTerraform";
 import Button from "../../Button";
+import {
+  useGetMyDeployments,
+  useUpsertDeployment,
+} from "../../../hooks/useDeployments";
+import {
+  useSelectedTerraformWorkspace,
+  useTerraformWorkspace,
+} from "../../../hooks/useWorkspace";
+import {
+  calculateNewEpochTimeForDeployment,
+  getSelectedDeployment,
+} from "../../../utils/helpers";
 
 type Props = {
   variant: ButtonVariant;
@@ -47,8 +60,17 @@ export default function ApplyButton({ variant, children, lab }: Props) {
   );
   const { mutate: operationRecord } = useOperationRecord();
   const { mutate: endLogStream } = useEndStream();
+  const { data: deployments } = useGetMyDeployments();
+  const { data: terraformWorkspaces } = useTerraformWorkspace();
+  const { mutate: upsertDeployment } = useUpsertDeployment();
 
   useEffect(() => {
+    if (terraformWorkspaces === undefined || deployments === undefined) {
+      return;
+    }
+
+    const deployment = getSelectedDeployment(deployments, terraformWorkspaces);
+
     if (terraformOperationState.operationType === "apply") {
       if (terraformOperationState.operationStatus === "completed") {
         labState &&
@@ -66,6 +88,15 @@ export default function ApplyButton({ variant, children, lab }: Props) {
           labName: "",
           labType: "",
         });
+
+        //update the deployment status
+        if (deployment !== undefined) {
+          upsertDeployment({
+            ...deployment,
+            deploymentStatus: "Deployment Failed",
+          });
+        }
+
         endLogStream();
       }
     } else if (terraformOperationState.operationType === "extend") {
@@ -81,6 +112,15 @@ export default function ApplyButton({ variant, children, lab }: Props) {
           labName: "",
           labType: "",
         });
+
+        //update the deployment status
+        if (deployment !== undefined) {
+          upsertDeployment({
+            ...deployment,
+            deploymentStatus: "Deployment Completed",
+          });
+        }
+
         endLogStream();
       }
     }
@@ -92,7 +132,11 @@ export default function ApplyButton({ variant, children, lab }: Props) {
   }, [terraformOperationState]);
 
   function onClickHandler() {
-    if (lab === undefined) {
+    if (
+      lab === undefined ||
+      terraformWorkspaces === undefined ||
+      deployments === undefined
+    ) {
       return;
     }
     // update lab's azure region based on users preference
@@ -107,11 +151,28 @@ export default function ApplyButton({ variant, children, lab }: Props) {
     setLogs({ isStreaming: true, logs: "" });
 
     // apply terraform
-    applyAsync(lab).then(
-      (response) =>
-        response.status !== undefined &&
-        setTerraformOperationState(response.data)
-    );
+    applyAsync(lab).then((response) => {
+      response.status !== undefined &&
+        setTerraformOperationState(response.data);
+
+      // update deployment status
+
+      //get the deployment for the selected workspace
+      const deployment = getSelectedDeployment(
+        deployments,
+        terraformWorkspaces
+      );
+
+      //update the deployment status
+      if (deployment !== undefined) {
+        upsertDeployment({
+          ...deployment,
+          deploymentStatus: "Deployment In Progress",
+          deploymentAutoDeleteUnixTime:
+            calculateNewEpochTimeForDeployment(deployment),
+        });
+      }
+    });
   }
 
   if (

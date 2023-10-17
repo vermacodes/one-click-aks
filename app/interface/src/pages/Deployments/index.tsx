@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import AddTerraformWorkspace from "../../components/AddTerraformWorkspace";
-import Deployment from "../../components/Deployment";
+import Deployment from "../../components/Deployments/Deployment";
 import { DeploymentType } from "../../dataStructures";
 import { useGetMyDeployments } from "../../hooks/useDeployments";
 import { useTerraformWorkspace } from "../../hooks/useWorkspace";
@@ -19,8 +19,8 @@ export default function Deployments() {
         <Link to="/builder">
           <Button variant="secondary-outline">Open Lab Builder</Button>
         </Link>
-        <CreateNewDeployment variant="primary-outline">
-          Create New Deployment
+        <CreateNewDeployment variant="primary">
+          New Deployment
         </CreateNewDeployment>
       </div>
       {deployments &&

@@ -1,15 +1,15 @@
-import { SiTerraform } from "react-icons/si";
-import { DeploymentType } from "../../dataStructures";
-import Checkbox from "../Checkbox";
-import Button from "../Button";
+import { DeploymentType } from "../../../dataStructures";
+import Button from "../../Button";
 import {
   useSelectWorkspace,
   useSelectedTerraformWorkspace,
-} from "../../hooks/useWorkspace";
-import DestroyAndDeleteDeployment from "../Deployments/DestroyAndDeleteDeployment";
+} from "../../../hooks/useWorkspace";
 import { useState } from "react";
-import { useUpsertDeployment } from "../../hooks/useDeployments";
-import DestroyButton from "../Terraform/DestroyButton";
+import DestroyButton from "../../Terraform/DestroyButton";
+import AutoDestroySwitch from "../AutoDestroySwitch";
+import { getDeploymentDestroyTime } from "../../../utils/helpers";
+import DestroyTime from "../DestroyTime";
+import DeploymentLifespan from "../DeploymentLifespan";
 
 type Props = {
   deployment: DeploymentType;
@@ -19,30 +19,6 @@ export default function Deployment({ deployment }: Props) {
   const [showModal, setShowModal] = useState<boolean>(false);
   const { data: selectedTerraformWorkspace } = useSelectedTerraformWorkspace();
   const { mutateAsync: asyncSelectWorkspace } = useSelectWorkspace();
-  const { mutateAsync: asyncUpsertDeployment } = useUpsertDeployment();
-
-  function handleAutoDeleteChange() {
-    console.log("on auto delete : " + deployment.deploymentWorkspace);
-    // If deployment is already set to auto delete, then we need to set it to false
-    if (deployment.deploymentAutoDelete) {
-      asyncUpsertDeployment({
-        ...deployment,
-        deploymentAutoDelete: !deployment.deploymentAutoDelete,
-        deploymentAutoDeleteUnixTime: 0,
-      });
-      return;
-    }
-
-    // If deployment is not set to auto delete, then we need to set it to true
-    if (!deployment.deploymentAutoDelete) {
-      asyncUpsertDeployment({
-        ...deployment,
-        deploymentAutoDelete: !deployment.deploymentAutoDelete,
-        deploymentAutoDeleteUnixTime: Math.floor(Date.now() / 1000) + 30,
-      });
-      return;
-    }
-  }
 
   return (
     <div
@@ -60,18 +36,15 @@ export default function Deployment({ deployment }: Props) {
         </div>
         <div className="flex flex-wrap items-center gap-y-2 gap-x-2">
           <p>{deployment.deploymentStatus}</p>
-          <Checkbox
-            id={"auto-destroy-" + deployment.deploymentWorkspace}
-            label="Auto Destroy"
-            checked={deployment.deploymentAutoDelete}
-            handleOnChange={handleAutoDeleteChange}
+          <AutoDestroySwitch
+            deployment={deployment}
             disabled={false}
+            label="Auto Destroy"
+            key={deployment.deploymentId}
           />
-          <div
-            className={`flex w-32 items-center justify-between rounded border border-slate-500 px-2 py-1`}
-          >
-            8 Hours
-          </div>
+          <DeploymentLifespan deployment={deployment} />
+          <DestroyTime deployment={deployment} />
+
           <Button
             variant="primary-outline"
             disabled={
@@ -118,19 +91,8 @@ export default function Deployment({ deployment }: Props) {
               selectedTerraformWorkspace.name === "default"
             }
           >
-            Destroy & Delete
+            Delete
           </DestroyButton>
-          {/* <DestroyAndDeleteDeployment
-            deployment={deployment}
-            variant="secondary-outline"
-            deleteWorkspace={false}
-          >
-            Destroy Resources
-          </DestroyAndDeleteDeployment> */}
-          {/* <DestroyAndDeleteDeployment
-            deployment={deployment}
-            deleteWorkspace={true}
-          /> */}
         </div>
       </div>
       <Modal showModal={showModal} setShowModal={setShowModal} />
@@ -148,7 +110,7 @@ function Modal({ showModal, setShowModal }: ModalProps) {
   return (
     <div className="fixed inset-0 z-20 flex max-h-full max-w-full justify-center bg-slate-800 dark:bg-slate-100 dark:bg-opacity-80">
       <div
-        className="my-20 h-1/3 w-1/3 items-center space-y-2 divide-y divide-slate-300 overflow-y-auto overflow-x-hidden rounded bg-slate-100 p-5 scrollbar-thin  scrollbar-thumb-slate-400 dark:divide-slate-700 dark:bg-slate-900 dark:scrollbar-thumb-slate-600"
+        className="my-20 h-1/3 w-1/3 items-center space-y-2 divide-y divide-slate-300 overflow-y-auto rounded bg-slate-100 p-5 overflow-x-hidden scrollbar-thin  scrollbar-thumb-slate-400 dark:divide-slate-700 dark:bg-slate-900 dark:scrollbar-thumb-slate-600"
         onClick={(e) => {
           e.stopPropagation();
         }}

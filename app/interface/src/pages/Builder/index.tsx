@@ -1,4 +1,4 @@
-import SelectedDeployment from "../../components/SelectedDeployment";
+import SelectedDeployment from "../../components/Deployments/SelectedDeployment";
 import Terminal from "../../components/Terminal";
 import Tfvar from "../../components/Tfvar";
 import { useLab } from "../../hooks/useLab";

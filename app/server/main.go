@@ -107,7 +107,7 @@ func main() {
 	handler.NewDeploymentHandler(authRouter, deploymentService)
 
 	// take seconds and multiply with 1000000000 and pass it to the function.
-	go helper.PollAndDeleteDeployments(5000000000, deploymentService, terraformService, actionStatusService, logStreamService)
+	go helper.PollAndDeleteDeployments(60000000000, deploymentService, terraformService, actionStatusService, logStreamService)
 
 	router.GET("/status", status)
 	router.Run()

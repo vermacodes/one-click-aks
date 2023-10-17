@@ -1,34 +1,23 @@
-import Button from "../Button";
-import Checkbox from "../Checkbox";
+import Button from "../../Button";
 import {
   useSelectedTerraformWorkspace,
   useTerraformWorkspace,
-} from "../../hooks/useWorkspace";
+} from "../../../hooks/useWorkspace";
 import { SiTerraform } from "react-icons/si";
-import {
-  useAddDeployment,
-  useGetMyDeployments,
-  useUpsertDeployment,
-} from "../../hooks/useDeployments";
-import { useLab } from "../../hooks/useLab";
-import { DeploymentType } from "../../dataStructures";
+import { useGetMyDeployments } from "../../../hooks/useDeployments";
+import { useLab } from "../../../hooks/useLab";
+import { DeploymentType } from "../../../dataStructures";
 import { Link } from "react-router-dom";
-import AddTerraformWorkspace from "../AddTerraformWorkspace";
-import CreateNewDeployment from "../Deployments/CreateNewDeployment";
+import CreateNewDeployment from "../CreateNewDeployment";
+import AutoDestroySwitch from "../AutoDestroySwitch";
+import DestroyTime from "../DestroyTime";
+import DeploymentLifespan from "../DeploymentLifespan";
 
 export default function SelectedDeployment() {
   const { data: lab } = useLab();
   const { data: terraformWorkspace } = useTerraformWorkspace();
   const { data: selectedTerraformWorkspace } = useSelectedTerraformWorkspace();
   const { data: deployments } = useGetMyDeployments();
-  const { mutateAsync: asyncUpsertDeployment } = useUpsertDeployment();
-
-  function handleAutoDeleteChange(deployment: DeploymentType) {
-    asyncUpsertDeployment({
-      ...deployment,
-      deploymentAutoDelete: !deployment.deploymentAutoDelete,
-    });
-  }
 
   if (
     terraformWorkspace === undefined ||
@@ -37,26 +26,6 @@ export default function SelectedDeployment() {
   ) {
     return <></>;
   }
-
-  // TODO
-  //if none of the deployments are for the selected workspace, add a new deployment
-  // if (
-  //   deployments.filter(
-  //     (deployment: DeploymentType) =>
-  //       deployment.deploymentWorkspace === selectedTerraformWorkspace?.name
-  //   ).length === 0
-  // ) {
-  //   const newDeployment: DeploymentType = {
-  //     deploymentId: "",
-  //     deploymentAutoDelete: false,
-  //     deploymentWorkspace: selectedTerraformWorkspace?.name || "",
-  //     deploymentLab: lab,
-  //     deploymentStatus: "notstarted",
-  //     deploymentUserId: "",
-  //     deploymentAutoDeleteUnixTime: 0,
-  //   };
-  //   asyncUpsertDeployment(newDeployment);
-  // }
 
   return (
     <div
@@ -84,19 +53,18 @@ export default function SelectedDeployment() {
                   {/* <CurrentTerraformWorkspace /> */}
                 </div>
                 <div className="flex flex-wrap gap-y-2 gap-x-4 divide-x divide-slate-500">
-                  <div className="flex flex-wrap gap-x-2">
-                    <Checkbox
-                      id="auto-delete"
-                      label="Auto Delete"
-                      checked={deployment.deploymentAutoDelete}
-                      handleOnChange={() => handleAutoDeleteChange(deployment)}
+                  <div className="flex flex-wrap items-center gap-x-2">
+                    {deployment.deploymentStatus}
+                  </div>
+                  <div className="flex flex-wrap items-center gap-x-2 pl-2">
+                    <AutoDestroySwitch
+                      deployment={deployment}
                       disabled={false}
+                      label="Auto Destroy"
+                      key={deployment.deploymentId}
                     />
-                    <div
-                      className={`flex w-32 items-center justify-between rounded border border-slate-500 px-2 py-1`}
-                    >
-                      8 Hours
-                    </div>
+                    <DeploymentLifespan deployment={deployment} />
+                    <DestroyTime deployment={deployment} />
                   </div>
                   <div className="flex flex-wrap gap-x-2 pl-2">
                     <Link to={"/deployments"}>

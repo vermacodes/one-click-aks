@@ -11,6 +11,7 @@ type Deployment struct {
 	DeploymentStatus             string  `json:"deploymentStatus"`
 	DeploymentLab                LabType `json:"deploymentLab"`
 	DeploymentAutoDelete         bool    `json:"deploymentAutoDelete"`
+	DeploymentLifespan           int64   `json:"deploymentLifespan"`
 	DeploymentAutoDeleteUnixTime int64   `json:"deploymentAutoDeleteUnixTime"`
 }
 

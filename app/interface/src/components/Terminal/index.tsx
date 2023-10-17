@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useActionStatus } from "../../hooks/useActionStatus";
 import { useLogs, useSetLogs } from "../../hooks/useLogs";
 import Checkbox from "../Checkbox";
+import LogStreamSwitch from "../LogStream/LogStreamSwitch";
 
 export default function Terminal() {
   const [autoScroll, setAutoScroll] = useState(false);
@@ -77,6 +78,9 @@ export default function Terminal() {
             checked={autoScroll}
             handleOnChange={handleOnChange}
           />
+        </div>
+        <div className="pl-2">
+          <LogStreamSwitch />
         </div>
       </div>
       <div className="mb-5 h-1/2 max-h-[500px] min-h-[500px] overflow-y-auto rounded border border-slate-900 bg-slate-900  p-4 text-sm text-slate-100 shadow shadow-slate-300  scrollbar-thin scrollbar-thumb-slate-400 scrollbar-thumb-rounded hover:border-sky-500 dark:shadow-slate-700 dark:scrollbar-thumb-slate-600 dark:hover:border-sky-500">

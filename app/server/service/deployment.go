@@ -40,6 +40,7 @@ func (d *DeploymentService) GetMyDeployments(userId string) ([]entity.Deployment
 			DeploymentId:                 helper.Generate(5),
 			DeploymentLab:                defaultLab,
 			DeploymentAutoDelete:         false,
+			DeploymentLifespan:           28800,
 			DeploymentAutoDeleteUnixTime: 0,
 		}
 

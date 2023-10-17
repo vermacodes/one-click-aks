@@ -3,22 +3,17 @@ import {
   DeploymentType,
   TerraformWorkspace,
 } from "../../../dataStructures";
-import {
-  useActionStatus,
-  useSetActionStatus,
-} from "../../../hooks/useActionStatus";
+import { useActionStatus } from "../../../hooks/useActionStatus";
 import { useDeleteDeployment } from "../../../hooks/useDeployments";
-import { useLab } from "../../../hooks/useLab";
-import { useEndStream, useSetLogs } from "../../../hooks/useLogs";
+import { useSetLogs } from "../../../hooks/useLogs";
 import { useDestroy } from "../../../hooks/useTerraform";
 import {
   useAddWorkspace,
   useDeleteWorkspace,
-  useGetResources,
   useSelectWorkspace,
-  useSelectedTerraformWorkspace,
   useTerraformWorkspace,
 } from "../../../hooks/useWorkspace";
+import { getSelectedTerraformWorkspace } from "../../../utils/helpers";
 import Button from "../../Button";
 
 type Props = {
@@ -30,68 +25,48 @@ type Props = {
 
 export default function DestroyAndDeleteDeployment(props: Props) {
   const { data: actionStatus } = useActionStatus();
-  const { mutate: setActionStatus } = useSetActionStatus();
-  const { data: resources, isFetching: fetchingResources } = useGetResources();
-  const { data: lab } = useLab();
   const { mutate: setLogs } = useSetLogs();
-  const { mutate: endLogStream } = useEndStream();
   const {
     data: workspaces,
     isFetching: fetchingWorkspaces,
     isLoading: gettingWorkspaces,
   } = useTerraformWorkspace();
-  const {
-    data: selectedTerraformWorkspace,
-    isFetching: fetchingSelectedTerraformWorkspace,
-    isLoading: gettingSelectedTerraformWorkspace,
-  } = useSelectedTerraformWorkspace();
   const { mutate: deleteWorkspace, isLoading: deletingWorkspace } =
     useDeleteWorkspace();
   const { mutateAsync: selectWorkspaceAsync, isLoading: selectingWorkspace } =
     useSelectWorkspace();
   const { isLoading: addingWorkspace } = useAddWorkspace();
-  const { mutate: destroy, mutateAsync: destroyAsync } = useDestroy();
+  const { mutateAsync: destroyAsync } = useDestroy();
   const { mutateAsync: asyncDeleteDeployment } = useDeleteDeployment();
-
-  async function getSelectedWorkspace(): Promise<TerraformWorkspace> {
-    return new Promise((resolve, reject) => {
-      if (workspaces === undefined) {
-        reject(Error("workspaces are not defined"));
-      } else {
-        workspaces.map((workspace) => {
-          if (workspace.selected === true) {
-            resolve(workspace);
-          }
-        });
-      }
-    });
-  }
 
   function destroyAndDeleteHandler() {
     // Set logs streaming.
     setLogs({ isStreaming: true, logs: "" });
 
+    if (workspaces === undefined) {
+      console.error("workspaces are not defined");
+      return;
+    }
+
+    const selectedTerraformWorkspace =
+      getSelectedTerraformWorkspace(workspaces);
+
+    if (selectedTerraformWorkspace === undefined) {
+      console.error("workspaces are not defined");
+      return;
+    }
+
     // Execute and wait for destroy to complete.
     destroyAsync(props.deployment.deploymentLab).then(() => {
-      // Get the current workspace.
       if (props.deleteWorkspace === true) {
-        getSelectedWorkspace()
-          .then((workspace) => {
-            // Change the worksapace to default.
-            selectWorkspaceAsync({ name: "default", selected: true }).then(
-              () => {
-                // Delete deployment.
-                asyncDeleteDeployment(
-                  props.deployment.deploymentWorkspace
-                ).then(() => {
-                  deleteWorkspace(workspace);
-                });
-              }
-            );
-          })
-          .catch(() => {
-            console.error("not able to get the selected workspace.");
-          });
+        selectWorkspaceAsync({ name: "default", selected: true }).then(() => {
+          // Delete deployment.
+          asyncDeleteDeployment(props.deployment.deploymentWorkspace).then(
+            () => {
+              deleteWorkspace(selectedTerraformWorkspace);
+            }
+          );
+        });
       }
     });
   }
@@ -118,17 +93,11 @@ export default function DestroyAndDeleteDeployment(props: Props) {
       //disabled
       disabled={
         actionStatus ||
-        fetchingResources ||
         gettingWorkspaces ||
         selectingWorkspace ||
         deletingWorkspace ||
         addingWorkspace ||
         fetchingWorkspaces ||
-        fetchingSelectedTerraformWorkspace ||
-        gettingSelectedTerraformWorkspace ||
-        selectedTerraformWorkspace === undefined ||
-        props.deployment.deploymentWorkspace !==
-          selectedTerraformWorkspace.name ||
         (isDefaultSelected(workspaces) && props.deleteWorkspace === true)
       }
       onClick={() => destroyAndDeleteHandler()}

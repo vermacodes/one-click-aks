@@ -2,8 +2,9 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 
 import { axiosInstance } from "../utils/axios-interceptors";
 import { DeploymentType } from "../dataStructures";
+import { AxiosResponse } from "axios";
 
-function listDeployments() {
+function listDeployments(): Promise<AxiosResponse<DeploymentType[]>> {
     return axiosInstance.get(`deployments/my`);
 }
 
@@ -17,11 +18,11 @@ function upsertDeployment(deployment: DeploymentType) {
 
 export function useGetMyDeployments() {
     return useQuery("list-deployments", listDeployments, {
-        select: (data) => {
+        select: (data): DeploymentType[] => {
             return data.data;
         },
-        staleTime: 6000000,
-        cacheTime: 6000000,
+        staleTime: 120000,
+        cacheTime: 120000,
     });
 }
 
