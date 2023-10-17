@@ -21,7 +21,7 @@ export default function Settings() {
     <PageLayout heading="Settings">
       <div className="mb-4 flex flex-col gap-4">
         <ServerEndpoint />
-        <WebSocketEndpoint />
+        {/* <WebSocketEndpoint /> */}
         <AuthServiceEndpoint />
         <StorageAccount />
         <AzureSubscription

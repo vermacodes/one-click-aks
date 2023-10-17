@@ -20,9 +20,10 @@ function App() {
       }
     }
 
-    // Action Status Socket. Use webSocketBaseUrl from localStorage
+    // Action Status Socket. Use baseUrl from localStorage.
+    // remove http from the beginning and replace with ws
     const actionStatusWs = new ReconnectingWebSocket(
-      `${localStorage.getItem("webSocketBaseUrl")}/actionstatusws`
+      localStorage.getItem("baseUrl")?.replace("http", "ws") + "actionstatusws"
     );
     actionStatusWs.onmessage = (event: any) => {
       setActionStatus(JSON.parse(event.data));

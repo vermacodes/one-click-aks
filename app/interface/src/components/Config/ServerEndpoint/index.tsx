@@ -105,7 +105,7 @@ export default function ServerEndpoint({}: Props) {
                   baseUrl !==
                     "https://" +
                       graphResponse.userPrincipalName.split("@")[0] +
-                      "-webapp-actlabs.azurewebsites.net"
+                      "-webapp-actlabs.azurewebsites.net/"
                 }
                 disabled={true}
                 handleOnChange={() => {}}
@@ -128,14 +128,14 @@ export default function ServerEndpoint({}: Props) {
                   baseUrl ===
                   "https://" +
                     graphResponse.userPrincipalName.split("@")[0] +
-                    "-webapp-actlabs.azurewebsites.net"
+                    "-webapp-actlabs.azurewebsites.net/"
                 }
                 disabled={!graphResponse}
                 handleOnChange={() => {
                   handleSwitch(
                     "https://" +
                       graphResponse.userPrincipalName.split("@")[0] +
-                      "-webapp-actlabs.azurewebsites.net"
+                      "-webapp-actlabs.azurewebsites.net/"
                   );
                 }}
                 label={"WebApp"}
@@ -147,14 +147,14 @@ export default function ServerEndpoint({}: Props) {
                   baseUrl ===
                   "https://" +
                     graphResponse.userPrincipalName.split("@")[0] +
-                    "-webapp-actlabs-fdpo.azurewebsites.net"
+                    "-webapp-actlabs-fdpo.azurewebsites.net/"
                 }
                 disabled={!graphResponse}
                 handleOnChange={() => {
                   handleSwitch(
                     "https://" +
                       graphResponse.userPrincipalName.split("@")[0] +
-                      "-webapp-actlabs-fdpo.azurewebsites.net"
+                      "-webapp-actlabs-fdpo.azurewebsites.net/"
                   );
                 }}
                 label={"WebApp (NonProd)"}
