@@ -20,9 +20,9 @@ function App() {
       }
     }
 
-    // Action Status Socket
+    // Action Status Socket. Use webSocketBaseUrl from localStorage
     const actionStatusWs = new ReconnectingWebSocket(
-      "ws://localhost:8881/actionstatusws"
+      `${localStorage.getItem("webSocketBaseUrl")}/actionstatusws`
     );
     actionStatusWs.onmessage = (event: any) => {
       setActionStatus(JSON.parse(event.data));

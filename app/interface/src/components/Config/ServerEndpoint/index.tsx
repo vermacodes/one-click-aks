@@ -141,6 +141,25 @@ export default function ServerEndpoint({}: Props) {
                 label={"WebApp"}
                 key={"key"}
               />
+              <Checkbox
+                id="webapp-nprd"
+                checked={
+                  baseUrl ===
+                  "https://" +
+                    graphResponse.userPrincipalName.split("@")[0] +
+                    "-webapp-actlabs-fdpo.azurewebsites.net"
+                }
+                disabled={!graphResponse}
+                handleOnChange={() => {
+                  handleSwitch(
+                    "https://" +
+                      graphResponse.userPrincipalName.split("@")[0] +
+                      "-webapp-actlabs-fdpo.azurewebsites.net"
+                  );
+                }}
+                label={"WebApp (NonProd)"}
+                key={"key"}
+              />
             </div>
           ) : (
             // Dummy placeholders
@@ -167,6 +186,14 @@ export default function ServerEndpoint({}: Props) {
                 disabled={true}
                 handleOnChange={() => {}}
                 label={"WebApp"}
+                key={"key"}
+              />
+              <Checkbox
+                id="webapp"
+                checked={false}
+                disabled={true}
+                handleOnChange={() => {}}
+                label={"WebApp (NonProd)"}
                 key={"key"}
               />
             </div>

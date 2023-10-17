@@ -497,6 +497,13 @@ else
   WEBAPP_NAME="${USER_ALIAS}-webapp-actlabs"
 fi
 
+# if ARM_USER_PRINCIPAL_NAME contains fdpo.onmicrosoft.com then remove it and add microsoft.com
+# this is done to accomodate new Microsoft non-production tenant.
+if [[ "${ARM_USER_PRINCIPAL_NAME}" == *"fdpo.onmicrosoft.com"* ]]; then
+  ARM_USER_PRINCIPAL_NAME=$(echo ${ARM_USER_PRINCIPAL_NAME} | cut -d '_' -f1)
+  ARM_USER_PRINCIPAL_NAME="${ARM_USER_PRINCIPAL_NAME}@microsoft.com"
+fi
+
 # Create the resource group
 gap
 log "📁 resource group"

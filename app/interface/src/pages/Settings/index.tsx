@@ -10,6 +10,7 @@ import TfInit from "../../components/TfInit";
 import TfWorkspace from "../../components/TfWorkspace";
 import PageLayout from "../../layouts/PageLayout";
 import SettingsItemLayout from "../../layouts/SettingsItemLayout";
+import WebSocketEndpoint from "../../components/Config/WebSocketEndpoint";
 
 export default function Settings() {
   const [subscriptionMenu, setSubscriptionMenu] = useState<boolean>(false);
@@ -20,6 +21,7 @@ export default function Settings() {
     <PageLayout heading="Settings">
       <div className="mb-4 flex flex-col gap-4">
         <ServerEndpoint />
+        <WebSocketEndpoint />
         <AuthServiceEndpoint />
         <StorageAccount />
         <AzureSubscription

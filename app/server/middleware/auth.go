@@ -37,7 +37,8 @@ func AuthRequired(authService entity.AuthService, logStream entity.LogStreamServ
 
 		// ensure user principal maches with the one in env
 		if userPrincipal != os.Getenv("ARM_USER_PRINCIPAL_NAME") {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "principal mismatch"})
+			slog.Error("principal mismatch : token issued to "+userPrincipal+" but found user "+os.Getenv("ARM_USER_PRINCIPAL_NAME"), nil)
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "principal mismatch : token issued to " + userPrincipal + " but found user " + os.Getenv("ARM_USER_PRINCIPAL_NAME")})
 			return
 		}
 
