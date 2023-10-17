@@ -52,22 +52,25 @@ export function getDeploymentDestroyTime(deployment: DeploymentType) {
 }
 
 // Function returns the time remaining in hours, minutes and seconds for the deployment to be destroyed based on user's local time.
-export function getDeploymentDestroyTimeRemaining(deployment: DeploymentType) {
-    if (deployment.deploymentAutoDelete === false) {
-        return "Never";
-    }
-
-    const epochTime = deployment.deploymentAutoDeleteUnixTime;
-    const now = new Date();
-    const timeRemaining = epochTime - Math.floor(now.getTime() / 1000);
-
-    if (timeRemaining <= 0) {
-        return "0h 0m";
-    }
-
-    const hours = Math.floor(timeRemaining / 3600);
-    const minutes = Math.floor((timeRemaining % 3600) / 60);
-    const seconds = Math.floor((timeRemaining % 3600) % 60);
-
-    return `${hours}h ${minutes}m ${seconds}s`;
+// uset setInterval to update the time remaining every second.
+export function getDeploymentDestroyTimeRemaining(deployment: DeploymentType, setDeploymentDestroyTimeRemaining: React.Dispatch<React.SetStateAction<string>>) {
+    setInterval(() => {
+        if (deployment.deploymentAutoDelete === false) {
+            return "Never";
+        }
+    
+        const epochTime = deployment.deploymentAutoDeleteUnixTime;
+        const now = new Date();
+        const timeRemaining = epochTime - Math.floor(now.getTime() / 1000);
+    
+        if (timeRemaining < 0) {
+            return "Expired";
+        }
+    
+        const hours = Math.floor(timeRemaining / 3600);
+        const minutes = Math.floor((timeRemaining % 3600) / 60);
+        const seconds = Math.floor((timeRemaining % 3600) % 60);
+    
+        return hours + "h " + minutes + "m " + seconds + "s";
+    }, 1000);
 }

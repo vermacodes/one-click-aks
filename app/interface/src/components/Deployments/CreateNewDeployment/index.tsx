@@ -3,12 +3,12 @@ import Button from "../../Button";
 import { MdClose } from "react-icons/md";
 import {
   useAddWorkspace,
-  useDeleteWorkspace,
-  useGetResources,
-  useSelectWorkspace,
   useTerraformWorkspace,
 } from "../../../hooks/useWorkspace";
-import { useUpsertDeployment } from "../../../hooks/useDeployments";
+import {
+  useGetMyDeployments,
+  useUpsertDeployment,
+} from "../../../hooks/useDeployments";
 import {
   useActionStatus,
   useSetActionStatus,
@@ -23,9 +23,14 @@ type Props = {
 
 export default function CreateNewDeployment(props: Props) {
   const [showModal, setShowModal] = useState<boolean>(false);
+  const { data: actionStatus } = useActionStatus();
   return (
     <>
-      <Button variant={props.variant} onClick={() => setShowModal(true)}>
+      <Button
+        variant={props.variant}
+        onClick={() => setShowModal(true)}
+        disabled={actionStatus}
+      >
         {props.children}
       </Button>
       <Modal showModal={showModal} setShowModal={setShowModal} />
@@ -39,27 +44,13 @@ type ModalProps = {
 };
 
 function Modal({ showModal, setShowModal }: ModalProps) {
-  const [workspaceMenu, setWorkspaceMenu] = useState<boolean>(false);
-
-  const [add, setAdd] = useState<boolean>(false);
   const [newWorkSpaceName, setNewWorkSpaceName] = useState<string>("");
-  const {
-    data: workspaces,
-    refetch: refetchWorkspaces,
-    isLoading: gettingWorkspaces,
-    isFetching: fetchingWorkspaces,
-    isError: workspaceError,
-  } = useTerraformWorkspace();
-  const { isFetching: fetchingResources } = useGetResources();
-  const { mutate: selectWorkspace, isLoading: selectingWorkspace } =
-    useSelectWorkspace();
-  const { isLoading: deletingWorkspace } = useDeleteWorkspace();
-  const {
-    mutate: addWorkspace,
-    mutateAsync: asyncAddWorkspace,
-    isLoading: addingWorkspace,
-  } = useAddWorkspace();
-  const { mutate: upsertDeployment } = useUpsertDeployment();
+  const { mutateAsync: asyncAddWorkspace } = useAddWorkspace();
+  const { isFetching: fetchingWorkspaces, isLoading: loadingWorkspaces } =
+    useTerraformWorkspace();
+  const { isFetching: fetchingDeployments, isLoading: loadingDeployments } =
+    useGetMyDeployments();
+  const { mutateAsync: upsertDeployment } = useUpsertDeployment();
   const { data: actionStatus } = useActionStatus();
   const { mutate: setActionStatus } = useSetActionStatus();
   const { data: lab } = useLab();
@@ -75,7 +66,6 @@ function Modal({ showModal, setShowModal }: ModalProps) {
       setActionStatus({ inProgress: true });
       asyncAddWorkspace({ name: newWorkSpaceName, selected: true }).then(() => {
         setActionStatus({ inProgress: false });
-        setShowModal(false);
         setNewWorkSpaceName("");
         upsertDeployment({
           deploymentId: "",
@@ -83,9 +73,13 @@ function Modal({ showModal, setShowModal }: ModalProps) {
           deploymentWorkspace: newWorkSpaceName,
           deploymentAutoDelete: false,
           deploymentAutoDeleteUnixTime: 0,
-          deploymentLifespan: 900,
+          deploymentLifespan: 28800,
           deploymentStatus: "Deployment Not Started",
           deploymentLab: lab,
+        }).finally(() => {
+          setTimeout(() => {
+            setShowModal(false);
+          }, 3000);
         });
       });
     }
@@ -96,15 +90,15 @@ function Modal({ showModal, setShowModal }: ModalProps) {
   return (
     <div
       className="fixed inset-0 z-20 flex max-h-full max-w-full justify-center bg-slate-800 dark:bg-slate-100 dark:bg-opacity-80"
-      onClick={() => {
+      onClick={(e) => {
         setShowModal(false);
+        e.stopPropagation();
       }}
     >
       <div
         className="my-20 h-1/3 w-1/3 space-y-2 divide-y divide-slate-300 overflow-y-auto rounded bg-slate-100 p-5 overflow-x-hidden scrollbar-thin  scrollbar-thumb-slate-400 dark:divide-slate-700 dark:bg-slate-900 dark:scrollbar-thumb-slate-600"
         onClick={(e) => {
           e.stopPropagation();
-          setWorkspaceMenu(false);
         }}
       >
         <div className="w-100 flex justify-between pb-2 ">
@@ -117,11 +111,16 @@ function Modal({ showModal, setShowModal }: ModalProps) {
           </button>
         </div>
         <div className="flex flex-col gap-y-2 pt-4">
-          <div
-            className="flex w-full justify-between gap-x-4"
-            onDoubleClick={() => refetchWorkspaces}
-          >
-            {actionStatus === false ? (
+          <div className="flex w-full justify-between gap-x-4">
+            {actionStatus !== false ||
+            fetchingDeployments ||
+            fetchingWorkspaces ||
+            loadingDeployments ||
+            loadingWorkspaces ? (
+              <div className={`flex w-96 items-center justify-between`}>
+                Action is in progress, please wait...
+              </div>
+            ) : (
               <>
                 <div
                   className={`flex w-96 items-center justify-between rounded border border-slate-500`}
@@ -134,14 +133,10 @@ function Modal({ showModal, setShowModal }: ModalProps) {
                     onChange={handleWorkspaceNameTextField}
                   ></input>
                 </div>
-                <Button variant="success" onClick={() => handleAddWorkspace()}>
+                <Button variant="primary" onClick={() => handleAddWorkspace()}>
                   Add
                 </Button>
               </>
-            ) : (
-              <div className={`flex w-96 items-center justify-between`}>
-                Action is in progress, please wait...
-              </div>
             )}
           </div>
         </div>
