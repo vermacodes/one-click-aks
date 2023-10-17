@@ -68,26 +68,50 @@ var upgrader = websocket.Upgrader{
 }
 
 func (a *actionStatusHandler) GetActionStatusWs(w http.ResponseWriter, r *http.Request) {
-
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		slog.Error("not able to upgrade connection", err)
+		slog.Error("Failed to upgrade connection:", err)
 		return
 	}
 
+	defer conn.Close()
+
+	// Get initial action status
+	initialActionStatus, err := a.actionStatusService.GetActionStatus()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		slog.Error("Failed to retrieve initial action status:", err)
+		return
+	}
+
+	// Send the initial action status to the client
+	if err := conn.WriteJSON(initialActionStatus); err != nil {
+		slog.Error("Failed to send initial action status to client:", err)
+		return
+	}
+
+	previousActionStatus := initialActionStatus
+
 	for {
+		// Get the current action status
 		actionStatus, err := a.actionStatusService.GetActionStatus()
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
+			slog.Error("Failed to retrieve action status:", err)
 			return
 		}
 
-		slog.Info("sending action status to client: ", actionStatus.InProgress)
-
-		if err := conn.WriteJSON(actionStatus); err != nil {
-			return
+		// Check for changes in action status
+		if actionStatus.InProgress != previousActionStatus.InProgress {
+			slog.Info("Sending action status to client: ", actionStatus.InProgress)
+			if err := conn.WriteJSON(actionStatus); err != nil {
+				slog.Error("Failed to send action status to client:", err)
+				return
+			}
 		}
 
-		time.Sleep(5 * time.Second)
+		previousActionStatus = actionStatus
+
+		time.Sleep(1 * time.Second)
 	}
 }

@@ -1,15 +1,16 @@
 import ansiHTML from "ansi-to-html";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useActionStatus } from "../../hooks/useActionStatus";
 import { useLogs, useSetLogs } from "../../hooks/useLogs";
 import Checkbox from "../Checkbox";
 import LogStreamSwitch from "../LogStream/LogStreamSwitch";
+import { WebSocketContext } from "../../WebSocketContext";
 
 export default function Terminal() {
   const [autoScroll, setAutoScroll] = useState(false);
   const { data } = useLogs();
   const { mutate: setLogs } = useSetLogs();
-  const { data: inProgress } = useActionStatus();
+  const { data: inProgress } = useContext(WebSocketContext);
 
   const logEndRef = useRef<null | HTMLDivElement>(null);
   useEffect(() => {

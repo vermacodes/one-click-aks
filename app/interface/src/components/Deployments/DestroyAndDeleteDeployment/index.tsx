@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import {
   ButtonVariant,
   DeploymentType,
@@ -15,6 +16,7 @@ import {
 } from "../../../hooks/useWorkspace";
 import { getSelectedTerraformWorkspace } from "../../../utils/helpers";
 import Button from "../../Button";
+import { WebSocketContext } from "../../../WebSocketContext";
 
 type Props = {
   variant?: ButtonVariant;
@@ -24,7 +26,7 @@ type Props = {
 };
 
 export default function DestroyAndDeleteDeployment(props: Props) {
-  const { data: actionStatus } = useActionStatus();
+  const { data: actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const {
     data: workspaces,

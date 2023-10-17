@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { FaRocket } from "react-icons/fa";
 import {
   ButtonVariant,
@@ -30,6 +30,7 @@ import {
   calculateNewEpochTimeForDeployment,
   getSelectedDeployment,
 } from "../../../utils/helpers";
+import { WebSocketContext } from "../../../WebSocketContext";
 
 type Props = {
   variant: ButtonVariant;
@@ -53,7 +54,7 @@ export default function ApplyButton({ variant, children, lab }: Props) {
   const { mutate: setLogs } = useSetLogs();
   const { mutateAsync: applyAsync } = useApplyAsync();
   const { mutateAsync: applyAsyncExtend } = useApplyAsyncExtend();
-  const { data: inProgress } = useActionStatus();
+  const { data: inProgress } = useContext(WebSocketContext);
   const { data: preference } = usePreference();
   const { data: terraformOperation } = useGetTerraformOperation(
     terraformOperationState.operationId

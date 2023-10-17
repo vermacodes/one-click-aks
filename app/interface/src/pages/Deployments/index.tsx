@@ -23,9 +23,7 @@ export default function Deployments() {
       {deployments &&
         deployments.length > 0 &&
         deployments.map((deployment: DeploymentType) => (
-          <>
-            <Deployment deployment={deployment} key={deployment.deploymentId} />
-          </>
+          <Deployment deployment={deployment} key={deployment.deploymentId} />
         ))}
       <Terminal />
     </PageLayout>

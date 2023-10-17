@@ -7,7 +7,7 @@ export interface WebSocketContextData {
 }
 
 export const webSocketContextDataDefaultValue: WebSocketContextData = {
-  data: true,
+  data: false,
   setActionStatus: () => null,
 };
 

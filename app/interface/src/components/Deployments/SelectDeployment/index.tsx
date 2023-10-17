@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { ButtonVariant, DeploymentType } from "../../../dataStructures";
 import { useActionStatus } from "../../../hooks/useActionStatus";
 import {
@@ -7,6 +7,7 @@ import {
 } from "../../../hooks/useWorkspace";
 import { getSelectedTerraformWorkspace } from "../../../utils/helpers";
 import Button from "../../Button";
+import { WebSocketContext } from "../../../WebSocketContext";
 
 type SelectDeploymentProps = {
   variant: ButtonVariant;
@@ -18,7 +19,7 @@ export default function SelectDeployment({
   deployment,
 }: SelectDeploymentProps) {
   const [showModal, setShowModal] = useState<boolean>(false);
-  const { data: actionStatus } = useActionStatus();
+  const { data: actionStatus } = useContext(WebSocketContext);
   const { data: workspaces } = useTerraformWorkspace();
   const { mutateAsync: asyncSelectWorkspace } = useSelectWorkspace();
 
@@ -72,7 +73,7 @@ function Modal({ showModal, setShowModal }: ModalProps) {
   return (
     <div className="fixed inset-0 z-20 flex max-h-full max-w-full justify-center bg-slate-800 dark:bg-slate-100 dark:bg-opacity-80">
       <div
-        className="my-20 h-1/3 w-1/3 items-center space-y-2 divide-y divide-slate-300 overflow-y-auto rounded bg-slate-100 p-5 overflow-x-hidden scrollbar-thin  scrollbar-thumb-slate-400 dark:divide-slate-700 dark:bg-slate-900 dark:scrollbar-thumb-slate-600"
+        className="my-20 h-1/3 w-1/3 items-center space-y-2 divide-y divide-slate-300 overflow-y-auto overflow-x-hidden rounded bg-slate-100 p-5 scrollbar-thin  scrollbar-thumb-slate-400 dark:divide-slate-700 dark:bg-slate-900 dark:scrollbar-thumb-slate-600"
         onClick={(e) => {
           e.stopPropagation();
         }}

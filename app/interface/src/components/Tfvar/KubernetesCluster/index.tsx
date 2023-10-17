@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import { TfvarKubernetesClusterType } from "../../../dataStructures";
 import { useActionStatus } from "../../../hooks/useActionStatus";
 import { useLab, useSetLab } from "../../../hooks/useLab";
@@ -5,6 +6,7 @@ import { useSetLogs } from "../../../hooks/useLogs";
 import { useGetOrchestrators } from "../../../hooks/useOrchestrators";
 import Checkbox from "../../Checkbox";
 import { defaultTfvarConfig } from "../defaults";
+import { WebSocketContext } from "../../../WebSocketContext";
 
 export default function KubernetesCluster() {
   const {
@@ -13,7 +15,7 @@ export default function KubernetesCluster() {
     isFetching: labIsFetching,
   } = useLab();
   const { mutate: setLab } = useSetLab();
-  const { data: inProgress } = useActionStatus();
+  const { data: inProgress } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
 
   const { data: kubernetesVersion } = useGetOrchestrators();

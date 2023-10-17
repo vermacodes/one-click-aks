@@ -1,13 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useActionStatus } from "../../../../hooks/useActionStatus";
 import { useLab, useSetLab } from "../../../../hooks/useLab";
 import { useSetLogs } from "../../../../hooks/useLogs";
 import Checkbox from "../../../Checkbox";
+import { WebSocketContext } from "../../../../WebSocketContext";
 
 type Props = {};
 
 export default function NetworkPluginMode({}: Props) {
-  const { data: inProgress } = useActionStatus();
+  const { data: inProgress } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const {
     data: lab,

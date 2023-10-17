@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { FaChevronDown, FaTrash } from "react-icons/fa";
 import {
   useActionStatus,
@@ -16,6 +16,7 @@ import Button from "../Button";
 import TfResources from "../TfResources";
 import { useUpsertDeployment } from "../../hooks/useDeployments";
 import { useLab } from "../../hooks/useLab";
+import { WebSocketContext } from "../../WebSocketContext";
 
 type TfWorkspaceProps = {
   workspaceMenu: boolean;
@@ -45,7 +46,7 @@ export default function TfWorkspace({
     isLoading: addingWorkspace,
   } = useAddWorkspace();
   const { mutate: upsertDeployment } = useUpsertDeployment();
-  const { data: actionStatus } = useActionStatus();
+  const { data: actionStatus } = useContext(WebSocketContext);
   const { mutate: setActionStatus } = useSetActionStatus();
   const { data: lab } = useLab();
 

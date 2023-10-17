@@ -2,10 +2,7 @@ import { useState } from "react";
 import { DeploymentType } from "../../../dataStructures";
 import { FaChevronDown } from "react-icons/fa";
 import { useUpsertDeployment } from "../../../hooks/useDeployments";
-import {
-  getDeploymentDestroyTime,
-  getDeploymentDestroyTimeRemaining,
-} from "../../../utils/helpers";
+import { calculateNewEpochTimeForDeployment } from "../../../utils/helpers";
 
 type DeploymentLifespanProps = {
   deployment: DeploymentType;
@@ -55,10 +52,18 @@ export default function DeploymentLifespan({
             key={lifespan}
             onClick={() => {
               setMenu(false);
-              upsertDeployment({ ...deployment, deploymentLifespan: lifespan });
+              upsertDeployment({
+                ...deployment,
+                deploymentLifespan: lifespan,
+                deploymentAutoDeleteUnixTime:
+                  calculateNewEpochTimeForDeployment({
+                    ...deployment,
+                    deploymentLifespan: lifespan,
+                  }),
+              });
             }}
           >
-            {getDeploymentDestroyTime(deployment)}
+            {secondsToHoursOrMinutes(lifespan)}
           </div>
         ))}
       </div>

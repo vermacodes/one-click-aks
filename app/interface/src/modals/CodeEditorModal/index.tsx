@@ -1,6 +1,14 @@
 import Editor from "@monaco-editor/react";
-import { useEffect, useState } from "react";
-import { FaArrowCircleLeft, FaCheck, FaPlus, FaRedo, FaRocket, FaSave, FaTimes } from "react-icons/fa";
+import { useContext, useEffect, useState } from "react";
+import {
+  FaArrowCircleLeft,
+  FaCheck,
+  FaPlus,
+  FaRedo,
+  FaRocket,
+  FaSave,
+  FaTimes,
+} from "react-icons/fa";
 
 import Button from "../../components/Button";
 import { ButtonVariant, Lab } from "../../dataStructures";
@@ -8,6 +16,7 @@ import { useActionStatus } from "../../hooks/useActionStatus";
 import { useLab, useSetLab } from "../../hooks/useLab";
 import { useEndStream, useSetLogs } from "../../hooks/useLogs";
 import { useExtend } from "../../hooks/useTerraform";
+import { WebSocketContext } from "../../WebSocketContext";
 
 type Props = {
   children?: React.ReactNode;
@@ -42,7 +51,7 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
   const { data: lab } = useLab();
   const { mutate: setLab } = useSetLab();
   const { mutateAsync: extendAsync } = useExtend();
-  const { data: inProgress } = useActionStatus();
+  const { data: inProgress } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const { mutate: endLogStream } = useEndStream();
 
@@ -89,7 +98,9 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
                 }
               }}
             >
-              <span><FaRocket /></span>
+              <span>
+                <FaRocket />
+              </span>
               Run
             </Button>
             <Button
@@ -98,7 +109,9 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
                 setExtendScript(lab.extendScript);
               }}
             >
-              <span><FaRedo /></span>
+              <span>
+                <FaRedo />
+              </span>
               Reset
             </Button>
             <Button
@@ -108,7 +121,9 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
                   setLab({ ...lab, extendScript: _extendScript });
               }}
             >
-              <span><FaSave /></span>
+              <span>
+                <FaSave />
+              </span>
               Save
             </Button>
             <Button
@@ -117,7 +132,9 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
                 setShowModal(false);
               }}
             >
-              <span><FaTimes /></span>
+              <span>
+                <FaTimes />
+              </span>
               Close
             </Button>
             <Button
@@ -128,7 +145,9 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
               }}
               variant="primary"
             >
-              <span><FaCheck /></span>
+              <span>
+                <FaCheck />
+              </span>
               Save & Close
             </Button>
           </div>

@@ -9,11 +9,13 @@ import { useQueryClient } from "react-query";
 import { useInit } from "../../hooks/useTerraform";
 import { useLab } from "../../hooks/useLab";
 import SettingsItemLayout from "../../layouts/SettingsItemLayout";
+import { useContext } from "react";
+import { WebSocketContext } from "../../WebSocketContext";
 
 type Props = {};
 
 export default function TfInit({}: Props) {
-  const { data: inProgress } = useActionStatus();
+  const { data: inProgress } = useContext(WebSocketContext);
   const { mutate: setActionStatus } = useSetActionStatus();
   const { mutate: setLogs } = useSetLogs();
   const { mutate: endLogStream } = useEndStream();

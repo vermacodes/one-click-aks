@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { FaTools, FaUps } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { ButtonVariant, Lab } from "../../../dataStructures";
@@ -7,6 +7,7 @@ import { useSetLab } from "../../../hooks/useLab";
 import { useSetLogs } from "../../../hooks/useLogs";
 import { usePreference } from "../../../hooks/usePreference";
 import Button from "../../Button";
+import { WebSocketContext } from "../../../WebSocketContext";
 
 type Props = {
   variant: ButtonVariant;
@@ -17,7 +18,7 @@ type Props = {
 export default function LoadToBuilderButton({ variant, children, lab }: Props) {
   const { mutate: setLogs } = useSetLogs();
   const { mutate: setLab } = useSetLab();
-  const { data: inProgress } = useActionStatus();
+  const { data: inProgress } = useContext(WebSocketContext);
   const { data: preference } = usePreference();
   const navigate = useNavigate();
 

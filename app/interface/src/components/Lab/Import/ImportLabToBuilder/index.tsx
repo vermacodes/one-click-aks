@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FaUpload } from "react-icons/fa";
 import { Lab } from "../../../../dataStructures";
 import { useActionStatus } from "../../../../hooks/useActionStatus";
 import { useSetLab } from "../../../../hooks/useLab";
 import { useSetLogs } from "../../../../hooks/useLogs";
 import Button from "../../../Button";
+import { WebSocketContext } from "../../../../WebSocketContext";
 
 type Props = {};
 
 export default function ImportLabToBuilder({}: Props) {
   const [lab, _setLab] = useState<Lab | undefined>();
   const { mutate: setLab } = useSetLab();
-  const { data: inProgress } = useActionStatus();
+  const { data: inProgress } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
 
   useEffect(() => {

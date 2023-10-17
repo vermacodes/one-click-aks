@@ -52,7 +52,7 @@ function Modal({ showModal, setShowModal }: ModalProps) {
   const { isFetching: fetchingDeployments, isLoading: loadingDeployments } =
     useGetMyDeployments();
   const { mutateAsync: upsertDeployment } = useUpsertDeployment();
-  const { data: actionStatus } = useActionStatus();
+  const { data: actionStatus } = useContext(WebSocketContext);
   const { mutate: setActionStatus } = useSetActionStatus();
   const { data: lab } = useLab();
 

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { FaTrash } from "react-icons/fa";
 import {
   ButtonVariant,
@@ -27,6 +27,7 @@ import {
   useTerraformWorkspace,
 } from "../../../hooks/useWorkspace";
 import { useDeleteDeployment } from "../../../hooks/useDeployments";
+import { WebSocketContext } from "../../../WebSocketContext";
 
 type Props = {
   variant: ButtonVariant;
@@ -62,7 +63,7 @@ export default function DestroyButton({
   const { mutate: setLogs } = useSetLogs();
   const { mutateAsync: destroyAsync } = useDestroyAsync();
   const { mutateAsync: destroyAsyncExtend } = useDestroyAsyncExtend();
-  const { data: inProgress } = useActionStatus();
+  const { data: inProgress } = useContext(WebSocketContext);
   const { data: preference } = usePreference();
   const { mutate: endLogStream } = useEndStream();
   const { data: terraformOperation } = useGetTerraformOperation(

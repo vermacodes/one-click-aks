@@ -4,6 +4,8 @@ import { useActionStatus } from "../../hooks/useActionStatus";
 import { useLab, useSetLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
 import { useGetOrchestrators } from "../../hooks/useOrchestrators";
+import { useContext } from "react";
+import { WebSocketContext } from "../../WebSocketContext";
 
 type Props = {
   versionMenu: boolean;
@@ -14,7 +16,7 @@ export default function KubernetesVersion({
   versionMenu,
   setVersionMenu,
 }: Props) {
-  const { data: actionStatus } = useActionStatus();
+  const { data: actionStatus } = useContext(WebSocketContext);
   const { data, isLoading, isFetching, isError } = useGetOrchestrators();
   const { mutate: setLogs } = useSetLogs();
   const {

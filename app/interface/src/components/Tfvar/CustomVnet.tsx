@@ -1,8 +1,10 @@
+import { useContext } from "react";
 import { useActionStatus } from "../../hooks/useActionStatus";
 import { useLab, useSetLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
 import Checkbox from "../Checkbox";
 import { defaultTfvarConfig } from "./defaults";
+import { WebSocketContext } from "../../WebSocketContext";
 
 export default function CustomVnet() {
   const {
@@ -11,7 +13,7 @@ export default function CustomVnet() {
     isFetching: labIsFetching,
   } = useLab();
   const { mutate: setLab } = useSetLab();
-  const { data: inProgress } = useActionStatus();
+  const { data: inProgress } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
 
   function handleOnChange() {
