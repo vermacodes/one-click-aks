@@ -265,7 +265,7 @@ func helperTerraformAction(t *terraformService, tfvar entity.TfvarConfigType, ac
 	}
 
 	if !t.kVersionService.DoesVersionExist(tfvar.KubernetesClusters[0].KubernetesVersion) {
-		slog.Info("kubernetes version not found. Defaulting to default version.")
+		slog.Debug("kubernetes version not found. Defaulting to default version.")
 		tfvar.KubernetesClusters[0].KubernetesVersion = t.kVersionService.GetDefaultVersion()
 	}
 

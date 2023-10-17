@@ -8,7 +8,7 @@ import { WebSocketContext } from "../../../../WebSocketContext";
 type Props = {};
 
 export default function VirtualNode({}: Props) {
-  const { data: inProgress } = useContext(WebSocketContext);
+  const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const {
     data: lab,
@@ -28,7 +28,7 @@ export default function VirtualNode({}: Props) {
           lab.template.kubernetesClusters[0].addons.virtualNode = true;
         }
 
-        !inProgress &&
+        !actionStatus.inProgress &&
           setLogs({
             isStreaming: false,
             logs: JSON.stringify(lab.template, null, 4),

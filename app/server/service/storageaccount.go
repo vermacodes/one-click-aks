@@ -22,11 +22,11 @@ func (s *storageAccountService) GetStorageAccountName() (string, error) {
 	// Give Storage Account Name Redis.
 	val, err := s.storageAccountRepository.GetStorageAccountNameFromRedis()
 	if err == nil {
-		slog.Info("storage account name found in redis.")
+		slog.Debug("storage account name found in redis.")
 		return val, nil
 	}
 
-	slog.Info("storage account name was not found in redis.")
+	slog.Debug("storage account name was not found in redis.")
 	// Get storage account name from CLI.
 	val, err = s.storageAccountRepository.GetStorageAccountName()
 	if err != nil || val == "" {
@@ -35,7 +35,7 @@ func (s *storageAccountService) GetStorageAccountName() (string, error) {
 	}
 
 	// Set storage account name in redis.
-	slog.Info("adding storage account name to redis")
+	slog.Debug("adding storage account name to redis")
 	s.storageAccountRepository.SetStorageAccountNameInRedis(val)
 	return val, err
 }
@@ -45,7 +45,7 @@ func (s *storageAccountService) GetBlobContainer(storageAccountName string, cont
 
 	out, err := s.storageAccountRepository.GetBlobContainerFromRedis()
 	if err == nil {
-		slog.Info("blob container found in redis")
+		slog.Debug("blob container found in redis")
 		helperStringToBlobContainer(out, &blobContainer)
 		return blobContainer, err
 	}
@@ -57,7 +57,7 @@ func (s *storageAccountService) GetBlobContainer(storageAccountName string, cont
 		return blobContainer, err
 	}
 
-	slog.Info("adding blob container to redis.")
+	slog.Debug("adding blob container to redis.")
 	s.storageAccountRepository.SetBlobContainerInRedis(out)
 
 	helperStringToBlobContainer(out, &blobContainer)
@@ -69,7 +69,7 @@ func (s *storageAccountService) GetResourceGroup() (entity.ResourceGroup, error)
 
 	out, err := s.storageAccountRepository.GetResourceGroupFromRedis()
 	if err == nil {
-		slog.Info("resource group found in redis")
+		slog.Debug("resource group found in redis")
 		helperStringToResourceGroup(out, &resourceGroup)
 		return resourceGroup, err
 	}
@@ -82,7 +82,7 @@ func (s *storageAccountService) GetResourceGroup() (entity.ResourceGroup, error)
 		return resourceGroup, err
 	}
 
-	slog.Info("setting resource group in redis.")
+	slog.Debug("setting resource group in redis.")
 	s.storageAccountRepository.SetResourceGroupInRedis(out)
 
 	helperStringToResourceGroup(out, &resourceGroup)
@@ -94,7 +94,7 @@ func (s *storageAccountService) GetStorageAccount(storageAccountName string) (en
 
 	out, err := s.storageAccountRepository.GetStorageAccountFromRedis()
 	if err == nil {
-		slog.Info("storage account found in redis")
+		slog.Debug("storage account found in redis")
 		helperStringToStorageAccount(out, &storageAccount)
 		return storageAccount, err
 	}
@@ -107,7 +107,7 @@ func (s *storageAccountService) GetStorageAccount(storageAccountName string) (en
 		return storageAccount, err
 	}
 
-	slog.Info("added storage account to redis.")
+	slog.Debug("added storage account to redis.")
 	s.storageAccountRepository.SetStorageAccountInRedis(out)
 
 	helperStringToStorageAccount(out, &storageAccount)
@@ -123,7 +123,7 @@ func (s *storageAccountService) CreateResoureceGroup() (entity.ResourceGroup, er
 	// if there exists a resource group, just return that.
 	out, err := s.storageAccountRepository.GetResourceGroup()
 	if err == nil {
-		slog.Info("resource group alredy exists")
+		slog.Debug("resource group alredy exists")
 		helperStringToResourceGroup(out, &resourceGroup)
 		return resourceGroup, nil
 	}
@@ -134,7 +134,7 @@ func (s *storageAccountService) CreateResoureceGroup() (entity.ResourceGroup, er
 		return resourceGroup, err
 	}
 
-	slog.Info("resource group created")
+	slog.Debug("resource group created")
 	s.storageAccountRepository.SetResourceGroupInRedis(out)
 	helperStringToResourceGroup(out, &resourceGroup)
 	return resourceGroup, nil
@@ -148,7 +148,7 @@ func (s *storageAccountService) CreateStorageAccount(storageAccountName string) 
 	// If storage account exists, just return that.
 	out, err := s.storageAccountRepository.GetStorageAccountName()
 	if err == nil && out != "" {
-		slog.Info("Storage account already present")
+		slog.Debug("Storage account already present")
 		out, _ = s.storageAccountRepository.GetStorageAccount(out)
 		helperStringToStorageAccount(out, &storageAccount)
 		return storageAccount, nil
@@ -178,7 +178,7 @@ func (s *storageAccountService) CreateBlobContainer(storageAccountName string, c
 
 	out, err := s.storageAccountRepository.GetBlobContainer(storageAccountName, containerName)
 	if err == nil {
-		slog.Info("container alreay present")
+		slog.Debug("container alreay present")
 		helperStringToBlobContainer(out, &blobContainer)
 		return blobContainer, nil
 	}
@@ -196,16 +196,16 @@ func (s *storageAccountService) CreateBlobContainer(storageAccountName string, c
 }
 
 func helperStringToBlobContainer(val string, blobContainer *entity.BlobContainer) {
-	slog.Info("converting from string to blob container type")
+	slog.Debug("converting from string to blob container type")
 	json.Unmarshal([]byte(val), &blobContainer)
 }
 
 func helperStringToResourceGroup(val string, resourceGroup *entity.ResourceGroup) {
-	slog.Info("converting from string to resource group type")
+	slog.Debug("converting from string to resource group type")
 	json.Unmarshal([]byte(val), &resourceGroup)
 }
 
 func helperStringToStorageAccount(val string, storageAccount *entity.StorageAccount) {
-	slog.Info("converting from string to storage account type")
+	slog.Debug("converting from string to storage account type")
 	json.Unmarshal([]byte(val), &storageAccount)
 }

@@ -94,7 +94,7 @@ func (d *DeploymentService) PollAndDeleteDeployments(interval time.Duration) err
 		for {
 			deployments := d.FetchDeploymentsToBeDeleted()
 			dataChannel <- deployments
-			slog.Info("polling for deployments to be deleted found " + strconv.Itoa(len(deployments)) + " deployments")
+			slog.Debug("polling for deployments to be deleted found " + strconv.Itoa(len(deployments)) + " deployments")
 			time.Sleep(interval)
 		}
 	}()
@@ -144,7 +144,7 @@ func (d *DeploymentService) PollAndDeleteDeployments(interval time.Duration) err
 			// Wait for terraform destroy to complete.
 			for {
 				terraformOperation, err := d.actionStatusService.GetTerraformOperation(terraformOperation.OperationId)
-				slog.Info("terraformOperation.OperationStatus: " + terraformOperation.OperationStatus)
+				slog.Debug("terraformOperation.OperationStatus: " + terraformOperation.OperationStatus)
 				if err != nil {
 					slog.Error("not able to get terraform operation", err)
 					break

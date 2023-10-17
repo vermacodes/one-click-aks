@@ -6,7 +6,7 @@ import Checkbox from "../Checkbox";
 import { WebSocketContext } from "../../WebSocketContext";
 
 export default function UserDefinedRouting() {
-  const { data: inProgress } = useContext(WebSocketContext);
+  const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const {
     data: lab,
@@ -28,7 +28,7 @@ export default function UserDefinedRouting() {
           lab.template.kubernetesClusters[0].outboundType =
             "userDefinedRouting";
         }
-        !inProgress &&
+        !actionStatus.inProgress &&
           setLogs({
             isStreaming: false,
             logs: JSON.stringify(lab.template, null, 4),

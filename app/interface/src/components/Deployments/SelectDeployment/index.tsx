@@ -19,7 +19,7 @@ export default function SelectDeployment({
   deployment,
 }: SelectDeploymentProps) {
   const [showModal, setShowModal] = useState<boolean>(false);
-  const { data: actionStatus } = useContext(WebSocketContext);
+  const { actionStatus } = useContext(WebSocketContext);
   const { data: workspaces } = useTerraformWorkspace();
   const { mutateAsync: asyncSelectWorkspace } = useSelectWorkspace();
 
@@ -39,7 +39,7 @@ export default function SelectDeployment({
         disabled={
           deployment.deploymentWorkspace === selectedTerraformWorkspace?.name ||
           actionStatus === undefined ||
-          actionStatus === true
+          actionStatus.inProgress === true
         }
         onClick={() => {
           setShowModal(true);

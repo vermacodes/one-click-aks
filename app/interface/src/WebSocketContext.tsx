@@ -1,13 +1,14 @@
 import { createContext } from "react";
 import { ActionStatusType } from "./dataStructures";
+import { Action } from "react-query/types/core/query";
 
 export interface WebSocketContextData {
-  data: boolean;
-  setActionStatus: (value: boolean) => void;
+  actionStatus: ActionStatusType;
+  setActionStatus: (value: ActionStatusType) => void;
 }
 
 export const webSocketContextDataDefaultValue: WebSocketContextData = {
-  data: false,
+  actionStatus: { inProgress: true },
   setActionStatus: () => null,
 };
 

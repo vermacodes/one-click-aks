@@ -8,7 +8,7 @@ import { WebSocketContext } from "../../../../WebSocketContext";
 type Props = {};
 
 export default function NetworkPluginMode({}: Props) {
-  const { data: inProgress } = useContext(WebSocketContext);
+  const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const {
     data: lab,
@@ -25,7 +25,7 @@ export default function NetworkPluginMode({}: Props) {
         } else {
           lab.template.kubernetesClusters[0].networkPluginMode = "null";
         }
-        !inProgress &&
+        !actionStatus.inProgress &&
           setLogs({
             isStreaming: false,
             logs: JSON.stringify(lab.template, null, 4),

@@ -17,7 +17,7 @@ import { WebSocketContext } from "../../WebSocketContext";
 type Props = {};
 
 export default function TfResources({}: Props) {
-  const { data: actionStatus } = useContext(WebSocketContext);
+  const { actionStatus } = useContext(WebSocketContext);
   const { data: resources, isFetching: fetchingResources } = useGetResources();
   const { data: lab } = useLab();
   const { mutate: setLogs } = useSetLogs();
@@ -124,7 +124,7 @@ export default function TfResources({}: Props) {
           variant="danger-outline"
           //disabled
           disabled={
-            actionStatus ||
+            actionStatus.inProgress ||
             fetchingResources ||
             gettingWorkspaces ||
             selectingWorkspace ||
@@ -139,7 +139,7 @@ export default function TfResources({}: Props) {
         </Button>
         <Button
           variant="danger"
-          disabled={resources === "" || actionStatus}
+          disabled={resources === "" || actionStatus.inProgress}
           onClick={() => destroyHandler()}
         >
           Destroy Resources

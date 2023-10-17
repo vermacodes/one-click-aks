@@ -10,7 +10,7 @@ export default function Terminal() {
   const [autoScroll, setAutoScroll] = useState(false);
   const { data } = useLogs();
   const { mutate: setLogs } = useSetLogs();
-  const { data: inProgress } = useContext(WebSocketContext);
+  const { actionStatus } = useContext(WebSocketContext);
 
   const logEndRef = useRef<null | HTMLDivElement>(null);
   useEffect(() => {
@@ -66,7 +66,7 @@ export default function Terminal() {
       <div className="mb-1 flex justify-end gap-x-2 gap-y-2 divide-x divide-slate-500">
         <button
           className="disabled:text-slate-500 hover:text-sky-500 disabled:hover:text-slate-500"
-          disabled={inProgress}
+          disabled={actionStatus.inProgress}
           onClick={() => setLogs({ isStreaming: false, logs: "" })}
         >
           Clear Logs

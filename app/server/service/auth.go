@@ -33,7 +33,7 @@ func (a *authService) ServicePrincipalLogin() (entity.LoginStatus, error) {
 		return loginStatus, err
 	}
 
-	slog.Info("Login Output -> ", out)
+	slog.Debug("Login Output -> ", out)
 
 	accounts := []entity.Account{}
 	if err = json.Unmarshal([]byte(out), &accounts); err != nil {
@@ -56,11 +56,11 @@ func (a *authService) ServicePrincipalLoginStatus() (entity.LoginStatus, error) 
 	loginStatus := entity.LoginStatus{}
 	accessToken := entity.AccessToken{}
 
-	slog.Info("Checking login status")
+	slog.Debug("Checking login status")
 
 	out, err := a.authRepository.GetServicePrincipalLoginStatusFromRedis()
 	if err == nil {
-		slog.Info("login status found in redis.")
+		slog.Debug("login status found in redis.")
 
 		if err = json.Unmarshal([]byte(out), &accessToken); err != nil {
 			slog.Error("not able to marshal access token from cli to object", err)
@@ -71,16 +71,16 @@ func (a *authService) ServicePrincipalLoginStatus() (entity.LoginStatus, error) 
 		if err == nil && loginStatus.IsLoggedIn {
 			return loginStatus, err
 		} else {
-			slog.Info("token in redis is expired", err)
+			slog.Debug("token in redis is expired", err)
 		}
 	} else {
-		slog.Info("login status not found in redis", err)
+		slog.Debug("login status not found in redis", err)
 	}
 
-	slog.Info("Checking login status from cli")
+	slog.Debug("Checking login status from cli")
 	out, err = a.authRepository.ServicePrincipalLoginStatus()
 	if err != nil {
-		slog.Info("Not logged In.")
+		slog.Debug("Not logged In.")
 		return a.ServicePrincipalLogin()
 	}
 
@@ -89,7 +89,7 @@ func (a *authService) ServicePrincipalLoginStatus() (entity.LoginStatus, error) 
 		return a.ServicePrincipalLogin()
 	}
 
-	slog.Info("Checking if token is valid")
+	slog.Debug("Checking if token is valid")
 	loginStatus, err = helperIsTokenValid(accessToken)
 	if err == nil && loginStatus.IsLoggedIn {
 		a.authRepository.SetServicePrincipalLoginStatusInRedis(out)
@@ -104,7 +104,7 @@ func (a *authService) GetAccounts() ([]entity.Account, error) {
 
 	out, err := a.authRepository.GetAccountsFromRedis()
 	if err == nil {
-		slog.Info("current account found in redis.")
+		slog.Debug("current account found in redis.")
 		if jsonErr := json.Unmarshal([]byte(out), &accounts); err != nil {
 			slog.Error("unable to unmarshal output of cli to object", err)
 			return accounts, jsonErr
@@ -113,7 +113,7 @@ func (a *authService) GetAccounts() ([]entity.Account, error) {
 	}
 
 	// Following will be executed only if accounts not found in redis.
-	slog.Info("accounts not found in redis. running cli command")
+	slog.Debug("accounts not found in redis. running cli command")
 	out, err = a.authRepository.GetAccounts()
 	if err != nil || out == "" {
 		slog.Error("not able to run cli command to get current accounts", err)
@@ -151,7 +151,7 @@ func helperIsTokenValid(accessToken entity.AccessToken) (entity.LoginStatus, err
 	loginStatus := entity.LoginStatus{}
 
 	timezone, _ := time.Now().Zone()
-	slog.Info("Timezone " + timezone)
+	slog.Debug("Timezone " + timezone)
 
 	layout := "2006-01-02 15:04:05.000000 MST"
 
@@ -161,8 +161,8 @@ func helperIsTokenValid(accessToken entity.AccessToken) (entity.LoginStatus, err
 		return loginStatus, err
 	}
 
-	slog.Info("expiry time on access token" + t.String())
-	slog.Info("current time is " + time.Now().String())
+	slog.Debug("expiry time on access token" + t.String())
+	slog.Debug("current time is " + time.Now().String())
 
 	if t.After(time.Now()) {
 		loginStatus.IsLoggedIn = true

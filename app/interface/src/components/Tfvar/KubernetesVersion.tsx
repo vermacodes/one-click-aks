@@ -16,7 +16,7 @@ export default function KubernetesVersion({
   versionMenu,
   setVersionMenu,
 }: Props) {
-  const { data: actionStatus } = useContext(WebSocketContext);
+  const { actionStatus } = useContext(WebSocketContext);
   const { data, isLoading, isFetching, isError } = useGetOrchestrators();
   const { mutate: setLogs } = useSetLogs();
   const {

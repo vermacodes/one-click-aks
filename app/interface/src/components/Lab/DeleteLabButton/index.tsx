@@ -15,7 +15,7 @@ type Props = {
 
 export default function DeleteLabButton({ variant, children, lab }: Props) {
   const { mutate: setLogs } = useSetLogs();
-  const { data: inProgress } = useContext(WebSocketContext);
+  const { actionStatus } = useContext(WebSocketContext);
   const { mutate: deleteLab } = useDeleteLab();
   const { mutate: deleteMyLab } = useDeleteMyLab();
 
@@ -34,7 +34,7 @@ export default function DeleteLabButton({ variant, children, lab }: Props) {
     <Button
       variant={variant}
       onClick={onClickHandler}
-      disabled={inProgress || lab === undefined}
+      disabled={actionStatus.inProgress || lab === undefined}
     >
       <span>
         <FaTrash />

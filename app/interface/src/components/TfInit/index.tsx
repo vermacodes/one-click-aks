@@ -15,7 +15,7 @@ import { WebSocketContext } from "../../WebSocketContext";
 type Props = {};
 
 export default function TfInit({}: Props) {
-  const { data: inProgress } = useContext(WebSocketContext);
+  const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setActionStatus } = useSetActionStatus();
   const { mutate: setLogs } = useSetLogs();
   const { mutate: endLogStream } = useEndStream();
@@ -32,7 +32,11 @@ export default function TfInit({}: Props) {
     <SettingsItemLayout>
       <div className="flex items-center justify-between py-2">
         <h2 className="text-lg">Initialize Terraform</h2>
-        <Button variant="primary" onClick={initHandler} disabled={inProgress}>
+        <Button
+          variant="primary"
+          onClick={initHandler}
+          disabled={actionStatus.inProgress}
+        >
           Terraform Init
         </Button>
       </div>

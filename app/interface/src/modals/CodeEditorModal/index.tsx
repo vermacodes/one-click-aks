@@ -51,7 +51,7 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
   const { data: lab } = useLab();
   const { mutate: setLab } = useSetLab();
   const { mutateAsync: extendAsync } = useExtend();
-  const { data: inProgress } = useContext(WebSocketContext);
+  const { actionStatus: actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const { mutate: endLogStream } = useEndStream();
 
@@ -80,7 +80,7 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
           <div className="flex gap-x-2">
             <Button
               variant="secondary-text"
-              disabled={inProgress}
+              disabled={actionStatus.inProgress}
               onClick={() => {
                 // Save
                 _extendScript &&
@@ -90,7 +90,7 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
                 setShowModal(false);
 
                 // Run
-                if (lab !== undefined && !inProgress) {
+                if (lab !== undefined && !actionStatus.inProgress) {
                   setLogs({ isStreaming: true, logs: "" });
                   extendAsync(lab).then(() => {
                     endLogStream();

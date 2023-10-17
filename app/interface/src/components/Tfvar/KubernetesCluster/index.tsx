@@ -15,7 +15,7 @@ export default function KubernetesCluster() {
     isFetching: labIsFetching,
   } = useLab();
   const { mutate: setLab } = useSetLab();
-  const { data: inProgress } = useContext(WebSocketContext);
+  const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
 
   const { data: kubernetesVersion } = useGetOrchestrators();
@@ -57,7 +57,7 @@ export default function KubernetesCluster() {
         } else {
           lab.template.kubernetesClusters = [];
         }
-        !inProgress &&
+        !actionStatus.inProgress &&
           setLogs({
             isStreaming: false,
             logs: JSON.stringify(lab.template, null, 4),

@@ -63,7 +63,7 @@ export default function DestroyButton({
   const { mutate: setLogs } = useSetLogs();
   const { mutateAsync: destroyAsync } = useDestroyAsync();
   const { mutateAsync: destroyAsyncExtend } = useDestroyAsyncExtend();
-  const { data: inProgress } = useContext(WebSocketContext);
+  const { actionStatus } = useContext(WebSocketContext);
   const { data: preference } = usePreference();
   const { mutate: endLogStream } = useEndStream();
   const { data: terraformOperation } = useGetTerraformOperation(
@@ -192,7 +192,7 @@ export default function DestroyButton({
       <button
         className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base disabled:cursor-not-allowed disabled:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-800"
         onClick={onClickHandler}
-        disabled={inProgress || lab === undefined || disabled}
+        disabled={actionStatus.inProgress || lab === undefined || disabled}
       >
         {children}
       </button>
@@ -203,7 +203,7 @@ export default function DestroyButton({
     <Button
       variant={variant}
       onClick={onClickHandler}
-      disabled={inProgress || lab === undefined || disabled}
+      disabled={actionStatus.inProgress || lab === undefined || disabled}
     >
       <span className="text-base">
         <FaTrash />

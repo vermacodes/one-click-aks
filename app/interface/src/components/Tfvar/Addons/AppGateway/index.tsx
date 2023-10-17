@@ -6,7 +6,7 @@ import Checkbox from "../../../Checkbox";
 import { WebSocketContext } from "../../../../WebSocketContext";
 
 export default function AppGateway() {
-  const { data: inProgress } = useContext(WebSocketContext);
+  const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const {
     data: lab,
@@ -24,7 +24,7 @@ export default function AppGateway() {
           lab.template.kubernetesClusters[0].addons.appGateway = true;
         }
 
-        !inProgress &&
+        !actionStatus.inProgress &&
           setLogs({
             isStreaming: false,
             logs: JSON.stringify(lab.template, null, 4),

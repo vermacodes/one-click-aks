@@ -22,6 +22,6 @@ func (r *RedisService) ResetServerCache() error {
 		return err
 	}
 
-	slog.Info("Server Cachek Reset complete")
+	slog.Debug("Server Cachek Reset complete")
 	return nil
 }

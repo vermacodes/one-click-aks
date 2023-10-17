@@ -7,7 +7,7 @@ import { defaultTfvarConfig } from "./defaults";
 import { WebSocketContext } from "../../WebSocketContext";
 
 export default function JumpServer() {
-  const { data: inProgress } = useContext(WebSocketContext);
+  const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const {
     data: lab,
@@ -24,7 +24,7 @@ export default function JumpServer() {
         } else {
           lab.template.jumpservers = [];
         }
-        !inProgress &&
+        !actionStatus.inProgress &&
           setLogs({
             isStreaming: false,
             logs: JSON.stringify(lab.template, null, 4),

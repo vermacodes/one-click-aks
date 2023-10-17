@@ -18,7 +18,7 @@ type Props = {
 export default function LoadToBuilderButton({ variant, children, lab }: Props) {
   const { mutate: setLogs } = useSetLogs();
   const { mutate: setLab } = useSetLab();
-  const { data: inProgress } = useContext(WebSocketContext);
+  const { actionStatus } = useContext(WebSocketContext);
   const { data: preference } = usePreference();
   const navigate = useNavigate();
 
@@ -30,7 +30,7 @@ export default function LoadToBuilderButton({ variant, children, lab }: Props) {
       }
 
       // Update logs only if no action is in progress.
-      if (!inProgress) {
+      if (!actionStatus.inProgress) {
         setLogs({
           isStreaming: false,
           logs: JSON.stringify(lab.template, null, 4),

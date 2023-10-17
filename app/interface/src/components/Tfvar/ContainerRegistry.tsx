@@ -7,7 +7,7 @@ import { defaultContainerRegistry } from "./defaults";
 import { WebSocketContext } from "../../WebSocketContext";
 
 export default function ContainerRegistry() {
-  const { data: inProgress } = useContext(WebSocketContext);
+  const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const {
     data: lab,
@@ -24,7 +24,7 @@ export default function ContainerRegistry() {
         } else {
           lab.template.containerRegistries = [defaultContainerRegistry];
         }
-        !inProgress &&
+        !actionStatus.inProgress &&
           setLogs({
             isStreaming: false,
             logs: JSON.stringify(lab.template, null, 4),

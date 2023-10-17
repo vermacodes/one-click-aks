@@ -26,7 +26,7 @@ type Props = {
 };
 
 export default function DestroyAndDeleteDeployment(props: Props) {
-  const { data: actionStatus } = useContext(WebSocketContext);
+  const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const {
     data: workspaces,
@@ -94,7 +94,7 @@ export default function DestroyAndDeleteDeployment(props: Props) {
       variant={props.variant !== undefined ? props.variant : "danger-outline"}
       //disabled
       disabled={
-        actionStatus ||
+        actionStatus.inProgress ||
         gettingWorkspaces ||
         selectingWorkspace ||
         deletingWorkspace ||

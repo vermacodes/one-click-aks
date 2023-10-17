@@ -18,7 +18,7 @@ export default function PlanButton({ variant, children, lab }: Props) {
   const { mutate: setLogs } = useSetLogs();
   const { mutate: endLogStream } = useEndStream();
   const { mutateAsync: planAsync } = usePlan();
-  const { data: inProgress, setActionStatus } = useContext(WebSocketContext);
+  const { actionStatus, setActionStatus } = useContext(WebSocketContext);
   const { data: preference } = usePreference();
 
   function onClickHandler() {
@@ -41,7 +41,7 @@ export default function PlanButton({ variant, children, lab }: Props) {
     <Button
       variant={variant}
       onClick={onClickHandler}
-      disabled={inProgress || lab === undefined}
+      disabled={actionStatus.inProgress || lab === undefined}
     >
       <span className="text-base">
         <FaFile />

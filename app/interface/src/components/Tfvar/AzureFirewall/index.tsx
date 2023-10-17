@@ -7,7 +7,7 @@ import { defaultFirewall } from "./../defaults";
 import { WebSocketContext } from "../../../WebSocketContext";
 
 export default function AzureFirewall() {
-  const { data: inProgress } = useContext(WebSocketContext);
+  const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const {
     data: lab,
@@ -24,7 +24,7 @@ export default function AzureFirewall() {
         } else {
           lab.template.firewalls = [defaultFirewall];
         }
-        !inProgress &&
+        !actionStatus.inProgress &&
           setLogs({
             isStreaming: false,
             logs: JSON.stringify(lab.template, null, 4),

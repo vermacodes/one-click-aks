@@ -12,7 +12,7 @@ export default function AutoScaling() {
     isFetching: labIsFetching,
   } = useLab();
   const { mutate: setLab } = useSetLab();
-  const { data: inProgress } = useContext(WebSocketContext);
+  const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
 
   function handleOnChange() {
@@ -27,7 +27,7 @@ export default function AutoScaling() {
           lab.template.kubernetesClusters[0].defaultNodePool.enableAutoScaling =
             true;
         }
-        !inProgress &&
+        !actionStatus.inProgress &&
           setLogs({
             isStreaming: false,
             logs: JSON.stringify(lab.template, null, 4),

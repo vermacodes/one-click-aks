@@ -16,7 +16,7 @@ type Props = {
 export default function ValidateLabButton({ variant, children, lab }: Props) {
   const { mutate: setLogs } = useSetLogs();
   const { mutate: endLogStream } = useEndStream();
-  const { data: inProgress } = useContext(WebSocketContext);
+  const { actionStatus } = useContext(WebSocketContext);
   const { mutateAsync: validateAsync } = useValidate();
 
   function onClickHandler() {
@@ -31,7 +31,7 @@ export default function ValidateLabButton({ variant, children, lab }: Props) {
     <Button
       variant={variant}
       onClick={onClickHandler}
-      disabled={inProgress || lab === undefined}
+      disabled={actionStatus.inProgress || lab === undefined}
     >
       <span>
         <FaCheck />

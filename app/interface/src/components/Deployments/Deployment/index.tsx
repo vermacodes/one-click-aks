@@ -20,7 +20,7 @@ type Props = {
 export default function Deployment({ deployment }: Props) {
   const { data: selectedTerraformWorkspace } = useSelectedTerraformWorkspace();
   const { mutateAsync: asyncSelectWorkspace } = useSelectWorkspace();
-  const { data: actionStatus } = useContext(WebSocketContext);
+  const { actionStatus } = useContext(WebSocketContext);
 
   return (
     <div

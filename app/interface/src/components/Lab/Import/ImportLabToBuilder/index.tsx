@@ -12,12 +12,12 @@ type Props = {};
 export default function ImportLabToBuilder({}: Props) {
   const [lab, _setLab] = useState<Lab | undefined>();
   const { mutate: setLab } = useSetLab();
-  const { data: inProgress } = useContext(WebSocketContext);
+  const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
 
   useEffect(() => {
     if (lab != undefined) {
-      !inProgress &&
+      !actionStatus.inProgress &&
         setLogs({
           isStreaming: false,
           logs: JSON.stringify(lab.template, null, 4),

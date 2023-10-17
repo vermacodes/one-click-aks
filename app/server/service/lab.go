@@ -46,7 +46,7 @@ func (l *labService) GetLabFromRedis() (entity.LabType, error) {
 
 		return defaultLab, nil
 	}
-	slog.Info("lab found in redis")
+	slog.Debug("lab found in redis")
 
 	if err := json.Unmarshal([]byte(out), &lab); err != nil {
 		slog.Error("not able to unmarshal lab in redis to object", err)
@@ -120,7 +120,7 @@ func (l *labService) GetMyLabs() ([]entity.LabType, error) {
 	for index, blob := range blobs {
 		wgWriter.Add(1)
 		go func(index int, blobName string) {
-			slog.Info("Lab ", index, blobName)
+			slog.Debug("Lab ", index, blobName)
 			out, err = l.labRepository.GetMyLabFromStorageAccount(storageAccountName, blobName)
 			if err != nil {
 				slog.Error("Error getting template from storage exec command failed", err)

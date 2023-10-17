@@ -54,7 +54,7 @@ export default function ApplyButton({ variant, children, lab }: Props) {
   const { mutate: setLogs } = useSetLogs();
   const { mutateAsync: applyAsync } = useApplyAsync();
   const { mutateAsync: applyAsyncExtend } = useApplyAsyncExtend();
-  const { data: inProgress } = useContext(WebSocketContext);
+  const { actionStatus } = useContext(WebSocketContext);
   const { data: preference } = usePreference();
   const { data: terraformOperation } = useGetTerraformOperation(
     terraformOperationState.operationId
@@ -188,7 +188,7 @@ export default function ApplyButton({ variant, children, lab }: Props) {
     <Button
       variant={variant}
       onClick={onClickHandler}
-      disabled={inProgress || lab === undefined}
+      disabled={actionStatus.inProgress || lab === undefined}
     >
       <span className="text-base">
         <FaRocket />

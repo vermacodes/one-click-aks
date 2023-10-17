@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import MainLayout from "./layouts/MainLayout";
-import { ActionStatusType } from "./dataStructures";
 import { WebSocketContext } from "./WebSocketContext";
+import { ActionStatusType } from "./dataStructures";
 
 function App() {
   const [darkMode, setDarkMode] = useState<boolean>(true);
-  const [data, setActionStatus] = useState<boolean>(false);
+  const [actionStatus, setActionStatus] = useState<ActionStatusType>({
+    inProgress: true,
+  });
 
   useEffect(() => {
     var darkModeFromLocalStorage = localStorage.getItem("darkMode");
@@ -17,25 +19,16 @@ function App() {
       }
     }
 
-    const newSocket = new WebSocket("ws://localhost:8881/actionstatusws");
-    newSocket.onopen = () => {
-      console.log("WebSocket connection opened.");
-    };
-
-    newSocket.onmessage = (event) => {
-      setActionStatus(JSON.parse(event.data).inProgress);
-    };
-
-    newSocket.onclose = () => {
-      console.log("WebSocket connection closed.");
-    };
-
-    newSocket.onerror = (error) => {
-      console.error("WebSocket error:", error);
+    // Action Status Socket
+    const actionStatusSocket = new WebSocket(
+      "ws://localhost:8881/actionstatusws"
+    );
+    actionStatusSocket.onmessage = (event) => {
+      setActionStatus(JSON.parse(event.data));
     };
 
     return () => {
-      newSocket.close();
+      actionStatusSocket.close();
     };
   }, []);
 
@@ -47,7 +40,7 @@ function App() {
           : " bg-slate-50 text-slate-900"
       }`}
     >
-      <WebSocketContext.Provider value={{ data, setActionStatus }}>
+      <WebSocketContext.Provider value={{ actionStatus, setActionStatus }}>
         <MainLayout darkMode={darkMode} setDarkMode={setDarkMode} />
       </WebSocketContext.Provider>
     </div>

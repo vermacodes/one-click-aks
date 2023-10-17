@@ -46,7 +46,7 @@ export default function TfWorkspace({
     isLoading: addingWorkspace,
   } = useAddWorkspace();
   const { mutate: upsertDeployment } = useUpsertDeployment();
-  const { data: actionStatus } = useContext(WebSocketContext);
+  const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setActionStatus } = useSetActionStatus();
   const { data: lab } = useLab();
 
@@ -67,7 +67,8 @@ export default function TfWorkspace({
           deploymentWorkspace: newWorkSpaceName,
           deploymentAutoDelete: false,
           deploymentAutoDeleteUnixTime: 0,
-          deploymentStatus: "notstarted",
+          deploymentLifespan: 28800,
+          deploymentStatus: "Deployment Not Started",
           deploymentLab: lab,
         });
       });
@@ -202,7 +203,7 @@ export default function TfWorkspace({
                 <Button
                   variant="primary-outline"
                   disabled={
-                    actionStatus ||
+                    actionStatus.inProgress ||
                     gettingWorkspaces ||
                     selectingWorkspace ||
                     deletingWorkspace ||

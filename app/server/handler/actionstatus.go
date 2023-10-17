@@ -103,7 +103,7 @@ func (a *actionStatusHandler) GetActionStatusWs(w http.ResponseWriter, r *http.R
 
 		// Check for changes in action status
 		if actionStatus.InProgress != previousActionStatus.InProgress {
-			slog.Info("Sending action status to client: ", actionStatus.InProgress)
+			slog.Debug("Sending action status to client: ", actionStatus.InProgress)
 			if err := conn.WriteJSON(actionStatus); err != nil {
 				slog.Error("Failed to send action status to client:", err)
 				return

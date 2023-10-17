@@ -8,7 +8,7 @@ import { WebSocketContext } from "../../../../WebSocketContext";
 type Props = {};
 
 export default function MicrosoftDefender({}: Props) {
-  const { data: inProgress } = useContext(WebSocketContext);
+  const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const {
     data: lab,
@@ -26,7 +26,7 @@ export default function MicrosoftDefender({}: Props) {
           lab.template.kubernetesClusters[0].addons.microsoftDefender = true;
         }
 
-        !inProgress &&
+        !actionStatus.inProgress &&
           setLogs({
             isStreaming: false,
             logs: JSON.stringify(lab.template, null, 4),
