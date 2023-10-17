@@ -478,7 +478,14 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-USER_ALIAS=$(echo ${ARM_USER_PRINCIPAL_NAME} | cut -d '@' -f1)
+# accomodate new Microsoft non-production tenant.
+# if ARM_USER_PRINCIPAL_NAME contains fdpo.onmicrosoft.com then curt different part
+if [[ "${ARM_USER_PRINCIPAL_NAME}" == *"fdpo.onmicrosoft.com"* ]]; then
+  USER_ALIAS=$(echo ${ARM_USER_PRINCIPAL_NAME} | cut -d '_' -f1)
+else
+  USER_ALIAS=$(echo ${ARM_USER_PRINCIPAL_NAME} | cut -d '@' -f1)
+fi
+
 SP_NAME="${USER_ALIAS}-actlabs"
 APP_SERVICE_PLAN_NAME="${USER_ALIAS}-app-service-plan-actlabs"
 WEBAPP_NAME="${USER_ALIAS}-webapp-actlabs"
