@@ -327,8 +327,7 @@ function deploy_webapp() {
     --resource-group $RESOURCE_GROUP \
     --subscription $ARM_SUBSCRIPTION_ID \
     --plan $APP_SERVICE_PLAN_NAME \
-    --deployment-container-image-name $DOCKER_IMAGE \
-    --debug
+    --deployment-container-image-name $DOCKER_IMAGE >/dev/null 2>&1
 
   # sleep 30s
 
