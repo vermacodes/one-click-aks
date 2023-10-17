@@ -1,16 +1,13 @@
 import { Link } from "react-router-dom";
-import AddTerraformWorkspace from "../../components/AddTerraformWorkspace";
 import Deployment from "../../components/Deployments/Deployment";
 import { DeploymentType } from "../../dataStructures";
 import { useGetMyDeployments } from "../../hooks/useDeployments";
-import { useTerraformWorkspace } from "../../hooks/useWorkspace";
 import PageLayout from "../../layouts/PageLayout";
 import Button from "../../components/Button";
 import Terminal from "../../components/Terminal";
 import CreateNewDeployment from "../../components/Deployments/CreateNewDeployment";
 
 export default function Deployments() {
-  const { data } = useTerraformWorkspace();
   const { data: deployments } = useGetMyDeployments();
 
   return (
@@ -27,7 +24,7 @@ export default function Deployments() {
         deployments.length > 0 &&
         deployments.map((deployment: DeploymentType) => (
           <>
-            <Deployment deployment={deployment} />
+            <Deployment deployment={deployment} key={deployment.deploymentId} />
           </>
         ))}
       <Terminal />

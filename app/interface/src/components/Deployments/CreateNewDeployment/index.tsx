@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Button from "../../Button";
 import { MdClose } from "react-icons/md";
 import {
@@ -15,6 +15,7 @@ import {
 } from "../../../hooks/useActionStatus";
 import { useLab } from "../../../hooks/useLab";
 import { ButtonVariant } from "../../../dataStructures";
+import { WebSocketContext } from "../../../WebSocketContext";
 
 type Props = {
   variant: ButtonVariant;
@@ -23,13 +24,13 @@ type Props = {
 
 export default function CreateNewDeployment(props: Props) {
   const [showModal, setShowModal] = useState<boolean>(false);
-  const { data: actionStatus } = useActionStatus();
+  const { data: inProgress } = useContext(WebSocketContext);
   return (
     <>
       <Button
         variant={props.variant}
         onClick={() => setShowModal(true)}
-        disabled={actionStatus}
+        disabled={inProgress}
       >
         {props.children}
       </Button>

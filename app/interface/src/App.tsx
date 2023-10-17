@@ -5,9 +5,7 @@ import { WebSocketContext } from "./WebSocketContext";
 
 function App() {
   const [darkMode, setDarkMode] = useState<boolean>(true);
-  const [actionStatus, setActionStatus] = useState<ActionStatusType>({
-    inProgress: false,
-  });
+  const [data, setActionStatus] = useState<boolean>(true);
 
   useEffect(() => {
     var darkModeFromLocalStorage = localStorage.getItem("darkMode");
@@ -27,7 +25,7 @@ function App() {
     newSocket.onmessage = (event) => {
       const data = event.data;
       console.log("WebSocket message received:", data);
-      setActionStatus(JSON.parse(data));
+      setActionStatus(JSON.parse(data).inProgress);
     };
 
     newSocket.onclose = () => {
@@ -51,7 +49,7 @@ function App() {
           : " bg-slate-50 text-slate-900"
       }`}
     >
-      <WebSocketContext.Provider value={{ actionStatus, setActionStatus }}>
+      <WebSocketContext.Provider value={{ data, setActionStatus }}>
         <MainLayout darkMode={darkMode} setDarkMode={setDarkMode} />
       </WebSocketContext.Provider>
     </div>
