@@ -105,7 +105,7 @@ export default function TfResources({}: Props) {
           <pre className="text-slate-500">Please wait...</pre>
         ) : (
           <>
-            {actionStatus ? (
+            {actionStatus.inProgress ? (
               <p className="text-slate-500">
                 Action is in progress. Please wait...
               </p>
