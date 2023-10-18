@@ -23,19 +23,19 @@ fi
 
 export VERSION="$(date +%Y%m%d)"
 
-go build -ldflags "-X 'github.com/vermacodes/one-click-aks/app/server/entity.SasToken=$SAS_TOKEN' -X 'github.com/vermacodes/one-click-aks/app/server/entity.StorageAccountName=$STORAGE_ACCOUNT_NAME'"
+go build -ldflags "-X 'main.version=$VERSION' -X 'github.com/vermacodes/one-click-aks/app/server/entity.SasToken=$SAS_TOKEN' -X 'github.com/vermacodes/one-click-aks/app/server/entity.StorageAccountName=$STORAGE_ACCOUNT_NAME'"
 
 cd ../..
 
-docker build -t repro .
+docker build -t repro:latest .
 
 cd ./app/server
 rm server
 
-docker tag repro actlab.azurecr.io/repro
+docker tag repro:latest actlab.azurecr.io/repro:latest
 
 az acr login --name actlab
-docker push actlab.azurecr.io/repro
+docker push actlab.azurecr.io/repro:latest
 
-docker tag repro ashishvermapu/repro
-docker push ashishvermapu/repro
+docker tag repro:latest ashishvermapu/repro:latest
+docker push ashishvermapu/repro:latest

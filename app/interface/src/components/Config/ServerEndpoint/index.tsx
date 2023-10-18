@@ -1,11 +1,12 @@
 import { useMsal } from "@azure/msal-react";
-import { Switch } from "@headlessui/react";
 import { useEffect, useState } from "react";
 import { FaCheck, FaEdit, FaTimes } from "react-icons/fa";
 import { loginRequest } from "../../../authConfig";
 import { GraphData } from "../../../dataStructures";
 import SettingsItemLayout from "../../../layouts/SettingsItemLayout";
 import Checkbox from "../../Checkbox";
+import { useQueryClient } from "react-query";
+import { useResetServerCache } from "../../../hooks/useServerCache";
 
 type Props = {};
 
@@ -15,9 +16,9 @@ export default function ServerEndpoint({}: Props) {
   const [edit, setEdit] = useState<boolean>(false);
   const { instance, accounts, inProgress } = useMsal();
   const [graphResponse, setGraphResponse] = useState<GraphData | undefined>();
-  const [profilePhotoUrl, setProfilePhotoUrl] = useState<string>("");
   const [accessToken, setAccessToken] = useState<string>("");
   const [tokenAcquired, setTokenAcquired] = useState<boolean>(false);
+  const { mutateAsync: resetServerCache } = useResetServerCache();
 
   // call RequestAccessToken after the component has mounted
   useEffect(() => {
@@ -74,14 +75,18 @@ export default function ServerEndpoint({}: Props) {
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    localStorage.setItem("baseUrl", baseUrl);
     setEdit(false);
-    window.location.reload();
+    handleSwitch(baseUrl);
   }
 
   function handleSwitch(baseUrl: string) {
     localStorage.setItem("baseUrl", baseUrl);
+    setBaseUrl(baseUrl);
     window.location.reload();
+    resetServerCache().finally(() => {
+      const queryClinet = useQueryClient();
+      queryClinet.invalidateQueries();
+    });
   }
 
   return (

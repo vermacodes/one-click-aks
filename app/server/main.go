@@ -19,11 +19,13 @@ type Status struct {
 	Version string `json:"version"`
 }
 
+var version string
+
 func status(c *gin.Context) {
 
 	status := Status{}
 	status.Status = "OK"
-	status.Version = os.Getenv("VERSION")
+	status.Version = version
 
 	c.IndentedJSON(http.StatusOK, status)
 }

@@ -1,4 +1,4 @@
-FROM actlab.azurecr.io/repro_base
+FROM actlab.azurecr.io/repro_base:latest
 
 WORKDIR /app
 
@@ -9,8 +9,6 @@ RUN chmod +x ./entrypoint.sh
 ADD /app/server/server ./
 ADD /tf ./tf
 ADD /scripts ./scripts
-
-ENV VERSION=${VERSION}
 
 EXPOSE 8080/tcp
 EXPOSE 443/tcp
