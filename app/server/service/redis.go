@@ -6,18 +6,18 @@ import (
 )
 
 type RedisService struct {
-	redisService entity.RedisService
+	redisRepository entity.RedisRepository
 }
 
-func NewRedisService(redisService entity.RedisService) entity.RedisService {
+func NewRedisService(redisReposiroty entity.RedisRepository) entity.RedisService {
 	return &RedisService{
-		redisService: redisService,
+		redisRepository: redisReposiroty,
 	}
 }
 
 func (r *RedisService) ResetServerCache() error {
 	slog.Info("Resetting Server Cache")
-	if err := r.redisService.ResetServerCache(); err != nil {
+	if err := r.redisRepository.ResetServerCache(); err != nil {
 		slog.Error("Not able to reset server cache", err)
 		return err
 	}

@@ -70,7 +70,7 @@ func main() {
 	handler.NewRedisHandler(router, redisService)
 
 	authRepository := repository.NewAuthRepository()
-	authService := service.NewAuthService(authRepository, actionStatusService, loggingService)
+	authService := service.NewAuthService(authRepository, actionStatusService, loggingService, redisRepository)
 	handler.NewLoginHandler(router, authService)
 
 	authRouter.Use(middleware.AuthRequired(authService, logStreamService))
@@ -102,7 +102,7 @@ func main() {
 	handler.NewTerraformHandler(authRouter, terraformService)
 
 	deploymentRepository := repository.NewDeploymentRepository()
-	deploymentService := service.NewDeploymentService(deploymentRepository, labService, terraformService, actionStatusService, logStreamService)
+	deploymentService := service.NewDeploymentService(deploymentRepository, labService, terraformService, actionStatusService, logStreamService, authService)
 	handler.NewDeploymentHandler(authRouter, deploymentService)
 
 	// take seconds and multiply with 1000000000 and pass it to the function.

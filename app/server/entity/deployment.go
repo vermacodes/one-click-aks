@@ -7,8 +7,10 @@ import (
 )
 
 type Deployment struct {
+	//aztables.Entity              `json:"-"`
 	DeploymentId                 string  `json:"deploymentId"`
 	DeploymentUserId             string  `json:"deploymentUserId"`
+	DeploymentSubscriptionId     string  `json:"deploymentSubscriptionId"`
 	DeploymentWorkspace          string  `json:"deploymentWorkspace"`
 	DeploymentStatus             string  `json:"deploymentStatus"`
 	DeploymentLab                LabType `json:"deploymentLab"`
@@ -16,6 +18,19 @@ type Deployment struct {
 	DeploymentLifespan           int64   `json:"deploymentLifespan"`
 	DeploymentAutoDeleteUnixTime int64   `json:"deploymentAutoDeleteUnixTime"`
 }
+
+// type DeploymentEntry struct {
+// 	aztables.Entity              `json:"-"`
+// 	DeploymentId                 string  `json:"deploymentId"`
+// 	DeploymentUserId             string  `json:"deploymentUserId"`
+// 	DeploymentSubscriptionId     string  `json:"deploymentSubscriptionId"`
+// 	DeploymentWorkspace          string  `json:"deploymentWorkspace"`
+// 	DeploymentStatus             string  `json:"deploymentStatus"`
+// 	DeploymentLab                LabType `json:"deploymentLab"`
+// 	DeploymentAutoDelete         bool    `json:"deploymentAutoDelete"`
+// 	DeploymentLifespan           int64   `json:"deploymentLifespan"`
+// 	DeploymentAutoDeleteUnixTime int64   `json:"deploymentAutoDeleteUnixTime"`
+// }
 
 type DeploymentEntry struct {
 	aztables.Entity

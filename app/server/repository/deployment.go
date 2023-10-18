@@ -98,7 +98,7 @@ func (d *deploymentRepository) AddDeployment(deployment entity.Deployment) error
 	deploymentEntry := entity.DeploymentEntry{
 		Entity: aztables.Entity{
 			PartitionKey: deployment.DeploymentUserId,
-			RowKey:       deployment.DeploymentUserId + "-" + deployment.DeploymentWorkspace,
+			RowKey:       deployment.DeploymentUserId + "-" + deployment.DeploymentWorkspace + "-" + deployment.DeploymentSubscriptionId,
 		},
 		Deployment: string(marshalledDeployment),
 	}
@@ -130,7 +130,7 @@ func (d *deploymentRepository) UpdateDeployment(deployment entity.Deployment) er
 	deploymentEntry := entity.DeploymentEntry{
 		Entity: aztables.Entity{
 			PartitionKey: deployment.DeploymentUserId,
-			RowKey:       deployment.DeploymentUserId + "-" + deployment.DeploymentWorkspace,
+			RowKey:       deployment.DeploymentUserId + "-" + deployment.DeploymentWorkspace + "-" + deployment.DeploymentSubscriptionId,
 		},
 		Deployment: string(marshalledDeployment),
 	}
@@ -140,6 +140,8 @@ func (d *deploymentRepository) UpdateDeployment(deployment entity.Deployment) er
 		slog.Error("error occurred marshalling the deployment record.", err)
 		return err
 	}
+
+	slog.Debug("updating deployment record ", "deployment", string(marshalled))
 
 	_, err = client.UpsertEntity(context.TODO(), marshalled, nil)
 	if err != nil {

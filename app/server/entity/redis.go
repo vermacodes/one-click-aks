@@ -4,6 +4,6 @@ type RedisService interface {
 	ResetServerCache() error
 }
 
-type RedisReposiroty interface {
+type RedisRepository interface {
 	ResetServerCache() error
 }

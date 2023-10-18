@@ -26,6 +26,7 @@ export function useSetAccount() {
   const queryClient = useQueryClient();
   return useMutation(setAccount, {
     onSuccess: () => {
+      queryClient.invalidateQueries();
       queryClient.invalidateQueries("account");
       queryClient.invalidateQueries("get-storage-account");
       queryClient.invalidateQueries("get-action-status");

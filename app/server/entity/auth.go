@@ -42,6 +42,7 @@ type AuthService interface {
 	ServicePrincipalLoginStatus() (LoginStatus, error)
 
 	GetAccounts() ([]Account, error)
+	GetActiveAccount() (Account, error)
 	SetAccount(account Account) error
 }
 

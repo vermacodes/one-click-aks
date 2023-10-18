@@ -13,13 +13,15 @@ type authService struct {
 	authRepository      entity.AuthRepository
 	actionStatusService entity.ActionStatusService
 	loggingService      entity.LoggingService
+	redisService        entity.RedisService
 }
 
-func NewAuthService(authRepository entity.AuthRepository, actionStatusService entity.ActionStatusService, loggingService entity.LoggingService) entity.AuthService {
+func NewAuthService(authRepository entity.AuthRepository, actionStatusService entity.ActionStatusService, loggingService entity.LoggingService, redisService entity.RedisService) entity.AuthService {
 	return &authService{
 		authRepository:      authRepository,
 		actionStatusService: actionStatusService,
 		loggingService:      loggingService,
+		redisService:        redisService,
 	}
 }
 
@@ -99,6 +101,22 @@ func (a *authService) ServicePrincipalLoginStatus() (entity.LoginStatus, error) 
 	return a.ServicePrincipalLogin()
 }
 
+func (a *authService) GetActiveAccount() (entity.Account, error) {
+	accounts, err := a.GetAccounts()
+	if err != nil {
+		slog.Error("not able to get accounts", err)
+		return entity.Account{}, err
+	}
+
+	for _, account := range accounts {
+		if account.IsDefault {
+			return account, nil
+		}
+	}
+
+	return entity.Account{}, errors.New("no active account found")
+}
+
 func (a *authService) GetAccounts() ([]entity.Account, error) {
 	accounts := []entity.Account{}
 
@@ -139,8 +157,9 @@ func (a *authService) SetAccount(account entity.Account) error {
 		return err
 	}
 
-	if err := a.authRepository.DeleteAccountsFromRedis(); err != nil {
-		slog.Error("not abl to delete accounts from redis. this will lead to stale information", err)
+	// reset all cache once the account is changed.
+	if err := a.redisService.ResetServerCache(); err != nil {
+		slog.Error("not able to reset server cache", err)
 		return err
 	}
 

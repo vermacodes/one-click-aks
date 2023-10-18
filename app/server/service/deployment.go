@@ -16,15 +16,17 @@ type DeploymentService struct {
 	terraformService     entity.TerraformService
 	actionStatusService  entity.ActionStatusService
 	logstreamService     entity.LogStreamService
+	authService          entity.AuthService
 }
 
-func NewDeploymentService(deploymentRepo entity.DeploymentRepository, labService entity.LabService, terraformService entity.TerraformService, actionStatusService entity.ActionStatusService, logstreamService entity.LogStreamService) entity.DeploymentService {
+func NewDeploymentService(deploymentRepo entity.DeploymentRepository, labService entity.LabService, terraformService entity.TerraformService, actionStatusService entity.ActionStatusService, logstreamService entity.LogStreamService, authService entity.AuthService) entity.DeploymentService {
 	return &DeploymentService{
 		deploymentRepository: deploymentRepo,
 		labService:           labService,
 		terraformService:     terraformService,
 		actionStatusService:  actionStatusService,
 		logstreamService:     logstreamService,
+		authService:          authService,
 	}
 }
 
@@ -33,12 +35,30 @@ func (d *DeploymentService) GetDeployments() ([]entity.Deployment, error) {
 }
 
 func (d *DeploymentService) GetMyDeployments(userId string) ([]entity.Deployment, error) {
-	// add default deployment if no deployments found
+
+	activeAccount, err := d.authService.GetActiveAccount()
+	if err != nil {
+		slog.Error("not able to get active account", err)
+		return nil, err
+	}
+
+	// get all deployments
 	deployments, err := d.deploymentRepository.GetMyDeployments(userId)
 	if err != nil {
 		return nil, err
 	}
-	if len(deployments) == 0 {
+
+	// filter deployments for active account
+	var filteredDeployments []entity.Deployment
+	for _, deployment := range deployments {
+		slog.Info("Deployment Filter", "workspace", deployment.DeploymentWorkspace, "subscription", deployment.DeploymentSubscriptionId, "active", activeAccount.Id)
+		if deployment.DeploymentSubscriptionId == activeAccount.Id {
+			filteredDeployments = append(filteredDeployments, deployment)
+		}
+	}
+
+	// if no deployments found for active account, create default deployment.
+	if len(filteredDeployments) == 0 {
 
 		defaultLab, err := d.labService.HelperDefaultLab()
 		if err != nil {
@@ -48,6 +68,7 @@ func (d *DeploymentService) GetMyDeployments(userId string) ([]entity.Deployment
 		deployment := entity.Deployment{
 			DeploymentUserId:             userId,
 			DeploymentWorkspace:          "default",
+			DeploymentSubscriptionId:     activeAccount.Id,
 			DeploymentId:                 helper.Generate(5),
 			DeploymentLab:                defaultLab,
 			DeploymentAutoDelete:         false,
@@ -59,11 +80,10 @@ func (d *DeploymentService) GetMyDeployments(userId string) ([]entity.Deployment
 			return nil, err
 		}
 
-		return d.deploymentRepository.GetMyDeployments(userId)
-
+		filteredDeployments = append(filteredDeployments, deployment)
 	}
 
-	return deployments, err
+	return filteredDeployments, err
 }
 
 func (d *DeploymentService) GetDeployment(userId string, workspace string) (entity.Deployment, error) {
@@ -71,10 +91,24 @@ func (d *DeploymentService) GetDeployment(userId string, workspace string) (enti
 }
 
 func (d *DeploymentService) AddDeployment(deployment entity.Deployment) error {
+	activeAccount, err := d.authService.GetActiveAccount()
+	if err != nil {
+		slog.Error("not able to get active account", err)
+		return err
+	}
+	deployment.DeploymentSubscriptionId = activeAccount.Id
+
 	return d.deploymentRepository.AddDeployment(deployment)
 }
 
 func (d *DeploymentService) UpdateDeployment(deployment entity.Deployment) error {
+	activeAccount, err := d.authService.GetActiveAccount()
+	if err != nil {
+		slog.Error("not able to get active account", err)
+		return err
+	}
+	deployment.DeploymentSubscriptionId = activeAccount.Id
+
 	return d.deploymentRepository.UpdateDeployment(deployment)
 }
 
