@@ -72,6 +72,7 @@ function Modal({ showModal, setShowModal }: ModalProps) {
           deploymentId: "",
           deploymentUserId: "",
           deploymentWorkspace: newWorkSpaceName,
+          deploymentSubscriptionId: "",
           deploymentAutoDelete: false,
           deploymentAutoDeleteUnixTime: 0,
           deploymentLifespan: 28800,
