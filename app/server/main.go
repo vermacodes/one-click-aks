@@ -39,7 +39,7 @@ func main() {
 		Level:     slog.Level(logLevelInt),
 	}
 
-	slog.SetDefault(slog.New(opts.NewJSONHandler(os.Stderr)))
+	slog.SetDefault(slog.New(opts.NewTextHandler(os.Stderr)))
 
 	router := gin.Default()
 	router.SetTrustedProxies(nil)
