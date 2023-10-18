@@ -31,7 +31,7 @@ func main() {
 	logLevel := os.Getenv("LOG_LEVEL")
 	logLevelInt, err := strconv.Atoi(logLevel)
 	if err != nil {
-		logLevelInt = 8
+		logLevelInt = 0
 	}
 
 	opts := slog.HandlerOptions{
