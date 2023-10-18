@@ -315,8 +315,6 @@ func helperTerraformAction(t *terraformService, tfvar entity.TfvarConfigType, ac
 	actionStaus.InProgress = false
 	t.actionStatusService.SetActionStatus(actionStaus)
 
-	slog.Error("Error", err)
-
 	return err
 }
 
