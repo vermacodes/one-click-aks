@@ -46,6 +46,7 @@ type DeploymentService interface {
 	DeleteDeployment(string, string) error
 	PollAndDeleteDeployments(time.Duration) error
 	FetchDeploymentsToBeDeleted() []Deployment
+	ChangeTerraformWorkspace(Deployment) error
 }
 
 type DeploymentRepository interface {

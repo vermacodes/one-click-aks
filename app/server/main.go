@@ -102,7 +102,7 @@ func main() {
 	handler.NewTerraformHandler(authRouter, terraformService)
 
 	deploymentRepository := repository.NewDeploymentRepository()
-	deploymentService := service.NewDeploymentService(deploymentRepository, labService, terraformService, actionStatusService, logStreamService, authService)
+	deploymentService := service.NewDeploymentService(deploymentRepository, labService, terraformService, actionStatusService, logStreamService, authService, workspaceService)
 	handler.NewDeploymentHandler(authRouter, deploymentService)
 
 	// take seconds and multiply with 1000000000 and pass it to the function.
