@@ -63,11 +63,12 @@ export default function DestroyAndDeleteDeployment(props: Props) {
       if (props.deleteWorkspace === true) {
         selectWorkspaceAsync({ name: "default", selected: true }).then(() => {
           // Delete deployment.
-          asyncDeleteDeployment(props.deployment.deploymentWorkspace).then(
-            () => {
-              deleteWorkspace(selectedTerraformWorkspace);
-            }
-          );
+          asyncDeleteDeployment([
+            props.deployment.deploymentWorkspace,
+            props.deployment.deploymentSubscriptionId,
+          ]).then(() => {
+            deleteWorkspace(selectedTerraformWorkspace);
+          });
         });
       }
     });

@@ -312,6 +312,7 @@ export type DeploymentType = {
   deploymentId: string;
   deploymentUserId: string;
   deploymentWorkspace: string;
+  deploymentSubscriptionId: string;
   deploymentStatus: "Deployment In Progress" | "Deployment Failed" | "Deployment Completed" | "Deployment Not Started" | "Destroying Resources" | "Resources Destroyed";
   deploymentLab: Lab
   deploymentAutoDelete: boolean;

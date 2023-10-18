@@ -60,10 +60,10 @@ func (d *deploymentRepository) GetMyDeployments(userId string) ([]entity.Deploym
 	return deployments, nil
 }
 
-func (d *deploymentRepository) GetDeployment(userId string, workspace string) (entity.Deployment, error) {
+func (d *deploymentRepository) GetDeployment(userId string, workspace string, subscriptionId string) (entity.Deployment, error) {
 	client := helper.GetServiceClient().NewClient("Deployments")
 
-	response, err := client.GetEntity(context.TODO(), userId, userId+"-"+workspace, nil)
+	response, err := client.GetEntity(context.TODO(), userId, userId+"-"+workspace+"-"+subscriptionId, nil)
 	if err != nil {
 		slog.Error("error getting deployment ", err)
 		return entity.Deployment{}, err
@@ -152,10 +152,10 @@ func (d *deploymentRepository) UpdateDeployment(deployment entity.Deployment) er
 	return nil
 }
 
-func (d *deploymentRepository) DeleteDeployment(userId string, workspace string) error {
+func (d *deploymentRepository) DeleteDeployment(userId string, workspace string, subscriptionId string) error {
 	client := helper.GetServiceClient().NewClient("Deployments")
 
-	_, err := client.DeleteEntity(context.TODO(), userId, userId+"-"+workspace, nil)
+	_, err := client.DeleteEntity(context.TODO(), userId, userId+"-"+workspace+"-"+subscriptionId, nil)
 	if err != nil {
 		slog.Error("error deleting deployment record ", err)
 		return err

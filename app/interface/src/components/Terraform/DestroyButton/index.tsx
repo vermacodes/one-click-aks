@@ -109,7 +109,10 @@ export default function DestroyButton({
               () => {
                 // Delete deployment.
                 asyncDeleteWorkspaceFunc(workspace).then(() => {
-                  asyncDeleteDeployment(deployment.deploymentWorkspace);
+                  asyncDeleteDeployment([
+                    deployment.deploymentWorkspace,
+                    deployment.deploymentSubscriptionId,
+                  ]);
                 });
               }
             );

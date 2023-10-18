@@ -55,8 +55,8 @@ export function useUpsertDeployment() {
 export function useDeleteDeployment() {
     const queryClient = useQueryClient();
     return useMutation(
-        (workspaceName: string) =>
-            axiosInstance.delete(`deployments/${workspaceName}`),
+        (params: [string, string]) =>
+            axiosInstance.delete(`deployments/${params[0]}/${params[1]}`),
         {
             onSuccess: () => {
                 queryClient.invalidateQueries("list-deployments");

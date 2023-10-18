@@ -88,8 +88,8 @@ func (d *DeploymentService) GetMyDeployments(userId string) ([]entity.Deployment
 	return filteredDeployments, err
 }
 
-func (d *DeploymentService) GetDeployment(userId string, workspace string) (entity.Deployment, error) {
-	return d.deploymentRepository.GetDeployment(userId, workspace)
+func (d *DeploymentService) GetDeployment(userId string, workspace string, subscriptionId string) (entity.Deployment, error) {
+	return d.deploymentRepository.GetDeployment(userId, workspace, subscriptionId)
 }
 
 func (d *DeploymentService) AddDeployment(deployment entity.Deployment) error {
@@ -114,14 +114,14 @@ func (d *DeploymentService) UpdateDeployment(deployment entity.Deployment) error
 	return d.deploymentRepository.UpdateDeployment(deployment)
 }
 
-func (d *DeploymentService) DeleteDeployment(userId string, workspace string) error {
+func (d *DeploymentService) DeleteDeployment(userId string, workspace string, subscriptionId string) error {
 
 	// default deployment cant be deleted.
 	if workspace == "default" {
 		return nil
 	}
 
-	return d.deploymentRepository.DeleteDeployment(userId, workspace)
+	return d.deploymentRepository.DeleteDeployment(userId, workspace, subscriptionId)
 }
 
 func (d *DeploymentService) PollAndDeleteDeployments(interval time.Duration) error {

@@ -40,10 +40,10 @@ type DeploymentEntry struct {
 type DeploymentService interface {
 	GetDeployments() ([]Deployment, error)
 	GetMyDeployments(string) ([]Deployment, error)
-	GetDeployment(string, string) (Deployment, error)
+	GetDeployment(string, string, string) (Deployment, error)
 	AddDeployment(Deployment) error
 	UpdateDeployment(Deployment) error
-	DeleteDeployment(string, string) error
+	DeleteDeployment(string, string, string) error
 	PollAndDeleteDeployments(time.Duration) error
 	FetchDeploymentsToBeDeleted() []Deployment
 	ChangeTerraformWorkspace(Deployment) error
@@ -52,8 +52,8 @@ type DeploymentService interface {
 type DeploymentRepository interface {
 	GetDeployments() ([]Deployment, error)
 	GetMyDeployments(string) ([]Deployment, error)
-	GetDeployment(string, string) (Deployment, error)
+	GetDeployment(string, string, string) (Deployment, error)
 	AddDeployment(Deployment) error
 	UpdateDeployment(Deployment) error
-	DeleteDeployment(string, string) error
+	DeleteDeployment(string, string, string) error
 }
