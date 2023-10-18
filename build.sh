@@ -21,6 +21,8 @@ if [[ "${STORAGE_ACCOUNT_NAME}" == "" ]]; then
     exit 1
 fi
 
+export VERSION="$(date +%Y%m%d)"
+
 go build -ldflags "-X 'github.com/vermacodes/one-click-aks/app/server/entity.SasToken=$SAS_TOKEN' -X 'github.com/vermacodes/one-click-aks/app/server/entity.StorageAccountName=$STORAGE_ACCOUNT_NAME'"
 
 cd ../..

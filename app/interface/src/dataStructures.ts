@@ -253,6 +253,7 @@ export type Value = {
 
 export type ServerStatus = {
   status: "" | "OK";
+  version: string;
 };
 
 export type LoginStatus = {

@@ -15,13 +15,15 @@ import (
 )
 
 type Status struct {
-	Status string `json:"status"`
+	Status  string `json:"status"`
+	Version string `json:"version"`
 }
 
 func status(c *gin.Context) {
 
 	status := Status{}
 	status.Status = "OK"
+	status.Version = os.Getenv("VERSION")
 
 	c.IndentedJSON(http.StatusOK, status)
 }
