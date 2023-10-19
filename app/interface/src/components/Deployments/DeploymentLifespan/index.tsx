@@ -42,6 +42,7 @@ export default function DeploymentLifespan({
         className={`absolute right-0 z-10 mt-2 h-44 w-32 origin-top-right overflow-y-auto overflow-x-hidden scrollbar-thin  scrollbar-thumb-slate-400 dark:scrollbar-thumb-slate-600 ${
           !menu && "hidden"
         } items-center gap-y-2 rounded border border-slate-500 bg-slate-100 p-2 dark:bg-slate-800`}
+        onMouseLeave={() => setMenu(false)}
       >
         {lifespans.map((lifespan) => (
           <div

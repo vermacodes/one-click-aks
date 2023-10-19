@@ -163,6 +163,7 @@ export default function TfWorkspace({
                   className={`absolute right-0 mt-2 h-56 w-96 origin-top-right overflow-y-auto overflow-x-hidden scrollbar ${
                     !workspaceMenu && "hidden"
                   } items-center gap-y-2 rounded border border-slate-500 bg-slate-100 p-2 dark:bg-slate-800`}
+                  onMouseLeave={() => setWorkspaceMenu(false)}
                 >
                   {workspaces?.map(
                     (workspace) =>

@@ -30,7 +30,7 @@ export default function KubernetesVersion({
     if (lab !== undefined) {
       if (lab.template !== undefined) {
         lab.template.kubernetesClusters[0].kubernetesVersion = patchVersion;
-        !actionStatus &&
+        !actionStatus.inProgress &&
           setLogs({
             isStreaming: false,
             logs: JSON.stringify(lab.template, null, 4),
@@ -57,10 +57,11 @@ export default function KubernetesVersion({
     <div className={`${versionMenu ? "relative" : ""} inline-block text-left`}>
       <div
         className={`${
-          (actionStatus || isLoading || isFetching) && "text-slate-500"
+          (actionStatus.inProgress || isLoading || isFetching) &&
+          "text-slate-500"
         } flex w-64 items-center justify-between rounded border border-slate-500 px-2 py-1`}
         onClick={(e) => {
-          if (!(actionStatus || isLoading || isFetching)) {
+          if (!(actionStatus.inProgress || isLoading || isFetching)) {
             setVersionMenu(!versionMenu);
           }
           e.stopPropagation();
@@ -78,6 +79,7 @@ export default function KubernetesVersion({
         className={`absolute right-0 z-10 mt-2 h-56 w-64 origin-top-right overflow-y-auto overflow-x-hidden scrollbar-thin  scrollbar-thumb-slate-400 dark:scrollbar-thumb-slate-600 ${
           !versionMenu && "hidden"
         } items-center gap-y-2 rounded border border-slate-500 bg-slate-100 p-2 dark:bg-slate-800`}
+        onMouseLeave={() => setVersionMenu(false)}
       >
         {data?.values?.map(
           (value) =>

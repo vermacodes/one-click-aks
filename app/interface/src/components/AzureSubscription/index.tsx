@@ -50,6 +50,7 @@ export default function AzureSubscription({
             className={`absolute right-0 z-10 mt-2 h-56 w-96 origin-top-right overflow-y-auto overflow-x-hidden scrollbar ${
               !subscriptionMenu && "hidden"
             } items-center gap-y-2 rounded border bg-slate-100 p-2 dark:bg-slate-800`}
+            onMouseLeave={() => setSubscriptionMenu(false)}
           >
             {accountsLoading ? (
               <p>Loading...</p>
