@@ -180,6 +180,13 @@ func (d *DeploymentService) PollAndDeleteDeployments(interval time.Duration) err
 			//Run extend script in 'destroy' mode.
 			if err := d.terraformService.Extend(deployment.DeploymentLab, "destroy"); err != nil {
 				slog.Error("not able to run extend script", err)
+
+				// Update deployment status to failed.
+				deployment.DeploymentStatus = "Deployment Failed"
+				if err := d.UpdateDeployment(deployment); err != nil {
+					slog.Error("not able to update deployment", err)
+				}
+
 				return err
 			}
 
@@ -187,6 +194,13 @@ func (d *DeploymentService) PollAndDeleteDeployments(interval time.Duration) err
 			terraformOperation, err := d.terraformService.DestroyAsync(deployment.DeploymentLab)
 			if err != nil {
 				slog.Error("not able to run terraform destroy", err)
+
+				// Update deployment status to failed.
+				deployment.DeploymentStatus = "Deployment Failed"
+				if err := d.UpdateDeployment(deployment); err != nil {
+					slog.Error("not able to update deployment", err)
+				}
+
 				return err
 			}
 
@@ -196,6 +210,12 @@ func (d *DeploymentService) PollAndDeleteDeployments(interval time.Duration) err
 				slog.Debug("terraformOperation.OperationStatus: " + terraformOperation.OperationStatus)
 				if err != nil {
 					slog.Error("not able to get terraform operation", err)
+					// Update deployment status to failed.
+					deployment.DeploymentStatus = "Deployment Failed"
+					if err := d.UpdateDeployment(deployment); err != nil {
+						slog.Error("not able to update deployment", err)
+					}
+
 					break
 				}
 
