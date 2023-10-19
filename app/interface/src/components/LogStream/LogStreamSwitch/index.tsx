@@ -2,7 +2,7 @@ import { useLogs, useSetLogs } from "../../../hooks/useLogs";
 import Checkbox from "../../Checkbox";
 
 export default function LogStreamSwitch() {
-  const { data: logStream, isFetching, isLoading } = useLogs();
+  const { data: logStream } = useLogs();
   const { mutate: setLogs } = useSetLogs();
 
   function handleLogStreamChange() {
@@ -28,7 +28,7 @@ export default function LogStreamSwitch() {
   return (
     <Checkbox
       checked={logStream.isStreaming}
-      disabled={isFetching || isLoading}
+      disabled={false}
       handleOnChange={handleLogStreamChange}
       id="log-stream-switch"
       label="Stream Logs"
