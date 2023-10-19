@@ -1,6 +1,5 @@
 import { useState } from "react";
 import AzureRegion from "../../components/AzureRegion";
-import AzureSubscription from "../../components/AzureSubscription";
 import AuthServiceEndpoint from "../../components/Config/AuthServiceEndpoint";
 import ServerEndpoint from "../../components/Config/ServerEndpoint";
 import ResetActionStatus from "../../components/ResetActionStatus";
@@ -10,7 +9,7 @@ import TfInit from "../../components/TfInit";
 import TfWorkspace from "../../components/TfWorkspace";
 import PageLayout from "../../layouts/PageLayout";
 import SettingsItemLayout from "../../layouts/SettingsItemLayout";
-import WebSocketEndpoint from "../../components/Config/WebSocketEndpoint";
+import AzureSubscriptionSetting from "../../components/Config/AzureSubscriptionSetting";
 
 export default function Settings() {
   const [subscriptionMenu, setSubscriptionMenu] = useState<boolean>(false);
@@ -24,10 +23,7 @@ export default function Settings() {
         {/* <WebSocketEndpoint /> */}
         <AuthServiceEndpoint />
         <StorageAccount />
-        <AzureSubscription
-          subscriptionMenu={subscriptionMenu}
-          setSubscriptionMenu={setSubscriptionMenu}
-        />
+        <AzureSubscriptionSetting />
         <AzureRegion regionEdit={regionEdit} setRegionEdit={setRegionEdit} />
 
         <TfInit />
