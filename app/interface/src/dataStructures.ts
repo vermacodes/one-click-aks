@@ -185,10 +185,10 @@ export type Lab = {
   extendScript: string;
   message: string;
   type: string;
-  createdby: string;
-  createdon: string;
-  updatedby: string;
-  updatedon: string;
+  createdBy: string;
+  createdOn: string;
+  updatedBy: string;
+  updatedOn: string;
 };
 
 export type Assignment = {
