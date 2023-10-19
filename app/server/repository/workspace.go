@@ -5,7 +5,6 @@ import (
 	"os/exec"
 
 	"github.com/vermacodes/one-click-aks/app/server/entity"
-	"golang.org/x/exp/slog"
 )
 
 type tfWorkspaceRepository struct{}
@@ -23,7 +22,6 @@ func (t *tfWorkspaceRepository) List(storageAccountName string) (string, error) 
 	setEnvironmentVariable("tf_state_file_name", "terraform.tfstate")
 
 	out, err := exec.Command(os.ExpandEnv("$ROOT_DIR")+"/scripts/workspaces.sh", "list").Output()
-	slog.Info("Workspaces: ", string(out))
 	return string(out), err
 }
 

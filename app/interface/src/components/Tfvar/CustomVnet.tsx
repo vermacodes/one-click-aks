@@ -1,8 +1,10 @@
+import { useContext } from "react";
 import { useActionStatus } from "../../hooks/useActionStatus";
 import { useLab, useSetLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
 import Checkbox from "../Checkbox";
 import { defaultTfvarConfig } from "./defaults";
+import { WebSocketContext } from "../../WebSocketContext";
 
 export default function CustomVnet() {
   const {
@@ -11,7 +13,7 @@ export default function CustomVnet() {
     isFetching: labIsFetching,
   } = useLab();
   const { mutate: setLab } = useSetLab();
-  const { data: inProgress } = useActionStatus();
+  const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
 
   function handleOnChange() {
@@ -35,7 +37,7 @@ export default function CustomVnet() {
             lab.template.kubernetesClusters[0].outboundType = "loadBalancer";
           }
         }
-        !inProgress &&
+        !actionStatus.inProgress &&
           setLogs({
             isStreaming: false,
             logs: JSON.stringify(lab.template, null, 4),

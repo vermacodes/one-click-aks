@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { FaChevronDown, FaTrash } from "react-icons/fa";
 import {
   useActionStatus,
@@ -14,6 +14,9 @@ import {
 import SettingsItemLayout from "../../layouts/SettingsItemLayout";
 import Button from "../Button";
 import TfResources from "../TfResources";
+import { useUpsertDeployment } from "../../hooks/useDeployments";
+import { useLab } from "../../hooks/useLab";
+import { WebSocketContext } from "../../WebSocketContext";
 
 type TfWorkspaceProps = {
   workspaceMenu: boolean;
@@ -37,13 +40,41 @@ export default function TfWorkspace({
   const { mutate: selectWorkspace, isLoading: selectingWorkspace } =
     useSelectWorkspace();
   const { isLoading: deletingWorkspace } = useDeleteWorkspace();
-  const { mutate: addWorkspace, isLoading: addingWorkspace } =
-    useAddWorkspace();
-  const { data: actionStatus } = useActionStatus();
+  const {
+    mutate: addWorkspace,
+    mutateAsync: asyncAddWorkspace,
+    isLoading: addingWorkspace,
+  } = useAddWorkspace();
+  const { mutate: upsertDeployment } = useUpsertDeployment();
+  const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setActionStatus } = useSetActionStatus();
+  const { data: lab } = useLab();
 
-  function handleAddWorkspace(event: React.ChangeEvent<HTMLInputElement>) {
+  function handleWorkspaceNameTextField(
+    event: React.ChangeEvent<HTMLInputElement>
+  ) {
     setNewWorkSpaceName(event.target.value);
+  }
+
+  function handleAddWorkspace() {
+    if (lab !== undefined) {
+      asyncAddWorkspace({ name: newWorkSpaceName, selected: true }).then(() => {
+        setAdd(!add);
+        setNewWorkSpaceName("");
+        upsertDeployment({
+          deploymentId: "",
+          deploymentUserId: "",
+          deploymentWorkspace: newWorkSpaceName,
+          deploymentSubscriptionId: "",
+          deploymentAutoDelete: false,
+          deploymentAutoDeleteUnixTime: 0,
+          deploymentLifespan: 28800,
+          deploymentStatus: "Deployment Not Started",
+          deploymentLab: lab,
+        });
+      });
+    }
+    console.error("Lab is undefined");
   }
 
   return (
@@ -125,13 +156,14 @@ export default function TfWorkspace({
                     className="block h-10 w-full bg-inherit px-2 text-inherit"
                     placeholder="Name your new workspace."
                     value={newWorkSpaceName}
-                    onChange={handleAddWorkspace}
+                    onChange={handleWorkspaceNameTextField}
                   ></input>
                 </div>
                 <div
-                  className={`absolute right-0 mt-2 h-56 w-96 origin-top-right overflow-y-auto scrollbar overflow-x-hidden ${
+                  className={`absolute right-0 mt-2 h-56 w-96 origin-top-right overflow-y-auto overflow-x-hidden scrollbar ${
                     !workspaceMenu && "hidden"
                   } items-center gap-y-2 rounded border border-slate-500 bg-slate-100 p-2 dark:bg-slate-800`}
+                  onMouseLeave={() => setWorkspaceMenu(false)}
                 >
                   {workspaces?.map(
                     (workspace) =>
@@ -164,11 +196,7 @@ export default function TfWorkspace({
                   </Button>
                   <Button
                     variant="success"
-                    onClick={() => {
-                      addWorkspace({ name: newWorkSpaceName, selected: true });
-                      setAdd(!add);
-                      setNewWorkSpaceName("");
-                    }}
+                    onClick={() => handleAddWorkspace()}
                   >
                     Add
                   </Button>
@@ -177,7 +205,7 @@ export default function TfWorkspace({
                 <Button
                   variant="primary-outline"
                   disabled={
-                    actionStatus ||
+                    actionStatus.inProgress ||
                     gettingWorkspaces ||
                     selectingWorkspace ||
                     deletingWorkspace ||

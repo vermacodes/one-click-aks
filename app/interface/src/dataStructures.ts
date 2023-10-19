@@ -185,10 +185,10 @@ export type Lab = {
   extendScript: string;
   message: string;
   type: string;
-  createdby: string;
-  createdon: string;
-  updatedby: string;
-  updatedon: string;
+  createdBy: string;
+  createdOn: string;
+  updatedBy: string;
+  updatedOn: string;
 };
 
 export type Assignment = {
@@ -246,13 +246,14 @@ export type Capabilities = {
 
 export type Value = {
 	capabilities:  Capabilities;
-	isPreview: any;
+	isPreview: boolean | null;
 	patchVersions: PatchVersions;
 	version: string;
 }
 
 export type ServerStatus = {
   status: "" | "OK";
+  version: string;
 };
 
 export type LoginStatus = {
@@ -306,4 +307,16 @@ export type TerraformOperation = {
   labId: string;
   labName: string;
   labType: string;
+}
+
+export type DeploymentType = {
+  deploymentId: string;
+  deploymentUserId: string;
+  deploymentWorkspace: string;
+  deploymentSubscriptionId: string;
+  deploymentStatus: "Deployment In Progress" | "Deployment Failed" | "Deployment Completed" | "Deployment Not Started" | "Destroying Resources" | "Resources Destroyed";
+  deploymentLab: Lab
+  deploymentAutoDelete: boolean;
+  deploymentLifespan: number;
+  deploymentAutoDeleteUnixTime: number;
 }

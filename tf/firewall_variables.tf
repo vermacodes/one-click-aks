@@ -171,7 +171,7 @@ variable "firewall_application_rules" {
           description      = "Azure Workload AKS Subnet - Docker Repository"
           source_addresses = ["10.1.0.0/24", "10.1.1.0/24", "10.1.2.0/24", "10.1.3.0/24"]
           fqdn_tags        = null
-          target_fqdns     = ["*.docker.io", "*.gcr.io", "*.docker.com", "gcr.io", "*.googleapis.com"]
+          target_fqdns     = ["*.amazonaws.com", "*.pkg.dev", "*.k8s.io", "*.docker.io", "*.gcr.io", "*.docker.com", "gcr.io", "*.googleapis.com"]
           protocol = [{
             port = 443
             type = "Https"

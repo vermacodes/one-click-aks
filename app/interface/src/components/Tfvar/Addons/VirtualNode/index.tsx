@@ -1,12 +1,14 @@
+import { useContext } from "react";
 import { useActionStatus } from "../../../../hooks/useActionStatus";
 import { useLab, useSetLab } from "../../../../hooks/useLab";
 import { useSetLogs } from "../../../../hooks/useLogs";
 import Checkbox from "../../../Checkbox";
+import { WebSocketContext } from "../../../../WebSocketContext";
 
 type Props = {};
 
 export default function VirtualNode({}: Props) {
-  const { data: inProgress } = useActionStatus();
+  const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const {
     data: lab,
@@ -26,7 +28,7 @@ export default function VirtualNode({}: Props) {
           lab.template.kubernetesClusters[0].addons.virtualNode = true;
         }
 
-        !inProgress &&
+        !actionStatus.inProgress &&
           setLogs({
             isStreaming: false,
             logs: JSON.stringify(lab.template, null, 4),
@@ -62,7 +64,8 @@ export default function VirtualNode({}: Props) {
       lab.template.kubernetesClusters.length > 0 &&
       lab.template.kubernetesClusters[0].addons &&
       lab.template.kubernetesClusters[0].addons.virtualNode === false) ||
-    lab.template.kubernetesClusters[0].networkPlugin !== "azure"
+    (lab.template.kubernetesClusters.length > 0 &&
+      lab.template.kubernetesClusters[0].networkPlugin !== "azure")
   ) {
     checked = false;
   }

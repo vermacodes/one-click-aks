@@ -47,9 +47,10 @@ export default function AzureSubscription({
             </p>
           </div>
           <div
-            className={`absolute right-0 z-10 mt-2 h-56 w-96 origin-top-right overflow-y-auto scrollbar overflow-x-hidden ${
+            className={`absolute right-0 z-10 mt-2 h-56 w-96 origin-top-right overflow-y-auto overflow-x-hidden scrollbar ${
               !subscriptionMenu && "hidden"
             } items-center gap-y-2 rounded border bg-slate-100 p-2 dark:bg-slate-800`}
+            onMouseLeave={() => setSubscriptionMenu(false)}
           >
             {accountsLoading ? (
               <p>Loading...</p>
@@ -60,7 +61,10 @@ export default function AzureSubscription({
                     {account.isDefault !== true && (
                       <div
                         className="items-center rounded p-2 hover:bg-sky-500 hover:text-slate-100"
-                        onClick={() => setAccount(account)}
+                        onClick={() => {
+                          setSubscriptionMenu(!subscriptionMenu);
+                          setAccount(account);
+                        }}
                       >
                         {account.name}
                       </div>

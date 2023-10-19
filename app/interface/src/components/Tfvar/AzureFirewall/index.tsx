@@ -1,11 +1,13 @@
+import { useContext } from "react";
 import { useActionStatus } from "../../../hooks/useActionStatus";
 import { useLab, useSetLab } from "../../../hooks/useLab";
 import { useSetLogs } from "../../../hooks/useLogs";
 import Checkbox from "../../Checkbox";
 import { defaultFirewall } from "./../defaults";
+import { WebSocketContext } from "../../../WebSocketContext";
 
 export default function AzureFirewall() {
-  const { data: inProgress } = useActionStatus();
+  const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const {
     data: lab,
@@ -22,7 +24,7 @@ export default function AzureFirewall() {
         } else {
           lab.template.firewalls = [defaultFirewall];
         }
-        !inProgress &&
+        !actionStatus.inProgress &&
           setLogs({
             isStreaming: false,
             logs: JSON.stringify(lab.template, null, 4),

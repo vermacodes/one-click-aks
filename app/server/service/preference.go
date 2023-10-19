@@ -24,7 +24,7 @@ func (p *preferenceService) GetPreference() (entity.Preference, error) {
 
 	preferenceString, err := p.prefernceRepository.GetPreferenceFromRedis()
 	if err == nil {
-		slog.Info("preferene found in redis.")
+		slog.Debug("preferene found in redis.")
 		errJson := json.Unmarshal([]byte(preferenceString), &preference)
 		if errJson == nil {
 			return preference, errJson

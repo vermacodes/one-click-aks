@@ -6,6 +6,7 @@ import { MdClose } from "react-icons/md";
 import ResetActionStatus from "../../components/ResetActionStatus";
 import TfInit from "../../components/TfInit";
 import TfWorkspace from "../../components/TfWorkspace";
+import Button from "../Button";
 
 type Props = {};
 
@@ -15,10 +16,7 @@ export default function index({}: Props) {
   const { data } = useTerraformWorkspace();
   return (
     <>
-      <button
-        className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800"
-        onClick={() => setShowModal(true)}
-      >
+      <Button variant="success-text" onClick={() => setShowModal(true)}>
         <span>
           <SiTerraform />
         </span>
@@ -31,7 +29,7 @@ export default function index({}: Props) {
               </div>
             ))}
         </span>
-      </button>
+      </Button>
       <Modal showModal={showModal} setShowModal={setShowModal} />
     </>
   );

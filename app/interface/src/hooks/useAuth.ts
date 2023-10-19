@@ -90,8 +90,5 @@ function operationRecord(operationRecord: TerraformOperation) {
 
 export function useOperationRecord() {
   return useMutation(operationRecord, {
-    onSuccess: () => {
-      console.log("Operation logged")
-    }
   });
 }

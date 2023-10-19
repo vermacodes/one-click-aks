@@ -160,7 +160,7 @@ func (k *kVersionService) DoesVersionExist(version string) bool {
 	for _, v := range o.Values {
 		// Itrate over PatchVersions
 		for patchVersion := range v.PatchVersions {
-			slog.Info("Patch Verison" + patchVersion)
+			slog.Debug("Patch Verison" + patchVersion)
 			if patchVersion == version {
 				return true
 			}

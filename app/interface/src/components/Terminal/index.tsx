@@ -1,20 +1,27 @@
 import ansiHTML from "ansi-to-html";
-import { useEffect, useRef, useState } from "react";
-import { useActionStatus } from "../../hooks/useActionStatus";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useLogs, useSetLogs } from "../../hooks/useLogs";
 import Checkbox from "../Checkbox";
+import LogStreamSwitch from "../LogStream/LogStreamSwitch";
+import { WebSocketContext } from "../../WebSocketContext";
 
 export default function Terminal() {
   const [autoScroll, setAutoScroll] = useState(false);
   const { data } = useLogs();
   const { mutate: setLogs } = useSetLogs();
-  const { data: inProgress } = useActionStatus();
+  const { actionStatus } = useContext(WebSocketContext);
 
-  const logEndRef = useRef<null | HTMLDivElement>(null);
+  const logContainerRef = useRef<null | HTMLDivElement>(null);
+  const logContentRef = useRef<null | HTMLDivElement>(null);
+
   useEffect(() => {
-    logEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
+    if (autoScroll) {
+      logContainerRef.current?.scrollTo({
+        top: logContentRef.current?.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [data, autoScroll]);
 
   function getAutoScrollFromLocalStorage(): string {
     var autoScrollFromLocalStorage = localStorage.getItem("autoScroll");
@@ -36,7 +43,7 @@ export default function Terminal() {
     } else {
       setAutoScroll(false);
     }
-  });
+  }, []);
 
   function updateLogs(): string {
     if (data !== undefined) {
@@ -64,7 +71,7 @@ export default function Terminal() {
       <div className="mb-1 flex justify-end gap-x-2 gap-y-2 divide-x divide-slate-500">
         <button
           className="disabled:text-slate-500 hover:text-sky-500 disabled:hover:text-slate-500"
-          disabled={inProgress}
+          disabled={actionStatus.inProgress}
           onClick={() => setLogs({ isStreaming: false, logs: "" })}
         >
           Clear Logs
@@ -78,14 +85,23 @@ export default function Terminal() {
             handleOnChange={handleOnChange}
           />
         </div>
+        <div className="pl-2">
+          <LogStreamSwitch />
+        </div>
       </div>
-      <div className="mb-5 h-1/2 max-h-[500px] min-h-[500px] overflow-y-auto rounded border border-slate-900 bg-slate-900  p-4 text-sm text-slate-100 shadow shadow-slate-300  scrollbar-thin scrollbar-thumb-slate-400 scrollbar-thumb-rounded hover:border-sky-500 dark:shadow-slate-700 dark:scrollbar-thumb-slate-600 dark:hover:border-sky-500">
-        <pre
+      <div
+        className="mb-5 h-1/2 max-h-[500px] min-h-[500px] overflow-y-auto rounded border border-slate-900 bg-slate-900 p-4 text-sm text-slate-100 shadow shadow-slate-300 scrollbar-thin scrollbar-thumb-slate-400 scrollbar-thumb-rounded hover:border-sky-500 dark:shadow-slate-700 dark:scrollbar-thumb-slate-600 dark:hover:border-sky-500"
+        ref={logContainerRef}
+      >
+        <div
+          ref={logContentRef}
           dangerouslySetInnerHTML={{ __html: updateLogs() }}
-          style={{ padding: "10px", whiteSpace: "pre-wrap" }}
-        ></pre>
-
-        {autoScroll && <div ref={logEndRef} />}
+          style={{
+            padding: "10px",
+            whiteSpace: "pre-wrap",
+            fontFamily: "monospace",
+          }}
+        ></div>
       </div>
     </div>
   );

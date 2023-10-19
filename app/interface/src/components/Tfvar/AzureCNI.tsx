@@ -1,10 +1,12 @@
+import { useContext } from "react";
 import { useActionStatus } from "../../hooks/useActionStatus";
 import { useLab, useSetLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
 import Checkbox from "../Checkbox";
+import { WebSocketContext } from "../../WebSocketContext";
 
 export default function AzureCNI() {
-  const { data: inProgress } = useActionStatus();
+  const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const {
     data: lab,
@@ -25,7 +27,7 @@ export default function AzureCNI() {
           lab.template.kubernetesClusters[0].networkPlugin = "azure";
           lab.template.kubernetesClusters[0].networkPolicy = "azure";
         }
-        !inProgress &&
+        !actionStatus.inProgress &&
           setLogs({
             isStreaming: false,
             logs: JSON.stringify(lab.template, null, 4),

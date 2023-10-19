@@ -1,4 +1,4 @@
-FROM actlab.azurecr.io/repro_base
+FROM actlab.azurecr.io/repro_base:latest
 
 WORKDIR /app
 

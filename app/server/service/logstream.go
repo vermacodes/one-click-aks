@@ -23,7 +23,7 @@ func (l *logStreamService) AppendLogs(logs string) error {
 	logStream := entity.LogStream{}
 	logStream, err := l.GetLogs()
 	if err != nil {
-		slog.Info("not able to get logs from redis. setting new")
+		slog.Debug("not able to get logs from redis. setting new")
 		logStream.Logs = ""
 	}
 
@@ -99,7 +99,7 @@ func (l *logStreamService) GetLogs() (entity.LogStream, error) {
 }
 
 func (l *logStreamService) StartLogStream() {
-	slog.Info("starting log stream")
+	slog.Debug("starting log stream")
 	logStream, err := l.GetLogs()
 	if err != nil {
 		slog.Error("not able to get current logs", err)
@@ -110,7 +110,7 @@ func (l *logStreamService) StartLogStream() {
 }
 
 func (l *logStreamService) EndLogStream() {
-	slog.Info("ending log stream")
+	slog.Debug("ending log stream")
 	logStream, err := l.GetLogs()
 	if err != nil {
 		slog.Error("not able to get current logs", err)

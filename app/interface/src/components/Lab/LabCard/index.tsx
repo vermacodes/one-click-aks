@@ -36,6 +36,16 @@ export default function LabCard({ lab, children }: Props) {
           ))}
       </div>
       <>{children}</>
+      {lab.createdBy !== "" && lab.createdOn !== "" && (
+        <div className="text-xs">
+          Created on {lab.createdOn} by {lab.createdBy}
+        </div>
+      )}
+      {lab.updatedBy !== "" && lab.updatedOn !== "" && (
+        <div className="text-xs">
+          Updated on {lab.updatedOn} by {lab.updatedBy}
+        </div>
+      )}
     </div>
   );
 }

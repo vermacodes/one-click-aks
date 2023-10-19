@@ -25,7 +25,7 @@ axiosInstance.interceptors.response.use(
 
 axiosInstance.interceptors.request.use(
   async (config: AxiosRequestConfig) => {
-    const authToken = await getAuthToken();
+    const authToken = await getAuthToken().catch((e) => myInteractionInProgressHandler());
     if (config.headers) {
       config.headers.Authorization = `Bearer ${authToken}`;
     } else {
@@ -77,10 +77,23 @@ async function getAuthToken(): Promise<string> {
   }
 }
 
+async function myInteractionInProgressHandler() {
+  
+  // I am just going to wait for 5 seconds and then call myAcquireToken again.
+  // Ideally, it should really be tracking the state of the interaction and then
+  // call myAcquireToken again when the interaction is complete.
+  // Read More: https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/errors.md#interaction_in_progress
+  // Sleep for 5 seconds
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+
+  // wait is over, call myAcquireToken again to re-try acquireTokenSilent
+  return (await getAuthToken());
+};
+
 // Axios interceptor to add the auth token to outgoing requests
 authAxiosInstance.interceptors.request.use(
   async (config: AxiosRequestConfig) => {
-    const authToken = await getAuthToken();
+    const authToken = await getAuthToken().catch((e) => myInteractionInProgressHandler());
     if (config.headers) {
       config.headers.Authorization = `Bearer ${authToken}`;
     } else {

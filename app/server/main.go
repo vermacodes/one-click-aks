@@ -15,13 +15,17 @@ import (
 )
 
 type Status struct {
-	Status string `json:"status"`
+	Status  string `json:"status"`
+	Version string `json:"version"`
 }
+
+var version string
 
 func status(c *gin.Context) {
 
 	status := Status{}
 	status.Status = "OK"
+	status.Version = version
 
 	c.IndentedJSON(http.StatusOK, status)
 }
@@ -31,7 +35,7 @@ func main() {
 	logLevel := os.Getenv("LOG_LEVEL")
 	logLevelInt, err := strconv.Atoi(logLevel)
 	if err != nil {
-		logLevelInt = 8
+		logLevelInt = 0
 	}
 
 	opts := slog.HandlerOptions{
@@ -39,7 +43,7 @@ func main() {
 		Level:     slog.Level(logLevelInt),
 	}
 
-	slog.SetDefault(slog.New(opts.NewJSONHandler(os.Stderr)))
+	slog.SetDefault(slog.New(opts.NewTextHandler(os.Stderr)))
 
 	router := gin.Default()
 	router.SetTrustedProxies(nil)
@@ -70,7 +74,7 @@ func main() {
 	handler.NewRedisHandler(router, redisService)
 
 	authRepository := repository.NewAuthRepository()
-	authService := service.NewAuthService(authRepository, actionStatusService, loggingService)
+	authService := service.NewAuthService(authRepository, actionStatusService, loggingService, redisRepository)
 	handler.NewLoginHandler(router, authService)
 
 	authRouter.Use(middleware.AuthRequired(authService, logStreamService))
@@ -100,6 +104,13 @@ func main() {
 	terraformRepository := repository.NewTerraformRepository()
 	terraformService := service.NewTerraformService(terraformRepository, labService, workspaceService, logStreamService, actionStatusService, kVersionService, storageAccountService, loggingService, authService)
 	handler.NewTerraformHandler(authRouter, terraformService)
+
+	deploymentRepository := repository.NewDeploymentRepository()
+	deploymentService := service.NewDeploymentService(deploymentRepository, labService, terraformService, actionStatusService, logStreamService, authService, workspaceService)
+	handler.NewDeploymentHandler(authRouter, deploymentService)
+
+	// take seconds and multiply with 1000000000 and pass it to the function.
+	go deploymentService.PollAndDeleteDeployments(60000000000)
 
 	router.GET("/status", status)
 	router.Run()

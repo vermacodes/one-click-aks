@@ -17,13 +17,13 @@ func newRedisClient() *redis.Client {
 	})
 }
 
-type RedisReposiroty struct{}
+type RedisRepository struct{}
 
-func NewRedisRepository() entity.RedisReposiroty {
-	return &RedisReposiroty{}
+func NewRedisRepository() entity.RedisRepository {
+	return &RedisRepository{}
 }
 
-func (r *RedisReposiroty) ResetServerCache() error {
+func (r *RedisRepository) ResetServerCache() error {
 	rdb := newRedisClient()
 	return rdb.FlushAll(ctx).Err()
 }

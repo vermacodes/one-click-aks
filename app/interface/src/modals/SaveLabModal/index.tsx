@@ -51,10 +51,10 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
     template: labInMemory?.template,
     extendScript: "",
     message: "",
-    createdby: "",
-    updatedby: "",
-    createdon: Date(),
-    updatedon: Date(),
+    createdBy: "",
+    updatedBy: "",
+    createdOn: "",
+    updatedOn: "",
   });
 
   useEffect(() => {

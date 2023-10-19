@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import { FaCheck } from "react-icons/fa";
 import { ButtonVariant, Lab } from "../../../dataStructures";
 import { useActionStatus } from "../../../hooks/useActionStatus";
 import { useEndStream, useSetLogs } from "../../../hooks/useLogs";
 import { useValidate } from "../../../hooks/useTerraform";
 import Button from "../../Button";
+import { WebSocketContext } from "../../../WebSocketContext";
 
 type Props = {
   variant: ButtonVariant;
@@ -15,7 +16,7 @@ type Props = {
 export default function ValidateLabButton({ variant, children, lab }: Props) {
   const { mutate: setLogs } = useSetLogs();
   const { mutate: endLogStream } = useEndStream();
-  const { data: inProgress } = useActionStatus();
+  const { actionStatus } = useContext(WebSocketContext);
   const { mutateAsync: validateAsync } = useValidate();
 
   function onClickHandler() {
@@ -30,7 +31,7 @@ export default function ValidateLabButton({ variant, children, lab }: Props) {
     <Button
       variant={variant}
       onClick={onClickHandler}
-      disabled={inProgress || lab === undefined}
+      disabled={actionStatus.inProgress || lab === undefined}
     >
       <span>
         <FaCheck />

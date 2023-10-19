@@ -4,6 +4,8 @@ import { useActionStatus } from "../../hooks/useActionStatus";
 import { useLab, useSetLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
 import { useGetOrchestrators } from "../../hooks/useOrchestrators";
+import { useContext } from "react";
+import { WebSocketContext } from "../../WebSocketContext";
 
 type Props = {
   versionMenu: boolean;
@@ -14,7 +16,7 @@ export default function KubernetesVersion({
   versionMenu,
   setVersionMenu,
 }: Props) {
-  const { data: actionStatus } = useActionStatus();
+  const { actionStatus } = useContext(WebSocketContext);
   const { data, isLoading, isFetching, isError } = useGetOrchestrators();
   const { mutate: setLogs } = useSetLogs();
   const {
@@ -28,7 +30,7 @@ export default function KubernetesVersion({
     if (lab !== undefined) {
       if (lab.template !== undefined) {
         lab.template.kubernetesClusters[0].kubernetesVersion = patchVersion;
-        !actionStatus &&
+        !actionStatus.inProgress &&
           setLogs({
             isStreaming: false,
             logs: JSON.stringify(lab.template, null, 4),
@@ -55,10 +57,11 @@ export default function KubernetesVersion({
     <div className={`${versionMenu ? "relative" : ""} inline-block text-left`}>
       <div
         className={`${
-          (actionStatus || isLoading || isFetching) && "text-slate-500"
+          (actionStatus.inProgress || isLoading || isFetching) &&
+          "text-slate-500"
         } flex w-64 items-center justify-between rounded border border-slate-500 px-2 py-1`}
         onClick={(e) => {
-          if (!(actionStatus || isLoading || isFetching)) {
+          if (!(actionStatus.inProgress || isLoading || isFetching)) {
             setVersionMenu(!versionMenu);
           }
           e.stopPropagation();
@@ -76,6 +79,7 @@ export default function KubernetesVersion({
         className={`absolute right-0 z-10 mt-2 h-56 w-64 origin-top-right overflow-y-auto overflow-x-hidden scrollbar-thin  scrollbar-thumb-slate-400 dark:scrollbar-thumb-slate-600 ${
           !versionMenu && "hidden"
         } items-center gap-y-2 rounded border border-slate-500 bg-slate-100 p-2 dark:bg-slate-800`}
+        onMouseLeave={() => setVersionMenu(false)}
       >
         {data?.values?.map(
           (value) =>
@@ -102,16 +106,10 @@ export default function KubernetesVersion({
                         handleOnSelect(patchVersion);
                       }}
                     >
-                      <div key={patchVersion}>{patchVersion}</div>
-                      {/* <div className="justify-start">
-                      <span>
-                        {orchestrator.isPreview
-                          ? " (Preview)"
-                          : orchestrator.default
-                          ? " (Default)"
-                          : ""}
-                      </span>
-                    </div> */}
+                      <div className="flex justify-between">
+                        <div key={patchVersion}>{patchVersion}</div>
+                        <span>{value.isPreview && "(Preview)"}</span>
+                      </div>
 
                       <div className="space-x-2 text-xs text-slate-500">
                         Upgrades :

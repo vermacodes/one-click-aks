@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { FaFile, FaPlane } from "react-icons/fa";
 import { ButtonVariant, Lab } from "../../../dataStructures";
 import { useActionStatus } from "../../../hooks/useActionStatus";
@@ -6,6 +6,7 @@ import { useEndStream, useSetLogs } from "../../../hooks/useLogs";
 import { usePreference } from "../../../hooks/usePreference";
 import { usePlan } from "../../../hooks/useTerraform";
 import Button from "../../Button";
+import { WebSocketContext } from "../../../WebSocketContext";
 
 type Props = {
   variant: ButtonVariant;
@@ -17,7 +18,7 @@ export default function PlanButton({ variant, children, lab }: Props) {
   const { mutate: setLogs } = useSetLogs();
   const { mutate: endLogStream } = useEndStream();
   const { mutateAsync: planAsync } = usePlan();
-  const { data: inProgress } = useActionStatus();
+  const { actionStatus, setActionStatus } = useContext(WebSocketContext);
   const { data: preference } = usePreference();
 
   function onClickHandler() {
@@ -40,7 +41,7 @@ export default function PlanButton({ variant, children, lab }: Props) {
     <Button
       variant={variant}
       onClick={onClickHandler}
-      disabled={inProgress || lab === undefined}
+      disabled={actionStatus.inProgress || lab === undefined}
     >
       <span className="text-base">
         <FaFile />

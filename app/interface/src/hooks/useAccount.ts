@@ -26,10 +26,12 @@ export function useSetAccount() {
   const queryClient = useQueryClient();
   return useMutation(setAccount, {
     onSuccess: () => {
+      queryClient.invalidateQueries();
       queryClient.invalidateQueries("account");
       queryClient.invalidateQueries("get-storage-account");
       queryClient.invalidateQueries("get-action-status");
       queryClient.invalidateQueries("list-terraform-workspaces");
+      queryClient.invalidateQueries("get-selected-terraform-workspace");
       queryClient.invalidateQueries("get-preference");
       queryClient.invalidateQueries("get-lab");
       queryClient.invalidateQueries("get-logs");

@@ -7,6 +7,7 @@ import {
   FaList,
   FaMoon,
   FaPeopleCarry,
+  FaRocket,
   FaShieldAlt,
   FaSun,
   FaTools,
@@ -58,6 +59,16 @@ function Pages() {
                 <FaTools />
               </span>
               <span>Lab Builder</span>
+            </button>
+          </Link>
+        </li>
+        <li>
+          <Link to={"/deployments"}>
+            <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
+              <span>
+                <FaRocket />
+              </span>
+              <span>Deployments</span>
             </button>
           </Link>
         </li>
@@ -168,9 +179,9 @@ function FixedPages({ darkMode, setDarkMode }: FixedPagesProps) {
   return (
     <div className="h-fit w-full flex-col p-4">
       <ul className="md:text-l flex w-full flex-col justify-start gap-y-1 text-sm lg:text-xl">
-        <li>
+        {/* <li>
           <CurrentTerraformWorkspace />
-        </li>
+        </li> */}
         {/* <li>
           <DestroyButton variant="secondary-text" navbarButton={true} lab={lab}>
             <span>
