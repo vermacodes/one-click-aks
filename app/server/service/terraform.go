@@ -111,7 +111,7 @@ func (t *terraformService) ApplyAsync(lab entity.LabType) (entity.TerraformOpera
 		return terraformOperation, err
 	}
 
-	if !t.kVersionService.DoesVersionExist(lab.Template.KubernetesClusters[0].KubernetesVersion) {
+	if len(lab.Template.KubernetesClusters) > 0 && !t.kVersionService.DoesVersionExist(lab.Template.KubernetesClusters[0].KubernetesVersion) {
 		slog.Info("kubernetes version not found. Defaulting to default version.")
 		lab.Template.KubernetesClusters[0].KubernetesVersion = t.kVersionService.GetDefaultVersion()
 	}
@@ -264,7 +264,7 @@ func helperTerraformAction(t *terraformService, tfvar entity.TfvarConfigType, ac
 		return err
 	}
 
-	if !t.kVersionService.DoesVersionExist(tfvar.KubernetesClusters[0].KubernetesVersion) {
+	if len(tfvar.KubernetesClusters) > 0 && !t.kVersionService.DoesVersionExist(tfvar.KubernetesClusters[0].KubernetesVersion) {
 		slog.Debug("kubernetes version not found. Defaulting to default version.")
 		tfvar.KubernetesClusters[0].KubernetesVersion = t.kVersionService.GetDefaultVersion()
 	}

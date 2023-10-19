@@ -1,6 +1,5 @@
 import { createContext } from "react";
 import { ActionStatusType } from "./dataStructures";
-import { Action } from "react-query/types/core/query";
 
 export interface WebSocketContextData {
   actionStatus: ActionStatusType;
