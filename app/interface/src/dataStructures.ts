@@ -246,7 +246,7 @@ export type Capabilities = {
 
 export type Value = {
 	capabilities:  Capabilities;
-	isPreview: any;
+	isPreview: boolean | null;
 	patchVersions: PatchVersions;
 	version: string;
 }

@@ -106,16 +106,10 @@ export default function KubernetesVersion({
                         handleOnSelect(patchVersion);
                       }}
                     >
-                      <div key={patchVersion}>{patchVersion}</div>
-                      {/* <div className="justify-start">
-                      <span>
-                        {orchestrator.isPreview
-                          ? " (Preview)"
-                          : orchestrator.default
-                          ? " (Default)"
-                          : ""}
-                      </span>
-                    </div> */}
+                      <div className="flex justify-between">
+                        <div key={patchVersion}>{patchVersion}</div>
+                        <span>{value.isPreview && "(Preview)"}</span>
+                      </div>
 
                       <div className="space-x-2 text-xs text-slate-500">
                         Upgrades :

@@ -31,7 +31,7 @@ type Capabilities struct {
 
 type Value struct {
 	Capabilities  Capabilities  `json:"capabilities"`
-	IsPreview     interface{}   `json:"isPreview"`
+	IsPreview     *bool         `json:"isPreview"`
 	PatchVersions PatchVersions `json:"patchVersions"`
 	Version       string        `json:"version"`
 }
