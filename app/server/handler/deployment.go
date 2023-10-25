@@ -21,8 +21,15 @@ func NewDeploymentHandler(r *gin.RouterGroup, service entity.DeploymentService) 
 	//r.GET("/deployments", handler.GetDeployments)
 	r.GET("/deployments/my", handler.GetMyDeployments)
 	r.GET("/deployments/:workspace", handler.GetDeployment)
-	r.POST("/deployments", handler.AddDeployment)
 	r.PUT("/deployments", handler.UpdateDeployment)
+}
+
+func NewDeploymentWithActionStatusHandler(r *gin.RouterGroup, service entity.DeploymentService) {
+	handler := &deploymentHandler{
+		deploymentService: service,
+	}
+
+	r.POST("/deployments", handler.AddDeployment)
 	r.DELETE("/deployments/:workspace/:subscriptionId", handler.DeleteDeployment)
 }
 

@@ -60,10 +60,6 @@ func (w *workspaceService) Add(workspace entity.Workspace) error {
 
 	if err := w.workspaceRepository.Add(workspace); err != nil {
 		slog.Error("not able to add workspace", err)
-		if err := w.actionStatusService.SetActionEnd(); err != nil {
-			slog.Error("not able to end action status", err)
-			return err
-		}
 		return err
 	}
 
@@ -72,49 +68,28 @@ func (w *workspaceService) Add(workspace entity.Workspace) error {
 	w.workspaceRepository.DeleteListFromRedis()
 	w.workspaceRepository.DeleteResourcesFromRedis()
 
-	if err := w.actionStatusService.SetActionEnd(); err != nil {
-		slog.Error("not able to end action status", err)
-		return err
-	}
-
 	return nil
 }
 
 func (w *workspaceService) Select(workspace entity.Workspace) error {
 	if err := w.workspaceRepository.Select(workspace); err != nil {
 		slog.Error("not able to select the workspace", err)
-		if err := w.actionStatusService.SetActionEnd(); err != nil {
-			slog.Error("not able to end action status", err)
-			return err
-		}
 		return err
 	}
 
 	w.workspaceRepository.DeleteListFromRedis()
 	w.workspaceRepository.DeleteResourcesFromRedis()
-	if err := w.actionStatusService.SetActionEnd(); err != nil {
-		slog.Error("not able to end action status", err)
-		return err
-	}
 	return nil
 }
 
 func (w *workspaceService) Delete(workspace entity.Workspace) error {
 	if err := w.workspaceRepository.Delete(workspace); err != nil {
 		slog.Error("not able to delete workspace", err)
-		if err := w.actionStatusService.SetActionEnd(); err != nil {
-			slog.Error("not able to end action status", err)
-			return err
-		}
 		return err
 	}
 
 	w.workspaceRepository.DeleteListFromRedis()
 	w.workspaceRepository.DeleteResourcesFromRedis()
-	if err := w.actionStatusService.SetActionEnd(); err != nil {
-		slog.Error("not able to end action status", err)
-		return err
-	}
 	return nil
 }
 
