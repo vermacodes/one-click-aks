@@ -152,7 +152,7 @@ func (w *workspaceService) DeleteAllWorkspaceFromRedis() error {
 // this is a hleper function which takes a string (output from the commmand)
 // and converts to a list of workspaces.
 func helperStringToWorkspaces(val string) []entity.Workspace {
-	slog.Info("Workspaces : " + val)
+	slog.Debug("Workspaces : " + val)
 	workspaces := []entity.Workspace{}
 	sliceOut := strings.Split(string(val), ",")
 	for _, v := range sliceOut {

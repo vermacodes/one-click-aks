@@ -19,7 +19,6 @@ import { WebSocketContext } from "../../../WebSocketContext";
 import {
   calculateNewEpochTimeForDeployment,
   getSelectedDeployment,
-  getSelectedTerraformWorkspace,
 } from "../../../utils/helpers";
 
 type Props = {
