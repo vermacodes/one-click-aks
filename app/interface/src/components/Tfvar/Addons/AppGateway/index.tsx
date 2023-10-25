@@ -26,7 +26,6 @@ export default function AppGateway() {
 
         !actionStatus.inProgress &&
           setLogs({
-            isStreaming: false,
             logs: JSON.stringify(lab.template, null, 4),
           });
 

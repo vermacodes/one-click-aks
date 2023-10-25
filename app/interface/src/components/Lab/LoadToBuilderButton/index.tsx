@@ -32,7 +32,6 @@ export default function LoadToBuilderButton({ variant, children, lab }: Props) {
       // Update logs only if no action is in progress.
       if (!actionStatus.inProgress) {
         setLogs({
-          isStreaming: false,
           logs: JSON.stringify(lab.template, null, 4),
         });
       }

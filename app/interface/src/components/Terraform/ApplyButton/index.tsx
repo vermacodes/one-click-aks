@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import { FaRocket } from "react-icons/fa";
 import { ButtonVariant, DeploymentType, Lab } from "../../../dataStructures";
-import { useOperationRecord } from "../../../hooks/useAuth";
 import { useSetLogs } from "../../../hooks/useLogs";
 import { usePreference } from "../../../hooks/usePreference";
 import { useApply } from "../../../hooks/useTerraform";

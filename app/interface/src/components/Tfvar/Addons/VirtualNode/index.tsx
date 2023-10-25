@@ -30,7 +30,6 @@ export default function VirtualNode({}: Props) {
 
         !actionStatus.inProgress &&
           setLogs({
-            isStreaming: false,
             logs: JSON.stringify(lab.template, null, 4),
           });
 

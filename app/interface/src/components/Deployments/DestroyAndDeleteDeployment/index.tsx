@@ -4,10 +4,9 @@ import {
   DeploymentType,
   TerraformWorkspace,
 } from "../../../dataStructures";
-import { useActionStatus } from "../../../hooks/useActionStatus";
 import { useDeleteDeployment } from "../../../hooks/useDeployments";
 import { useSetLogs } from "../../../hooks/useLogs";
-import { useDestroy, useDestroyAsync } from "../../../hooks/useTerraform";
+import { useDestroy } from "../../../hooks/useTerraform";
 import {
   useAddWorkspace,
   useDeleteWorkspace,
@@ -38,7 +37,7 @@ export default function DestroyAndDeleteDeployment(props: Props) {
   const { mutateAsync: selectWorkspaceAsync, isLoading: selectingWorkspace } =
     useSelectWorkspace();
   const { isLoading: addingWorkspace } = useAddWorkspace();
-  const { mutateAsync: destroyAsync } = useDestroyAsync();
+  const { mutateAsync: destroyAsync } = useDestroy();
   const { mutateAsync: asyncDeleteDeployment } = useDeleteDeployment();
 
   function destroyAndDeleteHandler() {

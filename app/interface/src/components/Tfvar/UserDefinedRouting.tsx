@@ -30,7 +30,6 @@ export default function UserDefinedRouting() {
         }
         !actionStatus.inProgress &&
           setLogs({
-            isStreaming: false,
             logs: JSON.stringify(lab.template, null, 4),
           });
         setLab(lab);
