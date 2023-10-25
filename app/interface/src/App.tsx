@@ -3,6 +3,7 @@ import MainLayout from "./layouts/MainLayout";
 import { WebSocketContext } from "./WebSocketContext";
 import { ActionStatusType, LogsStreamType } from "./dataStructures";
 import ReconnectingWebSocket from "reconnecting-websocket";
+import { useQueryClient } from "react-query";
 
 function App() {
   const [darkMode, setDarkMode] = useState<boolean>(true);
@@ -12,6 +13,8 @@ function App() {
   const [logStream, setLogStream] = useState<LogsStreamType>({
     logs: "",
   });
+
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     var darkModeFromLocalStorage = localStorage.getItem("darkMode");
@@ -30,6 +33,10 @@ function App() {
     );
     actionStatusWs.onmessage = (event: any) => {
       setActionStatus(JSON.parse(event.data));
+      queryClient.invalidateQueries("list-deployments");
+      queryClient.invalidateQueries("list-terraform-workspaces");
+      queryClient.invalidateQueries("get-selected-terraform-workspace");
+      queryClient.invalidateQueries("get-resources");
     };
 
     // Log Stream Socket. Use baseUrl from localStorage.
