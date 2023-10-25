@@ -1,3 +1,5 @@
+import { useContext } from "react";
+import { WebSocketContext } from "../../WebSocketContext";
 import { useResetServerCache } from "../../hooks/useServerCache";
 import Button from "../Button";
 
@@ -5,10 +7,12 @@ type Props = {};
 
 export default function ResetServerCache({}: Props) {
   const { mutateAsync: resetServerCacheAsync } = useResetServerCache();
+  const { actionStatus } = useContext(WebSocketContext);
   return (
     <div className="flex w-60 flex-col gap-2 p-2">
       <Button
         variant="danger-outline"
+        disabled={actionStatus.inProgress}
         onClick={() =>
           resetServerCacheAsync().finally(() => {
             window.location.reload();
