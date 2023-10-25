@@ -2,16 +2,12 @@ import React, { useContext, useEffect } from "react";
 import { FaRocket } from "react-icons/fa";
 import {
   ButtonVariant,
-  DeploymentType,
   Lab,
   TerraformOperation,
 } from "../../../dataStructures";
-import {
-  useActionStatus,
-  useGetTerraformOperation,
-} from "../../../hooks/useActionStatus";
+import { useGetTerraformOperation } from "../../../hooks/useActionStatus";
 import { useOperationRecord } from "../../../hooks/useAuth";
-import { useEndStream, useSetLogs } from "../../../hooks/useLogs";
+import { useSetLogs } from "../../../hooks/useLogs";
 import { usePreference } from "../../../hooks/usePreference";
 import {
   useApplyAsync,
@@ -60,7 +56,6 @@ export default function ApplyButton({ variant, children, lab }: Props) {
     terraformOperationState.operationId
   );
   const { mutate: operationRecord } = useOperationRecord();
-  const { mutate: endLogStream } = useEndStream();
   const { data: deployments } = useGetMyDeployments();
   const { data: terraformWorkspaces } = useTerraformWorkspace();
   const { mutate: upsertDeployment } = useUpsertDeployment();
@@ -97,8 +92,6 @@ export default function ApplyButton({ variant, children, lab }: Props) {
             deploymentStatus: "Deployment Failed",
           });
         }
-
-        endLogStream();
       }
     } else if (terraformOperationState.operationType === "extend") {
       if (
@@ -121,8 +114,6 @@ export default function ApplyButton({ variant, children, lab }: Props) {
             deploymentStatus: "Deployment Completed",
           });
         }
-
-        endLogStream();
       }
     }
 
@@ -149,7 +140,7 @@ export default function ApplyButton({ variant, children, lab }: Props) {
     setLabState(lab);
 
     // start streaming of logs.
-    setLogs({ isStreaming: true, logs: "" });
+    setLogs({ logs: "" });
 
     // apply terraform
     applyAsync(lab).then((response) => {

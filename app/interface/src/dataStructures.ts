@@ -162,7 +162,6 @@ export type ActionStatusType = {
 };
 
 export type LogsStreamType = {
-  isStreaming: boolean;
   logs: string;
 };
 

@@ -1,7 +1,6 @@
 import Editor from "@monaco-editor/react";
 import { useContext, useEffect, useState } from "react";
 import {
-  FaArrowCircleLeft,
   FaCheck,
   FaPlus,
   FaRedo,
@@ -12,9 +11,8 @@ import {
 
 import Button from "../../components/Button";
 import { ButtonVariant, Lab } from "../../dataStructures";
-import { useActionStatus } from "../../hooks/useActionStatus";
 import { useLab, useSetLab } from "../../hooks/useLab";
-import { useEndStream, useSetLogs } from "../../hooks/useLogs";
+import { useSetLogs } from "../../hooks/useLogs";
 import { useExtend } from "../../hooks/useTerraform";
 import { WebSocketContext } from "../../WebSocketContext";
 
@@ -53,7 +51,6 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
   const { mutateAsync: extendAsync } = useExtend();
   const { actionStatus: actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
-  const { mutate: endLogStream } = useEndStream();
 
   useEffect(() => {
     if (lab !== undefined) {
@@ -91,10 +88,8 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
 
                 // Run
                 if (lab !== undefined && !actionStatus.inProgress) {
-                  setLogs({ isStreaming: true, logs: "" });
-                  extendAsync(lab).then(() => {
-                    endLogStream();
-                  });
+                  setLogs({ logs: "" });
+                  extendAsync(lab);
                 }
               }}
             >

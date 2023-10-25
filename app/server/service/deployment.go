@@ -162,8 +162,6 @@ func (d *DeploymentService) PollAndDeleteDeployments(interval time.Duration) err
 				break
 			}
 
-			d.logstreamService.StartLogStream()
-
 			// Change terraform workspace.
 			if err := d.ChangeTerraformWorkspace(deployment); err != nil {
 				slog.Error("not able to change terraform workspace", err)
@@ -236,8 +234,6 @@ func (d *DeploymentService) PollAndDeleteDeployments(interval time.Duration) err
 			// if err := deploymentService.DeleteDeployment(deployment.DeploymentUserId, deployment.DeploymentWorkspace); err != nil {
 			// 	slog.Error("not able to delete deployment", err)
 			// }
-
-			d.logstreamService.EndLogStream()
 		}
 	}
 }

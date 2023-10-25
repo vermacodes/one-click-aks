@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { FaFile, FaPlane } from "react-icons/fa";
 import { ButtonVariant, Lab } from "../../../dataStructures";
 import { useActionStatus } from "../../../hooks/useActionStatus";
-import { useEndStream, useSetLogs } from "../../../hooks/useLogs";
+import { useSetLogs } from "../../../hooks/useLogs";
 import { usePreference } from "../../../hooks/usePreference";
 import { usePlan } from "../../../hooks/useTerraform";
 import Button from "../../Button";
@@ -16,7 +16,6 @@ type Props = {
 
 export default function PlanButton({ variant, children, lab }: Props) {
   const { mutate: setLogs } = useSetLogs();
-  const { mutate: endLogStream } = useEndStream();
   const { mutateAsync: planAsync } = usePlan();
   const { actionStatus, setActionStatus } = useContext(WebSocketContext);
   const { data: preference } = usePreference();
@@ -30,11 +29,8 @@ export default function PlanButton({ variant, children, lab }: Props) {
     ) {
       lab.template.resourceGroup.location = preference.azureRegion;
     }
-    setLogs({ isStreaming: true, logs: "" });
-    lab &&
-      planAsync(lab).then(() => {
-        endLogStream();
-      });
+    setLogs({ logs: "" });
+    lab && planAsync(lab);
   }
 
   return (

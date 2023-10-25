@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import MainLayout from "./layouts/MainLayout";
 import { WebSocketContext } from "./WebSocketContext";
-import { ActionStatusType } from "./dataStructures";
+import { ActionStatusType, LogsStreamType } from "./dataStructures";
 import ReconnectingWebSocket from "reconnecting-websocket";
 
 function App() {
   const [darkMode, setDarkMode] = useState<boolean>(true);
   const [actionStatus, setActionStatus] = useState<ActionStatusType>({
     inProgress: true,
+  });
+  const [logStream, setLogStream] = useState<LogsStreamType>({
+    logs: "",
   });
 
   useEffect(() => {
@@ -29,6 +32,15 @@ function App() {
       setActionStatus(JSON.parse(event.data));
     };
 
+    // Log Stream Socket. Use baseUrl from localStorage.
+    // remove http from the beginning and replace with ws
+    const logStreamWs = new ReconnectingWebSocket(
+      localStorage.getItem("baseUrl")?.replace("http", "ws") + "logsws"
+    );
+    logStreamWs.onmessage = (event: any) => {
+      setLogStream(JSON.parse(event.data));
+    };
+
     return () => {
       actionStatusWs.close();
     };
@@ -42,7 +54,9 @@ function App() {
           : " bg-slate-50 text-slate-900"
       }`}
     >
-      <WebSocketContext.Provider value={{ actionStatus, setActionStatus }}>
+      <WebSocketContext.Provider
+        value={{ actionStatus, setActionStatus, logStream, setLogStream }}
+      >
         <MainLayout darkMode={darkMode} setDarkMode={setDarkMode} />
       </WebSocketContext.Provider>
     </div>

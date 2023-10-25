@@ -12,7 +12,7 @@ import {
   useGetTerraformOperation,
 } from "../../../hooks/useActionStatus";
 import { useOperationRecord } from "../../../hooks/useAuth";
-import { useEndStream, useSetLogs } from "../../../hooks/useLogs";
+import { useSetLogs } from "../../../hooks/useLogs";
 import { usePreference } from "../../../hooks/usePreference";
 import {
   useDestroy,
@@ -65,7 +65,6 @@ export default function DestroyButton({
   const { mutateAsync: destroyAsyncExtend } = useDestroyAsyncExtend();
   const { actionStatus } = useContext(WebSocketContext);
   const { data: preference } = usePreference();
-  const { mutate: endLogStream } = useEndStream();
   const { data: terraformOperation } = useGetTerraformOperation(
     terraformOperationState.operationId
   );
@@ -92,8 +91,6 @@ export default function DestroyButton({
               setTerraformOperationState(response.data);
             }
           });
-      } else if (terraformOperationState.operationStatus === "failed") {
-        endLogStream();
       }
     } else if (terraformOperationState.operationType === "destroy") {
       // hanlde deleting workspace if needed.
@@ -134,7 +131,6 @@ export default function DestroyButton({
           labName: "",
           labType: "",
         });
-        endLogStream();
       }
     }
 
@@ -172,7 +168,7 @@ export default function DestroyButton({
     // set the state of the lab
     setLabState(lab);
 
-    setLogs({ isStreaming: true, logs: "" });
+    setLogs({ logs: "" });
 
     destroyAsyncExtend(lab).then(
       (response) =>

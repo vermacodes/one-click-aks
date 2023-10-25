@@ -43,7 +43,7 @@ export default function DestroyAndDeleteDeployment(props: Props) {
 
   function destroyAndDeleteHandler() {
     // Set logs streaming.
-    setLogs({ isStreaming: true, logs: "" });
+    setLogs({ logs: "" });
 
     if (workspaces === undefined) {
       console.error("workspaces are not defined");

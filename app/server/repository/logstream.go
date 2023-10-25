@@ -40,3 +40,17 @@ func (l *logStreamRepository) GetLogsFromRedis() (string, error) {
 	rdb := newLogStreamRedisClient()
 	return rdb.Get(logStreamCtx, "logs").Result()
 }
+
+func (l *logStreamRepository) WaitForLogsChange() (string, error) {
+	rdb := newLogStreamRedisClient().Subscribe(logStreamCtx, "redis-log-stream-pubsub-channel")
+	defer rdb.Close()
+
+	for {
+		msg, err := rdb.ReceiveMessage(logStreamCtx)
+		if err != nil {
+			return "", err
+		}
+
+		return msg.Payload, nil
+	}
+}

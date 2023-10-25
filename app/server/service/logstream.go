@@ -2,8 +2,6 @@ package service
 
 import (
 	"encoding/base64"
-	"encoding/json"
-	"fmt"
 
 	"github.com/vermacodes/one-click-aks/app/server/entity"
 	"golang.org/x/exp/slog"
@@ -19,8 +17,8 @@ func NewLogStreamService(logStreamRepository entity.LogStreamRepository) entity.
 	}
 }
 
+// Appends to already set logs in redis.
 func (l *logStreamService) AppendLogs(logs string) error {
-	logStream := entity.LogStream{}
 	logStream, err := l.GetLogs()
 	if err != nil {
 		slog.Debug("not able to get logs from redis. setting new")
@@ -29,122 +27,75 @@ func (l *logStreamService) AppendLogs(logs string) error {
 
 	logStream.Logs += logs
 
-	if err := l.SetLogs(logStream); err != nil {
-		return err
-	}
-
-	return nil
+	return l.SetLogs(logStream.Logs)
 }
 
 func (l *logStreamService) ClearLogs() error {
-
-	defaultLogStream := entity.LogStream{
-		IsStreaming: false,
-		Logs:        "",
-	}
-
-	if err := l.SetLogs(defaultLogStream); err != nil {
-		return err
-	}
-
-	return nil
+	return l.SetLogs("")
 }
 
-func (l *logStreamService) SetLogs(logStream entity.LogStream) error {
-
+// sets the logs in redis.
+func (l *logStreamService) SetLogs(logs string) error {
 	// this is a hack to continue the logs from where they are right now.
-	if logStream.Logs == "continue" {
+	if logs == "continue" {
 		prevLogStream, err := l.GetLogs()
 		if err != nil {
-			logStream.Logs = ""
+			logs = ""
 		} else {
-			logStream.Logs = prevLogStream.Logs
+			logs = prevLogStream.Logs
 		}
 	}
 
-	logStreamString, err := helperLogStreamToString(logStream)
-	if err != nil {
-		return err
-	}
-	l.logStreamRepository.SetLogsInRedis(logStreamString)
-
-	return nil
+	// encode the logs string and store it in redis.
+	encodedLogs := base64.StdEncoding.EncodeToString([]byte(logs))
+	return l.logStreamRepository.SetLogsInRedis(encodedLogs)
 }
 
+// gets the logs from redis and returns the object.
 func (l *logStreamService) GetLogs() (entity.LogStream, error) {
-
-	logStreamString, err := l.logStreamRepository.GetLogsFromRedis()
+	encodedLogs, err := l.logStreamRepository.GetLogsFromRedis()
 	if err != nil {
 		slog.Error("not able to get logs from redis", err)
 
 		// Default to empty.
 		defaultLogStream := entity.LogStream{
-			IsStreaming: false,
-			Logs:        "",
+			Logs: "",
 		}
 
-		if err := l.SetLogs(defaultLogStream); err != nil {
-			slog.Error("not able to set defualt log stream", err)
+		if err := l.SetLogs(""); err != nil {
+			slog.Error("not able to set default log stream", err)
+			return defaultLogStream, err
 		}
 
 		return defaultLogStream, nil
 	}
 
-	logStream, err := helperStringToLogStream(logStreamString)
-	if err != nil {
-		return logStream, err
-	}
-
-	return logStream, nil
+	// decode the logs string and return the object.
+	return helperEncodedStringToLogStreamObject(encodedLogs)
 }
 
-func (l *logStreamService) StartLogStream() {
-	slog.Debug("starting log stream")
-	logStream, err := l.GetLogs()
+// waits for the logs to change and returns the new logs.
+func (l *logStreamService) WaitForLogsChange() (entity.LogStream, error) {
+	logsString, err := l.logStreamRepository.WaitForLogsChange()
 	if err != nil {
-		slog.Error("not able to get current logs", err)
-		return
+		return entity.LogStream{}, err
 	}
-	logStream.IsStreaming = true // Setting streaming to true.
-	l.SetLogs(logStream)
+
+	return helperEncodedStringToLogStreamObject(logsString)
 }
 
-func (l *logStreamService) EndLogStream() {
-	slog.Debug("ending log stream")
-	logStream, err := l.GetLogs()
+// decodes the encoded string and returns the object.
+func helperEncodedStringToLogStreamObject(encodedLogs string) (entity.LogStream, error) {
+	logBytes, err := base64.StdEncoding.DecodeString(encodedLogs)
 	if err != nil {
-		slog.Error("not able to get current logs", err)
-		return
-	}
-	logStream.IsStreaming = false                                // Setting streaming to false.
-	logStream.Logs = logStream.Logs + fmt.Sprintf("%s\n", "end") // Appening 'end' to signal stream end.
-	l.SetLogs(logStream)
-
-}
-
-// Encodes the Logs and conver object to sting.
-func helperLogStreamToString(logStream entity.LogStream) (string, error) {
-	logStream.Logs = base64.StdEncoding.EncodeToString([]byte(string(logStream.Logs)))
-	val, err := json.Marshal(logStream)
-	if err != nil {
-		slog.Error("not able to convert log stream object to string", err)
-	}
-	return string(val), err
-}
-
-// Convert the string to object and decode the Logs.
-func helperStringToLogStream(logStreamString string) (entity.LogStream, error) {
-	logStream := entity.LogStream{}
-	if err := json.Unmarshal([]byte(logStreamString), &logStream); err != nil {
-		slog.Error("not able to convert string to log stream object", err)
-		return logStream, err
+		slog.Error("not able to decode logs", err)
+		return entity.LogStream{}, err
 	}
 
-	decodedLogs, err := base64.StdEncoding.DecodeString(logStream.Logs)
-	if err != nil {
-		slog.Error("not able to decode logs ", err)
+	logs := string(logBytes)
+	logStream := entity.LogStream{
+		Logs: logs,
 	}
 
-	logStream.Logs = string(decodedLogs)
 	return logStream, nil
 }

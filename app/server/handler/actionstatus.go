@@ -58,7 +58,7 @@ func (a *actionStatusHandler) GetTerraformOperationStatus(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, terraformOperation)
 }
 
-var upgrader = websocket.Upgrader{
+var actionStatusUpgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
 	CheckOrigin: func(r *http.Request) bool {
@@ -67,9 +67,9 @@ var upgrader = websocket.Upgrader{
 }
 
 func (a *actionStatusHandler) GetActionStatusWs(w http.ResponseWriter, r *http.Request) {
-	conn, err := upgrader.Upgrade(w, r, nil)
+	conn, err := actionStatusUpgrader.Upgrade(w, r, nil)
 	if err != nil {
-		slog.Error("Failed to upgrade connection:", err)
+		slog.Error("Failed to upgrade action status websocket connection:", err)
 		return
 	}
 
