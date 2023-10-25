@@ -2,6 +2,26 @@
 
 # This script is for local testing. It starts both server and UI in one go.
 
+# gather input parameters
+# if flag -d is set the set LOG_LEVEL to -4 else to 0
+
+while getopts ":d" opt; do
+    case $opt in
+    d)
+        LOG_LEVEL="-4"
+        ;;
+    \?)
+        echo "Invalid option -$OPTARG" >&2
+        ;;
+    esac
+done
+
+if [ -z "${LOG_LEVEL}" ]; then
+    LOG_LEVEL="0"
+fi
+
+echo "LOG_LEVEL = ${LOG_LEVEL}"
+
 export ROOT_DIR=$(pwd)
 
 if [[ "${SAS_TOKEN}" == "" ]]; then
@@ -27,4 +47,4 @@ export VERSION="$(date +%Y%m%d)"
 
 go build -ldflags "-X 'main.version=$VERSION' -X 'github.com/vermacodes/one-click-aks/app/server/entity.SasToken=$SAS_TOKEN' -X 'github.com/vermacodes/one-click-aks/app/server/entity.StorageAccountName=$STORAGE_ACCOUNT_NAME'"
 
-redis-cli flushall && export LOG_LEVEL="0" && export PORT="8881" && ./server
+redis-cli flushall && export LOG_LEVEL="${LOG_LEVEL}" && export PORT="8881" && ./server
