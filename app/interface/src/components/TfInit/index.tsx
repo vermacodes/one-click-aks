@@ -1,11 +1,5 @@
 import Button from "../Button";
-import {
-  useActionStatus,
-  useSetActionStatus,
-} from "../../hooks/useActionStatus";
 import { useSetLogs } from "../../hooks/useLogs";
-import { axiosInstance } from "../../utils/axios-interceptors";
-import { useQueryClient } from "react-query";
 import { useInit } from "../../hooks/useTerraform";
 import { useLab } from "../../hooks/useLab";
 import SettingsItemLayout from "../../layouts/SettingsItemLayout";

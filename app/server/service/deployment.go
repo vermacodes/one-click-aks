@@ -189,8 +189,7 @@ func (d *DeploymentService) PollAndDeleteDeployments(interval time.Duration) err
 			}
 
 			// Run terraform destroy.
-			terraformOperation, err := d.terraformService.DestroyAsync(deployment.DeploymentLab)
-			if err != nil {
+			if err := d.terraformService.Destroy(deployment.DeploymentLab); err != nil {
 				slog.Error("not able to run terraform destroy", err)
 
 				// Update deployment status to failed.
@@ -202,26 +201,26 @@ func (d *DeploymentService) PollAndDeleteDeployments(interval time.Duration) err
 				return err
 			}
 
-			// Wait for terraform destroy to complete.
-			for {
-				terraformOperation, err := d.actionStatusService.GetTerraformOperation(terraformOperation.OperationId)
-				slog.Debug("terraformOperation.OperationStatus: " + terraformOperation.OperationStatus)
-				if err != nil {
-					slog.Error("not able to get terraform operation", err)
-					// Update deployment status to failed.
-					deployment.DeploymentStatus = "Deployment Failed"
-					if err := d.UpdateDeployment(deployment); err != nil {
-						slog.Error("not able to update deployment", err)
-					}
+			// // Wait for terraform destroy to complete.
+			// for {
+			// 	terraformOperation, err := d.actionStatusService.GetTerraformOperation(terraformOperation.OperationId)
+			// 	slog.Debug("terraformOperation.OperationStatus: " + terraformOperation.OperationStatus)
+			// 	if err != nil {
+			// 		slog.Error("not able to get terraform operation", err)
+			// 		// Update deployment status to failed.
+			// 		deployment.DeploymentStatus = "Deployment Failed"
+			// 		if err := d.UpdateDeployment(deployment); err != nil {
+			// 			slog.Error("not able to update deployment", err)
+			// 		}
 
-					break
-				}
+			// 		break
+			// 	}
 
-				if terraformOperation.OperationStatus != "inprogress" {
-					break
-				}
-				time.Sleep(5 * time.Second)
-			}
+			// 	if terraformOperation.OperationStatus != "inprogress" {
+			// 		break
+			// 	}
+			// 	time.Sleep(5 * time.Second)
+			// }
 
 			// Update deployment status to deleting.
 			deployment.DeploymentStatus = "Resources Destroyed"

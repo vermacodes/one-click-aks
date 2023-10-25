@@ -1,27 +1,16 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { FaRocket } from "react-icons/fa";
-import {
-  ButtonVariant,
-  Lab,
-  TerraformOperation,
-} from "../../../dataStructures";
-import { useGetTerraformOperation } from "../../../hooks/useActionStatus";
+import { ButtonVariant, Lab } from "../../../dataStructures";
 import { useOperationRecord } from "../../../hooks/useAuth";
 import { useSetLogs } from "../../../hooks/useLogs";
 import { usePreference } from "../../../hooks/usePreference";
-import {
-  useApplyAsync,
-  useApplyAsyncExtend,
-} from "../../../hooks/useTerraform";
+import { useApply } from "../../../hooks/useTerraform";
 import Button from "../../Button";
 import {
   useGetMyDeployments,
   useUpsertDeployment,
 } from "../../../hooks/useDeployments";
-import {
-  useSelectedTerraformWorkspace,
-  useTerraformWorkspace,
-} from "../../../hooks/useWorkspace";
+import { useTerraformWorkspace } from "../../../hooks/useWorkspace";
 import {
   calculateNewEpochTimeForDeployment,
   getSelectedDeployment,
@@ -35,93 +24,13 @@ type Props = {
 };
 
 export default function ApplyButton({ variant, children, lab }: Props) {
-  const [terraformOperationState, setTerraformOperationState] =
-    React.useState<TerraformOperation>({
-      operationId: "",
-      operationStatus: "",
-      operationType: "",
-      labId: "",
-      labName: "",
-      labType: "",
-    });
-
-  const [labState, setLabState] = React.useState<Lab | undefined>(undefined);
-
   const { mutate: setLogs } = useSetLogs();
-  const { mutateAsync: applyAsync } = useApplyAsync();
-  const { mutateAsync: applyAsyncExtend } = useApplyAsyncExtend();
+  const { mutateAsync: applyAsync } = useApply();
   const { actionStatus } = useContext(WebSocketContext);
   const { data: preference } = usePreference();
-  const { data: terraformOperation } = useGetTerraformOperation(
-    terraformOperationState.operationId
-  );
-  const { mutate: operationRecord } = useOperationRecord();
   const { data: deployments } = useGetMyDeployments();
   const { data: terraformWorkspaces } = useTerraformWorkspace();
   const { mutate: upsertDeployment } = useUpsertDeployment();
-
-  useEffect(() => {
-    if (terraformWorkspaces === undefined || deployments === undefined) {
-      return;
-    }
-
-    const deployment = getSelectedDeployment(deployments, terraformWorkspaces);
-
-    if (terraformOperationState.operationType === "apply") {
-      if (terraformOperationState.operationStatus === "completed") {
-        labState &&
-          applyAsyncExtend(labState).then((response) => {
-            if (response.status !== undefined) {
-              setTerraformOperationState(response.data);
-            }
-          });
-      } else if (terraformOperationState.operationStatus === "failed") {
-        setTerraformOperationState({
-          operationId: "",
-          operationStatus: "",
-          operationType: "",
-          labId: "",
-          labName: "",
-          labType: "",
-        });
-
-        //update the deployment status
-        if (deployment !== undefined) {
-          upsertDeployment({
-            ...deployment,
-            deploymentStatus: "Deployment Failed",
-          });
-        }
-      }
-    } else if (terraformOperationState.operationType === "extend") {
-      if (
-        terraformOperationState.operationStatus === "completed" ||
-        terraformOperationState.operationStatus === "failed"
-      ) {
-        setTerraformOperationState({
-          operationId: "",
-          operationStatus: "",
-          operationType: "",
-          labId: "",
-          labName: "",
-          labType: "",
-        });
-
-        //update the deployment status
-        if (deployment !== undefined) {
-          upsertDeployment({
-            ...deployment,
-            deploymentStatus: "Deployment Completed",
-          });
-        }
-      }
-    }
-
-    // Logging
-    if (terraformOperationState.operationId !== "") {
-      operationRecord(terraformOperationState);
-    }
-  }, [terraformOperationState]);
 
   function onClickHandler() {
     if (
@@ -136,17 +45,11 @@ export default function ApplyButton({ variant, children, lab }: Props) {
       lab.template.resourceGroup.location = preference.azureRegion;
     }
 
-    // update lab state
-    setLabState(lab);
-
-    // start streaming of logs.
+    // reset logs.
     setLogs({ logs: "" });
 
     // apply terraform
-    applyAsync(lab).then((response) => {
-      response.status !== undefined &&
-        setTerraformOperationState(response.data);
-
+    applyAsync(lab).then(() => {
       // update deployment status
 
       //get the deployment for the selected workspace
@@ -165,14 +68,6 @@ export default function ApplyButton({ variant, children, lab }: Props) {
         });
       }
     });
-  }
-
-  if (
-    terraformOperation !== undefined &&
-    terraformOperation.operationStatus !==
-      terraformOperationState.operationStatus
-  ) {
-    setTerraformOperationState(terraformOperation);
   }
 
   return (

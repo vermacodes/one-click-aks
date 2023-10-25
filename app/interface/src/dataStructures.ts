@@ -299,15 +299,6 @@ export type GraphData = {
   id: string;
 };
 
-export type TerraformOperation = {
-  operationId: string;
-  operationType: string;
-  operationStatus: "inprogress" | "failed" | "completed" | "";
-  labId: string;
-  labName: string;
-  labType: string;
-}
-
 export type DeploymentType = {
   deploymentId: string;
   deploymentUserId: string;

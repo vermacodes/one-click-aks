@@ -89,7 +89,7 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
                 // Run
                 if (lab !== undefined && !actionStatus.inProgress) {
                   setLogs({ logs: "" });
-                  extendAsync(lab);
+                  extendAsync([lab, "apply"]);
                 }
               }}
             >
