@@ -56,6 +56,7 @@ func main() {
 	router.Use(cors.New(config))
 
 	authRouter := router.Group("/")
+	actionStatusRouter := router.Group("/")
 	authWithActionRouter := authRouter.Group("/")
 
 	// TODO: We are in service dependency hell down here. Should we use HTTP instead? It will but may not add noticiable latency.
@@ -70,9 +71,11 @@ func main() {
 	actionStatusService := service.NewActionStatusService(actionStatusRepository)
 	handler.NewActionStatusHanlder(router, actionStatusService)
 
+	actionStatusRouter.Use(middleware.ActionStatusMiddleware(actionStatusService))
+
 	redisRepository := repository.NewRedisRepository()
 	redisService := service.NewRedisService(redisRepository)
-	handler.NewRedisHandler(router, redisService)
+	handler.NewRedisHandler(actionStatusRouter, redisService)
 
 	authRepository := repository.NewAuthRepository()
 	authService := service.NewAuthService(authRepository, actionStatusService, loggingService, redisRepository)

@@ -129,7 +129,7 @@ function create_keyvault() {
         fi
 
         # Give the current user full access to secrets in the key vault
-        az keyvault set-policy --name "${KEY_VAULT_NAME}" --resource-group "${RESOURCE_GROUP}" --upn "${USER_NAME}" --secret-permissions get set list delete backup restore recover purge
+        az keyvault set-policy --name "${KEY_VAULT_NAME}" --resource-group "${RESOURCE_GROUP}" --upn "${UPN}" --secret-permissions get set list delete backup restore recover purge
         if [ $? -ne 0 ]; then
             err "Failed to set policy for key vault ${KEY_VAULT_NAME}"
             return 1
@@ -289,6 +289,7 @@ echo "DEBUG = ${DEBUG}"
 # Define variables
 RESOURCE_GROUP="repro-project"
 USER_NAME=$(az account show --query "user.name" -o tsv)
+UPN=$(az ad signed-in-user show --query "userPrincipalName" -o tsv)
 USER_ALIAS=$(az account show --query user.name -o tsv | cut -d '@' -f1)
 SP_NAME="${USER_ALIAS}-actlabs"
 

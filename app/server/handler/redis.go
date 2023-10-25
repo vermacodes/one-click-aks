@@ -11,7 +11,7 @@ type RedisHandler struct {
 	RedisService entity.RedisService
 }
 
-func NewRedisHandler(r *gin.Engine, redisService entity.RedisService) {
+func NewRedisHandler(r *gin.RouterGroup, redisService entity.RedisService) {
 	handler := &RedisHandler{
 		RedisService: redisService,
 	}
