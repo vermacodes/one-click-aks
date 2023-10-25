@@ -7,6 +7,7 @@ import { useDestroy } from "../../../hooks/useTerraform";
 import Button from "../../Button";
 import {
   useDeleteWorkspace,
+  useSelectWorkspace,
   useTerraformWorkspace,
 } from "../../../hooks/useWorkspace";
 import {
@@ -47,6 +48,7 @@ export default function DestroyButton({
   const { data: deployments } = useGetMyDeployments();
   const { data: terraformWorkspaces } = useTerraformWorkspace();
   const { mutate: upsertDeployment } = useUpsertDeployment();
+  const { mutateAsync: selectWorkspaceAsync } = useSelectWorkspace();
   const { mutateAsync: deleteDeploymentAsync } = useDeleteDeployment();
   const { mutateAsync: deleteWorkspaceAsync } = useDeleteWorkspace();
 
@@ -78,11 +80,13 @@ export default function DestroyButton({
       (workspace) => deployment.deploymentWorkspace === workspace.name
     )[0];
 
-    deleteWorkspaceAsync(filteredWorkspace).then(() => {
-      deleteDeploymentAsync([
-        deployment.deploymentWorkspace,
-        deployment.deploymentSubscriptionId,
-      ]);
+    selectWorkspaceAsync({ name: "default", selected: true }).then(() => {
+      deleteWorkspaceAsync(filteredWorkspace).then(() => {
+        deleteDeploymentAsync([
+          deployment.deploymentWorkspace,
+          deployment.deploymentSubscriptionId,
+        ]);
+      });
     });
   }
 
