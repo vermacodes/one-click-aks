@@ -18,10 +18,17 @@ func NewWorkspaceHandler(r *gin.RouterGroup, service entity.WorkspaceService) {
 	}
 
 	r.GET("/workspace", handler.ListWorkspaces)
+	r.GET("/resources", handler.GetResources)
+}
+
+func NewWorkspaceWithActionStatusHandler(r *gin.RouterGroup, service entity.WorkspaceService) {
+	handler := &WorkspaceHandler{
+		WorkspaceService: service,
+	}
+
 	r.POST("/workspace", handler.AddWorkspace)
 	r.PUT("/workspace", handler.SelectWorkspace)
 	r.DELETE("/workspace", handler.DeleteWorkspace)
-	r.GET("/resources", handler.GetResources)
 }
 
 func (w *WorkspaceHandler) ListWorkspaces(c *gin.Context) {

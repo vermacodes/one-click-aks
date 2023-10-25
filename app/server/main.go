@@ -56,6 +56,8 @@ func main() {
 	router.Use(cors.New(config))
 
 	authRouter := router.Group("/")
+	actionStatusRouter := router.Group("/")
+	authWithActionRouter := authRouter.Group("/")
 
 	// TODO: We are in service dependency hell down here. Should we use HTTP instead? It will but may not add noticiable latency.
 	logStreamRepository := repository.NewLogStreamRepository()
@@ -69,25 +71,31 @@ func main() {
 	actionStatusService := service.NewActionStatusService(actionStatusRepository)
 	handler.NewActionStatusHanlder(router, actionStatusService)
 
+	actionStatusRouter.Use(middleware.ActionStatusMiddleware(actionStatusService))
+
 	redisRepository := repository.NewRedisRepository()
 	redisService := service.NewRedisService(redisRepository)
-	handler.NewRedisHandler(router, redisService)
+	handler.NewRedisHandler(actionStatusRouter, redisService)
 
 	authRepository := repository.NewAuthRepository()
 	authService := service.NewAuthService(authRepository, actionStatusService, loggingService, redisRepository)
 	handler.NewLoginHandler(router, authService)
 
 	authRouter.Use(middleware.AuthRequired(authService, logStreamService))
+	authWithActionRouter.Use(middleware.ActionStatusMiddleware(actionStatusService))
 
 	handler.NewAuthHandler(authRouter, authService)
+	handler.NewAuthWithActinoStatusHandler(authWithActionRouter, authService)
 
 	storageAccountRepository := repository.NewStorageAccountRepository()
 	storageAccountService := service.NewStorageAccountService(storageAccountRepository)
 	handler.NewStorageAccountHandler(authRouter, storageAccountService)
+	handler.NewStorageAccountWithActionStatusHandler(authWithActionRouter, storageAccountService)
 
 	workspaceRepository := repository.NewTfWorkspaceRepository()
 	workspaceService := service.NewWorksapceService(workspaceRepository, storageAccountService, actionStatusService)
 	handler.NewWorkspaceHandler(authRouter, workspaceService)
+	handler.NewWorkspaceWithActionStatusHandler(authWithActionRouter, workspaceService)
 
 	prefRepository := repository.NewPreferenceRepository()
 	prefService := service.NewPreferenceService(prefRepository, storageAccountService)
@@ -103,11 +111,12 @@ func main() {
 
 	terraformRepository := repository.NewTerraformRepository()
 	terraformService := service.NewTerraformService(terraformRepository, labService, workspaceService, logStreamService, actionStatusService, kVersionService, storageAccountService, loggingService, authService)
-	handler.NewTerraformHandler(authRouter, terraformService)
+	handler.NewTerraformWithActionStatusHandler(authWithActionRouter, terraformService)
 
 	deploymentRepository := repository.NewDeploymentRepository()
 	deploymentService := service.NewDeploymentService(deploymentRepository, labService, terraformService, actionStatusService, logStreamService, authService, workspaceService)
 	handler.NewDeploymentHandler(authRouter, deploymentService)
+	handler.NewDeploymentWithActionStatusHandler(authWithActionRouter, deploymentService)
 
 	// take seconds and multiply with 1000000000 and pass it to the function.
 	go deploymentService.PollAndDeleteDeployments(60000000000)

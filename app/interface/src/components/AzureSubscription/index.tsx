@@ -1,19 +1,23 @@
 import { FaChevronDown } from "react-icons/fa";
 import { useAccount, useSetAccount } from "../../hooks/useAccount";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { WebSocketContext } from "../../WebSocketContext";
 
 export default function AzureSubscription() {
   const [subscriptionMenu, setSubscriptionMenu] = useState<boolean>(false);
   const { data: accounts, isLoading: accountsLoading } = useAccount();
 
   const { mutate: setAccount } = useSetAccount();
+  const { actionStatus } = useContext(WebSocketContext);
 
   return (
     <div className="relative inline-block text-left">
       <div
-        className="flex w-96 items-center justify-between rounded border border-slate-500 p-2"
+        className={`${
+          actionStatus.inProgress && "text-slate-500 "
+        } flex w-96 items-center justify-between rounded border border-slate-500 p-2`}
         onClick={(e) => {
-          setSubscriptionMenu(!subscriptionMenu);
+          !actionStatus.inProgress && setSubscriptionMenu(!subscriptionMenu);
           e.stopPropagation();
         }}
       >
@@ -49,7 +53,7 @@ export default function AzureSubscription() {
                     className="items-center rounded p-2 hover:bg-sky-500 hover:text-slate-100"
                     onClick={() => {
                       setSubscriptionMenu(!subscriptionMenu);
-                      setAccount(account);
+                      !actionStatus.inProgress && setAccount(account);
                     }}
                   >
                     {account.name}

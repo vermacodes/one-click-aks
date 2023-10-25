@@ -32,7 +32,6 @@ export default function KubernetesVersion({
         lab.template.kubernetesClusters[0].kubernetesVersion = patchVersion;
         !actionStatus.inProgress &&
           setLogs({
-            isStreaming: false,
             logs: JSON.stringify(lab.template, null, 4),
           });
         setLab(lab);

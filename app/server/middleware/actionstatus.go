@@ -11,11 +11,20 @@ import (
 // ActionStatusMiddleware checks for already running opration and rejects new requests.
 func ActionStatusMiddleware(actionStatusService entity.ActionStatusService) gin.HandlerFunc {
 	return func(c *gin.Context) {
+
 		actionStatus, err := actionStatusService.GetActionStatus()
 		if err != nil {
-			slog.Error("not able to get action status", err)
-			c.AbortWithStatus(http.StatusInternalServerError)
-			return
+			slog.Error("not able to get current action status", err)
+
+			// Defaulting to no action
+			actionStatus := entity.ActionStatus{
+				InProgress: false,
+			}
+			if err := actionStatusService.SetActionStatus(actionStatus); err != nil {
+				slog.Error("not able to set default action status.", err)
+				c.AbortWithStatus(http.StatusInternalServerError)
+				return
+			}
 		}
 
 		if actionStatus.InProgress {
@@ -23,6 +32,14 @@ func ActionStatusMiddleware(actionStatusService entity.ActionStatusService) gin.
 			c.AbortWithStatus(http.StatusConflict)
 			return
 		}
+
+		// set action status
+		actionStatusService.SetActionStart()
+
+		defer func() {
+			// reset action status
+			actionStatusService.SetActionEnd()
+		}()
 
 		c.Next()
 	}

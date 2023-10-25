@@ -129,7 +129,7 @@ function create_keyvault() {
         fi
 
         # Give the current user full access to secrets in the key vault
-        az keyvault set-policy --name "${KEY_VAULT_NAME}" --resource-group "${RESOURCE_GROUP}" --upn "${USER_NAME}" --secret-permissions get set list delete backup restore recover purge
+        az keyvault set-policy --name "${KEY_VAULT_NAME}" --resource-group "${RESOURCE_GROUP}" --upn "${UPN}" --secret-permissions get set list delete backup restore recover purge
         if [ $? -ne 0 ]; then
             err "Failed to set policy for key vault ${KEY_VAULT_NAME}"
             return 1
@@ -265,19 +265,41 @@ function grant_access_to_service_principal() {
     return 0
 }
 
+# gather input parameters
+# -t tag
+# -d debug
+
+while getopts ":t:d" opt; do
+    case $opt in
+    t)
+        TAG=$OPTARG
+        ;;
+    d)
+        DEBUG=true
+        ;;
+    \?)
+        echo "Invalid option: -$OPTARG" >&2
+        ;;
+    esac
+done
+
+echo "TAG = ${TAG}"
+echo "DEBUG = ${DEBUG}"
+
 # Define variables
 RESOURCE_GROUP="repro-project"
 USER_NAME=$(az account show --query "user.name" -o tsv)
+UPN=$(az ad signed-in-user show --query "userPrincipalName" -o tsv)
 USER_ALIAS=$(az account show --query user.name -o tsv | cut -d '@' -f1)
 SP_NAME="${USER_ALIAS}-actlabs"
 
 # Confirm subscription
-# if confirm_subscription; then
-#     log "Subscription confirmed"
-# else
-#     err "Failed to confirm subscription"
-#     exit 1
-# fi
+if confirm_subscription; then
+    log "Subscription confirmed"
+else
+    err "Failed to confirm subscription"
+    exit 1
+fi
 
 # Create the resource group
 ok "configuration started. This may take a few minutes..."
@@ -334,9 +356,19 @@ export ARM_USER_PRINCIPAL_NAME=$(az account show --query "user.name" -o tsv)
 log "deleting existing docker container"
 docker rm -f actlabs
 
+if [ -z "${TAG}" ]; then
+    TAG="latest"
+fi
+
+if [ ${DEBUG} ]; then
+    export LOG_LEVEL="-4"
+else
+    export LOG_LEVEL="0"
+fi
+
 # Start docker container and set environment variables
 log "starting docker container"
-docker run --pull=always -d --restart unless-stopped -it -e ARM_CLIENT_ID -e ARM_CLIENT_SECRET -e ARM_SUBSCRIPTION_ID -e ARM_TENANT_ID -e ARM_USER_PRINCIPAL_NAME --name actlabs -p 8880:80 -v ${HOME}/.azure:/root/.azure ashishvermapu/repro
+docker run --pull=always -d --restart unless-stopped -it -e LOG_LEVEL -e ARM_CLIENT_ID -e ARM_CLIENT_SECRET -e ARM_SUBSCRIPTION_ID -e ARM_TENANT_ID -e ARM_USER_PRINCIPAL_NAME --name actlabs -p 8880:80 -v ${HOME}/.azure:/root/.azure ashishvermapu/repro:${TAG}
 if [ $? -ne 0 ]; then
     err "Failed to start docker container"
     exit 1

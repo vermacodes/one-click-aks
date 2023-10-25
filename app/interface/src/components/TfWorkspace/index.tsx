@@ -1,9 +1,6 @@
 import { useContext, useState } from "react";
 import { FaChevronDown, FaTrash } from "react-icons/fa";
-import {
-  useActionStatus,
-  useSetActionStatus,
-} from "../../hooks/useActionStatus";
+import { useSetActionStatus } from "../../hooks/useActionStatus";
 import {
   useAddWorkspace,
   useDeleteWorkspace,
@@ -92,7 +89,7 @@ export default function TfWorkspace({
               <div className="relative inline-block text-left">
                 <div
                   className={` ${add && "hidden"} ${
-                    (actionStatus ||
+                    (actionStatus.inProgress ||
                       gettingWorkspaces ||
                       selectingWorkspace ||
                       deletingWorkspace ||
@@ -104,7 +101,7 @@ export default function TfWorkspace({
                   onClick={(e) => {
                     if (
                       !(
-                        actionStatus ||
+                        actionStatus.inProgress ||
                         gettingWorkspaces ||
                         selectingWorkspace ||
                         deletingWorkspace ||
@@ -160,7 +157,7 @@ export default function TfWorkspace({
                   ></input>
                 </div>
                 <div
-                  className={`absolute right-0 mt-2 h-56 w-96 origin-top-right overflow-y-auto overflow-x-hidden scrollbar ${
+                  className={`absolute right-0 mt-2 h-56 w-96 origin-top-right overflow-y-auto scrollbar overflow-x-hidden ${
                     !workspaceMenu && "hidden"
                   } items-center gap-y-2 rounded border border-slate-500 bg-slate-100 p-2 dark:bg-slate-800`}
                   onMouseLeave={() => setWorkspaceMenu(false)}

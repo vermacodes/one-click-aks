@@ -1,12 +1,14 @@
 package repository
 
 import (
+	"context"
 	"encoding/json"
 	"encoding/xml"
 	"io"
 	"net/http"
 	"os/exec"
 
+	"github.com/go-redis/redis/v9"
 	"github.com/vermacodes/one-click-aks/app/server/entity"
 )
 
@@ -16,16 +18,29 @@ func NewLabRespository() entity.LabRepository {
 	return &labRepository{}
 }
 
+var labCtx = context.Background()
+
+func newLabRedisClient() *redis.Client {
+	return redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "", // no password set
+		DB:       0,  // use default DB
+	})
+}
+
 func (l *labRepository) GetLabFromRedis() (string, error) {
-	return getRedis("lab")
+	rdb := newLabRedisClient()
+	return rdb.Get(labCtx, "lab").Result()
 }
 
 func (l *labRepository) SetLabInRedis(val string) error {
-	return setRedis("lab", val)
+	rdb := newLabRedisClient()
+	return rdb.Set(labCtx, "lab", val, 0).Err()
 }
 
 func (l *labRepository) DeleteLabFromRedis() error {
-	return deleteRedis("lab")
+	rdb := newLabRedisClient()
+	return rdb.Del(labCtx, "lab").Err()
 }
 
 func (l *labRepository) GetExtendScriptTemplate() (string, error) {
@@ -35,7 +50,8 @@ func (l *labRepository) GetExtendScriptTemplate() (string, error) {
 }
 
 func (l *labRepository) GetMyLabsFromRedis() (string, error) {
-	return getRedis("mylabs")
+	rdb := newLabRedisClient()
+	return rdb.Get(labCtx, "mylabs").Result()
 }
 
 func (l *labRepository) GetMyLabsFromStorageAccount(storageAccountName string) (string, error) {

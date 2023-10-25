@@ -1,8 +1,10 @@
 package repository
 
 import (
+	"context"
 	"os/exec"
 
+	"github.com/go-redis/redis/v9"
 	"github.com/vermacodes/one-click-aks/app/server/entity"
 )
 
@@ -10,6 +12,16 @@ type prefenceRepository struct{}
 
 func NewPreferenceRepository() entity.PreferenceRepository {
 	return &prefenceRepository{}
+}
+
+var preferenceCtx = context.Background()
+
+func newPreferenceRedisClient() *redis.Client {
+	return redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "", // no password set
+		DB:       0,  // use default DB
+	})
 }
 
 func (p *prefenceRepository) GetPreferenceFromBlob(storageAccountName string) (string, error) {
@@ -23,9 +35,11 @@ func (p *prefenceRepository) PutPreferenceInBlob(val string, storageAccountName 
 }
 
 func (p *prefenceRepository) GetPreferenceFromRedis() (string, error) {
-	return getRedis("preference")
+	rdb := newPreferenceRedisClient()
+	return rdb.Get(preferenceCtx, "preference").Result()
 }
 
 func (p *prefenceRepository) PutPreferenceInRedis(val string) error {
-	return setRedis("preference", val)
+	rdb := newPreferenceRedisClient()
+	return rdb.Set(preferenceCtx, "preference", val, 0).Err()
 }

@@ -48,7 +48,6 @@ export default function AzureRegion({ regionEdit, setRegionEdit }: Props) {
         lab.template.resourceGroup.location = azureRegion;
       }
       setLogs({
-        isStreaming: false,
         logs: JSON.stringify(lab?.template, null, 4),
       });
     }

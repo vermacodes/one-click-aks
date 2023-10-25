@@ -18,6 +18,13 @@ func NewStorageAccountHandler(r *gin.RouterGroup, service entity.StorageAccountS
 	}
 
 	r.GET("/storageaccount", handler.GetStorageAccountConfiguration)
+}
+
+func NewStorageAccountWithActionStatusHandler(r *gin.RouterGroup, service entity.StorageAccountService) {
+	handler := &StorageAccountHandler{
+		storageAccountService: service,
+	}
+
 	r.POST("/storageaccount", handler.ConfigureStorageAccount)
 }
 

@@ -1,6 +1,11 @@
 package repository
 
-import "github.com/vermacodes/one-click-aks/app/server/entity"
+import (
+	"context"
+
+	"github.com/go-redis/redis/v9"
+	"github.com/vermacodes/one-click-aks/app/server/entity"
+)
 
 type actionStatusRepository struct{}
 
@@ -8,17 +13,57 @@ func NewActionStatusRepository() entity.ActionStatusRepository {
 	return &actionStatusRepository{}
 }
 
-func (a *actionStatusRepository) GetActionStatus() (string, error) {
-	return getRedis("actionstatus")
+var actionStatusCtx = context.Background()
+
+func newActionStatusRedisClient() *redis.Client {
+	return redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "", // no password set
+		DB:       0,  // use default DB
+	})
 }
+
+func (a *actionStatusRepository) GetActionStatus() (string, error) {
+	rdb := newActionStatusRedisClient()
+	return rdb.Get(actionStatusCtx, "actionstatus").Result()
+}
+
 func (a *actionStatusRepository) SetActionStatus(val string) error {
-	return setRedis("actionstatus", val)
+	rdb := newActionStatusRedisClient()
+
+	// Set the value in redis.
+	if err := rdb.Set(actionStatusCtx, "actionstatus", val, 0).Err(); err != nil {
+		return err
+	}
+
+	// Publish the value to the pubsub channel.
+	if err := rdb.Publish(actionStatusCtx, "redis-action-status-pubsub-channel", val).Err(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (a *actionStatusRepository) WaitForActionStatusChange() (string, error) {
+	rdb := newActionStatusRedisClient().Subscribe(actionStatusCtx, "redis-action-status-pubsub-channel")
+	defer rdb.Close()
+
+	for {
+		msg, err := rdb.ReceiveMessage(actionStatusCtx)
+		if err != nil {
+			return "", err
+		}
+
+		return msg.Payload, nil
+	}
 }
 
 func (a *actionStatusRepository) SetTerraformOperation(id string, val string) error {
-	return setRedis(id, val)
+	rdb := newActionStatusRedisClient()
+	return rdb.Set(actionStatusCtx, id, val, 0).Err()
 }
 
 func (a *actionStatusRepository) GetTerraformOperation(id string) (string, error) {
-	return getRedis(id)
+	rdb := newActionStatusRedisClient()
+	return rdb.Get(actionStatusCtx, id).Result()
 }

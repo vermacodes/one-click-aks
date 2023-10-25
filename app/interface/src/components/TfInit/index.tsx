@@ -1,11 +1,5 @@
 import Button from "../Button";
-import {
-  useActionStatus,
-  useSetActionStatus,
-} from "../../hooks/useActionStatus";
-import { useEndStream, useSetLogs } from "../../hooks/useLogs";
-import { axiosInstance } from "../../utils/axios-interceptors";
-import { useQueryClient } from "react-query";
+import { useSetLogs } from "../../hooks/useLogs";
 import { useInit } from "../../hooks/useTerraform";
 import { useLab } from "../../hooks/useLab";
 import SettingsItemLayout from "../../layouts/SettingsItemLayout";
@@ -16,16 +10,13 @@ type Props = {};
 
 export default function TfInit({}: Props) {
   const { actionStatus } = useContext(WebSocketContext);
-  const { mutate: setActionStatus } = useSetActionStatus();
   const { mutate: setLogs } = useSetLogs();
-  const { mutate: endLogStream } = useEndStream();
-  const queryClient = useQueryClient();
   const { mutateAsync: tfInitAsync } = useInit();
   const { data: lab } = useLab();
 
   function initHandler() {
-    setLogs({ isStreaming: true, logs: "" });
-    lab && tfInitAsync(lab).then(() => endLogStream());
+    setLogs({ logs: "" });
+    lab && tfInitAsync(lab);
   }
 
   return (

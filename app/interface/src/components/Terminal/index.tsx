@@ -1,13 +1,12 @@
 import ansiHTML from "ansi-to-html";
 import { useContext, useEffect, useRef, useState } from "react";
-import { useLogs, useSetLogs } from "../../hooks/useLogs";
+import { useSetLogs } from "../../hooks/useLogs";
 import Checkbox from "../Checkbox";
-import LogStreamSwitch from "../LogStream/LogStreamSwitch";
 import { WebSocketContext } from "../../WebSocketContext";
 
 export default function Terminal() {
   const [autoScroll, setAutoScroll] = useState(false);
-  const { data } = useLogs();
+  const { logStream: data } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const { actionStatus } = useContext(WebSocketContext);
 
@@ -72,7 +71,7 @@ export default function Terminal() {
         <button
           className="disabled:text-slate-500 hover:text-sky-500 disabled:hover:text-slate-500"
           disabled={actionStatus.inProgress}
-          onClick={() => setLogs({ isStreaming: false, logs: "" })}
+          onClick={() => setLogs({ logs: "" })}
         >
           Clear Logs
         </button>
@@ -84,9 +83,6 @@ export default function Terminal() {
             checked={autoScroll}
             handleOnChange={handleOnChange}
           />
-        </div>
-        <div className="pl-2">
-          <LogStreamSwitch />
         </div>
       </div>
       <div

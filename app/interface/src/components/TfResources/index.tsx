@@ -1,8 +1,7 @@
 import { useContext } from "react";
 import { TerraformWorkspace } from "../../dataStructures";
-import { useActionStatus } from "../../hooks/useActionStatus";
 import { useLab } from "../../hooks/useLab";
-import { useEndStream, useSetLogs } from "../../hooks/useLogs";
+import { useSetLogs } from "../../hooks/useLogs";
 import { useDestroy } from "../../hooks/useTerraform";
 import {
   useAddWorkspace,
@@ -21,7 +20,6 @@ export default function TfResources({}: Props) {
   const { data: resources, isFetching: fetchingResources } = useGetResources();
   const { data: lab } = useLab();
   const { mutate: setLogs } = useSetLogs();
-  const { mutate: endLogStream } = useEndStream();
   const {
     data: workspaces,
     isFetching: fetchingWorkspaces,
@@ -35,8 +33,8 @@ export default function TfResources({}: Props) {
   const { mutate: destroy, mutateAsync: destroyAsync } = useDestroy();
 
   function destroyHandler() {
-    setLogs({ isStreaming: true, logs: "" });
-    lab && destroyAsync(lab).then(() => endLogStream());
+    setLogs({ logs: "" });
+    lab && destroyAsync(lab);
   }
 
   async function getSelectedWorkspace(): Promise<TerraformWorkspace> {
@@ -56,7 +54,7 @@ export default function TfResources({}: Props) {
   function destroyAndDeleteHandler() {
     if (lab !== undefined) {
       // Set logs streaming.
-      setLogs({ isStreaming: true, logs: "" });
+      setLogs({ logs: "" });
       // Execute and wait for destroy to complete.
       destroyAsync(lab).then(() => {
         // Get the current workspace.
@@ -67,7 +65,6 @@ export default function TfResources({}: Props) {
               () => {
                 // Delete workspace.
                 deleteWorkspace(workspace);
-                endLogStream();
               }
             );
           })
@@ -95,7 +92,7 @@ export default function TfResources({}: Props) {
   }
   return (
     <div className="w-full justify-between gap-y-4 rounded border border-slate-500 py-2">
-      <div className="h-48 overflow-x-hidden rounded px-2 scrollbar-thin  scrollbar-thumb-slate-400 scrollbar-track-rounded-full scrollbar-thumb-rounded-full dark:scrollbar-thumb-slate-600">
+      <div className="h-48 rounded px-2 overflow-x-hidden scrollbar-thin  scrollbar-thumb-slate-400 scrollbar-track-rounded-full scrollbar-thumb-rounded-full dark:scrollbar-thumb-slate-600">
         {fetchingResources ||
         gettingWorkspaces ||
         selectingWorkspace ||

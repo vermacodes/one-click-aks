@@ -13,7 +13,7 @@ export default function DeploymentLifespan({
   const [menu, setMenu] = useState<boolean>(false);
 
   // array allowed lifespans in seconds.
-  const lifespans = [300, 600, 900, 1800, 3600, 7200, 14400, 28800];
+  const lifespans = [120, 300, 600, 900, 1800, 3600, 7200, 14400, 28800];
   const { mutate: upsertDeployment } = useUpsertDeployment();
 
   // Function takes input in seconds and returns hours or minutes if less than an hour.

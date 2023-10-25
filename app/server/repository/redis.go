@@ -27,23 +27,3 @@ func (r *RedisRepository) ResetServerCache() error {
 	rdb := newRedisClient()
 	return rdb.FlushAll(ctx).Err()
 }
-
-func getRedis(key string) (string, error) {
-	rdb := newRedisClient()
-	return rdb.Get(ctx, key).Result()
-}
-
-func setRedis(key string, val string) error {
-	rdb := newRedisClient()
-	return rdb.Set(ctx, key, val, 0).Err()
-}
-
-func deleteRedis(key string) error {
-	rdb := newRedisClient()
-	return rdb.Del(ctx, key).Err()
-}
-
-func deleteAllRedis() error {
-	rdb := newRedisClient()
-	return rdb.FlushAll(ctx).Err()
-}

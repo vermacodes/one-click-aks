@@ -1,17 +1,10 @@
 import { DeploymentType } from "../../../dataStructures";
-import Button from "../../Button";
-import {
-  useSelectWorkspace,
-  useSelectedTerraformWorkspace,
-} from "../../../hooks/useWorkspace";
-import { useContext, useState } from "react";
+import { useSelectedTerraformWorkspace } from "../../../hooks/useWorkspace";
 import DestroyButton from "../../Terraform/DestroyButton";
 import AutoDestroySwitch from "../AutoDestroySwitch";
 import DestroyTime from "../DestroyTime";
 import DeploymentLifespan from "../DeploymentLifespan";
-import { useActionStatus } from "../../../hooks/useActionStatus";
 import SelectDeployment from "../SelectDeployment";
-import { WebSocketContext } from "../../../WebSocketContext";
 
 type Props = {
   deployment: DeploymentType;
@@ -19,8 +12,6 @@ type Props = {
 
 export default function Deployment({ deployment }: Props) {
   const { data: selectedTerraformWorkspace } = useSelectedTerraformWorkspace();
-  const { mutateAsync: asyncSelectWorkspace } = useSelectWorkspace();
-  const { actionStatus } = useContext(WebSocketContext);
 
   return (
     <div

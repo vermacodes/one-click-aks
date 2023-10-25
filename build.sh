@@ -5,10 +5,32 @@
 # WebApp runs on port 3000
 # Server runs on port 8080.
 
+# gather input parameters
+# -t tag
+
+while getopts ":t:" opt; do
+    case $opt in
+    t)
+        TAG="$OPTARG"
+        ;;
+    \?)
+        echo "Invalid option -$OPTARG" >&2
+        ;;
+    esac
+done
+
+if [ -z "${TAG}" ]; then
+    TAG="latest"
+fi
+
+echo "TAG = ${TAG}"
+
+# remove terraform state
 cd tf
 rm -rf .terraform
 rm .terraform.lock.hcl
 
+# build server
 cd ../app/server
 
 if [[ "${SAS_TOKEN}" == "" ]]; then
@@ -27,15 +49,16 @@ go build -ldflags "-X 'main.version=$VERSION' -X 'github.com/vermacodes/one-clic
 
 cd ../..
 
-docker build -t repro:latest .
+# build docker image
+docker build -t repro:${TAG} .
 
 cd ./app/server
 rm server
 
-docker tag repro:latest actlab.azurecr.io/repro:latest
+docker tag repro:${TAG} actlab.azurecr.io/repro:${TAG}
 
 az acr login --name actlab
-docker push actlab.azurecr.io/repro:latest
+docker push actlab.azurecr.io/repro:${TAG}
 
-docker tag repro:latest ashishvermapu/repro:latest
-docker push ashishvermapu/repro:latest
+docker tag repro:${TAG} ashishvermapu/repro:${TAG}
+docker push ashishvermapu/repro:${TAG}

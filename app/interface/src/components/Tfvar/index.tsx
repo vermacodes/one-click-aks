@@ -88,7 +88,7 @@ export default function Tfvar() {
         <Button
           variant="secondary-text"
           onClick={() => {
-            setLogs({ isStreaming: false, logs: "" });
+            setLogs({ logs: "" });
             deleteLab();
           }}
         >

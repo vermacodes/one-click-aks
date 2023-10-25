@@ -162,8 +162,6 @@ func (d *DeploymentService) PollAndDeleteDeployments(interval time.Duration) err
 				break
 			}
 
-			d.logstreamService.StartLogStream()
-
 			// Change terraform workspace.
 			if err := d.ChangeTerraformWorkspace(deployment); err != nil {
 				slog.Error("not able to change terraform workspace", err)
@@ -177,6 +175,9 @@ func (d *DeploymentService) PollAndDeleteDeployments(interval time.Duration) err
 				return err
 			}
 
+			// Update action status to in progress.
+			d.actionStatusService.SetActionStart()
+
 			//Run extend script in 'destroy' mode.
 			if err := d.terraformService.Extend(deployment.DeploymentLab, "destroy"); err != nil {
 				slog.Error("not able to run extend script", err)
@@ -187,12 +188,12 @@ func (d *DeploymentService) PollAndDeleteDeployments(interval time.Duration) err
 					slog.Error("not able to update deployment", err)
 				}
 
+				d.actionStatusService.SetActionEnd()
 				return err
 			}
 
 			// Run terraform destroy.
-			terraformOperation, err := d.terraformService.DestroyAsync(deployment.DeploymentLab)
-			if err != nil {
+			if err := d.terraformService.Destroy(deployment.DeploymentLab); err != nil {
 				slog.Error("not able to run terraform destroy", err)
 
 				// Update deployment status to failed.
@@ -201,43 +202,19 @@ func (d *DeploymentService) PollAndDeleteDeployments(interval time.Duration) err
 					slog.Error("not able to update deployment", err)
 				}
 
+				d.actionStatusService.SetActionEnd()
 				return err
-			}
-
-			// Wait for terraform destroy to complete.
-			for {
-				terraformOperation, err := d.actionStatusService.GetTerraformOperation(terraformOperation.OperationId)
-				slog.Debug("terraformOperation.OperationStatus: " + terraformOperation.OperationStatus)
-				if err != nil {
-					slog.Error("not able to get terraform operation", err)
-					// Update deployment status to failed.
-					deployment.DeploymentStatus = "Deployment Failed"
-					if err := d.UpdateDeployment(deployment); err != nil {
-						slog.Error("not able to update deployment", err)
-					}
-
-					break
-				}
-
-				if terraformOperation.OperationStatus != "inprogress" {
-					break
-				}
-				time.Sleep(5 * time.Second)
 			}
 
 			// Update deployment status to deleting.
 			deployment.DeploymentStatus = "Resources Destroyed"
 			if err := d.UpdateDeployment(deployment); err != nil {
 				slog.Error("not able to update deployment", err)
+				d.actionStatusService.SetActionEnd()
 				return err
 			}
 
-			//Delete deployment record.
-			// if err := deploymentService.DeleteDeployment(deployment.DeploymentUserId, deployment.DeploymentWorkspace); err != nil {
-			// 	slog.Error("not able to delete deployment", err)
-			// }
-
-			d.logstreamService.EndLogStream()
+			d.actionStatusService.SetActionEnd()
 		}
 	}
 }

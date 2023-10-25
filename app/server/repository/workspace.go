@@ -1,9 +1,11 @@
 package repository
 
 import (
+	"context"
 	"os"
 	"os/exec"
 
+	"github.com/go-redis/redis/v9"
 	"github.com/vermacodes/one-click-aks/app/server/entity"
 )
 
@@ -11,6 +13,16 @@ type tfWorkspaceRepository struct{}
 
 func NewTfWorkspaceRepository() entity.WorkspaceRepository {
 	return &tfWorkspaceRepository{}
+}
+
+var tfWorkspaceCtx = context.Background()
+
+func newTfWorkspaceRedisClient() *redis.Client {
+	return redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "", // no password set
+		DB:       0,  // use default DB
+	})
 }
 
 func (t *tfWorkspaceRepository) List(storageAccountName string) (string, error) {
@@ -26,15 +38,18 @@ func (t *tfWorkspaceRepository) List(storageAccountName string) (string, error) 
 }
 
 func (t *tfWorkspaceRepository) GetListFromRedis() (string, error) {
-	return getRedis("terraformWorkspaces")
+	rdb := newTfWorkspaceRedisClient()
+	return rdb.Get(tfWorkspaceCtx, "terraformWorkspaces").Result()
 }
 
 func (t *tfWorkspaceRepository) AddListToRedis(val string) {
-	setRedis("terraformWorkspaces", val)
+	rdb := newTfWorkspaceRedisClient()
+	rdb.Set(tfWorkspaceCtx, "terraformWorkspaces", val, 0)
 }
 
 func (t *tfWorkspaceRepository) DeleteListFromRedis() {
-	deleteRedis("terraformWorkspaces")
+	rdb := newTfWorkspaceRedisClient()
+	rdb.Del(tfWorkspaceCtx, "terraformWorkspaces")
 }
 
 func (t *tfWorkspaceRepository) Add(workspace entity.Workspace) error {
@@ -65,13 +80,16 @@ func (t *tfWorkspaceRepository) Resources(storageAccountName string) (string, er
 }
 
 func (t *tfWorkspaceRepository) GetResourcesFromRedis() (string, error) {
-	return getRedis("terraformResources")
+	rdb := newTfWorkspaceRedisClient()
+	return rdb.Get(tfWorkspaceCtx, "terraformResources").Result()
 }
 
 func (t *tfWorkspaceRepository) AddResourcesToRedis(val string) {
-	setRedis("terraformResources", val)
+	rdb := newTfWorkspaceRedisClient()
+	rdb.Set(tfWorkspaceCtx, "terraformResources", val, 0)
 }
 
 func (t *tfWorkspaceRepository) DeleteResourcesFromRedis() {
-	deleteRedis("terraformResources")
+	rdb := newTfWorkspaceRedisClient()
+	rdb.Del(tfWorkspaceCtx, "terraformResources")
 }

@@ -18,6 +18,7 @@ type ActionStatusService interface {
 	SetActionStatus(ActionStatus) error
 	SetActionStart() error
 	SetActionEnd() error
+	WaitForActionStatusChange() (ActionStatus, error)
 
 	SetTerraformOperation(TerraformOperation) error
 	GetTerraformOperation(string) (TerraformOperation, error)
@@ -26,6 +27,7 @@ type ActionStatusService interface {
 type ActionStatusRepository interface {
 	GetActionStatus() (string, error)
 	SetActionStatus(string) error
+	WaitForActionStatusChange() (string, error)
 
 	SetTerraformOperation(string, string) error
 	GetTerraformOperation(string) (string, error)
