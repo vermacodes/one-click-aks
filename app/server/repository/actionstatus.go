@@ -44,6 +44,20 @@ func (a *actionStatusRepository) SetActionStatus(val string) error {
 	return nil
 }
 
+func (a *actionStatusRepository) WaitForActionStatusChange() (string, error) {
+	rdb := newActionStatusRedisClient().Subscribe(actionStatusCtx, "redis-action-status-pubsub-channel")
+	defer rdb.Close()
+
+	for {
+		msg, err := rdb.ReceiveMessage(actionStatusCtx)
+		if err != nil {
+			return "", err
+		}
+
+		return msg.Payload, nil
+	}
+}
+
 func (a *actionStatusRepository) SetTerraformOperation(id string, val string) error {
 	rdb := newActionStatusRedisClient()
 	return rdb.Set(actionStatusCtx, id, val, 0).Err()

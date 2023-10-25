@@ -93,6 +93,22 @@ func (a *actionStatusService) SetActionEnd() error {
 	return nil
 }
 
+func (a *actionStatusService) WaitForActionStatusChange() (entity.ActionStatus, error) {
+	actionStatus := entity.ActionStatus{}
+	val, err := a.actionStatusRepository.WaitForActionStatusChange()
+	if err != nil {
+		slog.Error("action status not found in redis", err)
+		return actionStatus, err
+	}
+
+	if err = json.Unmarshal([]byte(val), &actionStatus); err != nil {
+		slog.Error("not able to translate action status string to object", err)
+		return actionStatus, err
+	}
+
+	return actionStatus, nil
+}
+
 func (a *actionStatusService) SetTerraformOperation(terraformOperation entity.TerraformOperation) error {
 	val, err := json.Marshal(terraformOperation)
 	if err != nil {
