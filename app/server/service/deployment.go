@@ -162,6 +162,14 @@ func (d *DeploymentService) PollAndDeleteDeployments(interval time.Duration) err
 				break
 			}
 
+			// Update action status to in progress.
+			d.actionStatusService.SetActionStart()
+
+			// Update action status to end.
+			defer func() {
+				d.actionStatusService.SetActionEnd()
+			}()
+
 			// Change terraform workspace.
 			if err := d.ChangeTerraformWorkspace(deployment); err != nil {
 				slog.Error("not able to change terraform workspace", err)
