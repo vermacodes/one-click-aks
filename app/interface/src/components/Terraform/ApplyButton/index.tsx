@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { FaRocket } from "react-icons/fa";
-import { ButtonVariant, Lab } from "../../../dataStructures";
+import { ButtonVariant, DeploymentType, Lab } from "../../../dataStructures";
 import { useOperationRecord } from "../../../hooks/useAuth";
 import { useSetLogs } from "../../../hooks/useLogs";
 import { usePreference } from "../../../hooks/usePreference";
@@ -32,6 +32,20 @@ export default function ApplyButton({ variant, children, lab }: Props) {
   const { data: terraformWorkspaces } = useTerraformWorkspace();
   const { mutate: upsertDeployment } = useUpsertDeployment();
 
+  function updateDeploymentStatus(
+    deployment: DeploymentType | undefined,
+    status: DeploymentType["deploymentStatus"]
+  ) {
+    if (deployment !== undefined) {
+      upsertDeployment({
+        ...deployment,
+        deploymentStatus: status,
+        deploymentAutoDeleteUnixTime:
+          calculateNewEpochTimeForDeployment(deployment),
+      });
+    }
+  }
+
   function onClickHandler() {
     if (
       lab === undefined ||
@@ -45,29 +59,20 @@ export default function ApplyButton({ variant, children, lab }: Props) {
       lab.template.resourceGroup.location = preference.azureRegion;
     }
 
-    // reset logs.
+    // reset logs
     setLogs({ logs: "" });
 
+    const deployment = getSelectedDeployment(deployments, terraformWorkspaces);
+    updateDeploymentStatus(deployment, "Deployment In Progress");
+
     // apply terraform
-    applyAsync(lab).then(() => {
-      // update deployment status
-
-      //get the deployment for the selected workspace
-      const deployment = getSelectedDeployment(
-        deployments,
-        terraformWorkspaces
-      );
-
-      //update the deployment status
-      if (deployment !== undefined) {
-        upsertDeployment({
-          ...deployment,
-          deploymentStatus: "Deployment In Progress",
-          deploymentAutoDeleteUnixTime:
-            calculateNewEpochTimeForDeployment(deployment),
-        });
-      }
-    });
+    applyAsync(lab)
+      .then(() => {
+        updateDeploymentStatus(deployment, "Deployment Completed");
+      })
+      .catch(() => {
+        updateDeploymentStatus(deployment, "Deployment Failed");
+      });
   }
 
   return (

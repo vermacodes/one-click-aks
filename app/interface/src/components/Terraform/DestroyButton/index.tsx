@@ -5,8 +5,12 @@ import { useSetLogs } from "../../../hooks/useLogs";
 import { usePreference } from "../../../hooks/usePreference";
 import { useDestroy } from "../../../hooks/useTerraform";
 import Button from "../../Button";
-import { useTerraformWorkspace } from "../../../hooks/useWorkspace";
 import {
+  useDeleteWorkspace,
+  useTerraformWorkspace,
+} from "../../../hooks/useWorkspace";
+import {
+  useDeleteDeployment,
   useGetMyDeployments,
   useUpsertDeployment,
 } from "../../../hooks/useDeployments";
@@ -14,6 +18,7 @@ import { WebSocketContext } from "../../../WebSocketContext";
 import {
   calculateNewEpochTimeForDeployment,
   getSelectedDeployment,
+  getSelectedTerraformWorkspace,
 } from "../../../utils/helpers";
 
 type Props = {
@@ -42,6 +47,44 @@ export default function DestroyButton({
   const { data: deployments } = useGetMyDeployments();
   const { data: terraformWorkspaces } = useTerraformWorkspace();
   const { mutate: upsertDeployment } = useUpsertDeployment();
+  const { mutateAsync: deleteDeploymentAsync } = useDeleteDeployment();
+  const { mutateAsync: deleteWorkspaceAsync } = useDeleteWorkspace();
+
+  function updateDeploymentStatus(
+    deployment: DeploymentType | undefined,
+    status: DeploymentType["deploymentStatus"]
+  ) {
+    if (deployment !== undefined) {
+      upsertDeployment({
+        ...deployment,
+        deploymentStatus: status,
+        deploymentAutoDeleteUnixTime:
+          calculateNewEpochTimeForDeployment(deployment),
+      });
+    }
+  }
+
+  function handleDeleteWorkspace() {
+    if (
+      deployment === undefined ||
+      terraformWorkspaces === undefined ||
+      !deleteWorkspace
+    ) {
+      return;
+    }
+
+    // filter workspace from the list of workspaces where deployment matches
+    const filteredWorkspace = terraformWorkspaces.filter(
+      (workspace) => deployment.deploymentWorkspace === workspace.name
+    )[0];
+
+    deleteWorkspaceAsync(filteredWorkspace).then(() => {
+      deleteDeploymentAsync([
+        deployment.deploymentWorkspace,
+        deployment.deploymentSubscriptionId,
+      ]);
+    });
+  }
 
   function onClickHandler() {
     // if lab is undefined, do nothing
@@ -61,24 +104,21 @@ export default function DestroyButton({
     // reset logs.
     setLogs({ logs: "" });
 
-    // destroy terraform
-    destroyAsync(lab).then(() => {
-      //get the deployment for the selected workspace
-      const deployment = getSelectedDeployment(
-        deployments,
-        terraformWorkspaces
-      );
+    //get the deployment for the selected workspace
+    const deployment = getSelectedDeployment(deployments, terraformWorkspaces);
+    updateDeploymentStatus(deployment, "Destroying Resources");
 
-      //update the deployment status
-      if (deployment !== undefined) {
-        upsertDeployment({
-          ...deployment,
-          deploymentStatus: "Destroying Resources",
-          deploymentAutoDeleteUnixTime:
-            calculateNewEpochTimeForDeployment(deployment),
-        });
-      }
-    });
+    // destroy terraform
+    destroyAsync(lab)
+      .then(() => {
+        updateDeploymentStatus(deployment, "Resources Destroyed");
+      })
+      .catch(() => {
+        updateDeploymentStatus(deployment, "Deployment Failed");
+      })
+      .finally(() => {
+        handleDeleteWorkspace();
+      });
   }
 
   // This is used by Navbar
