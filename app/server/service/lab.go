@@ -32,7 +32,7 @@ func (l *labService) GetLabFromRedis() (entity.LabType, error) {
 
 		// If the lab was not found in redis then we will set to default.
 
-		slog.Error("lab not found in redis. Setting default.", err)
+		slog.Info("lab not found in redis. Setting default.")
 
 		defaultLab, err := l.HelperDefaultLab()
 		if err != nil {

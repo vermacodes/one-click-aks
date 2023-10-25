@@ -21,7 +21,7 @@ func (a *actionStatusService) GetActionStatus() (entity.ActionStatus, error) {
 	actionStatus := entity.ActionStatus{}
 	val, err := a.actionStatusRepository.GetActionStatus()
 	if err != nil {
-		slog.Error("action status not found in redis", err)
+		slog.Info("action status not found in redis")
 
 		// Reset to default.
 		defaultActionStatus := entity.ActionStatus{
