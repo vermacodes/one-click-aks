@@ -19,18 +19,18 @@ while getopts ":t:" opt; do
     esac
 done
 
-echo "TAG = ${TAG}"
-
 if [ -z "${TAG}" ]; then
     TAG="latest"
 fi
 
 echo "TAG = ${TAG}"
 
+# remove terraform state
 cd tf
 rm -rf .terraform
 rm .terraform.lock.hcl
 
+# build server
 cd ../app/server
 
 if [[ "${SAS_TOKEN}" == "" ]]; then
@@ -49,6 +49,7 @@ go build -ldflags "-X 'main.version=$VERSION' -X 'github.com/vermacodes/one-clic
 
 cd ../..
 
+# build docker image
 docker build -t repro:${TAG} .
 
 cd ./app/server
