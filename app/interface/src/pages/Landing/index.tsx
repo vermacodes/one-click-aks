@@ -1,14 +1,9 @@
-import { useRef, useState } from "react";
-import { FaExternalLinkAlt } from "react-icons/fa";
-import { Link } from "react-router-dom";
-import Button from "../../components/Button";
+import { useRef } from "react";
 import DeployWebAppCommand from "../../components/DeployWebAppCommand";
 import StartCommand from "../../components/StartCommand";
 import PageLayout from "../../layouts/PageLayout";
 
 export default function Landing() {
-  const [showStartCommand, setShowStartCommand] = useState<boolean>(false);
-
   const optionsRef = useRef<null | HTMLDivElement>(null);
 
   return (
@@ -16,7 +11,7 @@ export default function Landing() {
       {/* <div className="fixed inset-0 min-h-screen bg-slate-100 dark:bg-slate-900 ">
         <div className="h-full items-center justify-center overflow-auto p-10"> */}
       <div className="flex flex-col gap-20">
-        <div className="flex min-h-screen items-center justify-center">
+        <div className="flex items-center justify-center">
           <div className="relative w-full">
             <div className="absolute -top-48 left-24 h-[70vh] w-[70vh] animate-blob rounded-full bg-purple-600 opacity-30 mix-blend-multiply blur-xl filter dark:mix-blend-color"></div>
             <div className="animation-delay-2000 absolute top-48 left-24 h-[70vh] w-[70vh] animate-blob rounded-full bg-emerald-600 opacity-30 mix-blend-multiply blur-xl filter dark:mix-blend-color"></div>

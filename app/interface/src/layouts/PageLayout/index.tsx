@@ -10,12 +10,14 @@ export default function PageLayout({ heading, children }: Props) {
   return (
     <div className="mb-4">
       <VersionCheck />
-      <div className="mb-6 flex justify-between border-b-2 border-slate-500 py-4 ">
-        <div>{heading && <h1 className="text-4xl">{heading}</h1>}</div>
-        <div>
-          <AzureSubscription />
+      {heading && (
+        <div className="mb-6 flex justify-between border-b-2 border-slate-500 py-4 ">
+          <h1 className="text-4xl">{heading}</h1>
+          <div>
+            <AzureSubscription />
+          </div>
         </div>
-      </div>
+      )}
       {children}
     </div>
   );
