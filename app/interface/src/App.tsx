@@ -7,7 +7,7 @@ import ReconnectingWebSocket from "reconnecting-websocket";
 function App() {
   const [darkMode, setDarkMode] = useState<boolean>(true);
   const [actionStatus, setActionStatus] = useState<ActionStatusType>({
-    inProgress: true,
+    inProgress: false,
   });
   const [logStream, setLogStream] = useState<LogsStreamType>({
     logs: "",
