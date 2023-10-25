@@ -115,3 +115,14 @@ func (a *actionStatusHandler) GetActionStatusWs(w http.ResponseWriter, r *http.R
 		time.Sleep(1 * time.Second)
 	}
 }
+
+// // waitForActionStatusChange listens for changes in the action status and returns
+// // when a change occurs.
+// func (a *actionStatusHandler) waitForActionStatusChange() (entity.ActionStatus, error) {
+// 	// Implement a mechanism to listen for changes in the action status.
+// 	// You can use a Pub-Sub system, Redis Pub-Sub, or a similar approach here.
+// 	ctx := context.Background()
+// 	pubsub :=
+// 	// Return the updated action status when a change occurs.
+// 	return entity.ActionStatus{}, nil
+// }

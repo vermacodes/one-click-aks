@@ -1,9 +1,11 @@
 package repository
 
 import (
+	"context"
 	"os/exec"
 	"strings"
 
+	"github.com/go-redis/redis/v9"
 	"github.com/vermacodes/one-click-aks/app/server/entity"
 )
 
@@ -11,6 +13,16 @@ type storageAccountRepository struct{}
 
 func NewStorageAccountRepository() entity.StorageAccountRepository {
 	return &storageAccountRepository{}
+}
+
+var storageAccountCtx = context.Background()
+
+func newStorageAccountRedisClient() *redis.Client {
+	return redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "", // no password set
+		DB:       0,  // use default DB
+	})
 }
 
 // This returns the name of the storage account after running azure cli command.
@@ -26,16 +38,19 @@ func (s *storageAccountRepository) GetStorageAccountName() (string, error) {
 
 // This returns storage account name from Redis.
 func (s *storageAccountRepository) GetStorageAccountNameFromRedis() (string, error) {
-	return getRedis("storageAccountName")
+	rdb := newStorageAccountRedisClient()
+	return rdb.Get(storageAccountCtx, "storageAccountName").Result()
 }
 
 // This sets storage account name in redis.
 func (s *storageAccountRepository) SetStorageAccountNameInRedis(val string) error {
-	return setRedis("storageAccountName", val)
+	rdb := newStorageAccountRedisClient()
+	return rdb.Set(storageAccountCtx, "storageAccountName", val, 0).Err()
 }
 
 func (s *storageAccountRepository) DelStorageAccountNameFromRedis() error {
-	return deleteRedis("storageAccountName")
+	rdb := newStorageAccountRedisClient()
+	return rdb.Del(storageAccountCtx, "storageAccountName").Err()
 }
 
 // Blob Container
@@ -45,15 +60,18 @@ func (s *storageAccountRepository) GetBlobContainer(storageAccountName string, c
 }
 
 func (s *storageAccountRepository) GetBlobContainerFromRedis() (string, error) {
-	return getRedis("blobcontainer")
+	rdb := newStorageAccountRedisClient()
+	return rdb.Get(storageAccountCtx, "blobcontainer").Result()
 }
 
 func (s *storageAccountRepository) SetBlobContainerInRedis(val string) error {
-	return setRedis("blobcontainer", val)
+	rdb := newStorageAccountRedisClient()
+	return rdb.Set(storageAccountCtx, "blobcontainer", val, 0).Err()
 }
 
 func (s *storageAccountRepository) DelBlobContainerFromRedis() error {
-	return deleteRedis("blobcontainer")
+	rdb := newStorageAccountRedisClient()
+	return rdb.Del(storageAccountCtx, "blobcontainer").Err()
 }
 
 // Resource Group
@@ -63,15 +81,18 @@ func (s *storageAccountRepository) GetResourceGroup() (string, error) {
 }
 
 func (s *storageAccountRepository) GetResourceGroupFromRedis() (string, error) {
-	return getRedis("resourcegroup")
+	rdb := newStorageAccountRedisClient()
+	return rdb.Get(storageAccountCtx, "resourcegroup").Result()
 }
 
 func (s *storageAccountRepository) SetResourceGroupInRedis(val string) error {
-	return setRedis("resourcegroup", val)
+	rdb := newStorageAccountRedisClient()
+	return rdb.Set(storageAccountCtx, "resourcegroup", val, 0).Err()
 }
 
 func (s *storageAccountRepository) DelResourceGroupFromRedis() error {
-	return deleteRedis("resourcegroup")
+	rdb := newStorageAccountRedisClient()
+	return rdb.Del(storageAccountCtx, "resourcegroup").Err()
 }
 
 // Storage Account
@@ -81,15 +102,18 @@ func (s *storageAccountRepository) GetStorageAccount(storageAccountName string) 
 }
 
 func (s *storageAccountRepository) GetStorageAccountFromRedis() (string, error) {
-	return getRedis("storageaccount")
+	rdb := newStorageAccountRedisClient()
+	return rdb.Get(storageAccountCtx, "storageaccount").Result()
 }
 
 func (s *storageAccountRepository) SetStorageAccountInRedis(val string) error {
-	return setRedis("storageaccount", val)
+	rdb := newStorageAccountRedisClient()
+	return rdb.Set(storageAccountCtx, "storageaccount", val, 0).Err()
 }
 
 func (s *storageAccountRepository) DelStorageAccountFromRedis() error {
-	return deleteRedis("storageaccount")
+	rdb := newStorageAccountRedisClient()
+	return rdb.Del(storageAccountCtx, "storageaccount").Err()
 }
 
 func (s *storageAccountRepository) CreateResoureceGroup() (string, error) {

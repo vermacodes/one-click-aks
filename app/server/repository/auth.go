@@ -1,8 +1,10 @@
 package repository
 
 import (
+	"context"
 	"os/exec"
 
+	"github.com/go-redis/redis/v9"
 	"github.com/vermacodes/one-click-aks/app/server/entity"
 )
 
@@ -10,6 +12,16 @@ type authRepository struct{}
 
 func NewAuthRepository() entity.AuthRepository {
 	return &authRepository{}
+}
+
+var authCtx = context.Background()
+
+func newAuthRedisClient() *redis.Client {
+	return redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "", // no password set
+		DB:       0,  // use default DB
+	})
 }
 
 func (a *authRepository) ServicePrincipalLogin() (string, error) {
@@ -23,11 +35,13 @@ func (a *authRepository) ServicePrincipalLoginStatus() (string, error) {
 }
 
 func (a *authRepository) GetServicePrincipalLoginStatusFromRedis() (string, error) {
-	return getRedis("spLoginStatus")
+	rdb := newAuthRedisClient()
+	return rdb.Get(authCtx, "spLoginStatus").Result()
 }
 
 func (a *authRepository) SetServicePrincipalLoginStatusInRedis(val string) error {
-	return setRedis("spLoginStatus", val)
+	rdb := newAuthRedisClient()
+	return rdb.Set(authCtx, "spLoginStatus", val, 0).Err()
 }
 
 func (a *authRepository) GetAccounts() (string, error) {
@@ -36,11 +50,13 @@ func (a *authRepository) GetAccounts() (string, error) {
 }
 
 func (a *authRepository) GetAccountsFromRedis() (string, error) {
-	return getRedis("accounts")
+	rdb := newAuthRedisClient()
+	return rdb.Get(authCtx, "accounts").Result()
 }
 
 func (a *authRepository) SetAccountsInRedis(val string) error {
-	return setRedis("accounts", val)
+	rdb := newAuthRedisClient()
+	return rdb.Set(authCtx, "accounts", val, 0).Err()
 }
 
 func (a *authRepository) SetAccount(accountId string) error {
@@ -49,5 +65,6 @@ func (a *authRepository) SetAccount(accountId string) error {
 }
 
 func (a *authRepository) DeleteAccountsFromRedis() error {
-	return deleteRedis("accounts")
+	rdb := newAuthRedisClient()
+	return rdb.Del(authCtx, "accounts").Err()
 }
