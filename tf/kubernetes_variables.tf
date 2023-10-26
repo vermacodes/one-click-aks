@@ -8,9 +8,10 @@ variable "kubernetes_clusters" {
     outbound_type           = string
     private_cluster_enabled = bool
     addons = object({
-      app_gateway        = bool
-      microsoft_defender = bool
-      virtual_node       = bool
+      app_gateway              = bool
+      microsoft_defender       = bool
+      virtual_node             = bool
+      http_application_routing = bool
     })
     default_node_pool = object({
       enable_auto_scaling = bool

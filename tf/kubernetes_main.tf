@@ -90,6 +90,13 @@ resource "azurerm_kubernetes_cluster" "this" {
     }
   }
 
+  dynamic "web_app_routing" {
+    for_each = var.kubernetes_clusters[count.index].addons.http_application_routing ? [{}] : []
+    content {
+      dns_zone_id = ""
+    }
+  }
+
   # ingress_application_gateway {
   #   subnet_id = azurerm_subnet.this[3].id
   # }
