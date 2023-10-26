@@ -73,10 +73,10 @@ func (a *authService) ServicePrincipalLoginStatus() (entity.LoginStatus, error) 
 		if err == nil && loginStatus.IsLoggedIn {
 			return loginStatus, err
 		} else {
-			slog.Debug("token in redis is expired", err)
+			slog.Debug("token in redis is expired")
 		}
 	} else {
-		slog.Debug("login status not found in redis", err)
+		slog.Debug("login status not found in redis")
 	}
 
 	slog.Debug("Checking login status from cli")

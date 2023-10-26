@@ -98,6 +98,7 @@ export type TfvarAddonsType = {
   appGateway: boolean;
   microsoftDefender: boolean;
   virtualNode: boolean;
+  httpApplicationRouting: boolean;
 };
 
 export type TfvarDefaultNodepoolType = {
