@@ -21,21 +21,21 @@ export default function Landing() {
             {/* <div className="absolute -top-12 left-1/4 h-96 w-96 animate-blob rounded-full bg-purple-500 opacity-30 mix-blend-multiply blur-xl filter dark:mix-blend-color"></div>
               <div className="animation-delay-2000 absolute top-48 left-1/4 h-96 w-96 animate-blob rounded-full bg-green-500 opacity-30 mix-blend-multiply blur-xl filter dark:mix-blend-color"></div>
               <div className="animation-delay-4000 absolute left-1/3 top-24 h-96 w-96 animate-blob rounded-full bg-blue-500 opacity-30 mix-blend-multiply blur-xl filter dark:mix-blend-color"></div> */}
-            <div className="relative m-8">
+            <div className="relative mx-8">
               <div className="flex flex-col gap-20">
                 <h1 className="text text-9xl">Head start your lab repros</h1>
                 <p className="text-4xl text-slate-500">
                   Build and deploy labs in minutes ⌚ get a head start with labs
                   built and tested by AKS Ninjas 🥷
                 </p>
-                <button
+                {/* <button
                   className="flex animate-bounce justify-center text-2xl hover:text-purple-500"
                   onClick={() =>
                     optionsRef.current?.scrollIntoView({ behavior: "smooth" })
                   }
                 >
                   ↓
-                </button>
+                </button> */}
               </div>
             </div>
           </div>
@@ -49,19 +49,11 @@ export default function Landing() {
                 Server needs access to your subscription. If we host the server
                 for you, we need access to your subscription. We are not ready
                 for that. So, you need to host the server.{" "}
-                <a
-                  href="https://actlabsdocs.z13.web.core.windows.net/docs/getting-started"
-                  target={"_blank"}
-                  className="underline"
-                >
-                  Learn more ↗
-                </a>{" "}
-                about setting up server.
               </p>
             </div>
             <div>
               <a
-                href="https://actlabsdocs.z13.web.core.windows.net/docs/getting-started"
+                href="https://dev.azure.com/Supportability/AzureContainers/_wiki/wikis/Containers%20Wiki/849282/Getting-Started"
                 target={"_blank"}
                 className="w-fit whitespace-nowrap rounded-full bg-slate-200 py-2 px-8 text-2xl text-blue-700 hover:bg-slate-300"
               >
@@ -128,17 +120,12 @@ export default function Landing() {
         </div>
         <div className="flex flex-col gap-10">
           <h1 className="text-3xl">
-            Already setup? Here are the commands to quick start and/or upgrade →
+            Already setup? Here is the command to quick start or upgrade server
+            →
           </h1>
-          <div className="grid grid-cols-2 gap-4 text-slate-50">
-            <div className="to flex flex-col gap-4 rounded bg-gradient-to-r from-blue-600 to-purple-600 p-4 pb-10">
-              <h2 className="text-2xl">Docker</h2>
-              <StartCommand />
-            </div>
-            <div className="to flex flex-col gap-4 rounded bg-gradient-to-r from-sky-600 to-emerald-600 p-4 pb-10">
-              <h2 className="text-2xl">WebApp</h2>
-              <DeployWebAppCommand />
-            </div>
+          <div className="flex flex-col gap-4 rounded bg-gradient-to-r from-blue-600 to-purple-600 p-4 pb-10">
+            <h2 className="text-2xl">Docker</h2>
+            <StartCommand />
           </div>
         </div>
       </div>

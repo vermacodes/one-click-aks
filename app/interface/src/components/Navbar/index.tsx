@@ -153,7 +153,7 @@ function Pages() {
         <li>
           <a
             target="_blank"
-            href="https://actlabsdocs.z13.web.core.windows.net/docs/introduction"
+            href="https://dev.azure.com/Supportability/AzureContainers/_wiki/wikis/Containers%20Wiki/849276/ACT-Lab-Tool"
           >
             <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
               <span>
