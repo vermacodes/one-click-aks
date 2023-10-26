@@ -1,8 +1,11 @@
 import {
+  TfvarAddonsType,
   TfvarAppGatewayType,
   TfvarConfigType,
   TfvarContainerRegistryType,
+  TfvarDefaultNodepoolType,
   TfvarFirewallType,
+  TfvarKubernetesClusterType,
 } from "../../dataStructures";
 
 export const defaultFirewall: TfvarFirewallType = {
@@ -14,24 +17,28 @@ export const defaultContainerRegistry: TfvarContainerRegistryType = {};
 
 export const defaultAppGateways: TfvarAppGatewayType = {};
 
-export const defautlKubernetesCluster = {
+export const defaultAKSAddons: TfvarAddonsType = {
+  appGateway: false,
+  microsoftDefender: false,
+  virtualNode: false,
+  httpApplicationRouting: false,
+};
+
+export const defaultNodePool: TfvarDefaultNodepoolType = {
+  enableAutoScaling: true,
+  minCount: 1,
+  maxCount: 1,
+};
+
+export const defaultKubernetesCluster: TfvarKubernetesClusterType = {
   kubernetesVersion: "",
   networkPlugin: "azure",
   networkPolicy: "azure",
   networkPluginMode: "null",
   outboundType: "loadBalancer",
   privateClusterEnabled: "true",
-  addons: {
-    appGateway: false,
-    microsoftDefender: false,
-    virtualNode: false,
-    httpApplicationRouting: false,
-  },
-  defaultNodePool: {
-    enableAutoScaling: true,
-    minCount: 1,
-    maxCount: 1,
-  },
+  addons: defaultAKSAddons,
+  defaultNodePool: defaultNodePool
 };
 
 export const defaultTfvarConfig: TfvarConfigType = {

@@ -5,7 +5,7 @@ import { useLab, useSetLab } from "../../../hooks/useLab";
 import { useSetLogs } from "../../../hooks/useLogs";
 import { useGetOrchestrators } from "../../../hooks/useOrchestrators";
 import Checkbox from "../../Checkbox";
-import { defaultTfvarConfig } from "../defaults";
+import { defaultKubernetesCluster, defaultTfvarConfig } from "../defaults";
 import { WebSocketContext } from "../../../WebSocketContext";
 
 export default function KubernetesCluster() {
@@ -29,25 +29,7 @@ export default function KubernetesCluster() {
       )[0];
     }
 
-    return {
-      kubernetesVersion: defaultVersion,
-      networkPlugin: "kubenet",
-      networkPolicy: "null",
-      networkPluginMode: "null",
-      outboundType: "loadBalancer",
-      privateClusterEnabled: "false",
-      addons: {
-        appGateway: false,
-        microsoftDefender: false,
-        virtualNode: false,
-        httpApplicationRouting: false,
-      },
-      defaultNodePool: {
-        enableAutoScaling: false,
-        minCount: 1,
-        maxCount: 1,
-      },
-    };
+    return { ...defaultKubernetesCluster, kubernetesVersion: defaultVersion };
   }
 
   function handleOnChange() {
