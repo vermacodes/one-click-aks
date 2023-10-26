@@ -25,6 +25,7 @@ export const defautlKubernetesCluster = {
     appGateway: false,
     microsoftDefender: false,
     virtualNode: false,
+    httpApplicationRouting: false,
   },
   defaultNodePool: {
     enableAutoScaling: true,
@@ -49,6 +50,7 @@ export const defaultTfvarConfig: TfvarConfigType = {
         appGateway: false,
         microsoftDefender: false,
         virtualNode: false,
+        httpApplicationRouting: false,
       },
       defaultNodePool: {
         enableAutoScaling: false,

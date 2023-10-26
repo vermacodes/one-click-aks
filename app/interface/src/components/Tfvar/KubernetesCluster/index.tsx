@@ -40,6 +40,7 @@ export default function KubernetesCluster() {
         appGateway: false,
         microsoftDefender: false,
         virtualNode: false,
+        httpApplicationRouting: false,
       },
       defaultNodePool: {
         enableAutoScaling: false,
