@@ -6,7 +6,7 @@ import {
   TfvarDefaultNodepoolType,
   TfvarFirewallType,
   TfvarKubernetesClusterType,
-} from "../../dataStructures";
+} from "./dataStructures";
 
 export const defaultFirewall: TfvarFirewallType = {
   skuName: "AZFW_VNet",

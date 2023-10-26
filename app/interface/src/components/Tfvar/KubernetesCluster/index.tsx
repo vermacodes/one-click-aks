@@ -5,7 +5,10 @@ import { useLab, useSetLab } from "../../../hooks/useLab";
 import { useSetLogs } from "../../../hooks/useLogs";
 import { useGetOrchestrators } from "../../../hooks/useOrchestrators";
 import Checkbox from "../../Checkbox";
-import { defaultKubernetesCluster, defaultTfvarConfig } from "../defaults";
+import {
+  defaultKubernetesCluster,
+  defaultTfvarConfig,
+} from "../../../defaults";
 import { WebSocketContext } from "../../../WebSocketContext";
 
 export default function KubernetesCluster() {

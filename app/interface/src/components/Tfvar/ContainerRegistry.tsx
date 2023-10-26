@@ -3,7 +3,7 @@ import { useActionStatus } from "../../hooks/useActionStatus";
 import { useLab, useSetLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
 import Checkbox from "../Checkbox";
-import { defaultContainerRegistry } from "./defaults";
+import { defaultContainerRegistry } from "../../defaults";
 import { WebSocketContext } from "../../WebSocketContext";
 
 export default function ContainerRegistry() {

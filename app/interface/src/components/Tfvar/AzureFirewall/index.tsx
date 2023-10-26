@@ -3,7 +3,7 @@ import { useActionStatus } from "../../../hooks/useActionStatus";
 import { useLab, useSetLab } from "../../../hooks/useLab";
 import { useSetLogs } from "../../../hooks/useLogs";
 import Checkbox from "../../Checkbox";
-import { defaultFirewall } from "./../defaults";
+import { defaultFirewall } from "../../../defaults";
 import { WebSocketContext } from "../../../WebSocketContext";
 
 export default function AzureFirewall() {
