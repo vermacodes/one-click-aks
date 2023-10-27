@@ -6,7 +6,7 @@ import {
   FaEllipsisV,
   FaShare,
 } from "react-icons/fa";
-import Button from "../../components/Button";
+import Button from "../../components/UserInterfaceComponents/Button";
 import DeleteLabButton from "../../components/Lab/DeleteLabButton";
 import ExportLabButton from "../../components/Lab/Export/ExportLabButton";
 import LabCard from "../../components/Lab/LabCard";

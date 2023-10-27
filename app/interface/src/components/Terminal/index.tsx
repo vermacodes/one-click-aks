@@ -1,7 +1,7 @@
 import ansiHTML from "ansi-to-html";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useSetLogs } from "../../hooks/useLogs";
-import Checkbox from "../Checkbox";
+import Checkbox from "../UserInterfaceComponents/Checkbox";
 import { WebSocketContext } from "../../WebSocketContext";
 
 export default function Terminal() {

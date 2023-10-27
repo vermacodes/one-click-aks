@@ -1,9 +1,9 @@
 import {
   useConfigureStorageAccount,
   useGetStorageAccount,
-} from "../../hooks/useStorageAccount";
-import SettingsItemLayout from "../../layouts/SettingsItemLayout";
-import Button from "../Button";
+} from "../../../hooks/useStorageAccount";
+import SettingsItemLayout from "../../../layouts/SettingsItemLayout";
+import Button from "../../UserInterfaceComponents/Button";
 type Props = {};
 
 export default function StorageAccount({}: Props) {

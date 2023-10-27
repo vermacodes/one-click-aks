@@ -1,7 +1,7 @@
 import React from "react";
 import { Assignment } from "../../../../dataStructures";
 import { useDeleteAssignment } from "../../../../hooks/useAssignment";
-import Button from "../../../Button";
+import Button from "../../../UserInterfaceComponents/Button";
 
 type Props = {
   assignment: Assignment;

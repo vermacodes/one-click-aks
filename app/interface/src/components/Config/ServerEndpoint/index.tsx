@@ -4,7 +4,7 @@ import { FaCheck, FaEdit, FaTimes } from "react-icons/fa";
 import { loginRequest } from "../../../authConfig";
 import { GraphData } from "../../../dataStructures";
 import SettingsItemLayout from "../../../layouts/SettingsItemLayout";
-import Checkbox from "../../Checkbox";
+import Checkbox from "../../UserInterfaceComponents/Checkbox";
 import { useQueryClient } from "react-query";
 import { useResetServerCache } from "../../../hooks/useServerCache";
 

@@ -4,7 +4,7 @@ import { useActionStatus } from "../../../hooks/useActionStatus";
 import { useLab, useSetLab } from "../../../hooks/useLab";
 import { useSetLogs } from "../../../hooks/useLogs";
 import { useGetOrchestrators } from "../../../hooks/useOrchestrators";
-import Checkbox from "../../Checkbox";
+import Checkbox from "../../UserInterfaceComponents/Checkbox";
 import {
   defaultKubernetesCluster,
   defaultTfvarConfig,

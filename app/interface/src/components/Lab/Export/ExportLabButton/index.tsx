@@ -1,7 +1,7 @@
 import { saveAs } from "file-saver";
 import { FaDownload } from "react-icons/fa";
 import { ButtonVariant, Lab } from "../../../../dataStructures";
-import Button from "../../../Button";
+import Button from "../../../UserInterfaceComponents/Button";
 
 type Props = {
   variant: ButtonVariant;

@@ -4,7 +4,7 @@ import { ButtonVariant, Lab } from "../../../dataStructures";
 import { useActionStatus } from "../../../hooks/useActionStatus";
 import { useDeleteLab, useDeleteMyLab } from "../../../hooks/useBlobs";
 import { useSetLogs } from "../../../hooks/useLogs";
-import Button from "../../Button";
+import Button from "../../UserInterfaceComponents/Button";
 import { WebSocketContext } from "../../../WebSocketContext";
 
 type Props = {

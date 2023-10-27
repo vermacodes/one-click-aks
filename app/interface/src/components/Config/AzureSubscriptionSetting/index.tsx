@@ -1,5 +1,5 @@
 import SettingsItemLayout from "../../../layouts/SettingsItemLayout";
-import AzureSubscription from "../../AzureSubscription";
+import AzureSubscription from "../AzureSubscription";
 
 export default function AzureSubscriptionSetting() {
   return (

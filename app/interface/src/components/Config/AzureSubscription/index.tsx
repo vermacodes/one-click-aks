@@ -1,7 +1,7 @@
 import { FaChevronDown } from "react-icons/fa";
-import { useAccount, useSetAccount } from "../../hooks/useAccount";
+import { useAccount, useSetAccount } from "../../../hooks/useAccount";
 import { useContext, useState } from "react";
-import { WebSocketContext } from "../../WebSocketContext";
+import { WebSocketContext } from "../../../WebSocketContext";
 
 export default function AzureSubscription() {
   const [subscriptionMenu, setSubscriptionMenu] = useState<boolean>(false);

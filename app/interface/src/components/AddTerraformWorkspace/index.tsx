@@ -1,12 +1,7 @@
 import { useState } from "react";
-import { SiTerraform } from "react-icons/si";
-import { Link } from "react-router-dom";
-import { useTerraformWorkspace } from "../../hooks/useWorkspace";
 import { MdClose } from "react-icons/md";
-import ResetActionStatus from "../../components/ResetActionStatus";
-import TfInit from "../../components/TfInit";
 import TfWorkspace from "../../components/TfWorkspace";
-import Button from "../Button";
+import Button from "../UserInterfaceComponents/Button";
 
 type Props = {};
 
@@ -39,7 +34,7 @@ function Modal({ showModal, setShowModal }: ModalProps) {
       }}
     >
       <div
-        className=" my-20 w-3/4 gap-y-2 divide-y divide-slate-300 overflow-y-auto overflow-x-hidden rounded bg-slate-100 p-5 scrollbar-thin  scrollbar-thumb-slate-400 dark:divide-slate-700 dark:bg-slate-900 dark:scrollbar-thumb-slate-600"
+        className=" my-20 w-3/4 gap-y-2 divide-y divide-slate-300 overflow-y-auto rounded bg-slate-100 p-5 overflow-x-hidden scrollbar-thin  scrollbar-thumb-slate-400 dark:divide-slate-700 dark:bg-slate-900 dark:scrollbar-thumb-slate-600"
         onClick={(e) => {
           e.stopPropagation();
           setWorkspaceMenu(false);

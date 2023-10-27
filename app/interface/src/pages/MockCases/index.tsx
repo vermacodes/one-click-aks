@@ -15,7 +15,7 @@ import LabGridLayout from "../../layouts/LabGridLayout";
 import PageLayout from "../../layouts/PageLayout";
 import LabBuilder from "../../modals/SaveLabModal";
 import { Menu } from "@headlessui/react";
-import Button from "../../components/Button";
+import Button from "../../components/UserInterfaceComponents/Button";
 
 export default function MockCases() {
   const [more, setMore] = useState<string>("");

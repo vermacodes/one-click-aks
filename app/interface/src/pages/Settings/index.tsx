@@ -1,11 +1,11 @@
 import { useState } from "react";
-import AzureRegion from "../../components/AzureRegion";
+import AzureRegion from "../../components/Config/AzureRegion";
 import AuthServiceEndpoint from "../../components/Config/AuthServiceEndpoint";
 import ServerEndpoint from "../../components/Config/ServerEndpoint";
-import ResetActionStatus from "../../components/ResetActionStatus";
-import ResetServerCache from "../../components/ResetServerCache";
-import StorageAccount from "../../components/StorageAccount";
-import TfInit from "../../components/TfInit";
+import ResetActionStatus from "../../components/Config/ResetActionStatus";
+import ResetServerCache from "../../components/Config/ResetServerCache";
+import StorageAccount from "../../components/Config/StorageAccount";
+import TfInit from "../../components/Config/TerraformInit";
 import TfWorkspace from "../../components/TfWorkspace";
 import PageLayout from "../../layouts/PageLayout";
 import SettingsItemLayout from "../../layouts/SettingsItemLayout";

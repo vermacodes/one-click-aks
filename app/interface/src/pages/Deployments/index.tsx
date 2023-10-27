@@ -3,7 +3,7 @@ import Deployment from "../../components/Deployments/Deployment";
 import { DeploymentType } from "../../dataStructures";
 import { useGetMyDeployments } from "../../hooks/useDeployments";
 import PageLayout from "../../layouts/PageLayout";
-import Button from "../../components/Button";
+import Button from "../../components/UserInterfaceComponents/Button";
 import Terminal from "../../components/Terminal";
 import CreateNewDeployment from "../../components/Deployments/CreateNewDeployment";
 

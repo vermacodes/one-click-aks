@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { useLab, useSetLab } from "../../../../hooks/useLab";
-import Checkbox from "../../../Checkbox";
+import Checkbox from "../../../UserInterfaceComponents/Checkbox";
 import { WebSocketContext } from "../../../../WebSocketContext";
 import { useSetLogs } from "../../../../hooks/useLogs";
 

@@ -1,4 +1,4 @@
-import Button from "../../components/Button";
+import Button from "../../components/UserInterfaceComponents/Button";
 import DeleteAssignment from "../../components/Lab/Assignment/DeleteAssignment";
 import {
   useDeleteAssignment,

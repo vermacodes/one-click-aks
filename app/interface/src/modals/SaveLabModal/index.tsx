@@ -2,7 +2,7 @@ import Editor from "@monaco-editor/react";
 import { useEffect, useState } from "react";
 import { FaSave } from "react-icons/fa";
 import { MdClose } from "react-icons/md";
-import Button from "../../components/Button";
+import Button from "../../components/UserInterfaceComponents/Button";
 import { ButtonVariant, Lab } from "../../dataStructures";
 import { useGetMyRoles } from "../../hooks/useAuth";
 import { useCreateLab, useCreateMyLab } from "../../hooks/useBlobs";

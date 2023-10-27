@@ -8,14 +8,14 @@ export function calculateNewEpochTimeForDeployment(deployment: DeploymentType) {
     }
 
     const now = new Date();
-    // Get epoch tiem in seconds
+    // Get epoch time in seconds
     const epochTime = Math.floor(now.getTime() / 1000);
 
     return deployment.deploymentLifespan + epochTime;
 }
 
 // Function returns the selected terraform workspace.
-export function getSelectedTerraformWorkspace(terraformWorkspaces: TerraformWorkspace[]) {
+export function getSelectedTerraformWorkspace(terraformWorkspaces: TerraformWorkspace[]): TerraformWorkspace | undefined {
     var selectedWorkspace = terraformWorkspaces.find((workspace) => workspace.selected);
     if (selectedWorkspace) {
         return selectedWorkspace;
@@ -26,13 +26,13 @@ export function getSelectedTerraformWorkspace(terraformWorkspaces: TerraformWork
 
 // Function returns the selected deployment.
 export function getSelectedDeployment(deployments: DeploymentType[], terraformWorkspaces: TerraformWorkspace[]): DeploymentType | undefined {
-    var selectedTerraformWorksapce = getSelectedTerraformWorkspace(terraformWorkspaces);
+    var selectedTerraformWorkspace = getSelectedTerraformWorkspace(terraformWorkspaces);
 
-    if (selectedTerraformWorksapce === undefined) {
+    if (selectedTerraformWorkspace === undefined) {
         return undefined;
     }
 
-    var selectedDeployment = deployments.find((deployment) => deployment.deploymentWorkspace === selectedTerraformWorksapce?.name);
+    var selectedDeployment = deployments.find((deployment) => deployment.deploymentWorkspace === selectedTerraformWorkspace?.name);
     if (selectedDeployment) {
         return selectedDeployment;
     } else {
@@ -52,7 +52,6 @@ export function getDeploymentDestroyTime(deployment: DeploymentType) {
 }
 
 // Function returns the time remaining in hours, minutes and seconds for the deployment to be destroyed based on user's local time.
-// uset setInterval to update the time remaining every second.
 export function getDeploymentDestroyTimeRemaining(deployment: DeploymentType, setDeploymentDestroyTimeRemaining: React.Dispatch<React.SetStateAction<string>>) {
     setInterval(() => {
         if (deployment.deploymentAutoDelete === false) {

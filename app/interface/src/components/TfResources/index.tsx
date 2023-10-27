@@ -10,7 +10,7 @@ import {
   useSelectWorkspace,
   useTerraformWorkspace,
 } from "../../hooks/useWorkspace";
-import Button from "../Button";
+import Button from "../UserInterfaceComponents/Button";
 import { WebSocketContext } from "../../WebSocketContext";
 
 type Props = {};
@@ -60,7 +60,7 @@ export default function TfResources({}: Props) {
         // Get the current workspace.
         getSelectedWorkspace()
           .then((workspace) => {
-            // Change the worksapace to default.
+            // Change the workspace to default.
             selectWorkspaceAsync({ name: "default", selected: true }).then(
               () => {
                 // Delete workspace.

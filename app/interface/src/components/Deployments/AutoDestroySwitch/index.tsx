@@ -1,5 +1,5 @@
 import { DeploymentType } from "../../../dataStructures";
-import Checkbox from "../../Checkbox";
+import Checkbox from "../../UserInterfaceComponents/Checkbox";
 import { useUpsertDeployment } from "../../../hooks/useDeployments";
 import { calculateNewEpochTimeForDeployment } from "../../../utils/helpers";
 

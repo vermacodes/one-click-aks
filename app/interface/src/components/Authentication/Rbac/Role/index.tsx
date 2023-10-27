@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { RoleMutation, Roles } from "../../../../dataStructures";
 import { useAddRole, useRemoveRole } from "../../../../hooks/useAuth";
-import Button from "../../../Button";
+import Button from "../../../UserInterfaceComponents/Button";
 
 type Props = {
   roleRecord: Roles;

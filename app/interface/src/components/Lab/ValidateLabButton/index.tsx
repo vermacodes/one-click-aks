@@ -3,7 +3,7 @@ import { FaCheck } from "react-icons/fa";
 import { ButtonVariant, Lab } from "../../../dataStructures";
 import { useSetLogs } from "../../../hooks/useLogs";
 import { useExtend } from "../../../hooks/useTerraform";
-import Button from "../../Button";
+import Button from "../../UserInterfaceComponents/Button";
 import { WebSocketContext } from "../../../WebSocketContext";
 
 type Props = {

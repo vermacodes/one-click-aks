@@ -11,7 +11,7 @@ import { useDeleteLab, useLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
 import CodeEditor from "../../modals/CodeEditorModal";
 import LabBuilder from "../../modals/SaveLabModal";
-import Button from "../Button";
+import Button from "../UserInterfaceComponents/Button";
 import ExportLabInBuilder from "../Lab/Export/ExportLabInBuilder";
 import ImportLabToBuilder from "../Lab/Import/ImportLabToBuilder";
 import ApplyButton from "../Terraform/ApplyButton";

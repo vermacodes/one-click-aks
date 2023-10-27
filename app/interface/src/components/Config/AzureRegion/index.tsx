@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { FaCheck } from "react-icons/fa";
-import { useLab } from "../../hooks/useLab";
-import { useSetLogs } from "../../hooks/useLogs";
-import { usePreference, useSetPreference } from "../../hooks/usePreference";
-import { useGetStorageAccount } from "../../hooks/useStorageAccount";
-import SettingsItemLayout from "../../layouts/SettingsItemLayout";
+import { useLab } from "../../../hooks/useLab";
+import { useSetLogs } from "../../../hooks/useLogs";
+import { usePreference, useSetPreference } from "../../../hooks/usePreference";
+import { useGetStorageAccount } from "../../../hooks/useStorageAccount";
+import SettingsItemLayout from "../../../layouts/SettingsItemLayout";
 type Props = { regionEdit: boolean; setRegionEdit(args: boolean): void };
 
 export default function AzureRegion({ regionEdit, setRegionEdit }: Props) {
@@ -82,7 +82,7 @@ export default function AzureRegion({ regionEdit, setRegionEdit }: Props) {
           ) : (
             <>
               <p>{preference ? preference.azureRegion : "Add a region."}</p>
-              <p className="text-xs">Doubble click to edit.</p>
+              <p className="text-xs">Double click to edit.</p>
             </>
           )}
         </div>

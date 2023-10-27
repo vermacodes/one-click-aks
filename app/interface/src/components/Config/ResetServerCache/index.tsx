@@ -1,7 +1,7 @@
 import { useContext } from "react";
-import { WebSocketContext } from "../../WebSocketContext";
-import { useResetServerCache } from "../../hooks/useServerCache";
-import Button from "../Button";
+import { WebSocketContext } from "../../../WebSocketContext";
+import { useResetServerCache } from "../../../hooks/useServerCache";
+import Button from "../../UserInterfaceComponents/Button";
 
 type Props = {};
 

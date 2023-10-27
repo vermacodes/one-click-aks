@@ -14,7 +14,7 @@ import {
   useTerraformWorkspace,
 } from "../../../hooks/useWorkspace";
 import { getSelectedTerraformWorkspace } from "../../../utils/helpers";
-import Button from "../../Button";
+import Button from "../../UserInterfaceComponents/Button";
 import { WebSocketContext } from "../../../WebSocketContext";
 
 type Props = {

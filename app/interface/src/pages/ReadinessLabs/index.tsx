@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FaArrowRight } from "react-icons/fa";
-import Button from "../../components/Button";
+import Button from "../../components/UserInterfaceComponents/Button";
 import CreateAssignment from "../../components/Lab/Assignment/CreateAssignment";
 import DeleteLabButton from "../../components/Lab/DeleteLabButton";
 import LabCard from "../../components/Lab/LabCard";

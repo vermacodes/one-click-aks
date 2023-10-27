@@ -1,4 +1,4 @@
-import AzureSubscription from "../../components/AzureSubscription";
+import AzureSubscription from "../../components/Config/AzureSubscription";
 import VersionCheck from "../../components/Config/VersionCheck";
 
 type Props = {

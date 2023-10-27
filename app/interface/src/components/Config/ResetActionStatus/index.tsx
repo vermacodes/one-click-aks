@@ -1,5 +1,5 @@
-import { axiosInstance } from "../../utils/axios-interceptors";
-import Button from "../Button";
+import { axiosInstance } from "../../../utils/axios-interceptors";
+import Button from "../../UserInterfaceComponents/Button";
 
 type Props = {};
 
@@ -20,8 +20,8 @@ export default function ResetActionStatus({}: Props) {
       </Button>
       <p className="text-xs">
         Reset the action status if you think server is gone crazy. This can
-        breaks the safty net which prevents running duplicate actions on server.
-        This also stops the log stream.
+        breaks the safety net which prevents running duplicate actions on
+        server. This also stops the log stream.
       </p>
     </div>
   );

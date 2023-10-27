@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { FaArrowRight, FaCheck, FaTimes } from "react-icons/fa";
 import { Assignment, Lab } from "../../../../dataStructures";
 import { useCreateAssignment } from "../../../../hooks/useAssignment";
-import Button from "../../../Button";
+import Button from "../../../UserInterfaceComponents/Button";
 
 type Props = {
   lab: Lab;

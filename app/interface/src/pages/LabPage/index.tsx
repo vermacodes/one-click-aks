@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FaShare } from "react-icons/fa";
 import { useParams } from "react-router-dom";
-import Button from "../../components/Button";
+import Button from "../../components/UserInterfaceComponents/Button";
 import ExportLabButton from "../../components/Lab/Export/ExportLabButton";
 import LabCard from "../../components/Lab/LabCard";
 import LoadToBuilderButton from "../../components/Lab/LoadToBuilderButton";

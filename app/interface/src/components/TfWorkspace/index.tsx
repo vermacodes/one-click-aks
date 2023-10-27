@@ -9,7 +9,7 @@ import {
   useTerraformWorkspace,
 } from "../../hooks/useWorkspace";
 import SettingsItemLayout from "../../layouts/SettingsItemLayout";
-import Button from "../Button";
+import Button from "../UserInterfaceComponents/Button";
 import TfResources from "../TfResources";
 import { useUpsertDeployment } from "../../hooks/useDeployments";
 import { useLab } from "../../hooks/useLab";

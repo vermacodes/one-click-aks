@@ -3,10 +3,10 @@ import { SiTerraform } from "react-icons/si";
 import { Link } from "react-router-dom";
 import { useTerraformWorkspace } from "../../hooks/useWorkspace";
 import { MdClose } from "react-icons/md";
-import ResetActionStatus from "../../components/ResetActionStatus";
-import TfInit from "../../components/TfInit";
+import ResetActionStatus from "../Config/ResetActionStatus";
+import TfInit from "../Config/TerraformInit";
 import TfWorkspace from "../../components/TfWorkspace";
-import Button from "../Button";
+import Button from "../UserInterfaceComponents/Button";
 
 type Props = {};
 

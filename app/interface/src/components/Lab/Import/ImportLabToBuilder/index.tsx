@@ -4,7 +4,7 @@ import { Lab } from "../../../../dataStructures";
 import { useActionStatus } from "../../../../hooks/useActionStatus";
 import { useSetLab } from "../../../../hooks/useLab";
 import { useSetLogs } from "../../../../hooks/useLogs";
-import Button from "../../../Button";
+import Button from "../../../UserInterfaceComponents/Button";
 import { WebSocketContext } from "../../../../WebSocketContext";
 
 type Props = {};

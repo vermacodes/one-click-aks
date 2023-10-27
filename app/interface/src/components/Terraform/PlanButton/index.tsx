@@ -5,7 +5,7 @@ import { useActionStatus } from "../../../hooks/useActionStatus";
 import { useSetLogs } from "../../../hooks/useLogs";
 import { usePreference } from "../../../hooks/usePreference";
 import { usePlan } from "../../../hooks/useTerraform";
-import Button from "../../Button";
+import Button from "../../UserInterfaceComponents/Button";
 import { WebSocketContext } from "../../../WebSocketContext";
 
 type Props = {

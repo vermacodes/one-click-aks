@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { MdClose } from "react-icons/md";
 import { SiTerraform } from "react-icons/si";
-import ResetActionStatus from "../../components/ResetActionStatus";
-import TfInit from "../../components/TfInit";
+import ResetActionStatus from "../../components/Config/ResetActionStatus";
+import TfInit from "../../components/Config/TerraformInit";
 import TfWorkspace from "../../components/TfWorkspace";
 
 export default function Terraform() {

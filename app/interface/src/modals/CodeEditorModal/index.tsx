@@ -9,7 +9,7 @@ import {
   FaTimes,
 } from "react-icons/fa";
 
-import Button from "../../components/Button";
+import Button from "../../components/UserInterfaceComponents/Button";
 import { ButtonVariant, Lab } from "../../dataStructures";
 import { useLab, useSetLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";

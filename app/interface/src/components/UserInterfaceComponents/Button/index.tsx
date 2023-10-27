@@ -1,12 +1,12 @@
 import React from "react";
-import { ButtonVariant } from "../../dataStructures";
+import { ButtonVariant } from "../../../dataStructures";
 
 type Props = {
   variant: ButtonVariant;
   hidden?: boolean;
   children?: React.ReactNode;
   onClick?(args: any): any;
-  onDoubbleClick?(args: any): any;
+  onDoubleClick?(args: any): any;
   disabled?: boolean;
 };
 
@@ -14,7 +14,7 @@ export default function Button({
   variant,
   hidden,
   onClick,
-  onDoubbleClick,
+  onDoubleClick,
   disabled,
   children,
 }: Props) {
@@ -64,7 +64,7 @@ export default function Button({
       }`}
       disabled={disabled}
       onClick={onClick}
-      onDoubleClick={onDoubbleClick}
+      onDoubleClick={onDoubleClick}
     >
       {children}
     </button>

@@ -4,7 +4,7 @@ import { ButtonVariant, DeploymentType, Lab } from "../../../dataStructures";
 import { useSetLogs } from "../../../hooks/useLogs";
 import { usePreference } from "../../../hooks/usePreference";
 import { useApply } from "../../../hooks/useTerraform";
-import Button from "../../Button";
+import Button from "../../UserInterfaceComponents/Button";
 import {
   useGetMyDeployments,
   useUpsertDeployment,

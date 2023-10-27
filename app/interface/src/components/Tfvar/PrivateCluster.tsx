@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { useActionStatus } from "../../hooks/useActionStatus";
 import { useLab, useSetLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
-import Checkbox from "../Checkbox";
+import Checkbox from "../UserInterfaceComponents/Checkbox";
 import { WebSocketContext } from "../../WebSocketContext";
 
 export default function PrivateCluster() {
