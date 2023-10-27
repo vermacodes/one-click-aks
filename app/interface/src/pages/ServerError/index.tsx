@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Button from "../../components/UserInterfaceComponents/Button";
-import DeployWebAppCommand from "../../components/DeployWebAppCommand";
-import StartCommand from "../../components/StartCommand";
+import DeployWebAppCommand from "../../components/LandingPageComponents/DeployWebAppCommand";
+import StartCommand from "../../components/LandingPageComponents/StartCommand";
 import PageLayout from "../../layouts/PageLayout";
 
 export default function ServerError() {

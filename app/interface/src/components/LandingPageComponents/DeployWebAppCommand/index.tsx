@@ -5,7 +5,7 @@ type Props = {};
 
 export default function DeployWebAppCommand({}: Props) {
   const bashCommand =
-    "curl -o actlab.sh -sLO https://aka.ms/ACTLabsWebAppDeploy; chmod +x actlab.sh; ./actlab.sh; rm actlab.sh";
+    "curl -o actlabs.sh -sLO https://aka.ms/ACTLabsWebAppDeploy; chmod +x actlabs.sh; ./actlabs.sh; rm actlabs.sh";
   const powershellCommand = "Please help us create powershell command.";
 
   const [copy, setCopy] = useState<boolean>(false);
@@ -35,7 +35,7 @@ export default function DeployWebAppCommand({}: Props) {
               language === "bash"
                 ? "border-sky-500 text-sky-500"
                 : "border-transparent"
-            } " border-slte-500" border-b-2`}
+            } " border-slate-500" border-b-2`}
             onClick={() => {
               setLanguage("bash");
               setCommand(bashCommand);

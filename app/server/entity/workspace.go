@@ -16,7 +16,7 @@ type WorkspaceService interface {
 	Select(Workspace) error
 	Delete(Workspace) error
 
-	// Resoureces of selected workspace
+	// Resources of selected workspace
 	Resources() (string, error)
 
 	// Invalidate Cache

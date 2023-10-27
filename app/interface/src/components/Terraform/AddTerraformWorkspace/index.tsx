@@ -1,34 +1,16 @@
 import { useState } from "react";
-import { SiTerraform } from "react-icons/si";
-import { Link } from "react-router-dom";
-import { useTerraformWorkspace } from "../../hooks/useWorkspace";
 import { MdClose } from "react-icons/md";
-import ResetActionStatus from "../Config/ResetActionStatus";
-import TfInit from "../Config/TerraformInit";
-import TfWorkspace from "../../components/TfWorkspace";
-import Button from "../UserInterfaceComponents/Button";
+import Workspace from "../Workspace";
+import Button from "../../UserInterfaceComponents/Button";
 
 type Props = {};
 
-export default function index({}: Props) {
+export default function AddTerraformWorkspace({}: Props) {
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [menu, showMenu] = useState<boolean>(false);
-  const { data } = useTerraformWorkspace();
   return (
     <>
-      <Button variant="success-text" onClick={() => setShowModal(true)}>
-        <span>
-          <SiTerraform />
-        </span>
-        <span>Workspace →</span>
-        <span>
-          {data &&
-            data.map((worksapce) => (
-              <div key={worksapce.name}>
-                {worksapce.selected && worksapce.name}
-              </div>
-            ))}
-        </span>
+      <Button variant="secondary-text" onClick={() => setShowModal(true)}>
+        Manage Workspaces
       </Button>
       <Modal showModal={showModal} setShowModal={setShowModal} />
     </>
@@ -68,7 +50,7 @@ function Modal({ showModal, setShowModal }: ModalProps) {
           </button>
         </div>
         {/* <TfInit /> */}
-        <TfWorkspace
+        <Workspace
           workspaceMenu={workspaceMenu}
           setWorkspaceMenu={setWorkspaceMenu}
         />

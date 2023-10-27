@@ -6,7 +6,7 @@ import ResetActionStatus from "../../components/Config/ResetActionStatus";
 import ResetServerCache from "../../components/Config/ResetServerCache";
 import StorageAccount from "../../components/Config/StorageAccount";
 import TfInit from "../../components/Config/TerraformInit";
-import TfWorkspace from "../../components/TfWorkspace";
+import Workspace from "../../components/Terraform/Workspace";
 import PageLayout from "../../layouts/PageLayout";
 import SettingsItemLayout from "../../layouts/SettingsItemLayout";
 import AzureSubscriptionSetting from "../../components/Config/AzureSubscriptionSetting";
@@ -27,7 +27,7 @@ export default function Settings() {
         <AzureRegion regionEdit={regionEdit} setRegionEdit={setRegionEdit} />
 
         <TfInit />
-        <TfWorkspace
+        <Workspace
           workspaceMenu={workspaceMenu}
           setWorkspaceMenu={setWorkspaceMenu}
         />

@@ -1,29 +1,29 @@
 import { useContext, useState } from "react";
 import { FaChevronDown, FaTrash } from "react-icons/fa";
-import { useSetActionStatus } from "../../hooks/useActionStatus";
+import { useSetActionStatus } from "../../../hooks/useActionStatus";
 import {
   useAddWorkspace,
   useDeleteWorkspace,
   useGetResources,
   useSelectWorkspace,
   useTerraformWorkspace,
-} from "../../hooks/useWorkspace";
-import SettingsItemLayout from "../../layouts/SettingsItemLayout";
-import Button from "../UserInterfaceComponents/Button";
-import TfResources from "../TfResources";
-import { useUpsertDeployment } from "../../hooks/useDeployments";
-import { useLab } from "../../hooks/useLab";
-import { WebSocketContext } from "../../WebSocketContext";
+} from "../../../hooks/useWorkspace";
+import SettingsItemLayout from "../../../layouts/SettingsItemLayout";
+import Button from "../../UserInterfaceComponents/Button";
+import SelectedWorkspaceResources from "../SelectedWorkspaceResources";
+import { useUpsertDeployment } from "../../../hooks/useDeployments";
+import { useLab } from "../../../hooks/useLab";
+import { WebSocketContext } from "../../../WebSocketContext";
 
-type TfWorkspaceProps = {
+type WorkspaceProps = {
   workspaceMenu: boolean;
   setWorkspaceMenu(args: boolean): void;
 };
 
-export default function TfWorkspace({
+export default function Workspace({
   workspaceMenu,
   setWorkspaceMenu,
-}: TfWorkspaceProps) {
+}: WorkspaceProps) {
   const [add, setAdd] = useState<boolean>(false);
   const [newWorkSpaceName, setNewWorkSpaceName] = useState<string>("");
   const {
@@ -220,7 +220,7 @@ export default function TfWorkspace({
               )}
             </div>
             <div className="flex justify-end">
-              <TfResources />
+              <SelectedWorkspaceResources />
             </div>
           </div>
         </div>

@@ -11,15 +11,12 @@ import {
   FaShieldAlt,
   FaSun,
   FaTools,
-  FaTrash,
   FaUserGraduate,
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useGetMyRoles } from "../../hooks/useAuth";
 import { useLab } from "../../hooks/useLab";
 import LoginButton from "../Authentication/LoginButton";
-import CurrentTerraformWorkspace from "../CurrentTerraformWorkspace";
-import DestroyButton from "../Terraform/DestroyButton";
 
 type NavbarProps = {
   darkMode: boolean;
@@ -179,17 +176,6 @@ function FixedPages({ darkMode, setDarkMode }: FixedPagesProps) {
   return (
     <div className="h-fit w-full flex-col p-4">
       <ul className="md:text-l flex w-full flex-col justify-start gap-y-1 text-sm lg:text-xl">
-        {/* <li>
-          <CurrentTerraformWorkspace />
-        </li> */}
-        {/* <li>
-          <DestroyButton variant="secondary-text" navbarButton={true} lab={lab}>
-            <span>
-              <FaTrash />
-            </span>
-            Terraform Destroy
-          </DestroyButton>
-        </li> */}
         <li>
           <button
             className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800"

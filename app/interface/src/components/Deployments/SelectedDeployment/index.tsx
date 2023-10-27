@@ -1,12 +1,8 @@
 import Button from "../../UserInterfaceComponents/Button";
-import {
-  useSelectedTerraformWorkspace,
-  useTerraformWorkspace,
-} from "../../../hooks/useWorkspace";
+import { useTerraformWorkspace } from "../../../hooks/useWorkspace";
 import { SiTerraform } from "react-icons/si";
 import { useGetMyDeployments } from "../../../hooks/useDeployments";
 import { useLab } from "../../../hooks/useLab";
-import { DeploymentType } from "../../../dataStructures";
 import { Link } from "react-router-dom";
 import CreateNewDeployment from "../CreateNewDeployment";
 import AutoDestroySwitch from "../AutoDestroySwitch";
@@ -17,7 +13,6 @@ import { getSelectedDeployment } from "../../../utils/helpers";
 export default function SelectedDeployment() {
   const { data: lab } = useLab();
   const { data: terraformWorkspace } = useTerraformWorkspace();
-  const { data: selectedTerraformWorkspace } = useSelectedTerraformWorkspace();
   const { data: deployments } = useGetMyDeployments();
 
   if (
@@ -54,7 +49,6 @@ export default function SelectedDeployment() {
           <h1 className="text-2xl text-sky-500">
             <div>{selectedDeployment.deploymentWorkspace}</div>
           </h1>
-          {/* <CurrentTerraformWorkspace /> */}
         </div>
         <div className="flex flex-wrap gap-y-2 gap-x-4 divide-x divide-slate-500">
           <div className="flex flex-wrap items-center gap-x-2">

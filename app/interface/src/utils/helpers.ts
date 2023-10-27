@@ -73,3 +73,22 @@ export function getDeploymentDestroyTimeRemaining(deployment: DeploymentType, se
         return hours + "h " + minutes + "m " + seconds + "s";
     }, 1000);
 }
+
+export function isDefaultWorkspaceSelected(
+    workspaces: TerraformWorkspace[] | undefined
+  ): boolean {
+    if (workspaces === undefined) {
+      return true;
+    }
+
+    const selectedWorkspace = getSelectedTerraformWorkspace(workspaces);
+    if (selectedWorkspace === undefined) {
+      return true;
+    }
+
+    if (selectedWorkspace.name === "default") {
+      return true;
+    }
+
+    return false;
+  }

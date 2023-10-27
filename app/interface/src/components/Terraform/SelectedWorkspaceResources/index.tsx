@@ -1,21 +1,24 @@
 import { useContext } from "react";
-import { TerraformWorkspace } from "../../dataStructures";
-import { useLab } from "../../hooks/useLab";
-import { useSetLogs } from "../../hooks/useLogs";
-import { useDestroy } from "../../hooks/useTerraform";
+import { useLab } from "../../../hooks/useLab";
+import { useSetLogs } from "../../../hooks/useLogs";
+import { useDestroy } from "../../../hooks/useTerraform";
 import {
   useAddWorkspace,
   useDeleteWorkspace,
   useGetResources,
   useSelectWorkspace,
   useTerraformWorkspace,
-} from "../../hooks/useWorkspace";
-import Button from "../UserInterfaceComponents/Button";
-import { WebSocketContext } from "../../WebSocketContext";
+} from "../../../hooks/useWorkspace";
+import Button from "../../UserInterfaceComponents/Button";
+import { WebSocketContext } from "../../../WebSocketContext";
+import {
+  getSelectedTerraformWorkspace,
+  isDefaultWorkspaceSelected,
+} from "../../../utils/helpers";
 
 type Props = {};
 
-export default function TfResources({}: Props) {
+export default function SelectedWorkspaceResources({}: Props) {
   const { actionStatus } = useContext(WebSocketContext);
   const { data: resources, isFetching: fetchingResources } = useGetResources();
   const { data: lab } = useLab();
@@ -30,66 +33,35 @@ export default function TfResources({}: Props) {
   const { mutateAsync: selectWorkspaceAsync, isLoading: selectingWorkspace } =
     useSelectWorkspace();
   const { isLoading: addingWorkspace } = useAddWorkspace();
-  const { mutate: destroy, mutateAsync: destroyAsync } = useDestroy();
+  const { mutateAsync: destroyAsync } = useDestroy();
 
   function destroyHandler() {
     setLogs({ logs: "" });
     lab && destroyAsync(lab);
   }
 
-  async function getSelectedWorkspace(): Promise<TerraformWorkspace> {
-    return new Promise((resolve, reject) => {
-      if (workspaces === undefined) {
-        reject(Error("workspaces are not defined"));
-      } else {
-        workspaces.map((workspace) => {
-          if (workspace.selected === true) {
-            resolve(workspace);
-          }
-        });
-      }
-    });
-  }
-
   function destroyAndDeleteHandler() {
-    if (lab !== undefined) {
-      // Set logs streaming.
-      setLogs({ logs: "" });
-      // Execute and wait for destroy to complete.
-      destroyAsync(lab).then(() => {
-        // Get the current workspace.
-        getSelectedWorkspace()
-          .then((workspace) => {
-            // Change the workspace to default.
-            selectWorkspaceAsync({ name: "default", selected: true }).then(
-              () => {
-                // Delete workspace.
-                deleteWorkspace(workspace);
-              }
-            );
-          })
-          .catch(() => {
-            console.error("not able to get the selected workspace.");
-          });
-      });
+    if (lab === undefined || workspaces === undefined) {
+      return;
     }
-  }
-
-  function isDefaultSelected(
-    workspaces: TerraformWorkspace[] | undefined
-  ): boolean {
-    var returned: boolean = false;
-
-    if (workspaces === undefined) {
-      returned = true;
-    }
-    workspaces?.forEach((workspace) => {
-      if (workspace.name === "default" && workspace.selected === true) {
-        returned = true;
+    // Set logs streaming.
+    setLogs({ logs: "" });
+    // Execute and wait for destroy to complete.
+    destroyAsync(lab).then(() => {
+      // Get the current workspace.
+      const workspace = getSelectedTerraformWorkspace(workspaces);
+      if (workspace === undefined) {
+        console.error("not able to get the current workspace");
+        return;
       }
+      // Change the workspace to default.
+      selectWorkspaceAsync({ name: "default", selected: true }).then(() => {
+        // Delete workspace.
+        deleteWorkspace(workspace);
+      });
     });
-    return returned;
   }
+
   return (
     <div className="w-full justify-between gap-y-4 rounded border border-slate-500 py-2">
       <div className="h-48 rounded px-2 overflow-x-hidden scrollbar-thin  scrollbar-thumb-slate-400 scrollbar-track-rounded-full scrollbar-thumb-rounded-full dark:scrollbar-thumb-slate-600">
@@ -128,7 +100,7 @@ export default function TfResources({}: Props) {
             deletingWorkspace ||
             addingWorkspace ||
             fetchingWorkspaces ||
-            isDefaultSelected(workspaces)
+            isDefaultWorkspaceSelected(workspaces)
           }
           onClick={() => destroyAndDeleteHandler()}
         >

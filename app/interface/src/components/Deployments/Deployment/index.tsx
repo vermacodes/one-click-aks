@@ -1,5 +1,4 @@
 import { DeploymentType } from "../../../dataStructures";
-import { useSelectedTerraformWorkspace } from "../../../hooks/useWorkspace";
 import DestroyButton from "../../Terraform/DestroyButton";
 import AutoDestroySwitch from "../AutoDestroySwitch";
 import DestroyTime from "../DestroyTime";
@@ -8,15 +7,15 @@ import SelectDeployment from "../SelectDeployment";
 
 type Props = {
   deployment: DeploymentType;
+  selectedDeployment?: DeploymentType;
 };
 
-export default function Deployment({ deployment }: Props) {
-  const { data: selectedTerraformWorkspace } = useSelectedTerraformWorkspace();
-
+export default function Deployment({ deployment, selectedDeployment }: Props) {
   return (
     <div
       className={`${
-        deployment.deploymentWorkspace === selectedTerraformWorkspace?.name
+        deployment.deploymentWorkspace ===
+        selectedDeployment?.deploymentWorkspace
           ? "outline outline-green-500 dark:outline-green-500"
           : ""
       } mb-3 rounded bg-slate-50 p-3 outline-1 outline-sky-500 hover:outline dark:bg-slate-900`}
@@ -42,8 +41,9 @@ export default function Deployment({ deployment }: Props) {
             variant="danger-outline"
             lab={deployment.deploymentLab}
             disabled={
-              selectedTerraformWorkspace === undefined ||
-              deployment.deploymentWorkspace !== selectedTerraformWorkspace.name
+              selectedDeployment === undefined ||
+              deployment.deploymentWorkspace !==
+                selectedDeployment.deploymentWorkspace
             }
           >
             Destroy
@@ -55,10 +55,10 @@ export default function Deployment({ deployment }: Props) {
             deleteWorkspace={true}
             deployment={deployment}
             disabled={
-              selectedTerraformWorkspace === undefined ||
+              selectedDeployment === undefined ||
               deployment.deploymentWorkspace !==
-                selectedTerraformWorkspace.name ||
-              selectedTerraformWorkspace.name === "default"
+                selectedDeployment.deploymentWorkspace ||
+              selectedDeployment.deploymentWorkspace === "default"
             }
           >
             Delete
