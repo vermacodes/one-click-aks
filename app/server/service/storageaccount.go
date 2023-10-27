@@ -117,7 +117,7 @@ func (s *storageAccountService) GetStorageAccount(storageAccountName string) (en
 // Create resource group.
 // This first checks if there is an existing resource group.
 // if found just return that, if not found create one.
-func (s *storageAccountService) CreateResoureceGroup() (entity.ResourceGroup, error) {
+func (s *storageAccountService) CreateResourceGroup() (entity.ResourceGroup, error) {
 	resourceGroup := entity.ResourceGroup{}
 
 	// if there exists a resource group, just return that.
@@ -128,7 +128,7 @@ func (s *storageAccountService) CreateResoureceGroup() (entity.ResourceGroup, er
 		return resourceGroup, nil
 	}
 
-	out, err = s.storageAccountRepository.CreateResoureceGroup()
+	out, err = s.storageAccountRepository.CreateResourceGroup()
 	if err != nil || out == "" {
 		slog.Error("not able to create resource group", err)
 		return resourceGroup, err

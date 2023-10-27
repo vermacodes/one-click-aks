@@ -41,7 +41,7 @@ type StorageAccountService interface {
 
 	// Mutating Operations
 
-	CreateResoureceGroup() (ResourceGroup, error)
+	CreateResourceGroup() (ResourceGroup, error)
 	CreateStorageAccount(storageAccountName string) (StorageAccount, error)
 	CreateBlobContainer(storageAccountName string, containerName string) (BlobContainer, error)
 }
@@ -69,7 +69,7 @@ type StorageAccountRepository interface {
 
 	// Mutating Operations
 
-	CreateResoureceGroup() (string, error)
+	CreateResourceGroup() (string, error)
 	CreateStorageAccount(storageAccountName string) (string, error)
 	CreateBlobContainer(storageAccountName string, containerName string) (string, error)
 }
