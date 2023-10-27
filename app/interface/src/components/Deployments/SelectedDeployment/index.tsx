@@ -68,7 +68,7 @@ export default function SelectedDeployment() {
             <Link to={"/deployments"}>
               <Button variant="secondary-text">View Deployments</Button>
             </Link>
-            <CreateNewDeployment variant="primary">
+            <CreateNewDeployment variant="primary-text">
               New Deployment
             </CreateNewDeployment>
           </div>
