@@ -1,10 +1,10 @@
-import Button from "../../UserInterfaceComponents/Button";
-import { useInit } from "../../../hooks/useTerraform";
-import { useLab } from "../../../hooks/useLab";
+import Button from "../../../UserInterfaceComponents/Button";
+import { useInit } from "../../../../hooks/useTerraform";
+import { useLab } from "../../../../hooks/useLab";
 import { useContext } from "react";
-import { WebSocketContext } from "../../../WebSocketContext";
-import { useSetLogs } from "../../../hooks/useLogs";
-import { ButtonVariant, Lab } from "../../../dataStructures";
+import { WebSocketContext } from "../../../../WebSocketContext";
+import { useSetLogs } from "../../../../hooks/useLogs";
+import { ButtonVariant, Lab } from "../../../../dataStructures";
 
 type Props = {
   variant: ButtonVariant;

@@ -1,5 +1,5 @@
 import { DeploymentType } from "../../../dataStructures";
-import DestroyButton from "../../Terraform/DestroyButton";
+import DestroyButton from "../../Terraform/ActionButtons/DestroyButton";
 import AutoDestroySwitch from "../AutoDestroySwitch";
 import DestroyTime from "../DestroyTime";
 import DeploymentLifespan from "../DeploymentLifespan";

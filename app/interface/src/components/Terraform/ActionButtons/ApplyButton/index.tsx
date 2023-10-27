@@ -1,20 +1,20 @@
 import React, { useContext } from "react";
 import { FaRocket } from "react-icons/fa";
-import { ButtonVariant, DeploymentType, Lab } from "../../../dataStructures";
-import { useSetLogs } from "../../../hooks/useLogs";
-import { usePreference } from "../../../hooks/usePreference";
-import { useApply } from "../../../hooks/useTerraform";
-import Button from "../../UserInterfaceComponents/Button";
+import { ButtonVariant, DeploymentType, Lab } from "../../../../dataStructures";
+import { useSetLogs } from "../../../../hooks/useLogs";
+import { usePreference } from "../../../../hooks/usePreference";
+import { useApply } from "../../../../hooks/useTerraform";
+import Button from "../../../UserInterfaceComponents/Button";
 import {
   useGetMyDeployments,
   useUpsertDeployment,
-} from "../../../hooks/useDeployments";
-import { useTerraformWorkspace } from "../../../hooks/useWorkspace";
+} from "../../../../hooks/useDeployments";
+import { useTerraformWorkspace } from "../../../../hooks/useWorkspace";
 import {
   calculateNewEpochTimeForDeployment,
   getSelectedDeployment,
-} from "../../../utils/helpers";
-import { WebSocketContext } from "../../../WebSocketContext";
+} from "../../../../utils/helpers";
+import { WebSocketContext } from "../../../../WebSocketContext";
 
 type Props = {
   variant: ButtonVariant;
