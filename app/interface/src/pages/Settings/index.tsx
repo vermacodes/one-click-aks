@@ -5,16 +5,14 @@ import ServerEndpoint from "../../components/Config/ServerEndpoint";
 import ResetActionStatus from "../../components/Config/ResetActionStatus";
 import ResetServerCache from "../../components/Config/ResetServerCache";
 import StorageAccount from "../../components/Config/StorageAccount";
-import TfInit from "../../components/Config/TerraformInit";
-import Workspace from "../../components/Terraform/Workspace";
+import TerraformInit from "../../components/Config/TerraformInit";
+import TerraformWorkspaces from "../../components/Config/TerraformWorkspaces";
 import PageLayout from "../../layouts/PageLayout";
 import SettingsItemLayout from "../../layouts/SettingsItemLayout";
 import AzureSubscriptionSetting from "../../components/Config/AzureSubscriptionSetting";
 
 export default function Settings() {
-  const [subscriptionMenu, setSubscriptionMenu] = useState<boolean>(false);
   const [regionEdit, setRegionEdit] = useState<boolean>(false);
-  const [workspaceMenu, setWorkspaceMenu] = useState<boolean>(false);
 
   return (
     <PageLayout heading="Settings">
@@ -26,11 +24,8 @@ export default function Settings() {
         <AzureSubscriptionSetting />
         <AzureRegion regionEdit={regionEdit} setRegionEdit={setRegionEdit} />
 
-        <TfInit />
-        <Workspace
-          workspaceMenu={workspaceMenu}
-          setWorkspaceMenu={setWorkspaceMenu}
-        />
+        <TerraformInit />
+        <TerraformWorkspaces />
         <SettingsItemLayout>
           <div className="flex">
             <ResetActionStatus />

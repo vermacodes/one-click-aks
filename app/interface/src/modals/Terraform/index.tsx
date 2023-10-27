@@ -3,7 +3,7 @@ import { MdClose } from "react-icons/md";
 import { SiTerraform } from "react-icons/si";
 import ResetActionStatus from "../../components/Config/ResetActionStatus";
 import TfInit from "../../components/Config/TerraformInit";
-import Workspace from "../../components/Terraform/Workspace";
+import Workspaces from "../../components/Terraform/Workspaces";
 
 export default function Terraform() {
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -57,10 +57,7 @@ function Modal({ showModal, setShowModal }: ModalProps) {
           </button>
         </div>
         <TfInit />
-        <Workspace
-          workspaceMenu={workspaceMenu}
-          setWorkspaceMenu={setWorkspaceMenu}
-        />
+        <Workspaces />
         <div className="flex">
           <ResetActionStatus />
         </div>
