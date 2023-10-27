@@ -1,12 +1,12 @@
 import React, { useContext } from "react";
 import { FaFile, FaPlane } from "react-icons/fa";
-import { ButtonVariant, Lab } from "../../../dataStructures";
-import { useActionStatus } from "../../../hooks/useActionStatus";
-import { useSetLogs } from "../../../hooks/useLogs";
-import { usePreference } from "../../../hooks/usePreference";
-import { usePlan } from "../../../hooks/useTerraform";
-import Button from "../../UserInterfaceComponents/Button";
-import { WebSocketContext } from "../../../WebSocketContext";
+import { ButtonVariant, Lab } from "../../../../dataStructures";
+import { useActionStatus } from "../../../../hooks/useActionStatus";
+import { useSetLogs } from "../../../../hooks/useLogs";
+import { usePreference } from "../../../../hooks/usePreference";
+import { usePlan } from "../../../../hooks/useTerraform";
+import Button from "../../../UserInterfaceComponents/Button";
+import { WebSocketContext } from "../../../../WebSocketContext";
 
 type Props = {
   variant: ButtonVariant;

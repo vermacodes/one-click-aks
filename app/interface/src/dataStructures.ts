@@ -23,21 +23,21 @@ export type AccountType = {
   user: UserType;
 };
 
-interface Properteis {
+interface Properties {
   provisioningState: string;
 }
 
-interface ResoureceGroup {
+interface ResourceGroup {
   id: string;
   location: string;
   managedBy: string;
   name: string;
-  properties: Properteis;
+  properties: Properties;
   tags: string;
   type: string;
 }
 
-export type ResoureceGroupType = ResoureceGroup;
+export type ResourceGroupType = ResourceGroup;
 
 interface StorageAccount {
   id: string;
@@ -53,7 +53,7 @@ interface BlobContainer {
 export type BlobContainerType = BlobContainer;
 
 interface StateConfiguration {
-  resourceGroup: ResoureceGroupType;
+  resourceGroup: ResourceGroupType;
   storageAccount: StorageAccountType;
   blobContainer: BlobContainerType;
 }
@@ -199,7 +199,7 @@ export type Assignment = {
   status: string;
 };
 
-export type Privildge = {
+export type Privilege = {
   user: string;
   isAdmin: boolean;
   isMentor: boolean;

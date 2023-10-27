@@ -11,13 +11,11 @@ export default function StorageAccount({}: Props) {
     data: storageAccount,
     isLoading: getStorageAccountLoading,
     isFetching: fetchingStorageAccount,
-    isError: getStorageAccountError,
   } = useGetStorageAccount();
 
   const {
     refetch: configureStorageAccount,
     isLoading: configureStorageAccountLoading,
-    isError: configureStorageAccountError,
   } = useConfigureStorageAccount();
 
   return (
@@ -46,7 +44,7 @@ export default function StorageAccount({}: Props) {
       </div>
       <div className="flex flex-col">
         <p className="text-xs text-slate-700 dark:text-slate-300">
-          - Your persistant data like terraform state and configurations are
+          - Your persistent data like terraform state and configurations are
           stored in this account. You will find this in a resource group named
           'repro-project' in your subscription mentioned below.
         </p>

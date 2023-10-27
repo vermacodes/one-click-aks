@@ -21,7 +21,7 @@ function deleteWorkspace(workspace: TerraformWorkspace) {
   return axiosInstance.delete("workspace", { data: workspace });
 }
 
-function getResoureces(): Promise<AxiosResponse<string>> {
+function getResources(): Promise<AxiosResponse<string>> {
   return axiosInstance.get("resources");
 }
 
@@ -30,25 +30,6 @@ export function useTerraformWorkspace() {
   return useQuery("list-terraform-workspaces", terraformWorkspaceList, {
     select: (data): TerraformWorkspace[] => {
       return data.data;
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries("get-resources")
-    },
-    staleTime: 6000000,
-    cacheTime: 6000000,
-  });
-}
-
-export function useSelectedTerraformWorkspace() {
-  const queryClient = useQueryClient();
-  return useQuery("get-selected-terraform-workspace", terraformWorkspaceList, {
-    select: (data): TerraformWorkspace => {
-      var selectedWorkspace = data.data.find((workspace) => workspace.selected);
-      if (selectedWorkspace) {
-        return selectedWorkspace;
-      } else {
-        return data.data[0];
-      }
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries("get-resources")
@@ -91,7 +72,7 @@ export function useDeleteWorkspace() {
 }
 
 export function useGetResources() {
-  return useQuery("get-resources", getResoureces, {
+  return useQuery("get-resources", getResources, {
     select: (data): string => {
       return data.data;
     },

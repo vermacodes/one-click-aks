@@ -6,9 +6,18 @@ import PageLayout from "../../layouts/PageLayout";
 import Button from "../../components/UserInterfaceComponents/Button";
 import Terminal from "../../components/Terminal";
 import CreateNewDeployment from "../../components/Deployments/CreateNewDeployment";
+import { getSelectedDeployment } from "../../utils/helpers";
+import { useTerraformWorkspace } from "../../hooks/useWorkspace";
 
 export default function Deployments() {
   const { data: deployments } = useGetMyDeployments();
+  const { data: workspaces } = useTerraformWorkspace();
+
+  if (deployments === undefined || workspaces === undefined) {
+    return <></>;
+  }
+
+  const selectedDeployment = getSelectedDeployment(deployments, workspaces);
 
   return (
     <PageLayout heading="Deployments">
@@ -23,7 +32,11 @@ export default function Deployments() {
       {deployments &&
         deployments.length > 0 &&
         deployments.map((deployment: DeploymentType) => (
-          <Deployment deployment={deployment} key={deployment.deploymentId} />
+          <Deployment
+            deployment={deployment}
+            selectedDeployment={selectedDeployment}
+            key={deployment.deploymentId}
+          />
         ))}
       <Terminal />
     </PageLayout>

@@ -116,7 +116,7 @@ func (s *storageAccountRepository) DelStorageAccountFromRedis() error {
 	return rdb.Del(storageAccountCtx, "storageaccount").Err()
 }
 
-func (s *storageAccountRepository) CreateResoureceGroup() (string, error) {
+func (s *storageAccountRepository) CreateResourceGroup() (string, error) {
 	out, err := exec.Command("bash", "-c", "az group create -l eastus -n repro-project -o json").Output()
 	return string(out), err
 }

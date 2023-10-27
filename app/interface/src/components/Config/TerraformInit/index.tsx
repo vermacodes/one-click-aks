@@ -1,5 +1,5 @@
 import SettingsItemLayout from "../../../layouts/SettingsItemLayout";
-import InitButton from "../../Terraform/InitButton";
+import InitButton from "../../Terraform/ActionButtons/InitButton";
 
 type Props = {};
 

@@ -61,7 +61,7 @@ func (s *StorageAccountHandler) GetStorageAccountConfiguration(c *gin.Context) {
 func (s *StorageAccountHandler) ConfigureStorageAccount(c *gin.Context) {
 	configuration := entity.StateConfiguration{}
 
-	resourceGroup, err := s.storageAccountService.CreateResoureceGroup()
+	resourceGroup, err := s.storageAccountService.CreateResourceGroup()
 	if err != nil {
 		c.Status(http.StatusInternalServerError)
 		return

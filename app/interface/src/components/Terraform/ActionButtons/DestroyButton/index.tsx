@@ -1,25 +1,25 @@
 import React, { useContext } from "react";
 import { FaTrash } from "react-icons/fa";
-import { ButtonVariant, DeploymentType, Lab } from "../../../dataStructures";
-import { useSetLogs } from "../../../hooks/useLogs";
-import { usePreference } from "../../../hooks/usePreference";
-import { useDestroy } from "../../../hooks/useTerraform";
-import Button from "../../UserInterfaceComponents/Button";
+import { ButtonVariant, DeploymentType, Lab } from "../../../../dataStructures";
+import { useSetLogs } from "../../../../hooks/useLogs";
+import { usePreference } from "../../../../hooks/usePreference";
+import { useDestroy } from "../../../../hooks/useTerraform";
+import Button from "../../../UserInterfaceComponents/Button";
 import {
   useDeleteWorkspace,
   useSelectWorkspace,
   useTerraformWorkspace,
-} from "../../../hooks/useWorkspace";
+} from "../../../../hooks/useWorkspace";
 import {
   useDeleteDeployment,
   useGetMyDeployments,
   useUpsertDeployment,
-} from "../../../hooks/useDeployments";
-import { WebSocketContext } from "../../../WebSocketContext";
+} from "../../../../hooks/useDeployments";
+import { WebSocketContext } from "../../../../WebSocketContext";
 import {
   calculateNewEpochTimeForDeployment,
   getSelectedDeployment,
-} from "../../../utils/helpers";
+} from "../../../../utils/helpers";
 
 type Props = {
   variant: ButtonVariant;
