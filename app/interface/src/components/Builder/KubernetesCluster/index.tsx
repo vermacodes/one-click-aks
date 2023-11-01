@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { TfvarKubernetesClusterType } from "../../../dataStructures";
 import { useActionStatus } from "../../../hooks/useActionStatus";
 import { useLab, useSetLab } from "../../../hooks/useLab";
@@ -10,8 +10,21 @@ import {
   defaultTfvarConfig,
 } from "../../../defaults";
 import { WebSocketContext } from "../../../WebSocketContext";
+import Version from "./Version";
+import PrivateCluster from "./PrivateCluster";
+import JumpServer from "../JumpServer";
+import AzureCNI from "./AzureCNI";
+import Calico from "./Calico";
+import NetworkPluginMode from "../NetworkProfile/NetworkPluginMode";
+import AutoScaling from "./AutoScaling";
+import UserDefinedRouting from "./UserDefinedRouting";
+import AppGateway from "./Addons/AppGateway";
+import MicrosoftDefender from "./Addons/MicrosoftDefender";
+import VirtualNode from "./Addons/VirtualNode";
+import HttpApplicationRouting from "./Addons/HttpApplicationRouting";
 
 export default function KubernetesCluster() {
+  const [versionMenu, setVersionMenu] = useState<boolean>(false);
   const {
     data: lab,
     isLoading: labIsLoading,
@@ -52,33 +65,78 @@ export default function KubernetesCluster() {
     }
   }
 
-  if (lab === undefined || lab.template === undefined) {
-    return <></>;
+  // if (lab === undefined || lab.template === undefined) {
+  //   return <></>;
+  // }
+  // var isClusterAdded: boolean = true;
+  // if (
+  //   lab === undefined ||
+  //   lab.template === undefined ||
+  //   lab.template.kubernetesClusters === undefined ||
+  //   lab.template.kubernetesClusters.length === 0
+  // ) {
+  //   isClusterAdded = false;
+  // }
+
+  if (
+    // labIsLoading ||
+    // labIsFetching ||
+    lab === undefined ||
+    lab.template === undefined ||
+    lab.template.kubernetesClusters === undefined ||
+    lab.template.kubernetesClusters.length === 0
+  ) {
+    return null;
   }
 
-  if (labIsLoading || labIsFetching) {
-    return (
-      <Checkbox
-        id="toggle-aks"
-        label="AKS"
-        disabled={true}
-        checked={false}
-        handleOnChange={handleOnChange}
-      />
-    );
-  }
+  // // if (
+  // //   lab === undefined ||
+  // //   lab.template === undefined ||
+  // //   lab.template.kubernetesClusters === undefined ||
+  // //   lab.template.kubernetesClusters.length === 0
+  // // ) {
+  // //   return (
+  // //     <>
+  // //       <Checkbox
+  // //         id="toggle-aks"
+  // //         label="AKS"
+  // //         checked={false}
+  // //         disabled={false}
+  // //         handleOnChange={handleOnChange}
+  // //       />
+  // //     </>
+  // //   );
+  // // }
 
   return (
-    <>
-      {lab && lab.template && (
-        <Checkbox
-          id="toggle-aks"
-          label="AKS"
-          checked={lab.template.kubernetesClusters.length > 0}
-          disabled={labIsLoading || labIsFetching}
-          handleOnChange={handleOnChange}
-        />
-      )}
-    </>
+    <div className={`my-4 flex flex-wrap gap-x-2 gap-y-2 border p-4 shadow`}>
+      <p className="text-lg font-bold">Kubernetes Cluster </p>
+      <div
+        className={`mt-4 flex w-full flex-col gap-x-2 gap-y-2 border p-4 shadow`}
+      >
+        <p className="text-lg font-bold">Features </p>
+        <div className={`mt-4 flex flex-wrap gap-x-2 gap-y-2`}>
+          <Version versionMenu={versionMenu} setVersionMenu={setVersionMenu} />
+          <PrivateCluster />
+          <JumpServer />
+          <AzureCNI />
+          <Calico />
+          <NetworkPluginMode />
+          <AutoScaling />
+          <UserDefinedRouting />
+        </div>
+      </div>
+      <div
+        className={`mt-4 flex w-full flex-col gap-x-2 gap-y-2 border p-4 shadow`}
+      >
+        <p className="text-lg font-bold">Addons </p>
+        <div className={`mt-4 flex flex-wrap gap-x-2 gap-y-2`}>
+          <AppGateway />
+          <MicrosoftDefender />
+          <VirtualNode />
+          <HttpApplicationRouting />
+        </div>
+      </div>
+    </div>
   );
 }

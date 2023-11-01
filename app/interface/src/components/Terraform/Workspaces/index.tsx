@@ -45,21 +45,26 @@ export default function Workspaces({}: WorkspaceProps) {
 
   function handleAddWorkspace() {
     if (lab !== undefined) {
-      asyncAddWorkspace({ name: newWorkSpaceName, selected: true }).then(() => {
-        setAdd(!add);
-        setNewWorkSpaceName("");
-        upsertDeployment({
-          deploymentId: "",
-          deploymentUserId: "",
-          deploymentWorkspace: newWorkSpaceName,
-          deploymentSubscriptionId: "",
-          deploymentAutoDelete: false,
-          deploymentAutoDeleteUnixTime: 0,
-          deploymentLifespan: 28800,
-          deploymentStatus: "Deployment Not Started",
-          deploymentLab: lab,
-        });
-      });
+      asyncAddWorkspace({ name: newWorkSpaceName, selected: true }).then(
+        (response) => {
+          console.log(
+            "add workspace response : " + JSON.stringify(response, null, 4)
+          );
+          setAdd(!add);
+          setNewWorkSpaceName("");
+          upsertDeployment({
+            deploymentId: "",
+            deploymentUserId: "",
+            deploymentWorkspace: newWorkSpaceName,
+            deploymentSubscriptionId: "",
+            deploymentAutoDelete: false,
+            deploymentAutoDeleteUnixTime: 0,
+            deploymentLifespan: 28800,
+            deploymentStatus: "Deployment Not Started",
+            deploymentLab: lab,
+          });
+        }
+      );
     }
     console.error("Lab is undefined");
   }

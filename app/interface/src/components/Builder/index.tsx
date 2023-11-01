@@ -27,6 +27,7 @@ import PrivateCluster from "./PrivateCluster";
 import UserDefinedRouting from "./UserDefinedRouting";
 import VirtualNode from "./Addons/VirtualNode";
 import HttpApplicationRouting from "./Addons/HttpApplicationRouting";
+import AddKubernetesCluster from "./KubernetesCluster/AddKubernetesCluster";
 
 export default function Builder() {
   const [versionMenu, setVersionMenu] = useState<boolean>(false);
@@ -46,28 +47,8 @@ export default function Builder() {
         <CustomVnet />
         <ContainerRegistry />
         <AzureFirewall />
+        <AddKubernetesCluster />
         <KubernetesCluster />
-      </div>
-      <div
-        className={`${
-          lab?.template?.kubernetesClusters.length === 0 && "hidden"
-        } mt-4 flex flex-wrap gap-x-2 gap-y-2`}
-      >
-        <KubernetesVersion
-          versionMenu={versionMenu}
-          setVersionMenu={setVersionMenu}
-        />
-        <PrivateCluster />
-        <JumpServer />
-        <AzureCNI />
-        <Calico />
-        <NetworkPluginMode />
-        <AutoScaling />
-        <UserDefinedRouting />
-        <AppGateway />
-        <MicrosoftDefender />
-        <VirtualNode />
-        <HttpApplicationRouting />
       </div>
       <div className={`mt-12 flex flex-wrap gap-2`}>
         <PlanButton variant="success-text" lab={lab}>
