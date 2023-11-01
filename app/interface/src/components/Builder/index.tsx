@@ -1,11 +1,5 @@
 import { useState } from "react";
-import {
-  FaArrowCircleLeft,
-  FaBackward,
-  FaReact,
-  FaRedo,
-  FaTimes,
-} from "react-icons/fa";
+import { FaRedo } from "react-icons/fa";
 import { Lab } from "../../dataStructures";
 import { useDeleteLab, useLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
@@ -34,7 +28,7 @@ import UserDefinedRouting from "./UserDefinedRouting";
 import VirtualNode from "./Addons/VirtualNode";
 import HttpApplicationRouting from "./Addons/HttpApplicationRouting";
 
-export default function Tfvar() {
+export default function Builder() {
   const [versionMenu, setVersionMenu] = useState<boolean>(false);
 
   const { mutate: setLogs } = useSetLogs();

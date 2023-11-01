@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import AccessControl from "../../pages/AccessControl";
 import Assignments from "../../pages/Assignments";
-import Builder from "../../pages/Builder";
+import LabBuilder from "../../pages/LabBuilder";
 import LabPage from "../../pages/LabPage";
 import Landing from "../../pages/Landing";
 import Learning from "../../pages/Learning";
@@ -39,7 +39,7 @@ export default function MainLayout({ darkMode, setDarkMode }: Props) {
       <div className="flex-1 overflow-auto bg-slate-200 px-4 scrollbar-thin  scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full dark:bg-slate-800 dark:scrollbar-thumb-slate-600">
         <Routes>
           <Route path="/" element={<Landing />} />
-          <Route path="/builder" element={<Builder />} />
+          <Route path="/builder" element={<LabBuilder />} />
           <Route path="/deployments" element={<Deployments />} />
           <Route path="/mylabs" element={<SavedLabs />} />
           <Route path="/publiclabs" element={<PublicLabs />} />

@@ -1,12 +1,12 @@
 import SelectedDeployment from "../../components/Deployments/SelectedDeployment";
 import Terminal from "../../components/Terminal";
-import Tfvar from "../../components/Tfvar";
+import Builder from "../../components/Builder";
 import { useLab } from "../../hooks/useLab";
 import { useServerStatus } from "../../hooks/useServerStatus";
 import PageLayout from "../../layouts/PageLayout";
 import ServerError from "../ServerError";
 
-export default function Builder() {
+export default function LabBuilder() {
   const { data: serverStatus } = useServerStatus();
   const { data: lab } = useLab();
 
@@ -31,7 +31,7 @@ export default function Builder() {
       }
     >
       <SelectedDeployment />
-      <Tfvar />
+      <Builder />
       <Terminal />
     </PageLayout>
   );
