@@ -84,8 +84,8 @@ export default function ServerEndpoint({}: Props) {
     setBaseUrl(baseUrl);
     window.location.reload();
     resetServerCache().finally(() => {
-      const queryClinet = useQueryClient();
-      queryClinet.invalidateQueries();
+      const queryClient = useQueryClient();
+      queryClient.invalidateQueries();
     });
   }
 
@@ -95,8 +95,8 @@ export default function ServerEndpoint({}: Props) {
         <div className="flex w-full flex-col gap-2">
           <h3 className="text-xl">Server Endpoint</h3>
           <p className="text-xs">
-            Server Endpoint. You probably dont want to edit this unless you know
-            what you are doing. But, if you know, you know. Go ahead.
+            Server Endpoint. You probably don't want to edit this unless you
+            know what you are doing. But, if you know, you know. Go ahead.
           </p>
         </div>
 
