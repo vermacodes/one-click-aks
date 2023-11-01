@@ -1,6 +1,6 @@
 import SelectedDeployment from "../../components/Deployments/SelectedDeployment";
 import Terminal from "../../components/Terminal";
-import Builder from "../../components/Builder";
+import Builder from "../../components/Builder/Builder";
 import { useLab } from "../../hooks/useLab";
 import { useServerStatus } from "../../hooks/useServerStatus";
 import PageLayout from "../../layouts/PageLayout";

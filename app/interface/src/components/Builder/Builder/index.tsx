@@ -1,33 +1,21 @@
 import { useState } from "react";
 import { FaRedo } from "react-icons/fa";
-import { Lab } from "../../dataStructures";
-import { useDeleteLab, useLab } from "../../hooks/useLab";
-import { useSetLogs } from "../../hooks/useLogs";
-import CodeEditor from "../../modals/CodeEditorModal";
-import LabBuilder from "../../modals/SaveLabModal";
-import Button from "../UserInterfaceComponents/Button";
-import ExportLabInBuilder from "../Lab/Export/ExportLabInBuilder";
-import ImportLabToBuilder from "../Lab/Import/ImportLabToBuilder";
-import ApplyButton from "../Terraform/ActionButtons/ApplyButton";
-import DestroyButton from "../Terraform/ActionButtons/DestroyButton";
-import PlanButton from "../Terraform/ActionButtons/PlanButton";
-import AppGateway from "./Addons/AppGateway";
-import MicrosoftDefender from "./Addons/MicrosoftDefender";
-import AutoScaling from "./AutoScaling";
-import AzureCNI from "./AzureCNI";
-import AzureFirewall from "./AzureFirewall";
-import Calico from "./Calico";
-import ContainerRegistry from "./ContainerRegistry";
-import CustomVnet from "./CustomVnet";
-import JumpServer from "./JumpServer";
-import KubernetesCluster from "./KubernetesCluster";
-import KubernetesVersion from "./KubernetesVersion";
-import NetworkPluginMode from "./NetworkProfile/NetworkPluginMode";
-import PrivateCluster from "./PrivateCluster";
-import UserDefinedRouting from "./UserDefinedRouting";
-import VirtualNode from "./Addons/VirtualNode";
-import HttpApplicationRouting from "./Addons/HttpApplicationRouting";
-import AddKubernetesCluster from "./KubernetesCluster/AddKubernetesCluster";
+import { Lab } from "../../../dataStructures";
+import { useDeleteLab, useLab } from "../../../hooks/useLab";
+import { useSetLogs } from "../../../hooks/useLogs";
+import CodeEditor from "../../../modals/CodeEditorModal";
+import LabBuilder from "../../../modals/SaveLabModal";
+import Button from "../../UserInterfaceComponents/Button";
+import ExportLabInBuilder from "../../Lab/Export/ExportLabInBuilder";
+import ImportLabToBuilder from "../../Lab/Import/ImportLabToBuilder";
+import ApplyButton from "../../Terraform/ActionButtons/ApplyButton";
+import DestroyButton from "../../Terraform/ActionButtons/DestroyButton";
+import PlanButton from "../../Terraform/ActionButtons/PlanButton";
+import AzureFirewall from "../AzureFirewall";
+import ContainerRegistry from "../ContainerRegistry";
+import VirtualNetwork from "../VirtualNetwork";
+import KubernetesCluster from "../KubernetesCluster/KubernetesCluster";
+import AddKubernetesCluster from "../KubernetesCluster/AddKubernetesCluster";
 
 export default function Builder() {
   const [versionMenu, setVersionMenu] = useState<boolean>(false);
@@ -44,7 +32,7 @@ export default function Builder() {
       className={`rounded bg-slate-50 p-3 outline-1 outline-sky-500 hover:outline dark:bg-slate-900`}
     >
       <div className="flex flex-wrap gap-y-2 gap-x-2">
-        <CustomVnet />
+        <VirtualNetwork />
         <ContainerRegistry />
         <AzureFirewall />
         <AddKubernetesCluster />

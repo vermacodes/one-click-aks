@@ -1,12 +1,11 @@
 import { useContext } from "react";
-import { useActionStatus } from "../../hooks/useActionStatus";
-import { useLab, useSetLab } from "../../hooks/useLab";
-import { useSetLogs } from "../../hooks/useLogs";
-import Checkbox from "../UserInterfaceComponents/Checkbox";
-import { defaultTfvarConfig } from "../../defaults";
-import { WebSocketContext } from "../../WebSocketContext";
+import { useLab, useSetLab } from "../../../hooks/useLab";
+import { useSetLogs } from "../../../hooks/useLogs";
+import Checkbox from "../../UserInterfaceComponents/Checkbox";
+import { defaultTfvarConfig } from "../../../defaults";
+import { WebSocketContext } from "../../../WebSocketContext";
 
-export default function JumpServer() {
+export default function VirtualMachine() {
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const {

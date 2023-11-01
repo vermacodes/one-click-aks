@@ -1,27 +1,22 @@
 import { useContext, useState } from "react";
-import { TfvarKubernetesClusterType } from "../../../dataStructures";
-import { useActionStatus } from "../../../hooks/useActionStatus";
-import { useLab, useSetLab } from "../../../hooks/useLab";
-import { useSetLogs } from "../../../hooks/useLogs";
-import { useGetOrchestrators } from "../../../hooks/useOrchestrators";
-import Checkbox from "../../UserInterfaceComponents/Checkbox";
-import {
-  defaultKubernetesCluster,
-  defaultTfvarConfig,
-} from "../../../defaults";
-import { WebSocketContext } from "../../../WebSocketContext";
-import Version from "./Version";
-import PrivateCluster from "./PrivateCluster";
-import JumpServer from "../JumpServer";
-import AzureCNI from "./AzureCNI";
-import Calico from "./Calico";
-import NetworkPluginMode from "../NetworkProfile/NetworkPluginMode";
-import AutoScaling from "./AutoScaling";
-import UserDefinedRouting from "./UserDefinedRouting";
-import AppGateway from "./Addons/AppGateway";
-import MicrosoftDefender from "./Addons/MicrosoftDefender";
-import VirtualNode from "./Addons/VirtualNode";
-import HttpApplicationRouting from "./Addons/HttpApplicationRouting";
+import { TfvarKubernetesClusterType } from "../../../../dataStructures";
+import { useLab, useSetLab } from "../../../../hooks/useLab";
+import { useSetLogs } from "../../../../hooks/useLogs";
+import { useGetOrchestrators } from "../../../../hooks/useOrchestrators";
+import { defaultKubernetesCluster } from "../../../../defaults";
+import { WebSocketContext } from "../../../../WebSocketContext";
+import Version from "../Version";
+import PrivateCluster from "../PrivateCluster";
+import VirtualMachine from "../../VirtualMachine";
+import AzureCNI from "../AzureCNI";
+import Calico from "../Calico";
+import NetworkPluginMode from "../../NetworkProfile/NetworkPluginMode";
+import AutoScaling from "../AutoScaling";
+import UserDefinedRouting from "../UserDefinedRouting";
+import AppGateway from "../Addons/AppGateway";
+import MicrosoftDefender from "../Addons/MicrosoftDefender";
+import VirtualNode from "../Addons/VirtualNode";
+import HttpApplicationRouting from "../Addons/HttpApplicationRouting";
 
 export default function KubernetesCluster() {
   const [versionMenu, setVersionMenu] = useState<boolean>(false);
@@ -118,7 +113,7 @@ export default function KubernetesCluster() {
         <div className={`mt-4 flex flex-wrap gap-x-2 gap-y-2`}>
           <Version versionMenu={versionMenu} setVersionMenu={setVersionMenu} />
           <PrivateCluster />
-          <JumpServer />
+          <VirtualMachine />
           <AzureCNI />
           <Calico />
           <NetworkPluginMode />

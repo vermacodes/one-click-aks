@@ -1,10 +1,9 @@
 import { useContext } from "react";
-import { useActionStatus } from "../../hooks/useActionStatus";
-import { useLab, useSetLab } from "../../hooks/useLab";
-import { useSetLogs } from "../../hooks/useLogs";
-import Checkbox from "../UserInterfaceComponents/Checkbox";
-import { defaultContainerRegistry } from "../../defaults";
-import { WebSocketContext } from "../../WebSocketContext";
+import { useLab, useSetLab } from "../../../hooks/useLab";
+import { useSetLogs } from "../../../hooks/useLogs";
+import Checkbox from "../../UserInterfaceComponents/Checkbox";
+import { defaultContainerRegistry } from "../../../defaults";
+import { WebSocketContext } from "../../../WebSocketContext";
 
 export default function ContainerRegistry() {
   const { actionStatus } = useContext(WebSocketContext);
