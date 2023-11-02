@@ -61,6 +61,9 @@ export default function Button({
       } ${
         variant === "primary-icon" &&
         " border-1 rounded-full border-slate-50 py-3 hover:bg-sky-500 hover:bg-opacity-20 dark:border-slate-900"
+      } ${
+        variant === "secondary-icon" &&
+        " border-1 rounded-full border-slate-50 py-3 hover:bg-slate-500 hover:bg-opacity-20 dark:border-slate-900"
       }`}
       disabled={disabled}
       onClick={onClick}

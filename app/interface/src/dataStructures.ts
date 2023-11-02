@@ -274,7 +274,8 @@ export type ButtonVariant =
   | "secondary-text"
   | "danger-text"
   | "success-text"
-  | "primary-icon";
+  | "primary-icon"
+  | "secondary-icon";
 
 export type Roles = {
   userPrincipal: string;

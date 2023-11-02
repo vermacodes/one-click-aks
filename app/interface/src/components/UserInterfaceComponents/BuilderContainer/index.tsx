@@ -11,12 +11,12 @@ export default function BuilderContainer({ title, children }: Props) {
   const [open, setOpen] = useState<boolean>(true);
   return (
     <div
-      className={`mt-4 flex w-full flex-col gap-x-2 gap-y-2 rounded border p-4 shadow-sm dark:border-slate-700 dark:shadow-slate-700 `}
+      className={`mt-4 flex w-full flex-col rounded border p-2 shadow-sm dark:border-slate-700 dark:shadow-slate-700 `}
     >
-      <div className="flex justify-between p-1">
+      <div className="flex items-center justify-between">
         <p className="text-lg font-bold">{title}</p>
         <div className={`${!open && "rotate-180"} transition-all duration-500`}>
-          <Button variant="primary-icon" onClick={() => setOpen(!open)}>
+          <Button variant="secondary-icon" onClick={() => setOpen(!open)}>
             <FaChevronUp />
           </Button>
         </div>
