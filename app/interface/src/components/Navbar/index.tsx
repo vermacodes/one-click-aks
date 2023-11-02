@@ -200,7 +200,7 @@ function FixedPages({ darkMode, setDarkMode }: FixedPagesProps) {
         </li>
         <li>
           <a target="_blank" href="https://forms.office.com/r/R513F2YfXE">
-            <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-lg hover:bg-slate-200 dark:hover:bg-slate-800">
+            <button className="flex h-full w-full items-center justify-start gap-2 rounded bg-sky-500 bg-opacity-10 py-3 px-4 text-left text-lg hover:bg-slate-200 dark:hover:bg-slate-800">
               <span>
                 <FaComments />
               </span>
