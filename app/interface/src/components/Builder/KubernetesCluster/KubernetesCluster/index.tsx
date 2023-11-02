@@ -20,11 +20,7 @@ import HttpApplicationRouting from "../Addons/HttpApplicationRouting";
 
 export default function KubernetesCluster() {
   const [versionMenu, setVersionMenu] = useState<boolean>(false);
-  const {
-    data: lab,
-    isLoading: labIsLoading,
-    isFetching: labIsFetching,
-  } = useLab();
+  const { data: lab } = useLab();
   const { mutate: setLab } = useSetLab();
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
@@ -60,22 +56,7 @@ export default function KubernetesCluster() {
     }
   }
 
-  // if (lab === undefined || lab.template === undefined) {
-  //   return <></>;
-  // }
-  // var isClusterAdded: boolean = true;
-  // if (
-  //   lab === undefined ||
-  //   lab.template === undefined ||
-  //   lab.template.kubernetesClusters === undefined ||
-  //   lab.template.kubernetesClusters.length === 0
-  // ) {
-  //   isClusterAdded = false;
-  // }
-
   if (
-    // labIsLoading ||
-    // labIsFetching ||
     lab === undefined ||
     lab.template === undefined ||
     lab.template.kubernetesClusters === undefined ||
@@ -84,30 +65,13 @@ export default function KubernetesCluster() {
     return null;
   }
 
-  // // if (
-  // //   lab === undefined ||
-  // //   lab.template === undefined ||
-  // //   lab.template.kubernetesClusters === undefined ||
-  // //   lab.template.kubernetesClusters.length === 0
-  // // ) {
-  // //   return (
-  // //     <>
-  // //       <Checkbox
-  // //         id="toggle-aks"
-  // //         label="AKS"
-  // //         checked={false}
-  // //         disabled={false}
-  // //         handleOnChange={handleOnChange}
-  // //       />
-  // //     </>
-  // //   );
-  // // }
-
   return (
-    <div className={`my-4 flex flex-wrap gap-x-2 gap-y-2 border p-4 shadow`}>
+    <div
+      className={`mt-4 flex w-full flex-col gap-x-2 gap-y-2 border p-4 shadow dark:border-slate-800 dark:shadow-slate-800`}
+    >
       <p className="text-lg font-bold">Kubernetes Cluster </p>
       <div
-        className={`mt-4 flex w-full flex-col gap-x-2 gap-y-2 border p-4 shadow`}
+        className={`mt-4 flex w-full flex-col gap-x-2 gap-y-2 border p-4 shadow dark:border-slate-800 dark:shadow-slate-800`}
       >
         <p className="text-lg font-bold">Features </p>
         <div className={`mt-4 flex flex-wrap gap-x-2 gap-y-2`}>
@@ -122,7 +86,7 @@ export default function KubernetesCluster() {
         </div>
       </div>
       <div
-        className={`mt-4 flex w-full flex-col gap-x-2 gap-y-2 border p-4 shadow`}
+        className={`mt-4 flex w-full flex-col gap-x-2 gap-y-2 border p-4 shadow dark:border-slate-800 dark:shadow-slate-800`}
       >
         <p className="text-lg font-bold">Addons </p>
         <div className={`mt-4 flex flex-wrap gap-x-2 gap-y-2`}>

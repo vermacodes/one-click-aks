@@ -45,7 +45,7 @@ export default function MainLayout({ darkMode, setDarkMode }: Props) {
           <Route path="/publiclabs" element={<PublicLabs />} />
           <Route path="/lab/:type/:id" element={<LabPage />} />
           <Route path="/learning" element={<Learning />} />
-          <Route path="/redinesslabs" element={<ReadinessLabs />} />
+          <Route path="/readinesslabs" element={<ReadinessLabs />} />
           <Route path="/mockcases" element={<MockCases />} />
           <Route path="/assignments" element={<Assignments />} />
           <Route path="/settings" element={<Settings />} />

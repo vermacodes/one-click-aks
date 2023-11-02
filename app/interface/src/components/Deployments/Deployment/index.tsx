@@ -4,6 +4,7 @@ import AutoDestroySwitch from "../AutoDestroySwitch";
 import DestroyTime from "../DestroyTime";
 import DeploymentLifespan from "../DeploymentLifespan";
 import SelectDeployment from "../SelectDeployment";
+import DeploymentStatus from "../DeploymentStatus";
 
 type Props = {
   deployment: DeploymentType;
@@ -27,7 +28,7 @@ export default function Deployment({ deployment, selectedDeployment }: Props) {
           </h1>
         </div>
         <div className="flex flex-wrap items-center gap-y-2 gap-x-2">
-          <p>{deployment.deploymentStatus}</p>
+          <DeploymentStatus deployment={deployment} />
           <AutoDestroySwitch
             deployment={deployment}
             disabled={false}

@@ -28,9 +28,15 @@ function App() {
 
     // Action Status Socket. Use baseUrl from localStorage.
     // remove http from the beginning and replace with ws
+    // add leading slash if not present
+    let baseUrl = localStorage.getItem("baseUrl")?.replace("http", "ws");
+    if (baseUrl && !baseUrl.endsWith("/")) {
+      baseUrl += "/";
+    }
     const actionStatusWs = new ReconnectingWebSocket(
-      localStorage.getItem("baseUrl")?.replace("http", "ws") + "actionstatusws"
+      baseUrl + "actionstatusws"
     );
+
     actionStatusWs.onmessage = (event: any) => {
       setActionStatus(JSON.parse(event.data));
       queryClient.invalidateQueries("list-deployments");
@@ -39,11 +45,7 @@ function App() {
       queryClient.invalidateQueries("get-resources");
     };
 
-    // Log Stream Socket. Use baseUrl from localStorage.
-    // remove http from the beginning and replace with ws
-    const logStreamWs = new ReconnectingWebSocket(
-      localStorage.getItem("baseUrl")?.replace("http", "ws") + "logsws"
-    );
+    const logStreamWs = new ReconnectingWebSocket(baseUrl + "logsws");
     logStreamWs.onmessage = (event: any) => {
       setLogStream(JSON.parse(event.data));
     };

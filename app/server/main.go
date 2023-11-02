@@ -50,7 +50,7 @@ func main() {
 
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{"http://localhost:3000", "http://localhost:5173", "https://ashisverma.z13.web.core.windows.net", "https://actlabs.z13.web.core.windows.net", "https://actlabsbeta.z13.web.core.windows.net", "https://actlabs.azureedge.net", "https://*.azurewebsites.net"}
-	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}
+	config.AllowMethods = []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"}
 	config.AllowHeaders = []string{"Authorization", "Content-Type"}
 
 	router.Use(cors.New(config))
@@ -59,17 +59,17 @@ func main() {
 	actionStatusRouter := router.Group("/")
 	authWithActionRouter := authRouter.Group("/")
 
-	// TODO: We are in service dependency hell down here. Should we use HTTP instead? It will but may not add noticiable latency.
+	// TODO: We are in service dependency hell down here. Should we use HTTP instead? It will but may not add noticeable latency.
 	logStreamRepository := repository.NewLogStreamRepository()
 	logStreamService := service.NewLogStreamService(logStreamRepository)
 	handler.NewLogStreamHandler(router, logStreamService)
 
-	loggingRespoitory := repository.NewLoggingRepository()
-	loggingService := service.NewLoggingService(loggingRespoitory)
+	loggingRepository := repository.NewLoggingRepository()
+	loggingService := service.NewLoggingService(loggingRepository)
 
 	actionStatusRepository := repository.NewActionStatusRepository()
 	actionStatusService := service.NewActionStatusService(actionStatusRepository)
-	handler.NewActionStatusHanlder(router, actionStatusService)
+	handler.NewActionStatusHandler(router, actionStatusService)
 
 	actionStatusRouter.Use(middleware.ActionStatusMiddleware(actionStatusService))
 
@@ -85,7 +85,7 @@ func main() {
 	authWithActionRouter.Use(middleware.ActionStatusMiddleware(actionStatusService))
 
 	handler.NewAuthHandler(authRouter, authService)
-	handler.NewAuthWithActinoStatusHandler(authWithActionRouter, authService)
+	handler.NewAuthWithActionStatusHandler(authWithActionRouter, authService)
 
 	storageAccountRepository := repository.NewStorageAccountRepository()
 	storageAccountService := service.NewStorageAccountService(storageAccountRepository)
@@ -93,9 +93,8 @@ func main() {
 	handler.NewStorageAccountWithActionStatusHandler(authWithActionRouter, storageAccountService)
 
 	workspaceRepository := repository.NewTfWorkspaceRepository()
-	workspaceService := service.NewWorksapceService(workspaceRepository, storageAccountService, actionStatusService)
+	workspaceService := service.NewWorkspaceService(workspaceRepository, storageAccountService, actionStatusService)
 	handler.NewWorkspaceHandler(authRouter, workspaceService)
-	handler.NewWorkspaceWithActionStatusHandler(authWithActionRouter, workspaceService)
 
 	prefRepository := repository.NewPreferenceRepository()
 	prefService := service.NewPreferenceService(prefRepository, storageAccountService)
@@ -105,7 +104,7 @@ func main() {
 	kVersionService := service.NewKVersionService(kVersionRepository, prefService)
 	handler.NewKVersionHandler(authRouter, kVersionService)
 
-	labRepository := repository.NewLabRespository()
+	labRepository := repository.NewLabRepository()
 	labService := service.NewLabService(labRepository, kVersionService, storageAccountService, authService)
 	handler.NewLabHandler(authRouter, labService)
 

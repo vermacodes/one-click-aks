@@ -10,10 +10,10 @@ import (
 	"golang.org/x/exp/slog"
 )
 
-type loggingRespoitory struct{}
+type loggingRepository struct{}
 
-func NewLoggingRepository() entity.LoggingRespoitory {
-	return &loggingRespoitory{}
+func NewLoggingRepository() entity.LoggingRepository {
+	return &loggingRepository{}
 }
 
 func getServiceClient() *aztables.ServiceClient {
@@ -26,7 +26,7 @@ func getServiceClient() *aztables.ServiceClient {
 	return serviceClient
 }
 
-func (l *loggingRespoitory) LoginRecord(user entity.User) error {
+func (l *loggingRepository) LoginRecord(user entity.User) error {
 	client := getServiceClient().NewClient("LoginRecords")
 
 	loginRecord := entity.LoginRecord{
@@ -51,7 +51,7 @@ func (l *loggingRespoitory) LoginRecord(user entity.User) error {
 	return nil
 }
 
-func (l *loggingRespoitory) PlanRecord(user entity.User, lab entity.LabType) error {
+func (l *loggingRepository) PlanRecord(user entity.User, lab entity.LabType) error {
 
 	client := getServiceClient().NewClient("Plans")
 
@@ -84,7 +84,7 @@ func (l *loggingRespoitory) PlanRecord(user entity.User, lab entity.LabType) err
 	return nil
 }
 
-func (l *loggingRespoitory) DeploymentRecord(user entity.User, lab entity.LabType) error {
+func (l *loggingRepository) DeploymentRecord(user entity.User, lab entity.LabType) error {
 
 	client := getServiceClient().NewClient("Deployments")
 

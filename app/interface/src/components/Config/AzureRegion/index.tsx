@@ -56,7 +56,7 @@ export default function AzureRegion({ regionEdit, setRegionEdit }: Props) {
   return (
     <SettingsItemLayout>
       <div
-        className={`w-100 gap-x-reverse flex items-center justify-between gap-x-2 py-2 ${
+        className={`gap-x-reverse flex items-center justify-between gap-x-2 py-2 ${
           (fetchingStorageAccount ||
             storageAccount === undefined ||
             storageAccount.storageAccount.name === "") &&

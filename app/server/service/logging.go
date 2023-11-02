@@ -3,23 +3,23 @@ package service
 import "github.com/vermacodes/one-click-aks/app/server/entity"
 
 type loggingService struct {
-	loggingRespository entity.LoggingRespoitory
+	loggingRepository entity.LoggingRepository
 }
 
-func NewLoggingService(loggingRespository entity.LoggingRespoitory) entity.LoggingService {
+func NewLoggingService(loggingRepository entity.LoggingRepository) entity.LoggingService {
 	return &loggingService{
-		loggingRespository: loggingRespository,
+		loggingRepository: loggingRepository,
 	}
 }
 
 func (l *loggingService) LoginRecord(user entity.User) error {
-	return l.loggingRespository.LoginRecord(user)
+	return l.loggingRepository.LoginRecord(user)
 }
 
 func (l *loggingService) PlanRecord(user entity.User, lab entity.LabType) error {
-	return l.loggingRespository.PlanRecord(user, lab)
+	return l.loggingRepository.PlanRecord(user, lab)
 }
 
 func (l *loggingService) DeploymentRecord(user entity.User, lab entity.LabType) error {
-	return l.loggingRespository.DeploymentRecord(user, lab)
+	return l.loggingRepository.DeploymentRecord(user, lab)
 }

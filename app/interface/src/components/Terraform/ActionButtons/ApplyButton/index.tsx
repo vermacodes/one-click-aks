@@ -7,7 +7,7 @@ import { useApply } from "../../../../hooks/useTerraform";
 import Button from "../../../UserInterfaceComponents/Button";
 import {
   useGetMyDeployments,
-  useUpsertDeployment,
+  usePatchDeployment,
 } from "../../../../hooks/useDeployments";
 import { useTerraformWorkspace } from "../../../../hooks/useWorkspace";
 import {
@@ -15,6 +15,7 @@ import {
   getSelectedDeployment,
 } from "../../../../utils/helpers";
 import { WebSocketContext } from "../../../../WebSocketContext";
+import axios from "axios";
 
 type Props = {
   variant: ButtonVariant;
@@ -29,14 +30,14 @@ export default function ApplyButton({ variant, children, lab }: Props) {
   const { data: preference } = usePreference();
   const { data: deployments } = useGetMyDeployments();
   const { data: terraformWorkspaces } = useTerraformWorkspace();
-  const { mutate: upsertDeployment } = useUpsertDeployment();
+  const { mutate: patchDeployment } = usePatchDeployment();
 
   function updateDeploymentStatus(
     deployment: DeploymentType | undefined,
     status: DeploymentType["deploymentStatus"]
   ) {
     if (deployment !== undefined) {
-      upsertDeployment({
+      patchDeployment({
         ...deployment,
         deploymentStatus: status,
         deploymentAutoDeleteUnixTime:
@@ -65,13 +66,13 @@ export default function ApplyButton({ variant, children, lab }: Props) {
     updateDeploymentStatus(deployment, "Deployment In Progress");
 
     // apply terraform
-    applyAsync(lab)
-      .then(() => {
-        updateDeploymentStatus(deployment, "Deployment Completed");
-      })
-      .catch(() => {
+    applyAsync(lab).then((response) => {
+      if (axios.isAxiosError(response)) {
         updateDeploymentStatus(deployment, "Deployment Failed");
-      });
+        return;
+      }
+      updateDeploymentStatus(deployment, "Deployment Completed");
+    });
   }
 
   return (

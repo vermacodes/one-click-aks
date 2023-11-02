@@ -1,18 +1,12 @@
 import { useContext, useState } from "react";
 import Button from "../../UserInterfaceComponents/Button";
 import { MdClose } from "react-icons/md";
+import { useTerraformWorkspace } from "../../../hooks/useWorkspace";
 import {
-  useAddWorkspace,
-  useTerraformWorkspace,
-} from "../../../hooks/useWorkspace";
-import {
+  useAddDeployment,
   useGetMyDeployments,
-  useUpsertDeployment,
 } from "../../../hooks/useDeployments";
-import {
-  useActionStatus,
-  useSetActionStatus,
-} from "../../../hooks/useActionStatus";
+import { useSetActionStatus } from "../../../hooks/useActionStatus";
 import { useLab } from "../../../hooks/useLab";
 import { ButtonVariant } from "../../../dataStructures";
 import { WebSocketContext } from "../../../WebSocketContext";
@@ -46,12 +40,11 @@ type ModalProps = {
 
 function Modal({ showModal, setShowModal }: ModalProps) {
   const [newWorkSpaceName, setNewWorkSpaceName] = useState<string>("");
-  const { mutateAsync: asyncAddWorkspace } = useAddWorkspace();
   const { isFetching: fetchingWorkspaces, isLoading: loadingWorkspaces } =
     useTerraformWorkspace();
   const { isFetching: fetchingDeployments, isLoading: loadingDeployments } =
     useGetMyDeployments();
-  const { mutateAsync: upsertDeployment } = useUpsertDeployment();
+  const { mutateAsync: addDeployment } = useAddDeployment();
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setActionStatus } = useSetActionStatus();
   const { data: lab } = useLab();
@@ -63,29 +56,26 @@ function Modal({ showModal, setShowModal }: ModalProps) {
   }
 
   function handleAddWorkspace() {
-    if (lab !== undefined) {
-      setActionStatus({ inProgress: true });
-      asyncAddWorkspace({ name: newWorkSpaceName, selected: true }).then(() => {
-        setActionStatus({ inProgress: false });
-        setNewWorkSpaceName("");
-        upsertDeployment({
-          deploymentId: "",
-          deploymentUserId: "",
-          deploymentWorkspace: newWorkSpaceName,
-          deploymentSubscriptionId: "",
-          deploymentAutoDelete: false,
-          deploymentAutoDeleteUnixTime: 0,
-          deploymentLifespan: 28800,
-          deploymentStatus: "Deployment Not Started",
-          deploymentLab: lab,
-        }).finally(() => {
-          setTimeout(() => {
-            setShowModal(false);
-          }, 3000);
-        });
-      });
+    if (lab === undefined) {
+      console.error("Lab is undefined");
+      setShowModal(false);
+      return;
     }
-    console.error("Lab is undefined");
+    addDeployment({
+      deploymentId: "",
+      deploymentUserId: "",
+      deploymentWorkspace: newWorkSpaceName,
+      deploymentSubscriptionId: "",
+      deploymentAutoDelete: false,
+      deploymentAutoDeleteUnixTime: 0,
+      deploymentLifespan: 28800,
+      deploymentStatus: "Deployment Not Started",
+      deploymentLab: lab,
+    }).finally(() => {
+      setTimeout(() => {
+        setShowModal(false);
+      }, 3000);
+    });
   }
 
   if (!showModal) return null;
@@ -98,7 +88,7 @@ function Modal({ showModal, setShowModal }: ModalProps) {
       }}
     >
       <div
-        className="my-20 h-1/3 w-1/3 space-y-2 divide-y divide-slate-300 overflow-y-auto rounded bg-slate-100 p-5 overflow-x-hidden scrollbar-thin  scrollbar-thumb-slate-400 dark:divide-slate-700 dark:bg-slate-900 dark:scrollbar-thumb-slate-600"
+        className="my-20 h-1/3 w-1/3 space-y-2 divide-y divide-slate-300 overflow-y-auto overflow-x-hidden rounded bg-slate-100 p-5 scrollbar-thin  scrollbar-thumb-slate-400 dark:divide-slate-700 dark:bg-slate-900 dark:scrollbar-thumb-slate-600"
         onClick={(e) => {
           e.stopPropagation();
         }}

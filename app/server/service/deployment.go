@@ -78,7 +78,7 @@ func (d *DeploymentService) GetMyDeployments(userId string) ([]entity.Deployment
 			DeploymentAutoDeleteUnixTime: 0,
 		}
 
-		if err := d.deploymentRepository.AddDeployment(deployment); err != nil {
+		if err := d.deploymentRepository.UpsertDeployment(deployment); err != nil {
 			return nil, err
 		}
 
@@ -92,18 +92,23 @@ func (d *DeploymentService) GetDeployment(userId string, workspace string, subsc
 	return d.deploymentRepository.GetDeployment(userId, workspace, subscriptionId)
 }
 
-func (d *DeploymentService) AddDeployment(deployment entity.Deployment) error {
-	activeAccount, err := d.authService.GetActiveAccount()
-	if err != nil {
-		slog.Error("not able to get active account", err)
+func (d *DeploymentService) SelectDeployment(deployment entity.Deployment) error {
+
+	// check if workspace exists, if not add it.
+	if err := checkAndAddWorkspace(d, &entity.Deployment{DeploymentWorkspace: deployment.DeploymentWorkspace}); err != nil {
 		return err
 	}
-	deployment.DeploymentSubscriptionId = activeAccount.Id
 
-	return d.deploymentRepository.AddDeployment(deployment)
+	// set workspace as selected.
+	if err := d.workspaceService.Select(entity.Workspace{Name: deployment.DeploymentWorkspace, Selected: true}); err != nil {
+		slog.Error("not able to select workspace", err)
+		return err
+	}
+
+	return nil
 }
 
-func (d *DeploymentService) UpdateDeployment(deployment entity.Deployment) error {
+func (d *DeploymentService) UpsertDeployment(deployment entity.Deployment) error {
 	activeAccount, err := d.authService.GetActiveAccount()
 	if err != nil {
 		slog.Error("not able to get active account", err)
@@ -111,7 +116,12 @@ func (d *DeploymentService) UpdateDeployment(deployment entity.Deployment) error
 	}
 	deployment.DeploymentSubscriptionId = activeAccount.Id
 
-	return d.deploymentRepository.UpdateDeployment(deployment)
+	// check if workspace exists, if not add it.
+	if err := checkAndAddWorkspace(d, &deployment); err != nil {
+		return err
+	}
+
+	return d.deploymentRepository.UpsertDeployment(deployment)
 }
 
 func (d *DeploymentService) DeleteDeployment(userId string, workspace string, subscriptionId string) error {
@@ -119,6 +129,18 @@ func (d *DeploymentService) DeleteDeployment(userId string, workspace string, su
 	// default deployment cant be deleted.
 	if workspace == "default" {
 		return nil
+	}
+
+	// select default workspace
+	if err := d.workspaceService.Select(entity.Workspace{Name: "default", Selected: true}); err != nil {
+		slog.Error("not able to select workspace", err)
+		return err
+	}
+
+	// delete workspace
+	if err := d.workspaceService.Delete(entity.Workspace{Name: workspace}); err != nil {
+		slog.Error("not able to delete workspace", err)
+		return err
 	}
 
 	return d.deploymentRepository.DeleteDeployment(userId, workspace, subscriptionId)
@@ -170,7 +192,7 @@ func (d *DeploymentService) PollAndDeleteDeployments(interval time.Duration) err
 
 			// Update deployment status to deleting.
 			deployment.DeploymentStatus = "Destroying Resources"
-			if err := d.UpdateDeployment(deployment); err != nil {
+			if err := d.UpsertDeployment(deployment); err != nil {
 				slog.Error("not able to update deployment", err)
 				return err
 			}
@@ -184,7 +206,7 @@ func (d *DeploymentService) PollAndDeleteDeployments(interval time.Duration) err
 
 				// Update deployment status to failed.
 				deployment.DeploymentStatus = "Deployment Failed"
-				if err := d.UpdateDeployment(deployment); err != nil {
+				if err := d.UpsertDeployment(deployment); err != nil {
 					slog.Error("not able to update deployment", err)
 				}
 
@@ -198,7 +220,7 @@ func (d *DeploymentService) PollAndDeleteDeployments(interval time.Duration) err
 
 				// Update deployment status to failed.
 				deployment.DeploymentStatus = "Deployment Failed"
-				if err := d.UpdateDeployment(deployment); err != nil {
+				if err := d.UpsertDeployment(deployment); err != nil {
 					slog.Error("not able to update deployment", err)
 				}
 
@@ -208,7 +230,7 @@ func (d *DeploymentService) PollAndDeleteDeployments(interval time.Duration) err
 
 			// Update deployment status to deleting.
 			deployment.DeploymentStatus = "Resources Destroyed"
-			if err := d.UpdateDeployment(deployment); err != nil {
+			if err := d.UpsertDeployment(deployment); err != nil {
 				slog.Error("not able to update deployment", err)
 				d.actionStatusService.SetActionEnd()
 				return err
@@ -264,5 +286,32 @@ func (d *DeploymentService) ChangeTerraformWorkspace(deployment entity.Deploymen
 			return err
 		}
 	}
+	return nil
+}
+
+func checkAndAddWorkspace(d *DeploymentService, deployment *entity.Deployment) error {
+	// check if workspace exists, if not add it.
+	workspaces, err := d.workspaceService.List()
+	if err != nil {
+		slog.Error("not able to get workspaces", err)
+		return err
+	}
+
+	workspaceExists := false
+	for _, workspace := range workspaces {
+		if workspace.Name == deployment.DeploymentWorkspace {
+			workspaceExists = true
+			break
+		}
+	}
+
+	if !workspaceExists {
+		slog.Info("adding workspace " + deployment.DeploymentWorkspace)
+		if err := d.workspaceService.Add(entity.Workspace{Name: deployment.DeploymentWorkspace}); err != nil {
+			slog.Error("not able to add workspace", err)
+			return err
+		}
+	}
+
 	return nil
 }

@@ -107,8 +107,12 @@ func (t *terraformHandler) Destroy(c *gin.Context) {
 	header := w.Header()
 	header.Set("Transfer-Encoding", "chunked")
 	header.Set("Content-type", "text/html")
-	w.WriteHeader(http.StatusOK)
-	w.(http.Flusher).Flush()
 
-	t.terraformService.Destroy(lab)
+	if err := t.terraformService.Destroy(lab); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	} else {
+		w.WriteHeader(http.StatusOK)
+	}
+
+	w.(http.Flusher).Flush()
 }

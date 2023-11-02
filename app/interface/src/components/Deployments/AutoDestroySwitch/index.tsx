@@ -1,6 +1,6 @@
 import { DeploymentType } from "../../../dataStructures";
 import Checkbox from "../../UserInterfaceComponents/Checkbox";
-import { useUpsertDeployment } from "../../../hooks/useDeployments";
+import { usePatchDeployment } from "../../../hooks/useDeployments";
 import { calculateNewEpochTimeForDeployment } from "../../../utils/helpers";
 
 type AutoDestroySwitchProps = {
@@ -14,17 +14,17 @@ export default function AutoDestroySwitch({
   deployment,
   label,
 }: AutoDestroySwitchProps) {
-  const { mutateAsync: asyncUpsertDeployment } = useUpsertDeployment();
+  const { mutateAsync: asyncPatchDeployment } = usePatchDeployment();
 
   function handleAutoDeleteChange() {
     console.log("on auto delete : " + deployment.deploymentWorkspace);
 
-    //Switch the autodelete state
+    //Switch the auto delete state
     deployment.deploymentAutoDelete = !deployment.deploymentAutoDelete;
 
-    // if the autodelete is disabled, then set the time to 0.
+    // if the auto delete is disabled, then set the time to 0.
     if (!deployment.deploymentAutoDelete) {
-      asyncUpsertDeployment({
+      asyncPatchDeployment({
         ...deployment,
         deploymentAutoDeleteUnixTime: 0,
       });
@@ -33,7 +33,7 @@ export default function AutoDestroySwitch({
 
     // if auto delete is enabled, then set the time to whatever it should be.
     if (deployment.deploymentAutoDelete) {
-      asyncUpsertDeployment({
+      asyncPatchDeployment({
         ...deployment,
         deploymentAutoDeleteUnixTime:
           calculateNewEpochTimeForDeployment(deployment),

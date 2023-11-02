@@ -23,13 +23,13 @@ export default function VersionCheck() {
     <div className="my-4">
       <div className="mt-2 rounded border border-red-500 bg-red-500 bg-opacity-20 p-2">
         <strong>Oh no!</strong> There is a version mismatch between server and
-        client. That means its time to upgrade your server.{" "}
+        client. That means its time to re-deploy your server.{" "}
         <a
-          href="https://actlabsdocs.z13.web.core.windows.net/docs/getting-started"
+          href="https://dev.azure.com/Supportability/AzureContainers/_wiki/wikis/Containers%20Wiki/849282/Getting-Started"
           className="cursor-pointer hover:text-sky-500 hover:underline"
           target="_blank"
         >
-          Click here for instructions.
+          Click here to get started.
         </a>
       </div>
     </div>

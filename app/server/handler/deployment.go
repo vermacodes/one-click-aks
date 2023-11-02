@@ -21,7 +21,10 @@ func NewDeploymentHandler(r *gin.RouterGroup, service entity.DeploymentService) 
 	//r.GET("/deployments", handler.GetDeployments)
 	r.GET("/deployments/my", handler.GetMyDeployments)
 	r.GET("/deployments/:workspace", handler.GetDeployment)
-	r.PUT("/deployments", handler.UpdateDeployment)
+
+	// use this for operations to update in place when action is in progress
+	// like update auto destroy and destroy time
+	r.PATCH("/deployments", handler.UpsertDeployment)
 }
 
 func NewDeploymentWithActionStatusHandler(r *gin.RouterGroup, service entity.DeploymentService) {
@@ -29,7 +32,9 @@ func NewDeploymentWithActionStatusHandler(r *gin.RouterGroup, service entity.Dep
 		deploymentService: service,
 	}
 
-	r.POST("/deployments", handler.AddDeployment)
+	r.PUT("/deployments", handler.UpsertDeployment)
+	r.POST("/deployments", handler.UpsertDeployment)
+	r.PUT("/deployments/select", handler.SelectDeployment)
 	r.DELETE("/deployments/:workspace/:subscriptionId", handler.DeleteDeployment)
 }
 
@@ -61,30 +66,22 @@ func (d *deploymentHandler) GetDeployment(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, deployment)
 }
 
-func (d *deploymentHandler) AddDeployment(c *gin.Context) {
+func (d *deploymentHandler) SelectDeployment(c *gin.Context) {
 	deployment := entity.Deployment{}
 	if err := c.Bind(&deployment); err != nil {
 		c.Status(http.StatusBadRequest)
 		return
 	}
 
-	// Get auth token from authorization header to get userPrincipal
-	authToken := c.GetHeader("Authorization")
-	authToken = strings.Split(authToken, "Bearer ")[1]
-	userPrincipal, _ := helper.GetUserPrincipalFromMSALAuthToken(authToken)
-
-	deployment.DeploymentId = helper.Generate(5)
-	deployment.DeploymentUserId = userPrincipal
-
-	if err := d.deploymentService.AddDeployment(deployment); err != nil {
+	if err := d.deploymentService.SelectDeployment(deployment); err != nil {
 		c.Status(http.StatusInternalServerError)
 		return
 	}
 
-	c.Status(http.StatusCreated)
+	c.Status(http.StatusOK)
 }
 
-func (d *deploymentHandler) UpdateDeployment(c *gin.Context) {
+func (d *deploymentHandler) UpsertDeployment(c *gin.Context) {
 	deployment := entity.Deployment{}
 	if err := c.Bind(&deployment); err != nil {
 		c.Status(http.StatusBadRequest)
@@ -99,7 +96,7 @@ func (d *deploymentHandler) UpdateDeployment(c *gin.Context) {
 	deployment.DeploymentId = helper.Generate(5)
 	deployment.DeploymentUserId = userPrincipal
 
-	if err := d.deploymentService.UpdateDeployment(deployment); err != nil {
+	if err := d.deploymentService.UpsertDeployment(deployment); err != nil {
 		c.Status(http.StatusInternalServerError)
 		return
 	}

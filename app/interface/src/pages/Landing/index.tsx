@@ -70,15 +70,7 @@ export default function Landing() {
               <p className="text-lg">
                 There are many labs built by AKS SMEs which cover common
                 scenarios and emerging issues. You can use them as is or modify
-                to match your requirements.{" "}
-                <a
-                  href="https://actlabsdocs.z13.web.core.windows.net/docs/templates"
-                  target={"_blank"}
-                  className="underline"
-                >
-                  Learn more ↗
-                </a>{" "}
-                about public labs.
+                to match your requirements.
               </p>
             </div>
             <div>
@@ -97,15 +89,7 @@ export default function Landing() {
               <p className="text-lg">
                 None of the public labs work? You are quite unique. Build your
                 own lab using builder and make it powerful by writing an
-                extension script.{" "}
-                <a
-                  href="https://actlabsdocs.z13.web.core.windows.net/docs/builder"
-                  target={"_blank"}
-                  className="underline"
-                >
-                  Learn more ↗
-                </a>{" "}
-                about builder.
+                extension script.
               </p>
             </div>
             <div>

@@ -21,6 +21,10 @@ function apply() {
 function destroy() {
     log "Destroying"
     terraform destroy -auto-approve
+    if [ $? -ne 0 ]; then
+        err "Terraform Destroy Failed"
+        exit 1
+    fi
 }
 
 function list() {
