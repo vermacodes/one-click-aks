@@ -204,7 +204,7 @@ function FixedPages({ darkMode, setDarkMode }: FixedPagesProps) {
               <span>
                 <FaComments />
               </span>
-              <span className="font-bold text-green-500">Share Feedback</span>
+              <span className="font-bold text-green-500">Help & Feedback</span>
             </button>
           </a>
         </li>

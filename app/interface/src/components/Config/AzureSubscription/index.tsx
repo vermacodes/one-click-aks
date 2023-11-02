@@ -14,8 +14,8 @@ export default function AzureSubscription() {
   const { mutateAsync: resetServerCacheAsync } = useResetServerCache();
 
   return (
-    <div className="relative inline-block text-left">
-      <div className="flex gap-2">
+    <div className="flex gap-2">
+      <div className="relative inline-block text-left">
         <div
           className={`${
             actionStatus.inProgress && "text-slate-500 "
@@ -44,47 +44,47 @@ export default function AzureSubscription() {
             <FaChevronDown />
           </p>
         </div>
-
-        <Button
-          variant="secondary-outline"
-          disabled={actionStatus.inProgress}
-          onClick={() =>
-            resetServerCacheAsync().finally(() => {
-              window.location.reload();
-            })
-          }
+        <div
+          className={`absolute right-0 z-10 mt-2 h-56 w-96 origin-top-right overflow-y-auto overflow-x-hidden scrollbar ${
+            !subscriptionMenu && "hidden"
+          } items-center gap-y-2 rounded border bg-slate-100 p-2 dark:bg-slate-800`}
+          onMouseLeave={() => setSubscriptionMenu(false)}
         >
-          <FaRedo />
-        </Button>
+          {accountsLoading ? (
+            <p>Loading...</p>
+          ) : (
+            <>
+              {accounts?.map((account) => (
+                <div key={account.id}>
+                  {account.isDefault !== true && (
+                    <div
+                      className="items-center rounded p-2 hover:bg-sky-500 hover:text-slate-100"
+                      onClick={() => {
+                        setSubscriptionMenu(!subscriptionMenu);
+                        !actionStatus.inProgress && setAccount(account);
+                      }}
+                    >
+                      {account.name}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </>
+          )}
+        </div>
       </div>
-      <div
-        className={`absolute right-0 z-10 mt-2 h-56 w-96 origin-top-right overflow-y-auto overflow-x-hidden scrollbar ${
-          !subscriptionMenu && "hidden"
-        } items-center gap-y-2 rounded border bg-slate-100 p-2 dark:bg-slate-800`}
-        onMouseLeave={() => setSubscriptionMenu(false)}
+
+      <Button
+        variant="secondary-text"
+        disabled={actionStatus.inProgress}
+        onClick={() =>
+          resetServerCacheAsync().finally(() => {
+            window.location.reload();
+          })
+        }
       >
-        {accountsLoading ? (
-          <p>Loading...</p>
-        ) : (
-          <>
-            {accounts?.map((account) => (
-              <div key={account.id}>
-                {account.isDefault !== true && (
-                  <div
-                    className="items-center rounded p-2 hover:bg-sky-500 hover:text-slate-100"
-                    onClick={() => {
-                      setSubscriptionMenu(!subscriptionMenu);
-                      !actionStatus.inProgress && setAccount(account);
-                    }}
-                  >
-                    {account.name}
-                  </div>
-                )}
-              </div>
-            ))}
-          </>
-        )}
-      </div>
+        <FaRedo />
+      </Button>
     </div>
   );
 }
