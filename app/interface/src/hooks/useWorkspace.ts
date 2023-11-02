@@ -9,18 +9,6 @@ function terraformWorkspaceList(): Promise<
   return axiosInstance.get("workspace");
 }
 
-function selectWorkspace(workspace: TerraformWorkspace) {
-  return axiosInstance.put("workspace", workspace);
-}
-
-function addWorkspace(workspace: TerraformWorkspace) {
-  return axiosInstance.post("workspace", workspace);
-}
-
-function deleteWorkspace(workspace: TerraformWorkspace) {
-  return axiosInstance.delete("workspace", { data: workspace });
-}
-
 function getResources(): Promise<AxiosResponse<string>> {
   return axiosInstance.get("resources");
 }
@@ -36,38 +24,6 @@ export function useTerraformWorkspace() {
     },
     staleTime: 6000000,
     cacheTime: 6000000,
-  });
-}
-
-export function useAddWorkspace() {
-  const queryClient = useQueryClient();
-  return useMutation(addWorkspace, {
-    onSuccess: () => {
-      queryClient.invalidateQueries("list-terraform-workspaces");
-      queryClient.invalidateQueries("get-selected-terraform-workspace");  
-      queryClient.invalidateQueries("get-resources");
-    },
-  });
-}
-
-export function useSelectWorkspace() {
-  const queryClient = useQueryClient();
-  return useMutation(selectWorkspace, {
-    onSuccess: () => {
-      queryClient.invalidateQueries("list-terraform-workspaces");
-      queryClient.invalidateQueries("get-selected-terraform-workspace");
-    },
-  });
-}
-
-export function useDeleteWorkspace() {
-  const queryClient = useQueryClient();
-  return useMutation(deleteWorkspace, {
-    onSuccess: () => {
-      queryClient.invalidateQueries("list-terraform-workspaces");
-      queryClient.invalidateQueries("get-selected-terraform-workspace");
-      queryClient.invalidateQueries("get-resources");
-    },
   });
 }
 

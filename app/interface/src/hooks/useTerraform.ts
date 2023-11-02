@@ -59,12 +59,6 @@ export function usePlan() {
 export function useApply() {
   const queryClient = useQueryClient();
   return useMutation(apply, {
-    onMutate: async () => {
-      await queryClient.cancelQueries("get-action-status");
-      setTimeout(() => {
-        queryClient.invalidateQueries("get-action-status");
-      }, 100);
-    },
     onSuccess: () => {
       queryClient.invalidateQueries("list-terraform-workspaces");
       queryClient.invalidateQueries("get-selected-terraform-workspace");

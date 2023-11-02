@@ -9,6 +9,7 @@ import AutoDestroySwitch from "../AutoDestroySwitch";
 import DestroyTime from "../DestroyTime";
 import DeploymentLifespan from "../DeploymentLifespan";
 import { getSelectedDeployment } from "../../../utils/helpers";
+import DeploymentStatus from "../DeploymentStatus";
 
 export default function SelectedDeployment() {
   const { data: lab } = useLab();
@@ -51,9 +52,7 @@ export default function SelectedDeployment() {
           </h1>
         </div>
         <div className="flex flex-wrap gap-y-2 gap-x-4 divide-x divide-slate-500">
-          <div className="flex flex-wrap items-center gap-x-2">
-            {selectedDeployment.deploymentStatus}
-          </div>
+          <DeploymentStatus deployment={selectedDeployment} />
           <div className="flex flex-wrap items-center gap-x-2 pl-2">
             <AutoDestroySwitch
               deployment={selectedDeployment}

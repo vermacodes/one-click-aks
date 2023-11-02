@@ -41,13 +41,13 @@ func (d *deploymentRepository) GetMyDeployments(userId string) ([]entity.Deploym
 			var myEntity aztables.EDMEntity
 			err := json.Unmarshal(entity, &myEntity)
 			if err != nil {
-				slog.Error("error unmarshalling deployment entity ", err)
+				slog.Error("error unmarshal deployment entity ", err)
 				return nil, err
 			}
 
 			deploymentString := myEntity.Properties["Deployment"].(string)
 			if err := json.Unmarshal([]byte(deploymentString), &deployment); err != nil {
-				slog.Error("error unmarshalling deployment ", err)
+				slog.Error("error unmarshal deployment ", err)
 				return nil, err
 			}
 
@@ -72,53 +72,21 @@ func (d *deploymentRepository) GetDeployment(userId string, workspace string, su
 	var myEntity aztables.EDMEntity
 	err = json.Unmarshal(response.Value, &myEntity)
 	if err != nil {
-		slog.Error("error unmarshalling deployment entity ", err)
+		slog.Error("error unmarshal deployment entity ", err)
 		return entity.Deployment{}, err
 	}
 
 	deploymentString := myEntity.Properties["Deployment"].(string)
 	deployment := entity.Deployment{}
 	if err := json.Unmarshal([]byte(deploymentString), &deployment); err != nil {
-		slog.Error("error unmarshalling deployment ", err)
+		slog.Error("error unmarshal deployment ", err)
 		return entity.Deployment{}, err
 	}
 
 	return deployment, nil
 }
 
-func (d *deploymentRepository) AddDeployment(deployment entity.Deployment) error {
-	client := helper.GetServiceClient().NewClient("Deployments")
-
-	marshalledDeployment, err := json.Marshal(deployment)
-	if err != nil {
-		slog.Error("error occurred marshalling the deployment record.", err)
-		return err
-	}
-
-	deploymentEntry := entity.DeploymentEntry{
-		Entity: aztables.Entity{
-			PartitionKey: deployment.DeploymentUserId,
-			RowKey:       deployment.DeploymentUserId + "-" + deployment.DeploymentWorkspace + "-" + deployment.DeploymentSubscriptionId,
-		},
-		Deployment: string(marshalledDeployment),
-	}
-
-	marshalled, err := json.Marshal(deploymentEntry)
-	if err != nil {
-		slog.Error("error occurred marshalling the deployment record.", err)
-		return err
-	}
-
-	_, err = client.AddEntity(context.TODO(), marshalled, nil)
-	if err != nil {
-		slog.Error("error adding deployment record ", err)
-		return err
-	}
-
-	return nil
-}
-
-func (d *deploymentRepository) UpdateDeployment(deployment entity.Deployment) error {
+func (d *deploymentRepository) UpsertDeployment(deployment entity.Deployment) error {
 	client := helper.GetServiceClient().NewClient("Deployments")
 
 	marshalledDeployment, err := json.Marshal(deployment)

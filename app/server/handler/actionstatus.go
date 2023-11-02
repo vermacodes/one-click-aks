@@ -13,7 +13,7 @@ type actionStatusHandler struct {
 	actionStatusService entity.ActionStatusService
 }
 
-func NewActionStatusHanlder(r *gin.Engine, service entity.ActionStatusService) {
+func NewActionStatusHandler(r *gin.Engine, service entity.ActionStatusService) {
 	handler := &actionStatusHandler{
 		actionStatusService: service,
 	}

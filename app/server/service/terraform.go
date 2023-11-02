@@ -17,7 +17,7 @@ type terraformService struct {
 	logStreamService      entity.LogStreamService
 	actionStatusService   entity.ActionStatusService
 	kVersionService       entity.KVersionService
-	storageAccountService entity.StorageAccountService // Some information is needed from storage aacount service.
+	storageAccountService entity.StorageAccountService // Some information is needed from storage account service.
 	loggingService        entity.LoggingService
 	authService           entity.AuthService
 }
@@ -54,7 +54,7 @@ func (t *terraformService) Init() error {
 
 	// Invalidate workspace cache
 	if err := t.workspaceService.DeleteAllWorkspaceFromRedis(); err != nil {
-		slog.Error("not able to invlidate workspace cache", err)
+		slog.Error("not able to invalidate workspace cache", err)
 		return err
 	}
 
@@ -69,7 +69,7 @@ func (t *terraformService) Apply(lab entity.LabType) error {
 
 	// Invalidate workspace cache
 	if err := t.workspaceService.DeleteAllWorkspaceFromRedis(); err != nil {
-		slog.Error("not able to invlidate workspace cache", err)
+		slog.Error("not able to invalidate workspace cache", err)
 		return err
 	}
 
@@ -99,7 +99,7 @@ func (t *terraformService) Extend(lab entity.LabType, mode string) error {
 func (t *terraformService) Destroy(lab entity.LabType) error {
 	// Invalidate workspace cache
 	if err := t.workspaceService.DeleteAllWorkspaceFromRedis(); err != nil {
-		slog.Error("not able to invlidate workspace cache", err)
+		slog.Error("not able to invalidate workspace cache", err)
 		return err
 	}
 

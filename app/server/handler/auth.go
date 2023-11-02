@@ -28,7 +28,7 @@ func NewAuthHandler(r *gin.RouterGroup, service entity.AuthService) {
 	r.GET("/accounts", handler.GetAccounts)
 }
 
-func NewAuthWithActinoStatusHandler(r *gin.RouterGroup, service entity.AuthService) {
+func NewAuthWithActionStatusHandler(r *gin.RouterGroup, service entity.AuthService) {
 	handler := &authHandler{
 		authService: service,
 	}

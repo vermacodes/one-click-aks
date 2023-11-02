@@ -14,7 +14,7 @@ import (
 
 type labRepository struct{}
 
-func NewLabRespository() entity.LabRepository {
+func NewLabRepository() entity.LabRepository {
 	return &labRepository{}
 }
 

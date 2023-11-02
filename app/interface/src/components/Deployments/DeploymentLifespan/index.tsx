@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { DeploymentType } from "../../../dataStructures";
 import { FaChevronDown } from "react-icons/fa";
-import { useUpsertDeployment } from "../../../hooks/useDeployments";
+import { usePatchDeployment } from "../../../hooks/useDeployments";
 import { calculateNewEpochTimeForDeployment } from "../../../utils/helpers";
 
 type DeploymentLifespanProps = {
@@ -14,7 +14,7 @@ export default function DeploymentLifespan({
 
   // array allowed lifespans in seconds.
   const lifespans = [120, 300, 600, 900, 1800, 3600, 7200, 14400, 28800];
-  const { mutate: upsertDeployment } = useUpsertDeployment();
+  const { mutate: patchDeployment } = usePatchDeployment();
 
   // Function takes input in seconds and returns hours or minutes if less than an hour.
   function secondsToHoursOrMinutes(seconds: number) {
@@ -53,7 +53,7 @@ export default function DeploymentLifespan({
             key={lifespan}
             onClick={() => {
               setMenu(false);
-              upsertDeployment({
+              patchDeployment({
                 ...deployment,
                 deploymentLifespan: lifespan,
                 deploymentAutoDeleteUnixTime:

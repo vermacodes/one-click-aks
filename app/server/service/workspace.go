@@ -13,7 +13,7 @@ type workspaceService struct {
 	actionStatusService   entity.ActionStatusService
 }
 
-func NewWorksapceService(workspaceRepo entity.WorkspaceRepository, storageAccountService entity.StorageAccountService, actionStatusService entity.ActionStatusService) entity.WorkspaceService {
+func NewWorkspaceService(workspaceRepo entity.WorkspaceRepository, storageAccountService entity.StorageAccountService, actionStatusService entity.ActionStatusService) entity.WorkspaceService {
 	return &workspaceService{
 		workspaceRepository:   workspaceRepo,
 		storageAccountService: storageAccountService,
@@ -72,6 +72,9 @@ func (w *workspaceService) Add(workspace entity.Workspace) error {
 }
 
 func (w *workspaceService) Select(workspace entity.Workspace) error {
+
+	// add workspace if not exists
+
 	if err := w.workspaceRepository.Select(workspace); err != nil {
 		slog.Error("not able to select the workspace", err)
 		return err
@@ -124,7 +127,7 @@ func (w *workspaceService) DeleteAllWorkspaceFromRedis() error {
 	return nil
 }
 
-// this is a hleper function which takes a string (output from the commmand)
+// this is a helper function which takes a string (output from the commmand)
 // and converts to a list of workspaces.
 func helperStringToWorkspaces(val string) []entity.Workspace {
 	slog.Debug("Workspaces : " + val)

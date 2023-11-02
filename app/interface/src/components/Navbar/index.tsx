@@ -1,6 +1,7 @@
 import {
   FaClipboard,
   FaCog,
+  FaComments,
   FaExternalLinkAlt,
   FaFileCode,
   FaFlask,
@@ -102,7 +103,7 @@ function Pages() {
         {roles && roles.roles.includes("mentor") && (
           <>
             <li>
-              <Link to={"/redinesslabs"}>
+              <Link to={"/readinesslabs"}>
                 <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
                   <span>
                     <FaFlask />
@@ -196,6 +197,16 @@ function FixedPages({ darkMode, setDarkMode }: FixedPagesProps) {
               <span>Settings</span>
             </button>
           </Link>
+        </li>
+        <li>
+          <a target="_blank" href="https://forms.office.com/r/R513F2YfXE">
+            <button className="flex h-full w-full items-center justify-start gap-2 rounded bg-sky-500 bg-opacity-10 py-3 px-4 text-left text-lg hover:bg-slate-200 dark:hover:bg-slate-800">
+              <span>
+                <FaComments />
+              </span>
+              <span className="font-bold text-green-500">Help & Feedback</span>
+            </button>
+          </a>
         </li>
         <li>
           <LoginButton />

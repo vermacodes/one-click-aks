@@ -12,8 +12,16 @@ function addDeployment(deployment: DeploymentType) {
     return axiosInstance.post(`deployments`, deployment);
 }
 
+function patchDeployment(deployment: DeploymentType) {
+    return axiosInstance.patch(`deployments`, deployment);
+}
+
 function upsertDeployment(deployment: DeploymentType) {
     return axiosInstance.put(`deployments`, deployment);
+}
+
+function selectDeployment(deployment: DeploymentType) {
+    return axiosInstance.put(`deployments/select`, deployment);
 }
 
 export function useGetMyDeployments() {
@@ -34,6 +42,27 @@ export function useAddDeployment() {
             queryClient.invalidateQueries("list-terraform-workspaces");     
             queryClient.invalidateQueries("get-selected-terraform-workspace");
             queryClient.invalidateQueries("get-resources");
+        },
+    });
+}
+
+export function useSelectDeployment() {
+    const queryClient = useQueryClient();
+    return useMutation(selectDeployment, {
+        onSuccess: () => {
+            queryClient.invalidateQueries("list-deployments");
+            queryClient.invalidateQueries("list-terraform-workspaces");     
+            queryClient.invalidateQueries("get-selected-terraform-workspace");
+            queryClient.invalidateQueries("get-resources");
+        }
+    });
+}
+
+export function usePatchDeployment() {
+    const queryClient = useQueryClient();
+    return useMutation(patchDeployment, {
+        onSuccess: () => {
+            queryClient.invalidateQueries("list-deployments");
         },
     });
 }

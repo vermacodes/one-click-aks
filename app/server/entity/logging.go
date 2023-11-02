@@ -22,7 +22,7 @@ type LoggingService interface {
 	DeploymentRecord(user User, lab LabType) error
 }
 
-type LoggingRespoitory interface {
+type LoggingRepository interface {
 	LoginRecord(user User) error
 	PlanRecord(user User, lab LabType) error
 	DeploymentRecord(user User, lab LabType) error
