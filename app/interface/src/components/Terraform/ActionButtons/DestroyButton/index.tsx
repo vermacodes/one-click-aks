@@ -100,7 +100,7 @@ export default function DestroyButton({
     // destroy terraform
     destroyAsync(lab).then((response) => {
       if (axios.isAxiosError(response)) {
-        updateDeploymentStatus(deployment, "Deployment Failed");
+        updateDeploymentStatus(deployment, "Destroy Failed");
         return;
       }
       updateDeploymentStatus(deployment, "Resources Destroyed");

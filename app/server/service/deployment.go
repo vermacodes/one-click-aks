@@ -165,7 +165,7 @@ func (d *DeploymentService) PollAndDeleteDeployments(interval time.Duration) err
 			actionStatus, err := d.actionStatusService.GetActionStatus()
 			if err != nil {
 				slog.Error("not able to get action status", err)
-				return err
+				continue
 			}
 
 			// Wait for any action in progress to complete.
@@ -177,7 +177,7 @@ func (d *DeploymentService) PollAndDeleteDeployments(interval time.Duration) err
 					actionStatus, err = d.actionStatusService.GetActionStatus()
 					if err != nil {
 						slog.Error("not able to get action status", err)
-						return err
+						continue
 					}
 					continue
 				}
@@ -187,14 +187,14 @@ func (d *DeploymentService) PollAndDeleteDeployments(interval time.Duration) err
 			// Change terraform workspace.
 			if err := d.ChangeTerraformWorkspace(deployment); err != nil {
 				slog.Error("not able to change terraform workspace", err)
-				return err
+				continue
 			}
 
 			// Update deployment status to deleting.
-			deployment.DeploymentStatus = "Destroying Resources"
+			deployment.DeploymentStatus = entity.DestroyingResources
 			if err := d.UpsertDeployment(deployment); err != nil {
 				slog.Error("not able to update deployment", err)
-				return err
+				continue
 			}
 
 			// Update action status to in progress.
@@ -205,13 +205,13 @@ func (d *DeploymentService) PollAndDeleteDeployments(interval time.Duration) err
 				slog.Error("not able to run extend script", err)
 
 				// Update deployment status to failed.
-				deployment.DeploymentStatus = "Deployment Failed"
+				deployment.DeploymentStatus = entity.DestroyFailed
 				if err := d.UpsertDeployment(deployment); err != nil {
 					slog.Error("not able to update deployment", err)
 				}
 
 				d.actionStatusService.SetActionEnd()
-				return err
+				continue
 			}
 
 			// Run terraform destroy.
@@ -219,21 +219,21 @@ func (d *DeploymentService) PollAndDeleteDeployments(interval time.Duration) err
 				slog.Error("not able to run terraform destroy", err)
 
 				// Update deployment status to failed.
-				deployment.DeploymentStatus = "Deployment Failed"
+				deployment.DeploymentStatus = entity.DestroyFailed
 				if err := d.UpsertDeployment(deployment); err != nil {
 					slog.Error("not able to update deployment", err)
 				}
 
 				d.actionStatusService.SetActionEnd()
-				return err
+				continue
 			}
 
 			// Update deployment status to deleting.
-			deployment.DeploymentStatus = "Resources Destroyed"
+			deployment.DeploymentStatus = entity.ResourcesDestroyed
 			if err := d.UpsertDeployment(deployment); err != nil {
 				slog.Error("not able to update deployment", err)
 				d.actionStatusService.SetActionEnd()
-				return err
+				continue
 			}
 
 			d.actionStatusService.SetActionEnd()
@@ -258,7 +258,7 @@ func (d *DeploymentService) FetchDeploymentsToBeDeleted() []entity.Deployment {
 	for _, deployment := range deployments {
 		currentEpochTime := time.Now().Unix()
 		slog.Debug("currentEpochTime: " + strconv.FormatInt(currentEpochTime, 10))
-		if deployment.DeploymentAutoDelete && deployment.DeploymentAutoDeleteUnixTime < currentEpochTime && deployment.DeploymentAutoDeleteUnixTime != 0 && deployment.DeploymentStatus != "Destroying Resources" && deployment.DeploymentStatus != "Resources Destroyed" {
+		if deployment.DeploymentAutoDelete && deployment.DeploymentAutoDeleteUnixTime < currentEpochTime && deployment.DeploymentAutoDeleteUnixTime != 0 && deployment.DeploymentStatus != entity.DestroyingResources && deployment.DeploymentStatus != entity.DestroyFailed && deployment.DeploymentStatus != entity.ResourcesDestroyed {
 			deploymentsToBeDeleted = append(deploymentsToBeDeleted, deployment)
 		}
 	}

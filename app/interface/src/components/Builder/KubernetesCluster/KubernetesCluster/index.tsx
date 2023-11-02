@@ -67,11 +67,11 @@ export default function KubernetesCluster() {
 
   return (
     <div
-      className={`mt-4 flex w-full flex-col gap-x-2 gap-y-2 border p-4 shadow dark:border-slate-800 dark:shadow-slate-800`}
+      className={`mt-4 flex w-full flex-col gap-x-2 gap-y-2 rounded border p-4 shadow dark:border-slate-800 dark:shadow-slate-800`}
     >
       <p className="text-lg font-bold">Kubernetes Cluster </p>
       <div
-        className={`mt-4 flex w-full flex-col gap-x-2 gap-y-2 border p-4 shadow dark:border-slate-800 dark:shadow-slate-800`}
+        className={`mt-4 flex w-full flex-col gap-x-2 gap-y-2 rounded border p-4 shadow dark:border-slate-800 dark:shadow-slate-800`}
       >
         <p className="text-lg font-bold">Features </p>
         <div className={`mt-4 flex flex-wrap gap-x-2 gap-y-2`}>
@@ -86,7 +86,7 @@ export default function KubernetesCluster() {
         </div>
       </div>
       <div
-        className={`mt-4 flex w-full flex-col gap-x-2 gap-y-2 border p-4 shadow dark:border-slate-800 dark:shadow-slate-800`}
+        className={`mt-4 flex w-full flex-col gap-x-2 gap-y-2 rounded border p-4 shadow dark:border-slate-800 dark:shadow-slate-800`}
       >
         <p className="text-lg font-bold">Addons </p>
         <div className={`mt-4 flex flex-wrap gap-x-2 gap-y-2`}>

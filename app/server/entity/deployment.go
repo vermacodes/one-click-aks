@@ -6,17 +6,29 @@ import (
 	"github.com/Azure/azure-sdk-for-go/sdk/data/aztables"
 )
 
+type DeploymentStatus string
+
+const (
+	DeploymentInProgress DeploymentStatus = "Deployment In Progress"
+	DeploymentFailed     DeploymentStatus = "Deployment Failed"
+	DeploymentCompleted  DeploymentStatus = "Deployment Completed"
+	DeploymentNotStarted DeploymentStatus = "Deployment Not Started"
+	DestroyingResources  DeploymentStatus = "Destroying Resources"
+	ResourcesDestroyed   DeploymentStatus = "Resources Destroyed"
+	DestroyFailed        DeploymentStatus = "Destroy Failed"
+)
+
 type Deployment struct {
 	//aztables.Entity              `json:"-"`
-	DeploymentId                 string  `json:"deploymentId"`
-	DeploymentUserId             string  `json:"deploymentUserId"`
-	DeploymentSubscriptionId     string  `json:"deploymentSubscriptionId"`
-	DeploymentWorkspace          string  `json:"deploymentWorkspace"`
-	DeploymentStatus             string  `json:"deploymentStatus"`
-	DeploymentLab                LabType `json:"deploymentLab"`
-	DeploymentAutoDelete         bool    `json:"deploymentAutoDelete"`
-	DeploymentLifespan           int64   `json:"deploymentLifespan"`
-	DeploymentAutoDeleteUnixTime int64   `json:"deploymentAutoDeleteUnixTime"`
+	DeploymentId                 string           `json:"deploymentId"`
+	DeploymentUserId             string           `json:"deploymentUserId"`
+	DeploymentSubscriptionId     string           `json:"deploymentSubscriptionId"`
+	DeploymentWorkspace          string           `json:"deploymentWorkspace"`
+	DeploymentStatus             DeploymentStatus `json:"deploymentStatus"`
+	DeploymentLab                LabType          `json:"deploymentLab"`
+	DeploymentAutoDelete         bool             `json:"deploymentAutoDelete"`
+	DeploymentLifespan           int64            `json:"deploymentLifespan"`
+	DeploymentAutoDeleteUnixTime int64            `json:"deploymentAutoDeleteUnixTime"`
 }
 
 type DeploymentEntry struct {
