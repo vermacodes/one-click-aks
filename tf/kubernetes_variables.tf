@@ -12,6 +12,12 @@ variable "kubernetes_clusters" {
       microsoft_defender       = bool
       virtual_node             = bool
       http_application_routing = bool
+      service_mesh = object({
+        enabled                          = bool
+        mode                             = string
+        internal_ingress_gateway_enabled = bool
+        external_ingress_gateway_enabled = bool
+      })
     })
     default_node_pool = object({
       enable_auto_scaling = bool

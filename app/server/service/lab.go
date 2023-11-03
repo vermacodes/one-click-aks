@@ -218,11 +218,19 @@ func (l *labService) HelperDefaultLab() (entity.LabType, error) {
 		MaxCount:          1,
 	}
 
+	var defaultServiceMesh = entity.TfvarServiceMeshType{
+		Enabled:                       false,
+		Mode:                          "Istio",
+		InternalIngressGatewayEnabled: false,
+		ExternalIngressGatewayEnabled: false,
+	}
+
 	var defaultAddons = entity.TfvarAddonsType{
 		AppGateway:             false,
 		MicrosoftDefender:      false,
 		VirtualNode:            false,
 		HttpApplicationRouting: false,
+		ServiceMesh:            defaultServiceMesh,
 	}
 
 	var defaultKubernetesClusters = []entity.TfvarKubernetesClusterType{

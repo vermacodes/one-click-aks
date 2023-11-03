@@ -13,6 +13,7 @@ import MicrosoftDefender from "../Addons/MicrosoftDefender";
 import VirtualNode from "../Addons/VirtualNode";
 import HttpApplicationRouting from "../Addons/HttpApplicationRouting";
 import BuilderContainer from "../../../UserInterfaceComponents/BuilderContainer";
+import ServiceMesh from "../Addons/ServiceMesh";
 
 export default function KubernetesCluster() {
   const [versionMenu, setVersionMenu] = useState<boolean>(false);
@@ -44,6 +45,7 @@ export default function KubernetesCluster() {
       <BuilderContainer title="Addons">
         <div className={`mt-4 flex flex-wrap gap-x-2 gap-y-2`}>
           <AppGateway />
+          <ServiceMesh />
           <MicrosoftDefender />
           <VirtualNode />
           <HttpApplicationRouting />

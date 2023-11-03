@@ -94,11 +94,19 @@ export type TfvarSubnetType = tfvarSubnet[];
 
 export type TfvarNetworkSecurityGroupType = {};
 
+export type TfvarServiceMeshType = {
+  enabled: boolean;
+  mode: "Istio",
+  internalIngressGatewayEnabled: boolean;
+  externalIngressGatewayEnabled: boolean;
+}
+
 export type TfvarAddonsType = {
   appGateway: boolean;
   microsoftDefender: boolean;
   virtualNode: boolean;
   httpApplicationRouting: boolean;
+  serviceMesh: TfvarServiceMeshType;
 };
 
 export type TfvarDefaultNodepoolType = {
