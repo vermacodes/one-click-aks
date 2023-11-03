@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { MdDoneOutline, MdOutlineContentCopy } from "react-icons/md";
 
 type Props = {};

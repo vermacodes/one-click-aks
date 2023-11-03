@@ -34,7 +34,7 @@ export default function AuthServiceEndpoint({}: Props) {
         <div className="flex w-full flex-col gap-2">
           <h3 className="text-xl">Auth Service Endpoint</h3>
           <p className="text-xs">
-            Auth Service Endpoint. You probably dont want to edit this unless
+            Auth Service Endpoint. You probably don't want to edit this unless
             you know what you are doing. But, if you know, you know. Go ahead.
           </p>
         </div>

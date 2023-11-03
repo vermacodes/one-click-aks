@@ -1,9 +1,7 @@
 import React, { useContext } from "react";
 import { FaTrash } from "react-icons/fa";
 import { ButtonVariant, Lab } from "../../../dataStructures";
-import { useActionStatus } from "../../../hooks/useActionStatus";
 import { useDeleteLab, useDeleteMyLab } from "../../../hooks/useBlobs";
-import { useSetLogs } from "../../../hooks/useLogs";
 import Button from "../../UserInterfaceComponents/Button";
 import { WebSocketContext } from "../../../WebSocketContext";
 
@@ -14,7 +12,6 @@ type Props = {
 };
 
 export default function DeleteLabButton({ variant, children, lab }: Props) {
-  const { mutate: setLogs } = useSetLogs();
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: deleteLab } = useDeleteLab();
   const { mutate: deleteMyLab } = useDeleteMyLab();

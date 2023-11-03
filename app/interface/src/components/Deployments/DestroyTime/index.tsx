@@ -1,8 +1,5 @@
 import { DeploymentType } from "../../../dataStructures";
-import {
-  getDeploymentDestroyTime,
-  getDeploymentDestroyTimeRemaining,
-} from "../../../utils/helpers";
+import { getDeploymentDestroyTime } from "../../../utils/helpers";
 
 type DestroyTimeProps = {
   deployment: DeploymentType;

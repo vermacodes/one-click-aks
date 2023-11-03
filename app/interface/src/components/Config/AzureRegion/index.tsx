@@ -16,7 +16,7 @@ export default function AzureRegion({ regionEdit, setRegionEdit }: Props) {
     isFetching: fetchingPreference,
   } = usePreference();
 
-  const { mutate: setPreferece, isLoading: settingPreference } =
+  const { mutate: setPreference, isLoading: settingPreference } =
     useSetPreference();
   const { data: lab } = useLab();
   const { mutate: setLogs } = useSetLogs();
@@ -40,7 +40,7 @@ export default function AzureRegion({ regionEdit, setRegionEdit }: Props) {
   function handleOnClick() {
     setRegionEdit(false);
     if (preference !== undefined) {
-      setPreferece({
+      setPreference({
         ...preference,
         azureRegion: azureRegion,
       });

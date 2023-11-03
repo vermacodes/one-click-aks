@@ -3,14 +3,6 @@ import { useLab, useSetLab } from "../../../../hooks/useLab";
 import { useSetLogs } from "../../../../hooks/useLogs";
 import Checkbox from "../../../UserInterfaceComponents/Checkbox";
 import { WebSocketContext } from "../../../../WebSocketContext";
-import { type } from "os";
-import { Lab } from "../../../../dataStructures";
-
-// type Props = {
-//   lab: Lab;
-//   labIsLoading: boolean;
-//   labIsFetching: boolean;
-// };
 
 export default function PrivateCluster() {
   const { actionStatus } = useContext(WebSocketContext);

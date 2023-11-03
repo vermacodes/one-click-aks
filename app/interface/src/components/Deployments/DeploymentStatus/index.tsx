@@ -1,4 +1,4 @@
-import { FaCheckCircle, FaCross, FaExclamationCircle } from "react-icons/fa";
+import { FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
 import { DeploymentType } from "../../../dataStructures";
 
 type Props = {

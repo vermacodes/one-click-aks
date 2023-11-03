@@ -30,8 +30,6 @@ type ModalProps = {
 };
 
 function Modal({ showModal, setShowModal }: ModalProps) {
-  const [workspaceMenu, setWorkspaceMenu] = useState<boolean>(false);
-
   if (!showModal) return null;
   return (
     <div
@@ -40,13 +38,7 @@ function Modal({ showModal, setShowModal }: ModalProps) {
         setShowModal(false);
       }}
     >
-      <div
-        className=" my-20 w-3/4 gap-y-2 divide-y divide-slate-300 overflow-y-auto rounded bg-slate-100 p-5 overflow-x-hidden scrollbar-thin  scrollbar-thumb-slate-400 dark:divide-slate-700 dark:bg-slate-900 dark:scrollbar-thumb-slate-600"
-        onClick={(e) => {
-          e.stopPropagation();
-          setWorkspaceMenu(false);
-        }}
-      >
+      <div className=" my-20 w-3/4 gap-y-2 divide-y divide-slate-300 overflow-y-auto rounded bg-slate-100 p-5 overflow-x-hidden scrollbar-thin  scrollbar-thumb-slate-400 dark:divide-slate-700 dark:bg-slate-900 dark:scrollbar-thumb-slate-600">
         <div className="w-100 flex justify-between pb-2 ">
           <h1 className="text-3xl">Terraform Settings</h1>
           <button

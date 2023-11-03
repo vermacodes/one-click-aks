@@ -52,7 +52,7 @@ export default function virtualNetwork() {
   if (labIsLoading || labIsFetching) {
     return (
       <Checkbox
-        id="toggle-customvnet"
+        id="toggle-custom-vnet"
         label="VNET"
         disabled={true}
         checked={false}
@@ -65,7 +65,7 @@ export default function virtualNetwork() {
     <>
       {lab && lab.template && (
         <Checkbox
-          id="toggle-customvnet"
+          id="toggle-custom-vnet"
           label="VNET"
           checked={lab.template.virtualNetworks.length > 0}
           disabled={labIsLoading || labIsFetching}

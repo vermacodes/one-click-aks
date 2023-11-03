@@ -1,8 +1,7 @@
 import React, { useContext } from "react";
-import { FaTools, FaUps } from "react-icons/fa";
+import { FaTools } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { ButtonVariant, Lab } from "../../../dataStructures";
-import { useActionStatus } from "../../../hooks/useActionStatus";
 import { useSetLab } from "../../../hooks/useLab";
 import { useSetLogs } from "../../../hooks/useLogs";
 import { usePreference } from "../../../hooks/usePreference";

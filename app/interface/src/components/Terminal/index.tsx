@@ -77,7 +77,7 @@ export default function Terminal() {
         </button>
         <div className="pl-2">
           <Checkbox
-            id="terminal-autoscroll"
+            id="terminal-auto-scroll"
             label="Auto Scroll"
             disabled={false}
             checked={autoScroll}

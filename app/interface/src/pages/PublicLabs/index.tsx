@@ -1,24 +1,14 @@
 import { useState } from "react";
-import {
-  FaArrowRight,
-  FaChevronRight,
-  FaCopy,
-  FaEllipsisV,
-  FaShare,
-} from "react-icons/fa";
+import { FaShare } from "react-icons/fa";
 import Button from "../../components/UserInterfaceComponents/Button";
-import DeleteLabButton from "../../components/Lab/DeleteLabButton";
 import ExportLabButton from "../../components/Lab/Export/ExportLabButton";
 import LabCard from "../../components/Lab/LabCard";
 import LoadToBuilderButton from "../../components/Lab/LoadToBuilderButton";
 import TemplateCard from "../../components/TemplateCard";
 import { Lab } from "../../dataStructures";
 import { useSharedTemplates } from "../../hooks/useBlobs";
-import { useServerStatus } from "../../hooks/useServerStatus";
 import LabGridLayout from "../../layouts/LabGridLayout";
 import PageLayout from "../../layouts/PageLayout";
-import LabBuilder from "../../modals/SaveLabModal";
-import ServerError from "../ServerError";
 
 export default function PublicLabs() {
   const {

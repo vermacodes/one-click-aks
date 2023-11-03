@@ -8,11 +8,7 @@ import { useSetLogs } from "../../../../../hooks/useLogs";
 import { Lab } from "../../../../../dataStructures";
 
 export default function ServiceMesh() {
-  const {
-    data: lab,
-    isLoading: labIsLoading,
-    isFetching: labIsFetching,
-  } = useLab();
+  const { data: lab } = useLab();
   const { mutate: setLogs } = useSetLogs();
   const { mutate: setLab } = useSetLab();
   const { actionStatus } = useContext(WebSocketContext);

@@ -1,5 +1,4 @@
 import { useContext } from "react";
-import { useActionStatus } from "../../../hooks/useActionStatus";
 import { useLab, useSetLab } from "../../../hooks/useLab";
 import { useSetLogs } from "../../../hooks/useLogs";
 import Checkbox from "../../UserInterfaceComponents/Checkbox";
@@ -40,7 +39,7 @@ export default function AzureFirewall() {
   if (labIsLoading || labIsFetching) {
     return (
       <Checkbox
-        id="toggle-azurefirewall"
+        id="toggle-azure-firewall"
         label="Firewall"
         disabled={true}
         checked={false}
@@ -67,7 +66,7 @@ export default function AzureFirewall() {
     <>
       {lab && lab.template && (
         <Checkbox
-          id="toggle-azurefirewall"
+          id="toggle-azure-firewall"
           label="Firewall"
           checked={checked}
           disabled={disabled}

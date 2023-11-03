@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { FaUpload } from "react-icons/fa";
 import { Lab } from "../../../../dataStructures";
-import { useActionStatus } from "../../../../hooks/useActionStatus";
 import { useSetLab } from "../../../../hooks/useLab";
 import { useSetLogs } from "../../../../hooks/useLogs";
 import Button from "../../../UserInterfaceComponents/Button";

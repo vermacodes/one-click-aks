@@ -17,12 +17,12 @@ export function useSharedMockCases() {
   });
 }
 
-function getTempalates(): Promise<AxiosResponse<Lab[]>> {
+function getTemplates(): Promise<AxiosResponse<Lab[]>> {
   return axiosInstance("lab/my");
 }
 
 export function useTemplates() {
-  return useQuery("mytemplates", getTempalates, {
+  return useQuery("my-templates", getTemplates, {
     select: (data): Lab[] => {
       return data.data;
     },
@@ -64,12 +64,12 @@ function createLab(lab: Lab): Promise<AxiosResponse<Lab[]>> {
 }
 
 // TODO: Optimistic updates
-// ?: Will it make sense to seperate create and update functions? Right now server is handling updates.
+// ?: Will it make sense to separate create and update functions? Right now server is handling updates.
 export function useCreateLab() {
   const queryClient = useQueryClient();
   return useMutation(createLab, {
     onSuccess: () => {
-      queryClient.invalidateQueries("mytemplates");
+      queryClient.invalidateQueries("my-templates");
       queryClient.invalidateQueries("shared-templates");
       queryClient.invalidateQueries("shared-mockcases");
       queryClient.invalidateQueries("shared-labs");
@@ -86,7 +86,7 @@ export function useDeleteLab() {
   const queryClient = useQueryClient();
   return useMutation(deleteLab, {
     onSuccess: () => {
-      queryClient.invalidateQueries("mytemplates");
+      queryClient.invalidateQueries("my-templates");
       queryClient.invalidateQueries("shared-templates");
       queryClient.invalidateQueries("shared-mockcases");
       queryClient.invalidateQueries("shared-labs");
@@ -99,12 +99,12 @@ function createMyLab(lab: Lab): Promise<AxiosResponse<Lab[]>> {
 }
 
 // TODO: Optimistic updates
-// ?: Will it make sense to seperate create and update functions? Right now server is handling updates.
+// ?: Will it make sense to separate create and update functions? Right now server is handling updates.
 export function useCreateMyLab() {
   const queryClient = useQueryClient();
   return useMutation(createMyLab, {
     onSuccess: () => {
-      queryClient.invalidateQueries("mytemplates");
+      queryClient.invalidateQueries("my-templates");
     },
   });
 }
@@ -118,7 +118,7 @@ export function useDeleteMyLab() {
   const queryClient = useQueryClient();
   return useMutation(deleteMyLab, {
     onSuccess: () => {
-      queryClient.invalidateQueries("mytemplates");
+      queryClient.invalidateQueries("my-templates");
     },
   });
 }
