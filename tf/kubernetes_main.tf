@@ -97,6 +97,15 @@ resource "azurerm_kubernetes_cluster" "this" {
     }
   }
 
+  dynamic "service_mesh_profile" {
+    for_each = var.kubernetes_clusters[count.index].addons.service_mesh.enabled ? [{}] : []
+    content {
+      mode                             = var.kubernetes_clusters[count.index].addons.service_mesh.mode
+      internal_ingress_gateway_enabled = var.kubernetes_clusters[count.index].addons.service_mesh.internal_ingress_gateway_enabled
+      external_ingress_gateway_enabled = var.kubernetes_clusters[count.index].addons.service_mesh.external_ingress_gateway_enabled
+    }
+  }
+
   # ingress_application_gateway {
   #   subnet_id = azurerm_subnet.this[3].id
   # }

@@ -13,11 +13,19 @@ type TfvarDefaultNodePoolType struct {
 	MaxCount          int  `json:"maxCount"`
 }
 
+type TfvarServiceMeshType struct {
+	Enabled                       bool   `json:"enabled"`
+	Mode                          string `json:"mode"`
+	InternalIngressGatewayEnabled bool   `json:"internalIngressGatewayEnabled"`
+	ExternalIngressGatewayEnabled bool   `json:"externalIngressGatewayEnabled"`
+}
+
 type TfvarAddonsType struct {
-	AppGateway             bool `json:"appGateway"`
-	MicrosoftDefender      bool `json:"microsoftDefender"`
-	VirtualNode            bool `json:"virtualNode"`
-	HttpApplicationRouting bool `json:"httpApplicationRouting"`
+	AppGateway             bool                 `json:"appGateway"`
+	MicrosoftDefender      bool                 `json:"microsoftDefender"`
+	VirtualNode            bool                 `json:"virtualNode"`
+	HttpApplicationRouting bool                 `json:"httpApplicationRouting"`
+	ServiceMesh            TfvarServiceMeshType `json:"serviceMesh"`
 }
 
 type TfvarKubernetesClusterType struct {
