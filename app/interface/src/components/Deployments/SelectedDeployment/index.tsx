@@ -15,7 +15,7 @@ type Props = {
   sticky?: boolean;
 };
 
-export default function SelectedDeployment({ sticky }: Props) {
+export default function SelectedDeployment({ sticky = true }: Props) {
   const { data: lab } = useLab();
   const { data: terraformWorkspace } = useTerraformWorkspace();
   const { data: deployments } = useGetMyDeployments();
@@ -42,7 +42,7 @@ export default function SelectedDeployment({ sticky }: Props) {
   return (
     <div
       className={`${
-        sticky ? "sticky top-0" : ""
+        sticky && "sticky top-0"
       } mb-3 rounded bg-slate-50 p-3 shadow outline-1 outline-sky-500 hover:outline dark:bg-slate-900`}
     >
       <div
