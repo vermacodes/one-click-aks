@@ -1,4 +1,4 @@
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { FaChevronUp } from "react-icons/fa";
 import Button from "../Button";
 import { useState } from "react";
 
@@ -11,7 +11,7 @@ export default function BuilderContainer({ title, children }: Props) {
   const [open, setOpen] = useState<boolean>(true);
   return (
     <div
-      className={`my-4 flex w-full flex-col rounded border p-2 shadow-sm dark:border-slate-700 dark:shadow-slate-700 `}
+      className={`my-4 flex w-full flex-col rounded border p-2 shadow-sm dark:border-slate-700 dark:shadow-slate-700 dark:hover:border-sky-300 `}
     >
       <div className="flex items-center justify-between">
         <p className="text-lg font-bold">{title}</p>
