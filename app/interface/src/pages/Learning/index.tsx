@@ -1,3 +1,4 @@
+import SelectedDeployment from "../../components/Deployments/SelectedDeployment";
 import LabCard from "../../components/Lab/LabCard";
 import ValidateLabButton from "../../components/Lab/ValidateLabButton";
 import TemplateCard from "../../components/TemplateCard";
@@ -27,6 +28,7 @@ export default function Learning() {
 
   return (
     <PageLayout heading="My Assignments">
+      <SelectedDeployment />
       <div className="w-7/8 grid grid-cols-3 gap-4">
         {labs &&
           labs.map((lab) => (
