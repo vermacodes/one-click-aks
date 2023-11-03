@@ -46,7 +46,6 @@ function Modal({ showModal, setShowModal }: ModalProps) {
     useGetMyDeployments();
   const { mutateAsync: addDeployment } = useAddDeployment();
   const { actionStatus } = useContext(WebSocketContext);
-  const { mutate: setActionStatus } = useSetActionStatus();
   const { data: lab } = useLab();
 
   function handleWorkspaceNameTextField(
