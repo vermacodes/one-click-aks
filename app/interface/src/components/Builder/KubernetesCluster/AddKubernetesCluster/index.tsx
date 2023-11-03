@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { TfvarKubernetesClusterType } from "../../../../dataStructures";
 import { useLab, useSetLab } from "../../../../hooks/useLab";
 import { useSetLogs } from "../../../../hooks/useLogs";
@@ -8,7 +8,6 @@ import { defaultKubernetesCluster } from "../../../../defaults";
 import { WebSocketContext } from "../../../../WebSocketContext";
 
 export default function AddKubernetesCluster() {
-  const [versionMenu, setVersionMenu] = useState<boolean>(false);
   const {
     data: lab,
     isLoading: labIsLoading,

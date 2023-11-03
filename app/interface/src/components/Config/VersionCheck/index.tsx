@@ -1,4 +1,3 @@
-import { useGetMyDeployments } from "../../../hooks/useDeployments";
 import { useServerStatus } from "../../../hooks/useServerStatus";
 
 export default function VersionCheck() {

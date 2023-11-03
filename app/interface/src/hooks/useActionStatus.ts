@@ -12,7 +12,7 @@ function setActionStatus(actionStatus: ActionStatusType) {
 }
 
 export function useActionStatus() {
-  const [refetchInterval, setRefecthInterval] = useState<false | number>(false);
+  const [refetchInterval, setRefetchInterval] = useState<false | number>(false);
   return useQuery("get-action-status", getActionStatus, {
     refetchInterval: refetchInterval,
     select: (data) => {
@@ -23,9 +23,9 @@ export function useActionStatus() {
     },
     onSuccess: (data: boolean) => {
       if (data) {
-        setRefecthInterval(2000);
+        setRefetchInterval(2000);
       } else {
-        setRefecthInterval(false);
+        setRefetchInterval(false);
       }
     },
   });

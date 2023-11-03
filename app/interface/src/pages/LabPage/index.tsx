@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FaShare } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import Button from "../../components/UserInterfaceComponents/Button";
@@ -8,7 +8,6 @@ import LoadToBuilderButton from "../../components/Lab/LoadToBuilderButton";
 import TemplateCard from "../../components/TemplateCard";
 import { Lab } from "../../dataStructures";
 import { useSharedTemplates } from "../../hooks/useBlobs";
-import { useLab } from "../../hooks/useLab";
 import PageLayout from "../../layouts/PageLayout";
 
 type Props = {};

@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
-import { FaFile, FaPlane } from "react-icons/fa";
+import { FaFile } from "react-icons/fa";
 import { ButtonVariant, Lab } from "../../../../dataStructures";
-import { useActionStatus } from "../../../../hooks/useActionStatus";
 import { useSetLogs } from "../../../../hooks/useLogs";
 import { usePreference } from "../../../../hooks/usePreference";
 import { usePlan } from "../../../../hooks/useTerraform";

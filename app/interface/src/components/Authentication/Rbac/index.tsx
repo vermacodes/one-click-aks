@@ -1,5 +1,4 @@
 import { useGetAllRoles } from "../../../hooks/useAuth";
-import RbacEditor from "../RbacEditor";
 import Role from "./Role";
 
 type Props = {};

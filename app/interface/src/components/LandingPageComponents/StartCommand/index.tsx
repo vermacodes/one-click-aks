@@ -35,7 +35,7 @@ export default function StartCommand({}: Props) {
               language === "bash"
                 ? "border-sky-500 text-sky-500"
                 : "border-transparent"
-            } " border-slte-500" border-b-2`}
+            } " border-slate-500" border-b-2`}
             onClick={() => {
               setLanguage("bash");
               setCommand(bashCommand);

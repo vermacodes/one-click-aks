@@ -14,11 +14,7 @@ export default function Version({ versionMenu, setVersionMenu }: Props) {
   const { actionStatus } = useContext(WebSocketContext);
   const { data, isLoading, isFetching, isError } = useGetOrchestrators();
   const { mutate: setLogs } = useSetLogs();
-  const {
-    data: lab,
-    isLoading: labIsLoading,
-    isFetching: labIsFetching,
-  } = useLab();
+  const { data: lab } = useLab();
   const { mutate: setLab } = useSetLab();
 
   function handleOnSelect(patchVersion: string) {

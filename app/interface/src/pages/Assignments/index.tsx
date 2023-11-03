@@ -1,16 +1,11 @@
-import Button from "../../components/UserInterfaceComponents/Button";
 import DeleteAssignment from "../../components/Lab/Assignment/DeleteAssignment";
-import {
-  useDeleteAssignment,
-  useGetAssignments,
-} from "../../hooks/useAssignment";
+import { useGetAssignments } from "../../hooks/useAssignment";
 import PageLayout from "../../layouts/PageLayout";
 
 type Props = {};
 
 export default function Assignments({}: Props) {
   const { data: assignments } = useGetAssignments();
-  const deleteAssignment = useDeleteAssignment();
 
   return (
     <PageLayout heading="Lab Assignments">

@@ -14,7 +14,6 @@ import { useSharedMockCases } from "../../hooks/useBlobs";
 import LabGridLayout from "../../layouts/LabGridLayout";
 import PageLayout from "../../layouts/PageLayout";
 import LabBuilder from "../../modals/SaveLabModal";
-import { Menu } from "@headlessui/react";
 import Button from "../../components/UserInterfaceComponents/Button";
 
 export default function MockCases() {
