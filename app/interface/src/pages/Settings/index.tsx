@@ -10,6 +10,7 @@ import TerraformWorkspaces from "../../components/Config/TerraformWorkspaces";
 import PageLayout from "../../layouts/PageLayout";
 import SettingsItemLayout from "../../layouts/SettingsItemLayout";
 import AzureSubscriptionSetting from "../../components/Config/AzureSubscriptionSetting";
+import ServerStatus from "../../components/Config/ServerStatus";
 
 export default function Settings() {
   const [regionEdit, setRegionEdit] = useState<boolean>(false);
@@ -17,6 +18,7 @@ export default function Settings() {
   return (
     <PageLayout heading="Settings">
       <div className="mb-4 flex flex-col gap-4">
+        <ServerStatus />
         <ServerEndpoint />
         {/* <WebSocketEndpoint /> */}
         <AuthServiceEndpoint />
