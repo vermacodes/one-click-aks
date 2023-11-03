@@ -30,7 +30,7 @@ export default function LabBuilder() {
           : "Lab Builder - New Lab"
       }
     >
-      <SelectedDeployment />
+      <SelectedDeployment sticky={false} />
       <Builder />
       <Terminal />
     </PageLayout>
