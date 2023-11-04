@@ -14,6 +14,7 @@ import VirtualNode from "../Addons/VirtualNode";
 import HttpApplicationRouting from "../Addons/HttpApplicationRouting";
 import BuilderContainer from "../../../UserInterfaceComponents/BuilderContainer";
 import ServiceMesh from "../Addons/ServiceMesh";
+import { TfvarKubernetesClusterType } from "../../../../dataStructures";
 
 export default function KubernetesCluster() {
   const [versionMenu, setVersionMenu] = useState<boolean>(false);
@@ -29,28 +30,40 @@ export default function KubernetesCluster() {
   }
 
   return (
-    <BuilderContainer title="Kubernetes Cluster">
-      <BuilderContainer title="Features">
-        <div className={`mt-4 flex flex-wrap gap-x-2 gap-y-2`}>
-          <Version versionMenu={versionMenu} setVersionMenu={setVersionMenu} />
-          <PrivateCluster />
-          <VirtualMachine />
-          <AzureCNI />
-          <Calico />
-          <NetworkPluginMode />
-          <AutoScaling />
-          <UserDefinedRouting />
-        </div>
-      </BuilderContainer>
-      <BuilderContainer title="Addons">
-        <div className={`mt-4 flex flex-wrap gap-x-2 gap-y-2`}>
-          <AppGateway />
-          <ServiceMesh />
-          <MicrosoftDefender />
-          <VirtualNode />
-          <HttpApplicationRouting />
-        </div>
-      </BuilderContainer>
-    </BuilderContainer>
+    <>
+      {lab.template.kubernetesClusters.map(
+        (cluster: TfvarKubernetesClusterType, index: number) => (
+          <BuilderContainer
+            key={index}
+            title={`Kubernetes Cluster ${index + 1}`}
+          >
+            <BuilderContainer key={index} title="Features">
+              <div className={`mt-4 flex flex-wrap gap-x-2 gap-y-2`}>
+                <Version
+                  versionMenu={versionMenu}
+                  setVersionMenu={setVersionMenu}
+                />
+                <PrivateCluster index={index} />
+                <VirtualMachine />
+                <AzureCNI />
+                <Calico />
+                <NetworkPluginMode />
+                <AutoScaling />
+                <UserDefinedRouting />
+              </div>
+            </BuilderContainer>
+            <BuilderContainer title="Addons">
+              <div className={`mt-4 flex flex-wrap gap-x-2 gap-y-2`}>
+                <AppGateway />
+                <ServiceMesh />
+                <MicrosoftDefender />
+                <VirtualNode />
+                <HttpApplicationRouting />
+              </div>
+            </BuilderContainer>
+          </BuilderContainer>
+        )
+      )}
+    </>
   );
 }

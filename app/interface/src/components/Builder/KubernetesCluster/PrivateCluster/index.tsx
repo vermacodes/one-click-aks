@@ -4,7 +4,11 @@ import { useSetLogs } from "../../../../hooks/useLogs";
 import Checkbox from "../../../UserInterfaceComponents/Checkbox";
 import { WebSocketContext } from "../../../../WebSocketContext";
 
-export default function PrivateCluster() {
+type Props = {
+  index: number;
+};
+
+export default function PrivateCluster({ index }: Props) {
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const {
@@ -18,12 +22,14 @@ export default function PrivateCluster() {
     if (lab !== undefined) {
       if (lab.template !== undefined) {
         if (
-          lab.template.kubernetesClusters[0].privateClusterEnabled === "true"
+          lab.template.kubernetesClusters[index].privateClusterEnabled ===
+          "true"
         ) {
-          lab.template.kubernetesClusters[0].privateClusterEnabled = "false";
+          lab.template.kubernetesClusters[index].privateClusterEnabled =
+            "false";
           lab.template.jumpservers = [];
         } else {
-          lab.template.kubernetesClusters[0].privateClusterEnabled = "true";
+          lab.template.kubernetesClusters[index].privateClusterEnabled = "true";
         }
         !actionStatus.inProgress &&
           setLogs({
@@ -56,7 +62,7 @@ export default function PrivateCluster() {
       label="Private Cluster"
       checked={
         lab.template.kubernetesClusters.length > 0 &&
-        lab.template.kubernetesClusters[0].privateClusterEnabled === "true"
+        lab.template.kubernetesClusters[index].privateClusterEnabled === "true"
       }
       disabled={
         lab.template.kubernetesClusters.length === 0 ||
