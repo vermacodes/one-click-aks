@@ -39,7 +39,7 @@ type TfvarKubernetesClusterType struct {
 	DefaultNodePool       TfvarDefaultNodePoolType `json:"defaultNodePool"`
 }
 
-type TfvarVirtualNeworkType struct {
+type TfvarVirtualNetworkType struct {
 	AddressSpace []string
 }
 
@@ -68,7 +68,7 @@ type AppGatewayType struct{}
 
 type TfvarConfigType struct {
 	ResourceGroup         TfvarResourceGroupType          `json:"resourceGroup"`
-	VirtualNetworks       []TfvarVirtualNeworkType        `json:"virtualNetworks"`
+	VirtualNetworks       []TfvarVirtualNetworkType       `json:"virtualNetworks"`
 	Subnets               []TfvarSubnetType               `json:"subnets"`
 	Jumpservers           []TfvarJumpserverType           `json:"jumpservers"`
 	NetworkSecurityGroups []TfvarNetworkSecurityGroupType `json:"networkSecurityGroups"`
