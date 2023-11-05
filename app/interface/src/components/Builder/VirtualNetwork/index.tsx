@@ -47,7 +47,7 @@ export default function VirtualNetwork() {
   const disabled = isLoading || isFetching;
 
   // Define the checked state
-  const checked = (lab?.template?.jumpservers?.length ?? 0) > 0;
+  const checked = (lab?.template?.virtualNetworks?.length ?? 0) > 0;
 
   return lab?.template ? (
     <Checkbox
