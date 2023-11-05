@@ -18,65 +18,36 @@ export default function AutoScaling({ index }: Props) {
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
 
-  function handleOnChange() {
-    if (lab !== undefined) {
-      if (lab.template !== undefined) {
-        if (
-          lab.template.kubernetesClusters[index].defaultNodePool
-            .enableAutoScaling
-        ) {
-          lab.template.kubernetesClusters[
-            index
-          ].defaultNodePool.enableAutoScaling = false;
-        } else {
-          lab.template.kubernetesClusters[
-            index
-          ].defaultNodePool.enableAutoScaling = true;
-        }
-        !actionStatus.inProgress &&
-          setLogs({
-            logs: JSON.stringify(lab.template, null, 4),
-          });
-        setLab(lab);
-      }
+  // Toggle the auto scaling feature
+  const handleOnChange = () => {
+    const cluster = lab?.template?.kubernetesClusters[index];
+    if (
+      cluster?.defaultNodePool?.enableAutoScaling !== undefined &&
+      lab !== undefined
+    ) {
+      cluster.defaultNodePool.enableAutoScaling =
+        !cluster.defaultNodePool.enableAutoScaling;
+      !actionStatus.inProgress &&
+        setLogs({ logs: JSON.stringify(lab?.template, null, 4) });
+      setLab(lab);
     }
-  }
+  };
 
-  if (lab && lab.template === undefined) {
-    return <></>;
-  }
+  // Determine checked and disabled states
+  const checked =
+    lab?.template?.kubernetesClusters[index]?.defaultNodePool
+      ?.enableAutoScaling ?? false;
+  const disabled =
+    labIsLoading || labIsFetching || !lab?.template?.kubernetesClusters[index];
 
-  if (labIsLoading || labIsFetching) {
-    return (
-      <Checkbox
-        id="toggle-autoscaling"
-        label="Auto Scaling"
-        disabled={true}
-        checked={false}
-        handleOnChange={handleOnChange}
-      />
-    );
-  }
-
-  return (
-    <>
-      {lab && lab.template && (
-        <Checkbox
-          id="toggle-autoscaling"
-          label="Auto Scaling"
-          disabled={
-            labIsLoading ||
-            labIsFetching ||
-            lab.template.kubernetesClusters.length === 0
-          }
-          checked={
-            lab.template.kubernetesClusters.length > 0 &&
-            lab.template.kubernetesClusters[index].defaultNodePool
-              .enableAutoScaling
-          }
-          handleOnChange={handleOnChange}
-        />
-      )}
-    </>
-  );
+  // Render the Checkbox component if the lab template exists
+  return lab?.template ? (
+    <Checkbox
+      id="toggle-autoscaling"
+      label="Auto Scaling"
+      checked={checked}
+      disabled={disabled}
+      handleOnChange={handleOnChange}
+    />
+  ) : null; // Return null if the lab template does not exist
 }

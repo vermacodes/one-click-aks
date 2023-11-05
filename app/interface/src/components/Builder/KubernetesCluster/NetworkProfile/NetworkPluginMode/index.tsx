@@ -16,62 +16,36 @@ export default function NetworkPluginMode({ index }: Props) {
   } = useLab();
   const { mutate: setLab } = useSetLab();
 
-  function handleOnChange() {
-    if (lab !== undefined) {
-      if (lab.template !== undefined) {
-        if (
-          "null" === lab.template.kubernetesClusters[index].networkPluginMode
-        ) {
-          lab.template.kubernetesClusters[index].networkPluginMode = "Overlay";
-        } else {
-          lab.template.kubernetesClusters[index].networkPluginMode = "null";
-        }
-        !actionStatus.inProgress &&
-          setLogs({
-            logs: JSON.stringify(lab.template, null, 4),
-          });
-        setLab(lab);
-      }
+  const cluster = lab?.template?.kubernetesClusters[index];
+
+  // Handle checkbox change
+  const handleOnChange = () => {
+    if (cluster) {
+      cluster.networkPluginMode =
+        cluster.networkPluginMode === "null" ? "Overlay" : "null";
+      !actionStatus.inProgress &&
+        setLogs({ logs: JSON.stringify(lab?.template, null, 4) });
+      setLab(lab);
     }
-  }
+  };
 
-  if (lab === undefined || lab.template === undefined) {
-    return <></>;
-  }
+  // Determine checked and disabled states
+  const checked = cluster?.networkPluginMode === "Overlay";
+  const disabled =
+    labIsLoading ||
+    labIsFetching ||
+    !cluster ||
+    cluster.networkPlugin !== "azure" ||
+    cluster.networkPolicy !== "azure";
 
-  if (labIsLoading || labIsFetching) {
-    return (
-      <Checkbox
-        id="toggle-overlay"
-        label="Overlay"
-        disabled={true}
-        checked={false}
-        handleOnChange={handleOnChange}
-      />
-    );
-  }
-
-  return (
-    <>
-      {lab && lab.template && (
-        <Checkbox
-          id="toggle-overlay"
-          label="Overlay"
-          checked={
-            lab.template.kubernetesClusters.length > 0 &&
-            "Overlay" ===
-              lab.template.kubernetesClusters[index].networkPluginMode
-          }
-          disabled={
-            labIsLoading ||
-            labIsFetching ||
-            lab.template.kubernetesClusters.length === 0 ||
-            "azure" !== lab.template.kubernetesClusters[index].networkPlugin ||
-            "azure" !== lab.template.kubernetesClusters[index].networkPolicy
-          }
-          handleOnChange={handleOnChange}
-        />
-      )}
-    </>
-  );
+  // If lab or template is undefined, return nothing
+  return lab?.template ? (
+    <Checkbox
+      id="toggle-overlay"
+      label="Overlay"
+      checked={checked}
+      disabled={disabled}
+      handleOnChange={handleOnChange}
+    />
+  ) : null;
 }

@@ -1,12 +1,10 @@
 import { useContext } from "react";
 import { useLab, useSetLab } from "../../../../../hooks/useLab";
-import { useSetLogs } from "../../../../../hooks/useLogs";
 import Checkbox from "../../../../UserInterfaceComponents/Checkbox";
 import { WebSocketContext } from "../../../../../WebSocketContext";
+import { useSetLogs } from "../../../../../hooks/useLogs";
 
-type Props = {
-  index: number;
-};
+type Props = { index: number };
 
 export default function MicrosoftDefender({ index }: Props) {
   const { actionStatus } = useContext(WebSocketContext);
@@ -18,56 +16,29 @@ export default function MicrosoftDefender({ index }: Props) {
   } = useLab();
   const { mutate: setLab } = useSetLab();
 
-  // Function to handle changes to the Microsoft Defender addon
-  function handleOnChange() {
-    if (lab === undefined) {
-      return;
+  const cluster = lab?.template?.kubernetesClusters[index];
+
+  // Handle checkbox change
+  const handleOnChange = () => {
+    if (cluster?.addons && lab !== undefined) {
+      cluster.addons.microsoftDefender = !cluster.addons.microsoftDefender;
+      !actionStatus.inProgress &&
+        setLogs({ logs: JSON.stringify(lab?.template, null, 4) });
+      setLab(lab);
     }
-    // Get a reference to the addons object
-    const addons = lab?.template?.kubernetesClusters[index]?.addons;
+  };
 
-    if (addons?.microsoftDefender === undefined) {
-      return;
-    }
+  // Determine checked and disabled states
+  const checked = cluster?.addons?.microsoftDefender ?? false;
+  const disabled = labIsLoading || labIsFetching || !cluster;
 
-    // Toggle the Microsoft Defender addon
-    addons.microsoftDefender = !addons.microsoftDefender;
-
-    // Update the logs if no action is in progress
-    !actionStatus.inProgress &&
-      setLogs({
-        logs: JSON.stringify(lab.template, null, 4),
-      });
-
-    // Update the lab state
-    setLab(lab);
-  }
-
-  // If the lab or template is undefined, return an empty fragment
-  if (lab === undefined || lab.template === undefined) {
-    return <></>;
-  }
-
-  // Determine the checked and disabled states
-  const checked =
-    lab?.template?.kubernetesClusters[index]?.addons?.microsoftDefender ??
-    false;
-  const disabled =
-    labIsLoading ||
-    labIsFetching ||
-    lab.template.kubernetesClusters.length === 0;
-
-  return (
-    <>
-      {lab && lab.template && (
-        <Checkbox
-          id="toggle-defender"
-          label="Microsoft Defender"
-          checked={checked}
-          disabled={disabled}
-          handleOnChange={handleOnChange}
-        />
-      )}
-    </>
-  );
+  return lab?.template ? (
+    <Checkbox
+      id="toggle-defender"
+      label="Microsoft Defender"
+      checked={checked}
+      disabled={disabled}
+      handleOnChange={handleOnChange}
+    />
+  ) : null;
 }

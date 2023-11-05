@@ -4,71 +4,50 @@ import Checkbox from "../../../../UserInterfaceComponents/Checkbox";
 import { WebSocketContext } from "../../../../../WebSocketContext";
 import { useSetLogs } from "../../../../../hooks/useLogs";
 
-type Props = {
-  index: number;
-};
+type Props = { index: number };
 
 export default function HttpApplicationRouting({ index }: Props) {
+  const { actionStatus } = useContext(WebSocketContext);
+  const { mutate: setLogs } = useSetLogs();
   const {
     data: lab,
     isLoading: labIsLoading,
     isFetching: labIsFetching,
   } = useLab();
-  const { mutate: setLogs } = useSetLogs();
+
   const { mutate: setLab } = useSetLab();
-  const { actionStatus } = useContext(WebSocketContext);
 
-  function handleOnChange() {
-    if (lab === undefined || lab.template === undefined) return;
-    lab.template.kubernetesClusters[index].addons.httpApplicationRouting =
-      !lab.template.kubernetesClusters[index].addons.httpApplicationRouting;
+  const cluster = lab?.template?.kubernetesClusters[index];
 
-    !actionStatus.inProgress &&
-      setLogs({
-        logs: JSON.stringify(lab.template, null, 4),
-      });
+  // Handle checkbox change
+  const handleOnChange = () => {
+    // If the cluster and its addons exist
+    if (cluster?.addons && lab !== undefined) {
+      // Toggle the httpApplicationRouting addon
+      cluster.addons.httpApplicationRouting =
+        !cluster.addons.httpApplicationRouting;
 
-    setLab(lab);
-  }
+      // If there's no action in progress, set the logs with the updated lab template
+      !actionStatus.inProgress &&
+        setLogs({ logs: JSON.stringify(lab?.template, null, 4) });
 
-  if (lab === undefined || lab.template === undefined) return null;
+      // Update the lab data with the updated cluster
+      setLab(lab);
+    }
+  };
 
-  if (labIsFetching || labIsLoading) {
-    return (
-      <Checkbox
-        id="toggle-httpapplicationrouting"
-        label="Web App Routing (Managed Ingress Controller)"
-        disabled={true}
-        checked={false}
-        handleOnChange={handleOnChange}
-      />
-    );
-  }
+  // Determine checked and disabled states
+  const checked = cluster?.addons?.httpApplicationRouting ?? false;
+  const disabled = labIsLoading || labIsFetching || !cluster;
 
-  var checked: boolean = true;
-  if (
-    lab &&
-    lab.template &&
-    lab.template.kubernetesClusters.length > 0 &&
-    lab.template.kubernetesClusters[index].addons &&
-    lab.template.kubernetesClusters[index].addons.httpApplicationRouting ===
-      false
-  ) {
-    checked = false;
-  }
-
-  var disabled: boolean = false;
-  if (lab && lab.template && lab.template.kubernetesClusters.length === 0) {
-    disabled = true;
-  }
-
-  return (
+  // Render the Checkbox component if the lab template exists
+  return lab?.template ? (
     <Checkbox
       id="toggle-httpapplicationrouting"
       label="Web App Routing (Managed Ingress Controller)"
-      disabled={disabled}
       checked={checked}
+      disabled={disabled}
       handleOnChange={handleOnChange}
     />
-  );
+  ) : null; // Return null if the lab template does not exist
 }

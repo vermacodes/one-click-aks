@@ -13,109 +13,130 @@ type Props = {
 
 export default function Version({ versionMenu, setVersionMenu, index }: Props) {
   const { actionStatus } = useContext(WebSocketContext);
-  const { data, isLoading, isFetching, isError } = useGetOrchestrators();
+  const { data, isLoading, isFetching } = useGetOrchestrators();
   const { mutate: setLogs } = useSetLogs();
-  const { data: lab } = useLab();
+  const {
+    data: lab,
+    isLoading: labIsLoading,
+    isFetching: labIsFetching,
+  } = useLab();
   const { mutate: setLab } = useSetLab();
 
-  function handleOnSelect(patchVersion: string) {
-    if (lab !== undefined) {
-      if (lab.template !== undefined) {
-        lab.template.kubernetesClusters[index].kubernetesVersion = patchVersion;
-        !actionStatus.inProgress &&
-          setLogs({
-            logs: JSON.stringify(lab.template, null, 4),
-          });
-        setLab(lab);
-      }
+  // Select a version
+  const handleOnSelect = (patchVersion: string) => {
+    if (lab?.template) {
+      lab.template.kubernetesClusters[index].kubernetesVersion = patchVersion;
+      !actionStatus.inProgress &&
+        setLogs({ logs: JSON.stringify(lab.template, null, 4) });
+      setLab(lab);
+      console.log("version selected", patchVersion);
+    }
+  };
+
+  // If no version is selected, select the highest patch version of the second from top minor version
+  // Omit the version if it's in preview
+  if (
+    lab?.template?.kubernetesClusters[index]?.kubernetesVersion === "" &&
+    data?.values
+  ) {
+    // Filter out preview versions
+    const nonPreviewValues = data.values.filter((value) => !value.isPreview);
+
+    // Sort the versions in descending order
+    nonPreviewValues.sort((a, b) => b.version.localeCompare(a.version));
+
+    // Select the second from top minor version
+    const secondTopMinorVersion = nonPreviewValues[1];
+
+    if (secondTopMinorVersion) {
+      // Get the patch versions of the selected minor version
+      const patchVersions = Object.keys(secondTopMinorVersion.patchVersions);
+
+      // Sort the patch versions in descending order
+      patchVersions.sort((a, b) => b.localeCompare(a));
+
+      // Select the highest patch version
+      const highestPatchVersion = patchVersions[0];
+
+      handleOnSelect(highestPatchVersion);
     }
   }
 
-  if (
-    lab &&
-    lab.template &&
-    lab.template.kubernetesClusters.length > 0 &&
-    lab.template.kubernetesClusters[index].kubernetesVersion === "" &&
-    data &&
-    data.values
-  ) {
-    handleOnSelect(Object.keys(data.values[0].patchVersions)[0]);
-  }
+  // Determine if the version menu should be disabled
+  const disabled =
+    actionStatus.inProgress ||
+    isLoading ||
+    isFetching ||
+    labIsLoading ||
+    labIsFetching ||
+    !lab?.template?.kubernetesClusters[index];
+
+  // Determine the current version
+  const currentVersion =
+    lab?.template?.kubernetesClusters[index]?.kubernetesVersion;
 
   return (
-    // TODO : This is bug. if version menu is open and you also open a modal, lets say terraform settings. then version menu will be on top.
-    // TODO : Fix this.
     <div className={`${versionMenu ? "relative" : ""} inline-block text-left`}>
       <div
         className={`${
-          (actionStatus.inProgress || isLoading || isFetching) &&
-          "text-slate-500"
+          disabled && "text-slate-500"
         } flex w-64 items-center justify-between rounded border border-slate-500 px-2 py-1`}
         onClick={(e) => {
-          if (!(actionStatus.inProgress || isLoading || isFetching)) {
+          if (!disabled) {
             setVersionMenu(!versionMenu);
           }
           e.stopPropagation();
         }}
       >
-        {lab &&
-          lab.template &&
-          lab.template.kubernetesClusters.length > 0 &&
-          lab.template.kubernetesClusters[index].kubernetesVersion}
+        {currentVersion}
         <p>
           <FaChevronDown />
         </p>
       </div>
-      <div
-        className={`absolute right-0 z-10 mt-2 h-56 w-64 origin-top-right overflow-y-auto overflow-x-hidden scrollbar-thin  scrollbar-thumb-slate-400 dark:scrollbar-thumb-slate-600 ${
-          !versionMenu && "hidden"
-        } items-center gap-y-2 rounded border border-slate-500 bg-slate-100 p-2 dark:bg-slate-800`}
-        onMouseLeave={() => setVersionMenu(false)}
-      >
-        {data?.values?.map(
-          (value) =>
-            lab &&
-            lab.template &&
-            lab.template.kubernetesClusters.length > 0 &&
-            lab.template?.kubernetesClusters[index].kubernetesVersion !==
-              undefined && (
-              <div key={value.version}>
-                {Object.keys(value.patchVersions).map((patchVersion) => (
-                  <div
-                    key={patchVersion}
-                    className="flex justify-between gap-x-1"
-                  >
+      {versionMenu && (
+        <div
+          className="absolute right-0 z-10 mt-2 h-56 w-64 origin-top-right items-center gap-y-2 overflow-y-auto  rounded border border-slate-500 bg-slate-100 p-2 overflow-x-hidden scrollbar-thin scrollbar-thumb-slate-400 dark:bg-slate-800 dark:scrollbar-thumb-slate-600"
+          onMouseLeave={() => setVersionMenu(false)}
+        >
+          {data?.values?.map(
+            (value) =>
+              currentVersion !== undefined && (
+                <div key={value.version}>
+                  {Object.keys(value.patchVersions).map((patchVersion) => (
                     <div
-                      className={`${
-                        patchVersion ===
-                          lab.template?.kubernetesClusters[index]
-                            .kubernetesVersion &&
-                        "bg-green-300 hover:text-slate-900 dark:text-slate-900"
-                      } w-full items-center justify-between rounded p-2 hover:bg-sky-500 hover:text-slate-100 `}
-                      onClick={() => {
-                        setVersionMenu(false);
-                        handleOnSelect(patchVersion);
-                      }}
+                      key={patchVersion}
+                      className="flex justify-between gap-x-1"
                     >
-                      <div className="flex justify-between">
-                        <div key={patchVersion}>{patchVersion}</div>
-                        <span>{value.isPreview && "(Preview)"}</span>
-                      </div>
-
-                      <div className="space-x-2 text-xs text-slate-500">
-                        Upgrades :
-                        {value.patchVersions[patchVersion].upgrades &&
-                          value.patchVersions[patchVersion].upgrades.map(
-                            (upgrade) => <span key={upgrade}> {upgrade}</span>
+                      <div
+                        className={`${
+                          patchVersion === currentVersion &&
+                          "bg-green-300 hover:text-slate-900 dark:text-slate-900"
+                        } w-full items-center justify-between rounded p-2 hover:bg-sky-500 hover:text-slate-100 `}
+                        onClick={() => {
+                          setVersionMenu(false);
+                          handleOnSelect(patchVersion);
+                        }}
+                      >
+                        <div className="flex justify-between">
+                          <div key={patchVersion}>{patchVersion}</div>
+                          <span>{value.isPreview && "(Preview)"}</span>
+                        </div>
+                        <div className="space-x-2 text-xs text-slate-500">
+                          Upgrades :
+                          {value.patchVersions[patchVersion].upgrades?.map(
+                            (upgrade) => (
+                              <span key={upgrade}> {upgrade}</span>
+                            )
                           )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            )
-        )}
-      </div>
+                  ))}
+                </div>
+              )
+          )}
+        </div>
+      )}
     </div>
   );
 }
