@@ -30,10 +30,12 @@ export default function virtualNetwork() {
           lab.template.jumpservers = [];
           lab.template.firewalls = [];
           if (lab.template.kubernetesClusters.length > 0) {
-            lab.template.kubernetesClusters[0].addons.appGateway = false;
-            lab.template.kubernetesClusters[0].addons.virtualNode = false;
-            lab.template.kubernetesClusters[0].privateClusterEnabled = "false";
-            lab.template.kubernetesClusters[0].outboundType = "loadBalancer";
+            lab.template.kubernetesClusters.forEach((cluster, index) => {
+              cluster.addons.appGateway = false;
+              cluster.addons.virtualNode = false;
+              cluster.privateClusterEnabled = "false";
+              cluster.outboundType = "loadBalancer";
+            });
           }
         }
         !actionStatus.inProgress &&

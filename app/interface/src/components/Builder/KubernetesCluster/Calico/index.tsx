@@ -4,7 +4,11 @@ import { useSetLogs } from "../../../../hooks/useLogs";
 import Checkbox from "../../../UserInterfaceComponents/Checkbox";
 import { WebSocketContext } from "../../../../WebSocketContext";
 
-export default function Calico() {
+type Props = {
+  index: number;
+};
+
+export default function Calico({ index }: Props) {
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const {
@@ -17,11 +21,11 @@ export default function Calico() {
   function handleOnChange() {
     if (lab !== undefined) {
       if (lab.template !== undefined) {
-        if ("calico" === lab.template.kubernetesClusters[0].networkPolicy) {
-          lab.template.kubernetesClusters[0].networkPolicy = "azure";
+        if ("calico" === lab.template.kubernetesClusters[index].networkPolicy) {
+          lab.template.kubernetesClusters[index].networkPolicy = "azure";
         } else {
-          lab.template.kubernetesClusters[0].networkPolicy = "calico";
-          lab.template.kubernetesClusters[0].networkPluginMode = "null";
+          lab.template.kubernetesClusters[index].networkPolicy = "calico";
+          lab.template.kubernetesClusters[index].networkPluginMode = "null";
         }
         !actionStatus.inProgress &&
           setLogs({
@@ -56,11 +60,12 @@ export default function Calico() {
           label="Calico"
           checked={
             lab.template.kubernetesClusters.length > 0 &&
-            "calico" === lab.template.kubernetesClusters[0].networkPolicy
+            "calico" === lab.template.kubernetesClusters[index].networkPolicy
           }
           disabled={
             lab.template.kubernetesClusters.length === 0 ||
-            lab.template.kubernetesClusters[0].networkPlugin === "kubenet" ||
+            lab.template.kubernetesClusters[index].networkPlugin ===
+              "kubenet" ||
             labIsLoading ||
             labIsFetching
           }

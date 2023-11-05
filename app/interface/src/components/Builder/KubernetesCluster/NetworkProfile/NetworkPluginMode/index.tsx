@@ -1,12 +1,12 @@
 import { useContext } from "react";
-import { useLab, useSetLab } from "../../../../hooks/useLab";
-import { useSetLogs } from "../../../../hooks/useLogs";
-import Checkbox from "../../../UserInterfaceComponents/Checkbox";
-import { WebSocketContext } from "../../../../WebSocketContext";
+import { useLab, useSetLab } from "../../../../../hooks/useLab";
+import { useSetLogs } from "../../../../../hooks/useLogs";
+import Checkbox from "../../../../UserInterfaceComponents/Checkbox";
+import { WebSocketContext } from "../../../../../WebSocketContext";
 
-type Props = {};
+type Props = { index: number };
 
-export default function NetworkPluginMode({}: Props) {
+export default function NetworkPluginMode({ index }: Props) {
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const {
@@ -19,10 +19,12 @@ export default function NetworkPluginMode({}: Props) {
   function handleOnChange() {
     if (lab !== undefined) {
       if (lab.template !== undefined) {
-        if ("null" === lab.template.kubernetesClusters[0].networkPluginMode) {
-          lab.template.kubernetesClusters[0].networkPluginMode = "Overlay";
+        if (
+          "null" === lab.template.kubernetesClusters[index].networkPluginMode
+        ) {
+          lab.template.kubernetesClusters[index].networkPluginMode = "Overlay";
         } else {
-          lab.template.kubernetesClusters[0].networkPluginMode = "null";
+          lab.template.kubernetesClusters[index].networkPluginMode = "null";
         }
         !actionStatus.inProgress &&
           setLogs({
@@ -57,14 +59,15 @@ export default function NetworkPluginMode({}: Props) {
           label="Overlay"
           checked={
             lab.template.kubernetesClusters.length > 0 &&
-            "Overlay" === lab.template.kubernetesClusters[0].networkPluginMode
+            "Overlay" ===
+              lab.template.kubernetesClusters[index].networkPluginMode
           }
           disabled={
             labIsLoading ||
             labIsFetching ||
             lab.template.kubernetesClusters.length === 0 ||
-            "azure" !== lab.template.kubernetesClusters[0].networkPlugin ||
-            "azure" !== lab.template.kubernetesClusters[0].networkPolicy
+            "azure" !== lab.template.kubernetesClusters[index].networkPlugin ||
+            "azure" !== lab.template.kubernetesClusters[index].networkPolicy
           }
           handleOnChange={handleOnChange}
         />

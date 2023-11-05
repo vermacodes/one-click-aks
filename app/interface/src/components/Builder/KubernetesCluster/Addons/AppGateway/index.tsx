@@ -4,7 +4,11 @@ import { useSetLogs } from "../../../../../hooks/useLogs";
 import Checkbox from "../../../../UserInterfaceComponents/Checkbox";
 import { WebSocketContext } from "../../../../../WebSocketContext";
 
-export default function AppGateway() {
+type Props = {
+  index: number;
+};
+
+export default function AppGateway({ index }: Props) {
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const {
@@ -17,10 +21,10 @@ export default function AppGateway() {
   function handleOnChange() {
     if (lab !== undefined) {
       if (lab.template !== undefined) {
-        if (lab.template.kubernetesClusters[0].addons.appGateway) {
-          lab.template.kubernetesClusters[0].addons.appGateway = false;
+        if (lab.template.kubernetesClusters[index].addons.appGateway) {
+          lab.template.kubernetesClusters[index].addons.appGateway = false;
         } else {
-          lab.template.kubernetesClusters[0].addons.appGateway = true;
+          lab.template.kubernetesClusters[index].addons.appGateway = true;
         }
 
         !actionStatus.inProgress &&
@@ -42,7 +46,7 @@ export default function AppGateway() {
     return (
       <Checkbox
         id="toggle-appgateway"
-        label="AGIC (Addon)"
+        label="AGIC"
         disabled={true}
         checked={false}
         handleOnChange={handleOnChange}
@@ -56,8 +60,8 @@ export default function AppGateway() {
     lab &&
     lab.template &&
     lab.template.kubernetesClusters.length > 0 &&
-    lab.template.kubernetesClusters[0].addons &&
-    lab.template.kubernetesClusters[0].addons.appGateway === false
+    lab.template.kubernetesClusters[index].addons &&
+    lab.template.kubernetesClusters[index].addons.appGateway === false
   ) {
     checked = false;
   }

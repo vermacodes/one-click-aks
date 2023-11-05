@@ -4,7 +4,11 @@ import Checkbox from "../../../../UserInterfaceComponents/Checkbox";
 import { WebSocketContext } from "../../../../../WebSocketContext";
 import { useSetLogs } from "../../../../../hooks/useLogs";
 
-export default function HttpApplicationRouting() {
+type Props = {
+  index: number;
+};
+
+export default function HttpApplicationRouting({ index }: Props) {
   const {
     data: lab,
     isLoading: labIsLoading,
@@ -16,8 +20,8 @@ export default function HttpApplicationRouting() {
 
   function handleOnChange() {
     if (lab === undefined || lab.template === undefined) return;
-    lab.template.kubernetesClusters[0].addons.httpApplicationRouting =
-      !lab.template.kubernetesClusters[0].addons.httpApplicationRouting;
+    lab.template.kubernetesClusters[index].addons.httpApplicationRouting =
+      !lab.template.kubernetesClusters[index].addons.httpApplicationRouting;
 
     !actionStatus.inProgress &&
       setLogs({
@@ -46,8 +50,9 @@ export default function HttpApplicationRouting() {
     lab &&
     lab.template &&
     lab.template.kubernetesClusters.length > 0 &&
-    lab.template.kubernetesClusters[0].addons &&
-    lab.template.kubernetesClusters[0].addons.httpApplicationRouting === false
+    lab.template.kubernetesClusters[index].addons &&
+    lab.template.kubernetesClusters[index].addons.httpApplicationRouting ===
+      false
   ) {
     checked = false;
   }

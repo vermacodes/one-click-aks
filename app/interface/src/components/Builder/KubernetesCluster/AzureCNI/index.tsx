@@ -4,7 +4,11 @@ import { useSetLogs } from "../../../../hooks/useLogs";
 import Checkbox from "../../../UserInterfaceComponents/Checkbox";
 import { WebSocketContext } from "../../../../WebSocketContext";
 
-export default function AzureCNI() {
+type Props = {
+  index: number;
+};
+
+export default function AzureCNI({ index }: Props) {
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const {
@@ -17,14 +21,14 @@ export default function AzureCNI() {
   function handleOnChange() {
     if (lab !== undefined) {
       if (lab.template !== undefined) {
-        if ("azure" === lab.template.kubernetesClusters[0].networkPlugin) {
-          lab.template.kubernetesClusters[0].networkPlugin = "kubenet";
-          lab.template.kubernetesClusters[0].networkPolicy = "null";
-          lab.template.kubernetesClusters[0].networkPluginMode = "null";
-          lab.template.kubernetesClusters[0].addons.virtualNode = false;
+        if ("azure" === lab.template.kubernetesClusters[index].networkPlugin) {
+          lab.template.kubernetesClusters[index].networkPlugin = "kubenet";
+          lab.template.kubernetesClusters[index].networkPolicy = "null";
+          lab.template.kubernetesClusters[index].networkPluginMode = "null";
+          lab.template.kubernetesClusters[index].addons.virtualNode = false;
         } else {
-          lab.template.kubernetesClusters[0].networkPlugin = "azure";
-          lab.template.kubernetesClusters[0].networkPolicy = "azure";
+          lab.template.kubernetesClusters[index].networkPlugin = "azure";
+          lab.template.kubernetesClusters[index].networkPolicy = "azure";
         }
         !actionStatus.inProgress &&
           setLogs({
@@ -59,7 +63,7 @@ export default function AzureCNI() {
           label="Azure CNI"
           checked={
             lab.template.kubernetesClusters.length > 0 &&
-            "azure" === lab.template.kubernetesClusters[0].networkPlugin
+            "azure" === lab.template.kubernetesClusters[index].networkPlugin
           }
           disabled={
             labIsLoading ||

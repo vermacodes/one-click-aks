@@ -4,9 +4,11 @@ import { useSetLogs } from "../../../../../hooks/useLogs";
 import Checkbox from "../../../../UserInterfaceComponents/Checkbox";
 import { WebSocketContext } from "../../../../../WebSocketContext";
 
-type Props = {};
+type Props = {
+  index: number;
+};
 
-export default function VirtualNode({}: Props) {
+export default function VirtualNode({ index }: Props) {
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const {
@@ -19,12 +21,12 @@ export default function VirtualNode({}: Props) {
   function handleOnChange() {
     if (lab !== undefined) {
       if (lab.template !== undefined) {
-        if (lab.template.kubernetesClusters[0].addons.virtualNode) {
+        if (lab.template.kubernetesClusters[index].addons.virtualNode) {
           console.log("Virtual Node is true");
-          lab.template.kubernetesClusters[0].addons.virtualNode = false;
+          lab.template.kubernetesClusters[index].addons.virtualNode = false;
         } else {
           console.log("Virtual Node is false");
-          lab.template.kubernetesClusters[0].addons.virtualNode = true;
+          lab.template.kubernetesClusters[index].addons.virtualNode = true;
         }
 
         !actionStatus.inProgress &&
@@ -46,7 +48,7 @@ export default function VirtualNode({}: Props) {
     return (
       <Checkbox
         id="toggle-virtual-node"
-        label="VirtualNode (Addon)"
+        label="VirtualNode"
         disabled={true}
         checked={false}
         handleOnChange={handleOnChange}
@@ -60,10 +62,10 @@ export default function VirtualNode({}: Props) {
     (lab &&
       lab.template &&
       lab.template.kubernetesClusters.length > 0 &&
-      lab.template.kubernetesClusters[0].addons &&
-      lab.template.kubernetesClusters[0].addons.virtualNode === false) ||
+      lab.template.kubernetesClusters[index].addons &&
+      lab.template.kubernetesClusters[index].addons.virtualNode === false) ||
     (lab.template.kubernetesClusters.length > 0 &&
-      lab.template.kubernetesClusters[0].networkPlugin !== "azure")
+      lab.template.kubernetesClusters[index].networkPlugin !== "azure")
   ) {
     checked = false;
   }
@@ -74,7 +76,7 @@ export default function VirtualNode({}: Props) {
     labIsLoading ||
     labIsFetching ||
     lab.template.kubernetesClusters.length === 0 ||
-    lab.template.kubernetesClusters[0].networkPlugin !== "azure" ||
+    lab.template.kubernetesClusters[index].networkPlugin !== "azure" ||
     lab.template.virtualNetworks.length === 0
   ) {
     disabled = true;
@@ -85,7 +87,7 @@ export default function VirtualNode({}: Props) {
       {lab && lab.template && (
         <Checkbox
           id="toggle-virtual-node"
-          label="VirtualNode (Addon)"
+          label="VirtualNode"
           checked={checked}
           disabled={disabled}
           handleOnChange={handleOnChange}

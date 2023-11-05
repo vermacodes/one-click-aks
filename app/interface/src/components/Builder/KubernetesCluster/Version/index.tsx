@@ -8,9 +8,10 @@ import { WebSocketContext } from "../../../../WebSocketContext";
 type Props = {
   versionMenu: boolean;
   setVersionMenu(args: boolean): void;
+  index: number;
 };
 
-export default function Version({ versionMenu, setVersionMenu }: Props) {
+export default function Version({ versionMenu, setVersionMenu, index }: Props) {
   const { actionStatus } = useContext(WebSocketContext);
   const { data, isLoading, isFetching, isError } = useGetOrchestrators();
   const { mutate: setLogs } = useSetLogs();
@@ -20,7 +21,7 @@ export default function Version({ versionMenu, setVersionMenu }: Props) {
   function handleOnSelect(patchVersion: string) {
     if (lab !== undefined) {
       if (lab.template !== undefined) {
-        lab.template.kubernetesClusters[0].kubernetesVersion = patchVersion;
+        lab.template.kubernetesClusters[index].kubernetesVersion = patchVersion;
         !actionStatus.inProgress &&
           setLogs({
             logs: JSON.stringify(lab.template, null, 4),
@@ -34,7 +35,7 @@ export default function Version({ versionMenu, setVersionMenu }: Props) {
     lab &&
     lab.template &&
     lab.template.kubernetesClusters.length > 0 &&
-    lab.template.kubernetesClusters[0].kubernetesVersion === "" &&
+    lab.template.kubernetesClusters[index].kubernetesVersion === "" &&
     data &&
     data.values
   ) {
@@ -60,7 +61,7 @@ export default function Version({ versionMenu, setVersionMenu }: Props) {
         {lab &&
           lab.template &&
           lab.template.kubernetesClusters.length > 0 &&
-          lab.template.kubernetesClusters[0].kubernetesVersion}
+          lab.template.kubernetesClusters[index].kubernetesVersion}
         <p>
           <FaChevronDown />
         </p>
@@ -76,7 +77,7 @@ export default function Version({ versionMenu, setVersionMenu }: Props) {
             lab &&
             lab.template &&
             lab.template.kubernetesClusters.length > 0 &&
-            lab.template?.kubernetesClusters[0].kubernetesVersion !==
+            lab.template?.kubernetesClusters[index].kubernetesVersion !==
               undefined && (
               <div key={value.version}>
                 {Object.keys(value.patchVersions).map((patchVersion) => (
@@ -87,7 +88,7 @@ export default function Version({ versionMenu, setVersionMenu }: Props) {
                     <div
                       className={`${
                         patchVersion ===
-                          lab.template?.kubernetesClusters[0]
+                          lab.template?.kubernetesClusters[index]
                             .kubernetesVersion &&
                         "bg-green-300 hover:text-slate-900 dark:text-slate-900"
                       } w-full items-center justify-between rounded p-2 hover:bg-sky-500 hover:text-slate-100 `}

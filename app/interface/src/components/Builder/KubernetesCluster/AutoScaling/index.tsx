@@ -4,7 +4,11 @@ import { useSetLogs } from "../../../../hooks/useLogs";
 import Checkbox from "../../../UserInterfaceComponents/Checkbox";
 import { WebSocketContext } from "../../../../WebSocketContext";
 
-export default function AutoScaling() {
+type Props = {
+  index: number;
+};
+
+export default function AutoScaling({ index }: Props) {
   const {
     data: lab,
     isLoading: labIsLoading,
@@ -18,13 +22,16 @@ export default function AutoScaling() {
     if (lab !== undefined) {
       if (lab.template !== undefined) {
         if (
-          lab.template.kubernetesClusters[0].defaultNodePool.enableAutoScaling
+          lab.template.kubernetesClusters[index].defaultNodePool
+            .enableAutoScaling
         ) {
-          lab.template.kubernetesClusters[0].defaultNodePool.enableAutoScaling =
-            false;
+          lab.template.kubernetesClusters[
+            index
+          ].defaultNodePool.enableAutoScaling = false;
         } else {
-          lab.template.kubernetesClusters[0].defaultNodePool.enableAutoScaling =
-            true;
+          lab.template.kubernetesClusters[
+            index
+          ].defaultNodePool.enableAutoScaling = true;
         }
         !actionStatus.inProgress &&
           setLogs({
@@ -64,7 +71,8 @@ export default function AutoScaling() {
           }
           checked={
             lab.template.kubernetesClusters.length > 0 &&
-            lab.template.kubernetesClusters[0].defaultNodePool.enableAutoScaling
+            lab.template.kubernetesClusters[index].defaultNodePool
+              .enableAutoScaling
           }
           handleOnChange={handleOnChange}
         />

@@ -4,7 +4,11 @@ import { useSetLogs } from "../../../../hooks/useLogs";
 import Checkbox from "../../../UserInterfaceComponents/Checkbox";
 import { WebSocketContext } from "../../../../WebSocketContext";
 
-export default function UserDefinedRouting() {
+type Props = {
+  index: number;
+};
+
+export default function UserDefinedRouting({ index }: Props) {
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const {
@@ -19,12 +23,12 @@ export default function UserDefinedRouting() {
       if (lab.template !== undefined) {
         if (
           lab.template.kubernetesClusters.length > 0 &&
-          lab.template.kubernetesClusters[0].outboundType ===
+          lab.template.kubernetesClusters[index].outboundType ===
             "userDefinedRouting"
         ) {
-          lab.template.kubernetesClusters[0].outboundType = "loadBalancer";
+          lab.template.kubernetesClusters[index].outboundType = "loadBalancer";
         } else {
-          lab.template.kubernetesClusters[0].outboundType =
+          lab.template.kubernetesClusters[index].outboundType =
             "userDefinedRouting";
         }
         !actionStatus.inProgress &&
@@ -58,7 +62,7 @@ export default function UserDefinedRouting() {
     lab.template &&
     lab.template.kubernetesClusters &&
     lab.template.kubernetesClusters.length > 0 &&
-    lab.template.kubernetesClusters[0].outboundType === "userDefinedRouting"
+    lab.template.kubernetesClusters[index].outboundType === "userDefinedRouting"
   ) {
     checked = true;
   }

@@ -59,8 +59,6 @@ export default function VirtualMachine() {
           checked={lab.template.jumpservers.length > 0}
           disabled={
             lab.template.kubernetesClusters.length === 0 ||
-            lab.template.kubernetesClusters[0].privateClusterEnabled ===
-              "false" ||
             labIsLoading ||
             labIsFetching
           }
