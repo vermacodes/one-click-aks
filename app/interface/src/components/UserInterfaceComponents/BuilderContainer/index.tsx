@@ -21,8 +21,8 @@ export default function BuilderContainer({ title, children }: Props) {
           </Button>
         </div>
       </div>
-      <div className={`${!open ? "max-h-0" : "max-h-full"}`}>
-        {open && children}
+      <div className={`${!open ? "max-h-0 overflow-hidden" : "max-h-full"}`}>
+        {children}
       </div>
     </div>
   );
