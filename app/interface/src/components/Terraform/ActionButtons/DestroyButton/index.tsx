@@ -12,10 +12,7 @@ import {
   usePatchDeployment,
 } from "../../../../hooks/useDeployments";
 import { WebSocketContext } from "../../../../WebSocketContext";
-import {
-  calculateNewEpochTimeForDeployment,
-  getSelectedDeployment,
-} from "../../../../utils/helpers";
+import { getSelectedDeployment } from "../../../../utils/helpers";
 import axios from "axios";
 
 type Props = {
@@ -54,8 +51,6 @@ export default function DestroyButton({
       patchDeployment({
         ...deployment,
         deploymentStatus: status,
-        deploymentAutoDeleteUnixTime:
-          calculateNewEpochTimeForDeployment(deployment),
       });
     }
   }
