@@ -40,6 +40,8 @@ type ModalProps = {
 
 function Modal({ showModal, setShowModal }: ModalProps) {
   const [newWorkSpaceName, setNewWorkSpaceName] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isModified, setIsModified] = useState<boolean>(false);
   const { isFetching: fetchingWorkspaces, isLoading: loadingWorkspaces } =
     useTerraformWorkspace();
   const { isFetching: fetchingDeployments, isLoading: loadingDeployments } =
@@ -51,7 +53,17 @@ function Modal({ showModal, setShowModal }: ModalProps) {
   function handleWorkspaceNameTextField(
     event: React.ChangeEvent<HTMLInputElement>
   ) {
-    setNewWorkSpaceName(event.target.value);
+    const value = event.target.value;
+    const isValid = validateInput(value);
+
+    setNewWorkSpaceName(value); // Always update the input
+    setIsModified(true); // Set isModified to true when the user modifies the input
+
+    if (isValid) {
+      setErrorMessage(""); // Clear the error message
+    } else {
+      setErrorMessage("Invalid input. Please enter a valid name.");
+    }
   }
 
   function handleAddWorkspace() {
@@ -76,6 +88,26 @@ function Modal({ showModal, setShowModal }: ModalProps) {
       }, 3000);
     });
   }
+
+  const validateInput = (input: string) => {
+    // Check if input is at least one character long
+    if (input.length < 1) {
+      return false;
+    }
+
+    // Check if input does not exceed 255 characters in length
+    if (input.length > 255) {
+      return false;
+    }
+
+    // Check if input consists of letters, numbers, colons, hyphens, and underscores
+    const regex = /^[a-zA-Z0-9:_-]*$/;
+    if (!regex.test(input)) {
+      return false;
+    }
+
+    return true;
+  };
 
   if (!showModal) return null;
   return (
@@ -124,12 +156,36 @@ function Modal({ showModal, setShowModal }: ModalProps) {
                     onChange={handleWorkspaceNameTextField}
                   ></input>
                 </div>
-                <Button variant="primary" onClick={() => handleAddWorkspace()}>
-                  Add
+                <Button
+                  variant="primary"
+                  onClick={() => handleAddWorkspace()}
+                  disabled={
+                    !validateInput(newWorkSpaceName) ||
+                    actionStatus.inProgress ||
+                    fetchingDeployments ||
+                    fetchingWorkspaces ||
+                    loadingDeployments ||
+                    loadingWorkspaces
+                  }
+                >
+                  Create
+                </Button>
+                <Button variant="secondary" onClick={() => setShowModal(false)}>
+                  Cancel
                 </Button>
               </>
             )}
           </div>
+          {isModified && errorMessage && (
+            <div className="rounded border border-rose-500 bg-rose-500 bg-opacity-20 p-2">
+              <p className="error-message">{errorMessage}</p>
+              <p className="text-xs">
+                Deployment name must: Be at least one character long. Not exceed
+                255 characters in length. Consist of letters, numbers, colons,
+                hyphens, or underscores only.
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>
