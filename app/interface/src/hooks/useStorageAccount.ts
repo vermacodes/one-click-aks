@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { axiosInstance } from "../utils/axios-interceptors";
 
 function getStorageAccount() {
@@ -7,6 +7,10 @@ function getStorageAccount() {
 
 function configureStorageAccount() {
   return axiosInstance.post("storageaccount");
+}
+
+function breakBlobLease(workspaceName: string) {
+  return axiosInstance.put(`storageaccount/breakbloblease/${workspaceName}`);
 }
 
 export function useGetStorageAccount() {
@@ -31,4 +35,8 @@ export function useConfigureStorageAccount() {
     },
     enabled: false,
   });
+}
+
+export function useBreakBlobLease() {
+  return useMutation(breakBlobLease);
 }

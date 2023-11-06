@@ -5,6 +5,7 @@ import DestroyTime from "../DestroyTime";
 import DeploymentLifespan from "../DeploymentLifespan";
 import SelectDeployment from "../SelectDeployment";
 import DeploymentStatus from "../DeploymentStatus";
+import BreakBlobLease from "../BreakBlobLease";
 
 type Props = {
   deployment: DeploymentType;
@@ -38,6 +39,7 @@ export default function Deployment({ deployment, selectedDeployment }: Props) {
           <DeploymentLifespan deployment={deployment} />
           <DestroyTime deployment={deployment} />
           <SelectDeployment deployment={deployment} variant="primary-outline" />
+          <BreakBlobLease deployment={deployment} />
           <DestroyButton
             variant="danger-outline"
             lab={deployment.deploymentLab}
