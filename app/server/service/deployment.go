@@ -45,7 +45,7 @@ func (d *DeploymentService) GetMyDeployments(userId string) ([]entity.Deployment
 	}
 
 	// get all deployments
-	deployments, err := d.deploymentRepository.GetMyDeployments(userId)
+	deployments, err := d.deploymentRepository.GetMyDeployments(userId, activeAccount.Id)
 	if err != nil {
 		return nil, err
 	}

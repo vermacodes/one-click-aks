@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"encoding/json"
+	"strings"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/data/aztables"
 	"github.com/vermacodes/one-click-aks/app/server/entity"
@@ -20,7 +21,7 @@ func (d *deploymentRepository) GetDeployments() ([]entity.Deployment, error) {
 	return nil, nil
 }
 
-func (d *deploymentRepository) GetMyDeployments(userId string) ([]entity.Deployment, error) {
+func (d *deploymentRepository) GetMyDeployments(userId string, subscriptionId string) ([]entity.Deployment, error) {
 
 	deployment := entity.Deployment{}
 	deployments := []entity.Deployment{}
@@ -43,6 +44,12 @@ func (d *deploymentRepository) GetMyDeployments(userId string) ([]entity.Deploym
 			if err != nil {
 				slog.Error("error unmarshal deployment entity ", err)
 				return nil, err
+			}
+
+			// filter out deployments that are not for the current subscription
+			// check if RowKey contains the subscriptionId
+			if !strings.Contains(myEntity.RowKey, subscriptionId) {
+				continue
 			}
 
 			deploymentString := myEntity.Properties["Deployment"].(string)

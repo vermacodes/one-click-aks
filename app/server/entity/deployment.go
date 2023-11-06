@@ -50,7 +50,7 @@ type DeploymentService interface {
 
 type DeploymentRepository interface {
 	GetDeployments() ([]Deployment, error)
-	GetMyDeployments(string) ([]Deployment, error)
+	GetMyDeployments(string, string) ([]Deployment, error)
 	GetDeployment(string, string, string) (Deployment, error)
 	UpsertDeployment(Deployment) error
 	DeleteDeployment(string, string, string) error
