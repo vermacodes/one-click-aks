@@ -6,6 +6,8 @@ export interface WebSocketContextData {
   setActionStatus: (value: ActionStatusType) => void;
   logStream: LogsStreamType;
   setLogStream: (value: LogsStreamType) => void;
+  actionStatusConnected: boolean;
+  logStreamConnected: boolean;
 }
 
 export const webSocketContextDataDefaultValue: WebSocketContextData = {
@@ -13,6 +15,8 @@ export const webSocketContextDataDefaultValue: WebSocketContextData = {
   setActionStatus: () => null,
   logStream: { logs: "" },
   setLogStream: () => null,
+  actionStatusConnected: false,
+  logStreamConnected: false,
 };
 
 export const WebSocketContext = createContext<WebSocketContextData>(

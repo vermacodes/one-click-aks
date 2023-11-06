@@ -13,6 +13,8 @@ function App() {
   const [logStream, setLogStream] = useState<LogsStreamType>({
     logs: "",
   });
+  const [actionStatusConnected, setActionStatusConnected] = useState(false);
+  const [logStreamConnected, setLogStreamConnected] = useState(false);
 
   const queryClient = useQueryClient();
 
@@ -37,6 +39,14 @@ function App() {
       baseUrl + "actionstatusws"
     );
 
+    actionStatusWs.onopen = () => {
+      setActionStatusConnected(true);
+    };
+
+    actionStatusWs.onclose = () => {
+      setActionStatusConnected(false);
+    };
+
     actionStatusWs.onmessage = (event: any) => {
       setActionStatus(JSON.parse(event.data));
       queryClient.invalidateQueries("list-deployments");
@@ -46,12 +56,20 @@ function App() {
     };
 
     const logStreamWs = new ReconnectingWebSocket(baseUrl + "logsws");
+    logStreamWs.onopen = () => {
+      setLogStreamConnected(true);
+    };
+
+    logStreamWs.onclose = () => {
+      setLogStreamConnected(false);
+    };
     logStreamWs.onmessage = (event: any) => {
       setLogStream(JSON.parse(event.data));
     };
 
     return () => {
       actionStatusWs.close();
+      logStreamWs.close();
     };
   }, []);
 
@@ -64,7 +82,14 @@ function App() {
       }`}
     >
       <WebSocketContext.Provider
-        value={{ actionStatus, setActionStatus, logStream, setLogStream }}
+        value={{
+          actionStatus,
+          setActionStatus,
+          logStream,
+          setLogStream,
+          actionStatusConnected,
+          logStreamConnected,
+        }}
       >
         <MainLayout darkMode={darkMode} setDarkMode={setDarkMode} />
       </WebSocketContext.Provider>

@@ -13,15 +13,26 @@ export default function DeploymentLifespan({
   const [menu, setMenu] = useState<boolean>(false);
 
   // array allowed lifespans in seconds.
-  const lifespans = [120, 300, 600, 900, 1800, 3600, 7200, 14400, 28800];
+  const lifespans = [
+    120, 300, 600, 900, 1800, 3600, 7200, 14400, 28800, 43200, 86400, 172800,
+    259200, 604800,
+  ];
   const { mutate: patchDeployment } = usePatchDeployment();
 
-  // Function takes input in seconds and returns hours or minutes if less than an hour.
   function secondsToHoursOrMinutes(seconds: number) {
     if (seconds < 3600) {
-      return Math.floor(seconds / 60) + " Minutes";
+      return seconds / 60 === 1
+        ? "1 Minute"
+        : Math.floor(seconds / 60) + " Minutes";
+    } else if (seconds < 86400) {
+      return seconds / 3600 === 1
+        ? "1 Hour"
+        : Math.floor(seconds / 3600) + " Hours";
+    } else {
+      return seconds / 86400 === 1
+        ? "1 Day"
+        : Math.floor(seconds / 86400) + " Days";
     }
-    return Math.floor(seconds / 3600) + " Hours";
   }
 
   return (
