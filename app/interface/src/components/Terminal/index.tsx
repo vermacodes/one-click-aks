@@ -1,5 +1,6 @@
 import ansiHTML from "ansi-to-html";
 import DOMPurify from "dompurify";
+import ReactHtmlParser from "html-react-parser";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useSetLogs } from "../../hooks/useLogs";
 import Checkbox from "../UserInterfaceComponents/Checkbox";
@@ -97,13 +98,14 @@ export default function Terminal() {
       >
         <div
           ref={logContentRef}
-          dangerouslySetInnerHTML={{ __html: updateLogs() }}
           style={{
             padding: "10px",
             whiteSpace: "pre-wrap",
             fontFamily: "monospace",
           }}
-        ></div>
+        >
+          {ReactHtmlParser(updateLogs())}
+        </div>
       </div>
     </div>
   );
