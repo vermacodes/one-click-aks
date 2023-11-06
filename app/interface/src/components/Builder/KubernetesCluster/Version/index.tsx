@@ -4,6 +4,7 @@ import { useSetLogs } from "../../../../hooks/useLogs";
 import { useGetOrchestrators } from "../../../../hooks/useOrchestrators";
 import { useContext } from "react";
 import { WebSocketContext } from "../../../../WebSocketContext";
+import { PatchVersions, Value } from "../../../../dataStructures";
 
 type Props = {
   versionMenu: boolean;
@@ -98,7 +99,7 @@ export default function Version({ versionMenu, setVersionMenu, index }: Props) {
           className="absolute right-0 z-10 mt-2 h-56 w-64 origin-top-right items-center gap-y-2 overflow-y-auto  rounded border border-slate-500 bg-slate-100 p-2 overflow-x-hidden scrollbar-thin scrollbar-thumb-slate-400 dark:bg-slate-800 dark:scrollbar-thumb-slate-600"
           onMouseLeave={() => setVersionMenu(false)}
         >
-          {data?.values?.map(
+          {sortValues(data?.values)?.map(
             (value) =>
               currentVersion !== undefined && (
                 <div key={value.version}>
@@ -139,4 +140,46 @@ export default function Version({ versionMenu, setVersionMenu, index }: Props) {
       )}
     </div>
   );
+}
+
+/**
+ * Compare two version strings.
+ * @param {string} a - The first version string.
+ * @param {string} b - The second version string.
+ * @return {number} -1 if a > b, 1 if a < b, and 0 if a == b.
+ */
+function compareVersions(a: string, b: string): number {
+  const aParts = a.split(".").map(Number);
+  const bParts = b.split(".").map(Number);
+
+  for (let i = 0; i < aParts.length; i++) {
+    if (aParts[i] > bParts[i]) return -1;
+    if (aParts[i] < bParts[i]) return 1;
+  }
+
+  return 0;
+}
+
+/**
+ * Sort an array of values based on the version and patchVersions.
+ * @param {Value[] | undefined} values - The array of values to sort.
+ * @return {Value[]} The sorted array of values.
+ */
+function sortValues(values: Value[] | undefined): Value[] {
+  if (values === undefined) return [];
+
+  const sortedValues = [...values].sort((a, b) =>
+    compareVersions(a.version, b.version)
+  );
+
+  for (const value of sortedValues) {
+    value.patchVersions = Object.keys(value.patchVersions)
+      .sort(compareVersions)
+      .reduce((obj: PatchVersions, key) => {
+        obj[key] = value.patchVersions[key];
+        return obj;
+      }, {});
+  }
+
+  return sortedValues;
 }
