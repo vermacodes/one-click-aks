@@ -210,7 +210,7 @@ func (s *storageAccountService) BreakBlobLease(storageAccountName string, contai
 		return err
 	}
 
-	slog.Debug("state lease broken fro workspace " + workspaceName + " in storage account " + storageAccountName + " in container " + containerName)
+	slog.Debug("state lease broken for workspace " + workspaceName + " in storage account " + storageAccountName + " in container " + containerName)
 	return nil
 }
 
