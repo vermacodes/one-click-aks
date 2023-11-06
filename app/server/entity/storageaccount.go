@@ -44,6 +44,7 @@ type StorageAccountService interface {
 	CreateResourceGroup() (ResourceGroup, error)
 	CreateStorageAccount(storageAccountName string) (StorageAccount, error)
 	CreateBlobContainer(storageAccountName string, containerName string) (BlobContainer, error)
+	BreakBlobLease(storageAccountName string, containerName string, workspaceName string) error
 }
 
 type StorageAccountRepository interface {
@@ -72,4 +73,5 @@ type StorageAccountRepository interface {
 	CreateResourceGroup() (string, error)
 	CreateStorageAccount(storageAccountName string) (string, error)
 	CreateBlobContainer(storageAccountName string, containerName string) (string, error)
+	BreakBlobLease(storageAccountName string, containerName string, blobName string) error
 }

@@ -195,6 +195,25 @@ func (s *storageAccountService) CreateBlobContainer(storageAccountName string, c
 	return blobContainer, nil
 }
 
+func (s *storageAccountService) BreakBlobLease(storageAccountName string, containerName string, workspaceName string) error {
+
+	// If workspace name is default, then blob name is terraform.tfstate
+	// else it is terraform.tfstateenv:<workspaceName>
+	blobName := "terraform.tfstate"
+	if workspaceName != "default" {
+		blobName = "terraform.tfstateenv:" + workspaceName
+	}
+
+	err := s.storageAccountRepository.BreakBlobLease(storageAccountName, containerName, blobName)
+	if err != nil {
+		slog.Error("not able to break blob lease", err)
+		return err
+	}
+
+	slog.Debug("state lease broken fro workspace " + workspaceName + " in storage account " + storageAccountName + " in container " + containerName)
+	return nil
+}
+
 func helperStringToBlobContainer(val string, blobContainer *entity.BlobContainer) {
 	slog.Debug("converting from string to blob container type")
 	json.Unmarshal([]byte(val), &blobContainer)
