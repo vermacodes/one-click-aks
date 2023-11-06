@@ -34,34 +34,12 @@ export default function Version({ versionMenu, setVersionMenu, index }: Props) {
     }
   };
 
-  // If no version is selected, select the highest patch version of the second from top minor version
-  // Omit the version if it's in preview
-  if (
-    lab?.template?.kubernetesClusters[index]?.kubernetesVersion === "" &&
-    data?.values
-  ) {
-    // Filter out preview versions
-    const nonPreviewValues = data.values.filter((value) => !value.isPreview);
-
-    // Sort the versions in descending order
-    nonPreviewValues.sort((a, b) => b.version.localeCompare(a.version));
-
-    // Select the second from top minor version
-    const secondTopMinorVersion = nonPreviewValues[1];
-
-    if (secondTopMinorVersion) {
-      // Get the patch versions of the selected minor version
-      const patchVersions = Object.keys(secondTopMinorVersion.patchVersions);
-
-      // Sort the patch versions in descending order
-      patchVersions.sort((a, b) => b.localeCompare(a));
-
-      // Select the highest patch version
-      const highestPatchVersion = patchVersions[0];
-
-      handleOnSelect(highestPatchVersion);
-    }
-  }
+  // Select the highest patch version of the second from top minor version if no version is selected
+  selectHighestPatchVersion(
+    data?.values,
+    lab?.template?.kubernetesClusters[index]?.kubernetesVersion,
+    handleOnSelect
+  );
 
   // Determine if the version menu should be disabled
   const disabled =
@@ -182,4 +160,42 @@ function sortValues(values: Value[] | undefined): Value[] {
   }
 
   return sortedValues;
+}
+
+/**
+ * Selects the highest patch version of the second from top minor version.
+ * If no version is selected, it omits the version if it's in preview.
+ *
+ * @param {Value[] | undefined} values - The array of values to select from.
+ * @param {string | undefined} currentVersion - The current version.
+ * @param {(patchVersion: string) => void} handleOnSelect - The function to call with the selected version.
+ */
+function selectHighestPatchVersion(
+  values: Value[] | undefined,
+  currentVersion: string | undefined,
+  handleOnSelect: (patchVersion: string) => void
+) {
+  if ((currentVersion === undefined || currentVersion === "") && values) {
+    // Filter out preview versions
+    const nonPreviewValues = values.filter((value) => !value.isPreview);
+
+    // Sort the versions in descending order
+    nonPreviewValues.sort((a, b) => b.version.localeCompare(a.version));
+
+    // Select the second from top minor version
+    const secondTopMinorVersion = nonPreviewValues[1];
+
+    if (secondTopMinorVersion) {
+      // Get the patch versions of the selected minor version
+      const patchVersions = Object.keys(secondTopMinorVersion.patchVersions);
+
+      // Sort the patch versions in descending order
+      patchVersions.sort((a, b) => b.localeCompare(a));
+
+      // Select the highest patch version
+      const highestPatchVersion = patchVersions[0];
+
+      handleOnSelect(highestPatchVersion);
+    }
+  }
 }
