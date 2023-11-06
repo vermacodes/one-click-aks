@@ -5,6 +5,8 @@ import { useBreakBlobLease } from "../../../hooks/useStorageAccount";
 import { useTerraformWorkspace } from "../../../hooks/useWorkspace";
 import { getSelectedDeployment } from "../../../utils/helpers";
 import Button from "../../UserInterfaceComponents/Button";
+import { WebSocketContext } from "../../../WebSocketContext";
+import { useContext } from "react";
 
 type Props = {
   deployment: DeploymentType;
@@ -14,6 +16,7 @@ export default function BreakBlobLease({ deployment }: Props) {
   const { mutate: breakBlobLease } = useBreakBlobLease();
   const { data: deployments } = useGetMyDeployments();
   const { data: terraformWorkspaces } = useTerraformWorkspace();
+  const { actionStatus } = useContext(WebSocketContext);
 
   if (deployments === undefined || terraformWorkspaces === undefined) {
     return null;
@@ -25,6 +28,7 @@ export default function BreakBlobLease({ deployment }: Props) {
   );
 
   const disabled =
+    actionStatus.inProgress ||
     selectedDeployment === undefined ||
     deployment.deploymentWorkspace !== selectedDeployment.deploymentWorkspace;
 
