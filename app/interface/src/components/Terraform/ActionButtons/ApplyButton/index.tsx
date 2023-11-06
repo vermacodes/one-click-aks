@@ -37,12 +37,18 @@ export default function ApplyButton({ variant, children, lab }: Props) {
     status: DeploymentType["deploymentStatus"]
   ) {
     if (deployment !== undefined) {
-      patchDeployment({
+      const updatedDeployment = {
         ...deployment,
         deploymentStatus: status,
-        deploymentAutoDeleteUnixTime:
-          calculateNewEpochTimeForDeployment(deployment),
-      });
+      };
+
+      // Update time only when deployment either failed or completed
+      if (status === "Deployment Failed" || status === "Deployment Completed") {
+        updatedDeployment.deploymentAutoDeleteUnixTime =
+          calculateNewEpochTimeForDeployment(deployment);
+      }
+
+      patchDeployment(updatedDeployment);
     }
   }
 

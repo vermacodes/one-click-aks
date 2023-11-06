@@ -59,7 +59,7 @@ func (k *kVersionService) GetMostRecentVersion() string {
 
 	// return the most recent version.
 	for _, v := range o.Values {
-		// Itrate over PatchVersions
+		// Iterate over PatchVersions
 		for patchVersion := range v.PatchVersions {
 			versionParts := strings.Split(patchVersion, ".")
 
@@ -110,7 +110,7 @@ func (k *kVersionService) GetOldestVersion() string {
 
 	// return the most recent version.
 	for _, v := range o.Values {
-		// Itrate over PatchVersions
+		// Iterate over PatchVersions
 		for patchVersion := range v.PatchVersions {
 			versionParts := strings.Split(patchVersion, ".")
 
@@ -158,9 +158,9 @@ func (k *kVersionService) DoesVersionExist(version string) bool {
 
 	// return the most recent version.
 	for _, v := range o.Values {
-		// Itrate over PatchVersions
+		// Iterate over PatchVersions
 		for patchVersion := range v.PatchVersions {
-			slog.Debug("Patch Verison" + patchVersion)
+			slog.Debug("Patch Version" + patchVersion)
 			if patchVersion == version {
 				return true
 			}
@@ -176,24 +176,40 @@ func (k *kVersionService) GetDefaultVersion() string {
 		return ""
 	}
 
-	var versions []string
-	// Collect all versions in a slice.
+	// Filter out preview versions and sort the remaining versions in descending order
+	var sortedValues []entity.Value
 	for _, v := range o.Values {
-		for patchVersion := range v.PatchVersions {
-			versions = append(versions, patchVersion)
+		if v.IsPreview != nil && *v.IsPreview {
+			continue
+		}
+		sortedValues = append(sortedValues, v)
+	}
+	sort.Slice(sortedValues, func(i, j int) bool {
+		return versionGreater(sortedValues[i].Version, sortedValues[j].Version)
+	})
+
+	// If there are at least two versions, select the second from top minor version
+	if len(sortedValues) >= 2 {
+		secondTopMinorVersion := sortedValues[1]
+
+		// Get the patch versions of the second from top minor version
+		var patchVersions []string
+		for patchVersion := range secondTopMinorVersion.PatchVersions {
+			patchVersions = append(patchVersions, patchVersion)
+		}
+
+		// Sort the patch versions in descending order
+		sort.Slice(patchVersions, func(i, j int) bool {
+			return versionGreater(patchVersions[i], patchVersions[j])
+		})
+
+		// If there are any patch versions, return the highest one
+		if len(patchVersions) > 0 {
+			return patchVersions[0]
 		}
 	}
 
-	// Sort the versions in descending order.
-	sort.Slice(versions, func(i, j int) bool {
-		return versionGreater(versions[i], versions[j])
-	})
-
-	// Find the third largest version if it exists.
-	if len(versions) >= 3 {
-		return versions[2]
-	}
-
+	slog.Error("not able to get default version", nil)
 	return ""
 }
 

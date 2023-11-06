@@ -5,7 +5,7 @@ import PrivateCluster from "../PrivateCluster";
 import VirtualMachine from "../../VirtualMachine";
 import AzureCNI from "../AzureCNI";
 import Calico from "../Calico";
-import NetworkPluginMode from "../../NetworkProfile/NetworkPluginMode";
+import NetworkPluginMode from "../NetworkProfile/NetworkPluginMode";
 import AutoScaling from "../AutoScaling";
 import UserDefinedRouting from "../UserDefinedRouting";
 import AppGateway from "../Addons/AppGateway";
@@ -19,38 +19,42 @@ export default function KubernetesCluster() {
   const [versionMenu, setVersionMenu] = useState<boolean>(false);
   const { data: lab } = useLab();
 
-  if (
-    lab === undefined ||
-    lab.template === undefined ||
-    lab.template.kubernetesClusters === undefined ||
-    lab.template.kubernetesClusters.length === 0
-  ) {
+  // If lab or its template or kubernetesClusters is undefined or empty, return null
+  if (!lab?.template?.kubernetesClusters?.length) {
     return null;
   }
 
   return (
-    <BuilderContainer title="Kubernetes Cluster">
-      <BuilderContainer title="Features">
-        <div className={`mt-4 flex flex-wrap gap-x-2 gap-y-2`}>
-          <Version versionMenu={versionMenu} setVersionMenu={setVersionMenu} />
-          <PrivateCluster />
-          <VirtualMachine />
-          <AzureCNI />
-          <Calico />
-          <NetworkPluginMode />
-          <AutoScaling />
-          <UserDefinedRouting />
-        </div>
-      </BuilderContainer>
-      <BuilderContainer title="Addons">
-        <div className={`mt-4 flex flex-wrap gap-x-2 gap-y-2`}>
-          <AppGateway />
-          <ServiceMesh />
-          <MicrosoftDefender />
-          <VirtualNode />
-          <HttpApplicationRouting />
-        </div>
-      </BuilderContainer>
-    </BuilderContainer>
+    <>
+      {lab.template.kubernetesClusters.map((cluster, index) => (
+        <BuilderContainer key={index} title={`Kubernetes Cluster ${index + 1}`}>
+          <BuilderContainer key={index} title="Features">
+            <div className={`mt-4 flex flex-wrap gap-x-2 gap-y-2`}>
+              <Version
+                versionMenu={versionMenu}
+                setVersionMenu={setVersionMenu}
+                index={index}
+              />
+              <PrivateCluster index={index} />
+              <VirtualMachine />
+              <AzureCNI index={index} />
+              <Calico index={index} />
+              <NetworkPluginMode index={index} />
+              <AutoScaling index={index} />
+              <UserDefinedRouting index={index} />
+            </div>
+          </BuilderContainer>
+          <BuilderContainer title="Addons">
+            <div className={`mt-4 flex flex-wrap gap-x-2 gap-y-2`}>
+              <AppGateway index={index} />
+              <ServiceMesh index={index} />
+              <MicrosoftDefender index={index} />
+              <VirtualNode index={index} />
+              <HttpApplicationRouting index={index} />
+            </div>
+          </BuilderContainer>
+        </BuilderContainer>
+      ))}
+    </>
   );
 }

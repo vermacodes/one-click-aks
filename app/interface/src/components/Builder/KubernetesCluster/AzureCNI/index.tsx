@@ -4,7 +4,11 @@ import { useSetLogs } from "../../../../hooks/useLogs";
 import Checkbox from "../../../UserInterfaceComponents/Checkbox";
 import { WebSocketContext } from "../../../../WebSocketContext";
 
-export default function AzureCNI() {
+type Props = {
+  index: number;
+};
+
+export default function AzureCNI({ index }: Props) {
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const {
@@ -14,61 +18,38 @@ export default function AzureCNI() {
   } = useLab();
   const { mutate: setLab } = useSetLab();
 
-  function handleOnChange() {
-    if (lab !== undefined) {
-      if (lab.template !== undefined) {
-        if ("azure" === lab.template.kubernetesClusters[0].networkPlugin) {
-          lab.template.kubernetesClusters[0].networkPlugin = "kubenet";
-          lab.template.kubernetesClusters[0].networkPolicy = "null";
-          lab.template.kubernetesClusters[0].networkPluginMode = "null";
-          lab.template.kubernetesClusters[0].addons.virtualNode = false;
-        } else {
-          lab.template.kubernetesClusters[0].networkPlugin = "azure";
-          lab.template.kubernetesClusters[0].networkPolicy = "azure";
-        }
-        !actionStatus.inProgress &&
-          setLogs({
-            logs: JSON.stringify(lab.template, null, 4),
-          });
-        setLab(lab);
-      }
+  // Toggle the Azure CNI
+  const handleOnChange = () => {
+    const cluster = lab?.template?.kubernetesClusters[index];
+    if (cluster?.networkPlugin !== undefined && lab !== undefined) {
+      cluster.networkPlugin =
+        cluster.networkPlugin === "azure" ? "kubenet" : "azure";
+      cluster.networkPolicy =
+        cluster.networkPlugin === "azure" ? "azure" : "null";
+      cluster.networkPluginMode =
+        cluster.networkPlugin === "azure" ? "null" : cluster.networkPluginMode;
+      cluster.addons.virtualNode =
+        cluster.networkPlugin === "azure" ? false : cluster.addons.virtualNode;
+      !actionStatus.inProgress &&
+        setLogs({ logs: JSON.stringify(lab?.template, null, 4) });
+      setLab(lab);
     }
-  }
+  };
 
-  if (lab === undefined || lab.template === undefined) {
-    return <></>;
-  }
+  // Determine checked and disabled states
+  const checked =
+    lab?.template?.kubernetesClusters[index]?.networkPlugin === "azure";
+  const disabled =
+    labIsLoading || labIsFetching || !lab?.template?.kubernetesClusters[index];
 
-  if (labIsLoading || labIsFetching) {
-    return (
-      <Checkbox
-        id="toggle-azurecni"
-        label="Azure CNI"
-        disabled={true}
-        checked={false}
-        handleOnChange={handleOnChange}
-      />
-    );
-  }
-
-  return (
-    <>
-      {lab && lab.template && (
-        <Checkbox
-          id="toggle-azurecni"
-          label="Azure CNI"
-          checked={
-            lab.template.kubernetesClusters.length > 0 &&
-            "azure" === lab.template.kubernetesClusters[0].networkPlugin
-          }
-          disabled={
-            labIsLoading ||
-            labIsFetching ||
-            lab.template.kubernetesClusters.length === 0
-          }
-          handleOnChange={handleOnChange}
-        />
-      )}
-    </>
-  );
+  // Render the Checkbox component if the lab template exists
+  return lab?.template ? (
+    <Checkbox
+      id="toggle-azurecni"
+      label="Azure CNI"
+      checked={checked}
+      disabled={disabled}
+      handleOnChange={handleOnChange}
+    />
+  ) : null; // Return null if the lab template does not exist
 }

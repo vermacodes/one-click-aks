@@ -5,73 +5,57 @@ import Checkbox from "../../UserInterfaceComponents/Checkbox";
 import { defaultTfvarConfig } from "../../../defaults";
 import { WebSocketContext } from "../../../WebSocketContext";
 
-export default function virtualNetwork() {
-  const {
-    data: lab,
-    isLoading: labIsLoading,
-    isFetching: labIsFetching,
-  } = useLab();
-  const { mutate: setLab } = useSetLab();
+export default function VirtualNetwork() {
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
+  const { data: lab, isLoading, isFetching } = useLab();
+  const { mutate: setLab } = useSetLab();
 
-  function handleOnChange() {
-    if (lab !== undefined) {
-      if (lab.template !== undefined) {
-        if (lab.template.virtualNetworks.length === 0) {
-          lab.template.virtualNetworks = defaultTfvarConfig.virtualNetworks;
-          lab.template.subnets = defaultTfvarConfig.subnets;
-          lab.template.networkSecurityGroups =
-            defaultTfvarConfig.networkSecurityGroups;
-        } else {
-          lab.template.virtualNetworks = [];
-          lab.template.subnets = [];
-          lab.template.networkSecurityGroups = [];
-          lab.template.jumpservers = [];
-          lab.template.firewalls = [];
-          if (lab.template.kubernetesClusters.length > 0) {
-            lab.template.kubernetesClusters[0].addons.appGateway = false;
-            lab.template.kubernetesClusters[0].addons.virtualNode = false;
-            lab.template.kubernetesClusters[0].privateClusterEnabled = "false";
-            lab.template.kubernetesClusters[0].outboundType = "loadBalancer";
-          }
-        }
-        !actionStatus.inProgress &&
-          setLogs({
-            logs: JSON.stringify(lab.template, null, 4),
-          });
-        setLab(lab);
+  // Function to handle changes in the checkbox
+  const handleOnChange = () => {
+    if (lab?.template) {
+      // Toggle the virtual networks
+      if (lab.template.virtualNetworks.length === 0) {
+        lab.template.virtualNetworks = defaultTfvarConfig.virtualNetworks;
+        lab.template.subnets = defaultTfvarConfig.subnets;
+        lab.template.networkSecurityGroups =
+          defaultTfvarConfig.networkSecurityGroups;
+      } else {
+        lab.template.virtualNetworks = [];
+        lab.template.subnets = [];
+        lab.template.networkSecurityGroups = [];
+        lab.template.jumpservers = [];
+        lab.template.firewalls = [];
+        lab.template.kubernetesClusters.forEach((cluster) => {
+          cluster.addons.appGateway = false;
+          cluster.addons.virtualNode = false;
+          cluster.privateClusterEnabled = "false";
+          cluster.outboundType = "loadBalancer";
+        });
       }
+
+      // Log the changes if not in progress
+      !actionStatus.inProgress &&
+        setLogs({ logs: JSON.stringify(lab.template, null, 4) });
+
+      // Update the lab
+      setLab(lab);
     }
-  }
+  };
 
-  if (lab === undefined || lab.template === undefined) {
-    return <></>;
-  }
+  // Define the disabled state
+  const disabled = isLoading || isFetching;
 
-  if (labIsLoading || labIsFetching) {
-    return (
-      <Checkbox
-        id="toggle-custom-vnet"
-        label="VNET"
-        disabled={true}
-        checked={false}
-        handleOnChange={handleOnChange}
-      />
-    );
-  }
+  // Define the checked state
+  const checked = (lab?.template?.virtualNetworks?.length ?? 0) > 0;
 
-  return (
-    <>
-      {lab && lab.template && (
-        <Checkbox
-          id="toggle-custom-vnet"
-          label="VNET"
-          checked={lab.template.virtualNetworks.length > 0}
-          disabled={labIsLoading || labIsFetching}
-          handleOnChange={handleOnChange}
-        />
-      )}
-    </>
-  );
+  return lab?.template ? (
+    <Checkbox
+      id="toggle-custom-vnet"
+      label="VNET"
+      checked={checked}
+      disabled={disabled}
+      handleOnChange={handleOnChange}
+    />
+  ) : null;
 }

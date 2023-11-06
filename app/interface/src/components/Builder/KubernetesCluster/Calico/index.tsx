@@ -4,7 +4,11 @@ import { useSetLogs } from "../../../../hooks/useLogs";
 import Checkbox from "../../../UserInterfaceComponents/Checkbox";
 import { WebSocketContext } from "../../../../WebSocketContext";
 
-export default function Calico() {
+type Props = {
+  index: number;
+};
+
+export default function Calico({ index }: Props) {
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const {
@@ -14,59 +18,37 @@ export default function Calico() {
   } = useLab();
   const { mutate: setLab } = useSetLab();
 
-  function handleOnChange() {
-    if (lab !== undefined) {
-      if (lab.template !== undefined) {
-        if ("calico" === lab.template.kubernetesClusters[0].networkPolicy) {
-          lab.template.kubernetesClusters[0].networkPolicy = "azure";
-        } else {
-          lab.template.kubernetesClusters[0].networkPolicy = "calico";
-          lab.template.kubernetesClusters[0].networkPluginMode = "null";
-        }
-        !actionStatus.inProgress &&
-          setLogs({
-            logs: JSON.stringify(lab.template, null, 4),
-          });
-        setLab(lab);
-      }
+  // Toggle the Calico network policy
+  const handleOnChange = () => {
+    const cluster = lab?.template?.kubernetesClusters[index];
+    if (cluster?.networkPolicy !== undefined && lab !== undefined) {
+      cluster.networkPolicy =
+        cluster.networkPolicy === "calico" ? "azure" : "calico";
+      cluster.networkPluginMode =
+        cluster.networkPolicy === "calico" ? "null" : cluster.networkPluginMode;
+      !actionStatus.inProgress &&
+        setLogs({ logs: JSON.stringify(lab?.template, null, 4) });
+      setLab(lab);
     }
-  }
+  };
 
-  if (lab === undefined || lab.template === undefined) {
-    return <></>;
-  }
+  // Determine checked and disabled states
+  const checked =
+    lab?.template?.kubernetesClusters[index]?.networkPolicy === "calico";
+  const disabled =
+    labIsLoading ||
+    labIsFetching ||
+    !lab?.template?.kubernetesClusters[index] ||
+    lab?.template?.kubernetesClusters[index]?.networkPlugin === "kubenet";
 
-  if (labIsLoading || labIsFetching) {
-    return (
-      <Checkbox
-        id="toggle-calico"
-        label="Calico"
-        disabled={true}
-        checked={false}
-        handleOnChange={handleOnChange}
-      />
-    );
-  }
-
-  return (
-    <>
-      {lab && lab.template && (
-        <Checkbox
-          id="toggle-calico"
-          label="Calico"
-          checked={
-            lab.template.kubernetesClusters.length > 0 &&
-            "calico" === lab.template.kubernetesClusters[0].networkPolicy
-          }
-          disabled={
-            lab.template.kubernetesClusters.length === 0 ||
-            lab.template.kubernetesClusters[0].networkPlugin === "kubenet" ||
-            labIsLoading ||
-            labIsFetching
-          }
-          handleOnChange={handleOnChange}
-        />
-      )}
-    </>
-  );
+  // Render the Checkbox component if the lab template exists
+  return lab?.template ? (
+    <Checkbox
+      id="toggle-calico"
+      label="Calico"
+      checked={checked}
+      disabled={disabled}
+      handleOnChange={handleOnChange}
+    />
+  ) : null; // Return null if the lab template does not exist
 }

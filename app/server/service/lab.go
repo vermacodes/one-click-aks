@@ -12,7 +12,7 @@ import (
 type labService struct {
 	labRepository         entity.LabRepository
 	kVersionService       entity.KVersionService
-	storageAccountService entity.StorageAccountService // Some information is needed from storage aacount service.
+	storageAccountService entity.StorageAccountService // Some information is needed from storage account service.
 	authService           entity.AuthService
 }
 
@@ -36,7 +36,7 @@ func (l *labService) GetLabFromRedis() (entity.LabType, error) {
 
 		defaultLab, err := l.HelperDefaultLab()
 		if err != nil {
-			slog.Error("not able to genereate default lab", err)
+			slog.Error("not able to generate default lab", err)
 			return lab, err
 		}
 
@@ -56,8 +56,11 @@ func (l *labService) GetLabFromRedis() (entity.LabType, error) {
 }
 
 func (l *labService) SetLabInRedis(lab entity.LabType) error {
-	if len(lab.Template.KubernetesClusters) > 0 && lab.Template.KubernetesClusters[0].KubernetesVersion == "" {
-		lab.Template.KubernetesClusters[0].KubernetesVersion = l.kVersionService.GetDefaultVersion()
+
+	for i := range lab.Template.KubernetesClusters {
+		if lab.Template.KubernetesClusters[i].KubernetesVersion == "" {
+			lab.Template.KubernetesClusters[i].KubernetesVersion = l.kVersionService.GetDefaultVersion()
+		}
 	}
 
 	val, err := json.Marshal(lab)
@@ -87,7 +90,7 @@ func (l *labService) GetMyLabs() ([]entity.LabType, error) {
 		return labs, err
 	}
 
-	// Fetching templates is different from fetching labs or mock cases as these are comming from private container.
+	// Fetching templates is different from fetching labs or mock cases as these are coming from private container.
 	// TODO: May be add them to redis to make it work faster.
 
 	blobs := []entity.Blob{}
@@ -246,10 +249,10 @@ func (l *labService) HelperDefaultLab() (entity.LabType, error) {
 		},
 	}
 
-	var defautlTfvar = entity.TfvarConfigType{
+	var defaultTfvar = entity.TfvarConfigType{
 		ResourceGroup:         defaultResourceGroup,
 		KubernetesClusters:    defaultKubernetesClusters,
-		VirtualNetworks:       []entity.TfvarVirtualNeworkType{},
+		VirtualNetworks:       []entity.TfvarVirtualNetworkType{},
 		NetworkSecurityGroups: []entity.TfvarNetworkSecurityGroupType{},
 		Subnets:               []entity.TfvarSubnetType{},
 		Jumpservers:           []entity.TfvarJumpserverType{},
@@ -260,13 +263,13 @@ func (l *labService) HelperDefaultLab() (entity.LabType, error) {
 
 	extendScript, err := l.labRepository.GetExtendScriptTemplate()
 	if err != nil {
-		slog.Error("Not able to get extend script tempalte. Defaulting to empty string.", err)
+		slog.Error("Not able to get extend script template. Defaulting to empty string.", err)
 		extendScript = ""
 	}
 
 	var defaultLab = entity.LabType{
 		Tags:         []string{},
-		Template:     defautlTfvar,
+		Template:     defaultTfvar,
 		Type:         "template",
 		ExtendScript: extendScript,
 	}

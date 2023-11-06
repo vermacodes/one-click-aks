@@ -4,7 +4,11 @@ import { useSetLogs } from "../../../../hooks/useLogs";
 import Checkbox from "../../../UserInterfaceComponents/Checkbox";
 import { WebSocketContext } from "../../../../WebSocketContext";
 
-export default function PrivateCluster() {
+type Props = {
+  index: number;
+};
+
+export default function PrivateCluster({ index }: Props) {
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const {
@@ -14,57 +18,43 @@ export default function PrivateCluster() {
   } = useLab();
   const { mutate: setLab } = useSetLab();
 
-  function handleOnChange() {
-    if (lab !== undefined) {
-      if (lab.template !== undefined) {
-        if (
-          lab.template.kubernetesClusters[0].privateClusterEnabled === "true"
-        ) {
-          lab.template.kubernetesClusters[0].privateClusterEnabled = "false";
-          lab.template.jumpservers = [];
-        } else {
-          lab.template.kubernetesClusters[0].privateClusterEnabled = "true";
-        }
-        !actionStatus.inProgress &&
-          setLogs({
-            logs: JSON.stringify(lab.template, null, 4),
-          });
-        setLab(lab);
-      }
+  // Toggle the private cluster feature
+  const handleOnChange = () => {
+    const cluster = lab?.template?.kubernetesClusters[index];
+    if (
+      cluster?.privateClusterEnabled !== undefined &&
+      lab !== undefined &&
+      lab?.template !== undefined
+    ) {
+      cluster.privateClusterEnabled =
+        cluster.privateClusterEnabled === "true" ? "false" : "true";
+      lab.template.jumpservers =
+        cluster.privateClusterEnabled === "true"
+          ? []
+          : lab.template.jumpservers;
+      !actionStatus.inProgress &&
+        setLogs({ logs: JSON.stringify(lab?.template, null, 4) });
+      setLab(lab);
     }
-  }
+  };
 
-  if (lab === undefined || lab.template === undefined) {
-    return <></>;
-  }
+  // Determine checked and disabled states
+  const checked =
+    lab?.template?.kubernetesClusters[index]?.privateClusterEnabled === "true";
+  const disabled =
+    labIsLoading ||
+    labIsFetching ||
+    !lab?.template?.kubernetesClusters[index] ||
+    lab?.template?.virtualNetworks.length === 0;
 
-  if (labIsLoading || labIsFetching) {
-    return (
-      <Checkbox
-        id="toggle-privatecluster"
-        label="Private Cluster"
-        disabled={true}
-        checked={false}
-        handleOnChange={handleOnChange}
-      />
-    );
-  }
-
-  return (
+  // Render the Checkbox component if the lab template exists
+  return lab?.template ? (
     <Checkbox
       id="toggle-privatecluster"
       label="Private Cluster"
-      checked={
-        lab.template.kubernetesClusters.length > 0 &&
-        lab.template.kubernetesClusters[0].privateClusterEnabled === "true"
-      }
-      disabled={
-        lab.template.kubernetesClusters.length === 0 ||
-        lab.template.virtualNetworks.length === 0 ||
-        labIsLoading ||
-        labIsFetching
-      }
+      checked={checked}
+      disabled={disabled}
       handleOnChange={handleOnChange}
     />
-  );
+  ) : null; // Return null if the lab template does not exist
 }

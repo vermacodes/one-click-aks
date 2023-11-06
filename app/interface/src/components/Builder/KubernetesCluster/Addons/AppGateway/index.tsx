@@ -4,7 +4,11 @@ import { useSetLogs } from "../../../../../hooks/useLogs";
 import Checkbox from "../../../../UserInterfaceComponents/Checkbox";
 import { WebSocketContext } from "../../../../../WebSocketContext";
 
-export default function AppGateway() {
+type Props = {
+  index: number;
+};
+
+export default function AppGateway({ index }: Props) {
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const {
@@ -14,76 +18,41 @@ export default function AppGateway() {
   } = useLab();
   const { mutate: setLab } = useSetLab();
 
+  // Handle checkbox change
   function handleOnChange() {
-    if (lab !== undefined) {
-      if (lab.template !== undefined) {
-        if (lab.template.kubernetesClusters[0].addons.appGateway) {
-          lab.template.kubernetesClusters[0].addons.appGateway = false;
-        } else {
-          lab.template.kubernetesClusters[0].addons.appGateway = true;
-        }
-
-        !actionStatus.inProgress &&
-          setLogs({
-            logs: JSON.stringify(lab.template, null, 4),
-          });
-
-        setLab(lab);
-      }
+    if (
+      lab?.template?.kubernetesClusters[index]?.addons?.appGateway === undefined
+    ) {
+      return;
     }
+    lab.template.kubernetesClusters[index].addons.appGateway =
+      !lab.template.kubernetesClusters[index].addons.appGateway;
+    !actionStatus.inProgress &&
+      setLogs({ logs: JSON.stringify(lab.template, null, 4) });
+    setLab(lab);
   }
 
-  if (lab === undefined || lab.template === undefined) {
-    return <></>;
+  // If lab or template is undefined, return nothing
+  if (!lab?.template) {
+    return null;
   }
 
-  // If still loading then display disabled flag.
-  if (labIsLoading || labIsFetching) {
-    return (
-      <Checkbox
-        id="toggle-appgateway"
-        label="AGIC (Addon)"
-        disabled={true}
-        checked={false}
-        handleOnChange={handleOnChange}
-      />
-    );
-  }
-
-  // Checked conditions
-  var checked: boolean = true;
-  if (
-    lab &&
-    lab.template &&
-    lab.template.kubernetesClusters.length > 0 &&
-    lab.template.kubernetesClusters[0].addons &&
-    lab.template.kubernetesClusters[0].addons.appGateway === false
-  ) {
-    checked = false;
-  }
-
-  // Disabled Conditions
-  var disabled: boolean = false;
-  if (
+  // Determine checked and disabled states
+  const checked =
+    lab.template.kubernetesClusters[index]?.addons?.appGateway ?? false;
+  const disabled =
     labIsLoading ||
     labIsFetching ||
     lab.template.kubernetesClusters.length === 0 ||
-    lab.template.virtualNetworks.length === 0
-  ) {
-    disabled = true;
-  }
+    lab.template.virtualNetworks.length === 0;
 
   return (
-    <>
-      {lab && lab.template && (
-        <Checkbox
-          id="toggle-appgateway"
-          label="AGIC"
-          checked={checked}
-          disabled={disabled}
-          handleOnChange={handleOnChange}
-        />
-      )}
-    </>
+    <Checkbox
+      id="toggle-appgateway"
+      label="AGIC"
+      checked={checked}
+      disabled={disabled}
+      handleOnChange={handleOnChange}
+    />
   );
 }

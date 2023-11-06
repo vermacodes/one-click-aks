@@ -14,12 +14,12 @@ export default function LabCard({ lab, children }: Props) {
     <div className="flex h-full flex-col justify-between gap-y-6">
       {lab.type === "sharedtemplate" ? (
         <Link to={"/lab/" + lab.type + "/" + lab.id}>
-          <h1 className="break-all py-2 text-2xl hover:text-sky-500 dark:border-slate-700">
+          <h1 className="whitespace-pre-line py-2 text-2xl hover:text-sky-500 dark:border-slate-700">
             {lab.name}
           </h1>
         </Link>
       ) : (
-        <h1 className="break-all py-2 text-2xl dark:border-slate-700">
+        <h1 className="whitespace-pre-line py-2 text-2xl dark:border-slate-700">
           {lab.name}
         </h1>
       )}

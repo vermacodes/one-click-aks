@@ -242,7 +242,7 @@ export type Upgrade = {
   orchestratorVersion: string;
 };
 
-type PatchVersions = {
+export type PatchVersions = {
   [key: string]: {
     upgrades: string[];
   };

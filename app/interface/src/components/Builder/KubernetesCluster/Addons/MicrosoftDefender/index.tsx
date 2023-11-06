@@ -1,12 +1,12 @@
 import { useContext } from "react";
 import { useLab, useSetLab } from "../../../../../hooks/useLab";
-import { useSetLogs } from "../../../../../hooks/useLogs";
 import Checkbox from "../../../../UserInterfaceComponents/Checkbox";
 import { WebSocketContext } from "../../../../../WebSocketContext";
+import { useSetLogs } from "../../../../../hooks/useLogs";
 
-type Props = {};
+type Props = { index: number };
 
-export default function MicrosoftDefender({}: Props) {
+export default function MicrosoftDefender({ index }: Props) {
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const {
@@ -16,75 +16,29 @@ export default function MicrosoftDefender({}: Props) {
   } = useLab();
   const { mutate: setLab } = useSetLab();
 
-  function handleOnChange() {
-    if (lab !== undefined) {
-      if (lab.template !== undefined) {
-        if (lab.template.kubernetesClusters[0].addons.microsoftDefender) {
-          lab.template.kubernetesClusters[0].addons.microsoftDefender = false;
-        } else {
-          lab.template.kubernetesClusters[0].addons.microsoftDefender = true;
-        }
+  const cluster = lab?.template?.kubernetesClusters[index];
 
-        !actionStatus.inProgress &&
-          setLogs({
-            logs: JSON.stringify(lab.template, null, 4),
-          });
-
-        setLab(lab);
-      }
+  // Handle checkbox change
+  const handleOnChange = () => {
+    if (cluster?.addons && lab !== undefined) {
+      cluster.addons.microsoftDefender = !cluster.addons.microsoftDefender;
+      !actionStatus.inProgress &&
+        setLogs({ logs: JSON.stringify(lab?.template, null, 4) });
+      setLab(lab);
     }
-  }
+  };
 
-  if (lab === undefined || lab.template === undefined) {
-    return <></>;
-  }
+  // Determine checked and disabled states
+  const checked = cluster?.addons?.microsoftDefender ?? false;
+  const disabled = labIsLoading || labIsFetching || !cluster;
 
-  // If still loading then display disabled flag.
-  if (labIsLoading || labIsFetching) {
-    return (
-      <Checkbox
-        id="toggle-defender"
-        label="Defender (Addon)"
-        disabled={true}
-        checked={false}
-        handleOnChange={handleOnChange}
-      />
-    );
-  }
-
-  // Checked conditions
-  var checked: boolean = true;
-  if (
-    lab &&
-    lab.template &&
-    lab.template.kubernetesClusters.length > 0 &&
-    lab.template.kubernetesClusters[0].addons &&
-    lab.template.kubernetesClusters[0].addons.microsoftDefender === false
-  ) {
-    checked = false;
-  }
-
-  // Disabled Conditions
-  var disabled: boolean = false;
-  if (
-    labIsLoading ||
-    labIsFetching ||
-    lab.template.kubernetesClusters.length === 0
-  ) {
-    disabled = true;
-  }
-
-  return (
-    <>
-      {lab && lab.template && (
-        <Checkbox
-          id="toggle-defender"
-          label="Defender (Addon)"
-          checked={checked}
-          disabled={disabled}
-          handleOnChange={handleOnChange}
-        />
-      )}
-    </>
-  );
+  return lab?.template ? (
+    <Checkbox
+      id="toggle-defender"
+      label="Microsoft Defender"
+      checked={checked}
+      disabled={disabled}
+      handleOnChange={handleOnChange}
+    />
+  ) : null;
 }

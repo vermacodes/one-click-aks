@@ -124,9 +124,11 @@ func helperTerraformAction(t *terraformService, tfvar entity.TfvarConfigType, ac
 		return err
 	}
 
-	if len(tfvar.KubernetesClusters) > 0 && !t.kVersionService.DoesVersionExist(tfvar.KubernetesClusters[0].KubernetesVersion) {
-		slog.Debug("kubernetes version not found. Defaulting to default version.")
-		tfvar.KubernetesClusters[0].KubernetesVersion = t.kVersionService.GetDefaultVersion()
+	for i, cluster := range tfvar.KubernetesClusters {
+		if !t.kVersionService.DoesVersionExist(cluster.KubernetesVersion) {
+			slog.Debug("Kubernetes version not found. Defaulting to default version.")
+			tfvar.KubernetesClusters[i].KubernetesVersion = t.kVersionService.GetDefaultVersion()
+		}
 	}
 
 	cmd, rPipe, wPipe, err := t.terraformRepository.TerraformAction(tfvar, action, storageAccountName)
