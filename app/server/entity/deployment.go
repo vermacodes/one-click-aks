@@ -36,6 +36,19 @@ type DeploymentEntry struct {
 	Deployment string
 }
 
+type OperationEntry struct {
+	PartitionKey                 string           `json:"PartitionKey"`
+	RowKey                       string           `json:"RowKey"`
+	DeploymentWorkspace          string           `json:"DeploymentWorkspace"`
+	DeploymentUserId             string           `json:"DeploymentUserId"`
+	DeploymentSubscriptionId     string           `json:"DeploymentSubscriptionId"`
+	DeploymentStatus             DeploymentStatus `json:"DeploymentStatus"`
+	DeploymentAutoDelete         bool             `json:"DeploymentAutoDelete"`
+	DeploymentLifespan           int64            `json:"DeploymentLifespan"`
+	DeploymentAutoDeleteUnixTime int64            `json:"DeploymentAutoDeleteUnixTime"`
+	DeploymentLab                string           `json:"DeploymentLab"`
+}
+
 type DeploymentService interface {
 	GetDeployments() ([]Deployment, error)
 	GetMyDeployments(string) ([]Deployment, error)
@@ -53,5 +66,6 @@ type DeploymentRepository interface {
 	GetMyDeployments(string, string) ([]Deployment, error)
 	GetDeployment(string, string, string) (Deployment, error)
 	UpsertDeployment(Deployment) error
+	DeploymentOperationEntry(Deployment) error
 	DeleteDeployment(string, string, string) error
 }
