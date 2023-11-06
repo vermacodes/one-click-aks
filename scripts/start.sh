@@ -99,6 +99,23 @@ function create_storage_account() {
         fi
     fi
 
+    # check if a blob container named 'tfstate' exists in the storage account
+    # if not create one
+    log "checking if blob container tfstate exists in storage account ${STORAGE_ACCOUNT_NAME}"
+    CONTAINER_EXISTS=$(az storage container exists --name "tfstate" --account-name "${STORAGE_ACCOUNT_NAME}" --query "exists" -o tsv)
+    if [[ "${CONTAINER_EXISTS}" == "true" ]]; then
+        log "Blob container tfstate already exists in storage account ${STORAGE_ACCOUNT_NAME}"
+    else
+        log "Blob container tfstate does not exist in storage account ${STORAGE_ACCOUNT_NAME}, creating"
+        az storage container create --name "tfstate" --account-name "${STORAGE_ACCOUNT_NAME}"
+        if [ $? -ne 0 ]; then
+            err "Failed to create blob container tfstate in storage account ${STORAGE_ACCOUNT_NAME}"
+            return 1
+        else
+            log "Blob container tfstate created in storage account ${STORAGE_ACCOUNT_NAME}"
+        fi
+    fi
+
     return 0
 }
 
