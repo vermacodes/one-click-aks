@@ -1,4 +1,5 @@
 import ansiHTML from "ansi-to-html";
+import DOMPurify from "dompurify";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useSetLogs } from "../../hooks/useLogs";
 import Checkbox from "../UserInterfaceComponents/Checkbox";
@@ -51,7 +52,12 @@ export default function Terminal() {
         escapeXML: false,
         stream: true,
       });
-      return convert.toHtml(data.logs);
+      const dirty = convert.toHtml(data.logs);
+
+      // Sanitize the HTML string
+      const clean = DOMPurify.sanitize(dirty);
+
+      return clean;
     }
     return "";
   }
