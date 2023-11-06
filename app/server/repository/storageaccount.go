@@ -130,3 +130,8 @@ func (s *storageAccountRepository) CreateBlobContainer(storageAccountName string
 	out, err := exec.Command("bash", "-c", "az storage container create -n "+containerName+" -g repro-project --account-name "+storageAccountName+" --output tsv --query created").Output()
 	return string(out), err
 }
+
+func (s *storageAccountRepository) BreakBlobLease(storageAccountName string, containerName string, blobName string) error {
+	_, err := exec.Command("bash", "-c", "az storage blob lease break -c "+containerName+" -b "+blobName+" --account-name "+storageAccountName+" --output tsv").Output()
+	return err
+}

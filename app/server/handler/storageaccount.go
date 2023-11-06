@@ -26,6 +26,7 @@ func NewStorageAccountWithActionStatusHandler(r *gin.RouterGroup, service entity
 	}
 
 	r.POST("/storageaccount", handler.ConfigureStorageAccount)
+	r.PUT("/storageaccount/breakbloblease/:workspaceName", handler.BreakBlobLease)
 }
 
 func (s *StorageAccountHandler) GetStorageAccountConfiguration(c *gin.Context) {
@@ -87,4 +88,27 @@ func (s *StorageAccountHandler) ConfigureStorageAccount(c *gin.Context) {
 	configuration.BlobContainer = blobContainer
 
 	c.IndentedJSON(http.StatusCreated, configuration)
+}
+
+func (s *StorageAccountHandler) BreakBlobLease(c *gin.Context) {
+
+	workspaceName := c.Param("workspaceName")
+	if workspaceName == "" {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	storageAccountName, err := s.storageAccountService.GetStorageAccountName()
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	err = s.storageAccountService.BreakBlobLease(storageAccountName, "tfstate", workspaceName)
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, gin.H{"status": "success"})
 }
