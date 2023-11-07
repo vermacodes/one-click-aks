@@ -1,10 +1,10 @@
 import Button from "../../UserInterfaceComponents/Button";
+import { FaPlus, FaBinoculars } from "react-icons/fa";
 import { useTerraformWorkspace } from "../../../hooks/useWorkspace";
 import { SiTerraform } from "react-icons/si";
 import { useGetMyDeployments } from "../../../hooks/useDeployments";
 import { useLab } from "../../../hooks/useLab";
 import { Link } from "react-router-dom";
-import CreateNewDeployment from "../CreateNewDeployment";
 import AutoDestroySwitch from "../AutoDestroySwitch";
 import DestroyTime from "../DestroyTime";
 import DeploymentLifespan from "../DeploymentLifespan";
@@ -49,34 +49,32 @@ export default function SelectedDeployment({ sticky = true }: Props) {
         className="flex justify-between"
         key={selectedDeployment.deploymentId}
       >
-        <div className="flex flex-wrap items-center gap-y-2 gap-x-2">
-          <h1 className="text-xl">
-            <SiTerraform />
-          </h1>
+        <div className="flex items-center gap-x-2">
+          <SiTerraform className="text-xl" />
           <h1 className="text-2xl text-sky-500">
-            <div>{selectedDeployment.deploymentWorkspace}</div>
+            {selectedDeployment.deploymentWorkspace}
           </h1>
         </div>
-        <div className="flex flex-wrap gap-y-2 gap-x-4 divide-x divide-slate-500">
+        <div className="flex items-center gap-x-2">
           <DeploymentStatus deployment={selectedDeployment} />
-          <div className="flex flex-wrap items-center gap-x-2 pl-2">
-            <AutoDestroySwitch
-              deployment={selectedDeployment}
-              disabled={false}
-              label="Auto Destroy"
-              key={selectedDeployment.deploymentId}
-            />
-            <DeploymentLifespan deployment={selectedDeployment} />
-            <DestroyTime deployment={selectedDeployment} />
-          </div>
-          <div className="flex flex-wrap gap-x-2 pl-2">
-            <Link to={"/deployments"}>
-              <Button variant="secondary-text">View Deployments</Button>
-            </Link>
-            <CreateNewDeployment variant="primary-text">
-              New Deployment
-            </CreateNewDeployment>
-          </div>
+          <div className="mx-2 h-6 border-r border-gray-300"></div>
+          <AutoDestroySwitch
+            deployment={selectedDeployment}
+            disabled={false}
+            label="Auto Destroy"
+            key={selectedDeployment.deploymentId}
+          />
+          <DeploymentLifespan deployment={selectedDeployment} />
+          <DestroyTime deployment={selectedDeployment} />
+          <div className="mx-2 h-6 border-r border-gray-300"></div>
+          <Link to={"/deployments"}>
+            <Button variant="primary-text">
+              <FaBinoculars /> View
+            </Button>
+          </Link>
+          <Button variant="success-text">
+            <FaPlus /> Add
+          </Button>
         </div>
       </div>
     </div>

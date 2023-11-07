@@ -8,6 +8,7 @@ import Terminal from "../../components/Terminal";
 import CreateNewDeployment from "../../components/Deployments/CreateNewDeployment";
 import { getSelectedDeployment } from "../../utils/helpers";
 import { useTerraformWorkspace } from "../../hooks/useWorkspace";
+import { FaPlus, FaTools } from "react-icons/fa";
 
 export default function Deployments() {
   const { data: deployments } = useGetMyDeployments();
@@ -23,10 +24,12 @@ export default function Deployments() {
     <PageLayout heading="Deployments">
       <div className={`mb-3 flex justify-end space-x-4 rounded`}>
         <Link to="/builder">
-          <Button variant="secondary-outline">Open Lab Builder</Button>
+          <Button variant="secondary-outline">
+            <FaTools /> Lab Builder
+          </Button>
         </Link>
         <CreateNewDeployment variant="primary">
-          New Deployment
+          <FaPlus /> Add Deployment
         </CreateNewDeployment>
       </div>
       {deployments &&
