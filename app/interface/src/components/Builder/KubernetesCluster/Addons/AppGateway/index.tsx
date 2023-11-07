@@ -1,14 +1,16 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { useLab, useSetLab } from "../../../../../hooks/useLab";
 import { useSetLogs } from "../../../../../hooks/useLogs";
 import Checkbox from "../../../../UserInterfaceComponents/Checkbox";
 import { WebSocketContext } from "../../../../../WebSocketContext";
+import Tooltip from "../../../../UserInterfaceComponents/Tooltip";
 
 type Props = {
   index: number;
 };
 
 export default function AppGateway({ index }: Props) {
+  const [tooltipMessage, setTooltipMessage] = useState<string>("");
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const {
@@ -17,6 +19,42 @@ export default function AppGateway({ index }: Props) {
     isFetching: labIsFetching,
   } = useLab();
   const { mutate: setLab } = useSetLab();
+
+  const noKubernetesClustersMessage = "Kubernetes Cluster Required.";
+  const noVirtualNetworksMessage = "Virtual Network Required.";
+  const networkPluginIsOverlayMessage = "Not supported with Overlay";
+
+  let newTooltipMessage = "";
+
+  if (lab?.template?.kubernetesClusters.length === 0) {
+    newTooltipMessage += noKubernetesClustersMessage + " ";
+  }
+
+  if (lab?.template?.virtualNetworks.length === 0) {
+    newTooltipMessage += noVirtualNetworksMessage + " ";
+  }
+
+  if (
+    lab &&
+    lab.template &&
+    lab?.template?.kubernetesClusters[index]?.networkPluginMode === "Overlay"
+  ) {
+    newTooltipMessage += networkPluginIsOverlayMessage;
+  }
+
+  if (
+    lab &&
+    lab.template &&
+    lab?.template?.kubernetesClusters.length > 0 &&
+    lab?.template?.virtualNetworks.length > 0 &&
+    lab?.template?.kubernetesClusters[index]?.networkPluginMode !== "Overlay"
+  ) {
+    newTooltipMessage = "";
+  }
+
+  if (newTooltipMessage !== tooltipMessage) {
+    setTooltipMessage(newTooltipMessage);
+  }
 
   // Handle checkbox change
   function handleOnChange() {
@@ -44,15 +82,18 @@ export default function AppGateway({ index }: Props) {
     labIsLoading ||
     labIsFetching ||
     lab.template.kubernetesClusters.length === 0 ||
-    lab.template.virtualNetworks.length === 0;
+    lab.template.virtualNetworks.length === 0 ||
+    lab.template.kubernetesClusters[index].networkPluginMode === "Overlay";
 
   return (
-    <Checkbox
-      id="toggle-appgateway"
-      label="AGIC"
-      checked={checked}
-      disabled={disabled}
-      handleOnChange={handleOnChange}
-    />
+    <Tooltip message={tooltipMessage} delay={200}>
+      <Checkbox
+        id="toggle-appgateway"
+        label="AGIC"
+        checked={checked}
+        disabled={disabled}
+        handleOnChange={handleOnChange}
+      />
+    </Tooltip>
   );
 }

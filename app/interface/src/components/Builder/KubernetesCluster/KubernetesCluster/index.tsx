@@ -29,7 +29,7 @@ export default function KubernetesCluster() {
       {lab.template.kubernetesClusters.map((cluster, index) => (
         <BuilderContainer key={index} title={`Kubernetes Cluster ${index + 1}`}>
           <BuilderContainer key={index} title="Features">
-            <div className={`mt-4 flex flex-wrap gap-x-2 gap-y-2`}>
+            <div className={`mt-4 flex flex-wrap items-center gap-x-2 gap-y-2`}>
               <Version
                 versionMenu={versionMenu}
                 setVersionMenu={setVersionMenu}
@@ -45,7 +45,7 @@ export default function KubernetesCluster() {
             </div>
           </BuilderContainer>
           <BuilderContainer title="Addons">
-            <div className={`mt-4 flex flex-wrap gap-x-2 gap-y-2`}>
+            <div className={`mt-4 flex flex-wrap items-center gap-x-2 gap-y-2`}>
               <AppGateway index={index} />
               <ServiceMesh index={index} />
               <MicrosoftDefender index={index} />

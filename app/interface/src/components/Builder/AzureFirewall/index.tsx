@@ -1,11 +1,13 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { useLab, useSetLab } from "../../../hooks/useLab";
 import { useSetLogs } from "../../../hooks/useLogs";
 import Checkbox from "../../UserInterfaceComponents/Checkbox";
 import { defaultFirewall } from "../../../defaults";
 import { WebSocketContext } from "../../../WebSocketContext";
+import Tooltip from "../../UserInterfaceComponents/Tooltip";
 
 export default function AzureFirewall() {
+  const [tooltipMessage, setTooltipMessage] = useState<string>("");
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const {
@@ -14,6 +16,8 @@ export default function AzureFirewall() {
     isFetching: labIsFetching,
   } = useLab();
   const { mutate: setLab } = useSetLab();
+
+  const noVirtualNetworksMessage = "Virtual Network Required.";
 
   function handleOnChange() {
     if (lab !== undefined) {
@@ -62,16 +66,29 @@ export default function AzureFirewall() {
     disabled = true;
   }
 
+  if (
+    lab?.template?.virtualNetworks.length === 0 &&
+    tooltipMessage !== noVirtualNetworksMessage
+  ) {
+    setTooltipMessage(noVirtualNetworksMessage);
+  }
+
+  if (lab?.template?.virtualNetworks.length > 0 && tooltipMessage) {
+    setTooltipMessage("");
+  }
+
   return (
     <>
       {lab && lab.template && (
-        <Checkbox
-          id="toggle-azure-firewall"
-          label="Firewall"
-          checked={checked}
-          disabled={disabled}
-          handleOnChange={handleOnChange}
-        />
+        <Tooltip message={tooltipMessage} delay={200}>
+          <Checkbox
+            id="toggle-azure-firewall"
+            label="Firewall"
+            checked={checked}
+            disabled={disabled}
+            handleOnChange={handleOnChange}
+          />
+        </Tooltip>
       )}
     </>
   );

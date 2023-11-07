@@ -1,12 +1,16 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { useLab, useSetLab } from "../../../../../hooks/useLab";
 import { useSetLogs } from "../../../../../hooks/useLogs";
 import Checkbox from "../../../../UserInterfaceComponents/Checkbox";
 import { WebSocketContext } from "../../../../../WebSocketContext";
+import Tooltip from "../../../../UserInterfaceComponents/Tooltip";
 
-type Props = { index: number };
+type Props = {
+  index: number;
+};
 
 export default function NetworkPluginMode({ index }: Props) {
+  const [tooltipMessage, setTooltipMessage] = useState<string>("");
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const {
@@ -17,6 +21,37 @@ export default function NetworkPluginMode({ index }: Props) {
   const { mutate: setLab } = useSetLab();
 
   const cluster = lab?.template?.kubernetesClusters[index];
+
+  const noKubernetesClustersMessage =
+    "You must create a Kubernetes cluster first.";
+  const networkPluginNotAzureMessage = "Azure CNI required.";
+  const networkPolicyNotAzureMessage = "Not supported with Calico";
+
+  let newTooltipMessage = "";
+
+  if (!cluster) {
+    newTooltipMessage += noKubernetesClustersMessage + " ";
+  }
+
+  if (cluster?.networkPlugin !== "azure") {
+    newTooltipMessage += networkPluginNotAzureMessage + " ";
+  }
+
+  if (cluster?.networkPolicy !== "azure") {
+    newTooltipMessage += networkPolicyNotAzureMessage + " ";
+  }
+
+  if (
+    cluster &&
+    cluster.networkPlugin === "azure" &&
+    cluster.networkPolicy === "azure"
+  ) {
+    newTooltipMessage = "";
+  }
+
+  if (newTooltipMessage !== tooltipMessage) {
+    setTooltipMessage(newTooltipMessage);
+  }
 
   // Handle checkbox change
   const handleOnChange = () => {
@@ -40,12 +75,14 @@ export default function NetworkPluginMode({ index }: Props) {
 
   // If lab or template is undefined, return nothing
   return lab?.template ? (
-    <Checkbox
-      id="toggle-overlay"
-      label="Overlay"
-      checked={checked}
-      disabled={disabled}
-      handleOnChange={handleOnChange}
-    />
+    <Tooltip message={tooltipMessage} delay={200}>
+      <Checkbox
+        id="toggle-overlay"
+        label="Overlay"
+        checked={checked}
+        disabled={disabled}
+        handleOnChange={handleOnChange}
+      />
+    </Tooltip>
   ) : null;
 }

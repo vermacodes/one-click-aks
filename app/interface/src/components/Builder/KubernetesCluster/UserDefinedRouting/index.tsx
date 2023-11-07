@@ -1,14 +1,16 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { useLab, useSetLab } from "../../../../hooks/useLab";
 import { useSetLogs } from "../../../../hooks/useLogs";
 import Checkbox from "../../../UserInterfaceComponents/Checkbox";
 import { WebSocketContext } from "../../../../WebSocketContext";
+import Tooltip from "../../../UserInterfaceComponents/Tooltip";
 
 type Props = {
   index: number;
 };
 
 export default function UserDefinedRouting({ index }: Props) {
+  const [tooltipMessage, setTooltipMessage] = useState<string>("");
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const {
@@ -18,7 +20,6 @@ export default function UserDefinedRouting({ index }: Props) {
   } = useLab();
   const { mutate: setLab } = useSetLab();
 
-  // Toggle the outbound type between 'userDefinedRouting' and 'loadBalancer'
   const handleOnChange = () => {
     const cluster = lab?.template?.kubernetesClusters[index];
     if (cluster?.outboundType !== undefined && lab !== undefined) {
@@ -32,7 +33,6 @@ export default function UserDefinedRouting({ index }: Props) {
     }
   };
 
-  // Determine checked and disabled states
   const checked =
     lab?.template?.kubernetesClusters[index]?.outboundType ===
     "userDefinedRouting";
@@ -43,14 +43,41 @@ export default function UserDefinedRouting({ index }: Props) {
     lab?.template?.virtualNetworks.length === 0 ||
     lab?.template?.firewalls.length === 0;
 
-  // Render the Checkbox component if the lab template exists
+  const noVirtualNetworksMessage = "Virtual Network Required.";
+  const noFirewallsMessage = "Firewall Required.";
+
+  let newTooltipMessage = "";
+
+  if (lab?.template?.virtualNetworks.length === 0) {
+    newTooltipMessage += noVirtualNetworksMessage + " ";
+  }
+
+  if (lab?.template?.firewalls.length === 0) {
+    newTooltipMessage += noFirewallsMessage;
+  }
+
+  if (
+    lab &&
+    lab.template &&
+    lab?.template?.virtualNetworks.length > 0 &&
+    lab?.template?.firewalls.length > 0
+  ) {
+    newTooltipMessage = "";
+  }
+
+  if (newTooltipMessage !== tooltipMessage) {
+    setTooltipMessage(newTooltipMessage);
+  }
+
   return lab?.template ? (
-    <Checkbox
-      id="toggle-udr"
-      label="UDR"
-      checked={checked}
-      disabled={disabled}
-      handleOnChange={handleOnChange}
-    />
-  ) : null; // Return null if the lab template does not exist
+    <Tooltip message={tooltipMessage} delay={200}>
+      <Checkbox
+        id="toggle-udr"
+        label="UDR"
+        checked={checked}
+        disabled={disabled}
+        handleOnChange={handleOnChange}
+      />
+    </Tooltip>
+  ) : null;
 }

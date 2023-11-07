@@ -1,14 +1,19 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { useLab, useSetLab } from "../../../../hooks/useLab";
 import { useSetLogs } from "../../../../hooks/useLogs";
 import Checkbox from "../../../UserInterfaceComponents/Checkbox";
 import { WebSocketContext } from "../../../../WebSocketContext";
+import Tooltip from "../../../UserInterfaceComponents/Tooltip";
 
 type Props = {
   index: number;
 };
 
+const TRUE = "true";
+const FALSE = "false";
+
 export default function PrivateCluster({ index }: Props) {
+  const [tooltipMessage, setTooltipMessage] = useState<string>("");
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const {
@@ -18,43 +23,51 @@ export default function PrivateCluster({ index }: Props) {
   } = useLab();
   const { mutate: setLab } = useSetLab();
 
-  // Toggle the private cluster feature
+  const virtualNetworkRequiredMessage =
+    "You must create a virtual network first.";
+
   const handleOnChange = () => {
-    const cluster = lab?.template?.kubernetesClusters[index];
-    if (
-      cluster?.privateClusterEnabled !== undefined &&
-      lab !== undefined &&
-      lab?.template !== undefined
-    ) {
-      cluster.privateClusterEnabled =
-        cluster.privateClusterEnabled === "true" ? "false" : "true";
-      lab.template.jumpservers =
-        cluster.privateClusterEnabled === "true"
-          ? []
-          : lab.template.jumpservers;
-      !actionStatus.inProgress &&
-        setLogs({ logs: JSON.stringify(lab?.template, null, 4) });
-      setLab(lab);
+    if (lab && lab.template && !actionStatus.inProgress) {
+      const cluster = lab.template.kubernetesClusters[index];
+      if (cluster && cluster.privateClusterEnabled !== undefined) {
+        cluster.privateClusterEnabled =
+          cluster.privateClusterEnabled === TRUE ? FALSE : TRUE;
+        lab.template.jumpservers =
+          cluster.privateClusterEnabled === TRUE
+            ? []
+            : lab.template.jumpservers;
+        setLogs({ logs: JSON.stringify(lab.template, null, 4) });
+        setLab(lab);
+      }
     }
   };
 
-  // Determine checked and disabled states
+  const hasVirtualNetworks =
+    lab && lab.template && lab?.template?.virtualNetworks.length > 0;
+  const hasCluster = Boolean(lab?.template?.kubernetesClusters[index]);
   const checked =
-    lab?.template?.kubernetesClusters[index]?.privateClusterEnabled === "true";
+    lab?.template?.kubernetesClusters[index]?.privateClusterEnabled === TRUE;
   const disabled =
-    labIsLoading ||
-    labIsFetching ||
-    !lab?.template?.kubernetesClusters[index] ||
-    lab?.template?.virtualNetworks.length === 0;
+    labIsLoading || labIsFetching || !hasCluster || !hasVirtualNetworks;
 
-  // Render the Checkbox component if the lab template exists
+  // Tooltip message
+  if (!hasVirtualNetworks && tooltipMessage !== virtualNetworkRequiredMessage) {
+    setTooltipMessage(virtualNetworkRequiredMessage);
+  }
+
+  if (hasVirtualNetworks && tooltipMessage) {
+    setTooltipMessage("");
+  }
+
   return lab?.template ? (
-    <Checkbox
-      id="toggle-privatecluster"
-      label="Private Cluster"
-      checked={checked}
-      disabled={disabled}
-      handleOnChange={handleOnChange}
-    />
-  ) : null; // Return null if the lab template does not exist
+    <Tooltip message={tooltipMessage} delay={200}>
+      <Checkbox
+        id="toggle-privatecluster"
+        label="Private Cluster"
+        checked={checked}
+        disabled={disabled}
+        handleOnChange={handleOnChange}
+      />
+    </Tooltip>
+  ) : null;
 }

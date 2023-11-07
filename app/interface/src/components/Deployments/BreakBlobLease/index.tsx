@@ -7,6 +7,7 @@ import { getSelectedDeployment } from "../../../utils/helpers";
 import Button from "../../UserInterfaceComponents/Button";
 import { WebSocketContext } from "../../../WebSocketContext";
 import { useContext } from "react";
+import Tooltip from "../../UserInterfaceComponents/Tooltip";
 
 type Props = {
   deployment: DeploymentType;
@@ -33,12 +34,17 @@ export default function BreakBlobLease({ deployment }: Props) {
     deployment.deploymentWorkspace !== selectedDeployment.deploymentWorkspace;
 
   return (
-    <Button
-      variant="secondary-outline"
-      disabled={disabled}
-      onClick={() => breakBlobLease(deployment.deploymentWorkspace)}
+    <Tooltip
+      message="Use this to break the lease of terraform state file"
+      delay={500}
     >
-      <FaCut /> Lease
-    </Button>
+      <Button
+        variant="secondary-outline"
+        disabled={disabled}
+        onClick={() => breakBlobLease(deployment.deploymentWorkspace)}
+      >
+        <FaCut /> Lease
+      </Button>
+    </Tooltip>
   );
 }

@@ -1,14 +1,16 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { useLab, useSetLab } from "../../../../../hooks/useLab";
 import { useSetLogs } from "../../../../../hooks/useLogs";
 import Checkbox from "../../../../UserInterfaceComponents/Checkbox";
 import { WebSocketContext } from "../../../../../WebSocketContext";
+import Tooltip from "../../../../UserInterfaceComponents/Tooltip";
 
 type Props = {
   index: number;
 };
 
 export default function VirtualNode({ index }: Props) {
+  const [tooltipMessage, setTooltipMessage] = useState<string>("");
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const {
@@ -17,6 +19,33 @@ export default function VirtualNode({ index }: Props) {
     isFetching: labIsFetching,
   } = useLab();
   const { mutate: setLab } = useSetLab();
+
+  const noKubernetesClustersMessage =
+    "You must create a Kubernetes cluster first.";
+  const networkPluginNotAzureMessage = "Azure CNI required.";
+
+  let newTooltipMessage = "";
+
+  if (lab?.template?.kubernetesClusters.length === 0) {
+    newTooltipMessage += noKubernetesClustersMessage;
+  }
+
+  if (lab?.template?.kubernetesClusters[index]?.networkPlugin !== "azure") {
+    newTooltipMessage += networkPluginNotAzureMessage;
+  }
+
+  if (
+    lab &&
+    lab.template &&
+    lab?.template?.kubernetesClusters.length > 0 &&
+    lab?.template?.kubernetesClusters[index]?.networkPlugin === "azure"
+  ) {
+    newTooltipMessage = "";
+  }
+
+  if (newTooltipMessage !== tooltipMessage) {
+    setTooltipMessage(newTooltipMessage);
+  }
 
   // Toggle the virtual node addon
   const handleOnChange = () => {
@@ -39,12 +68,14 @@ export default function VirtualNode({ index }: Props) {
 
   // Render the Checkbox component if the lab template exists
   return lab?.template ? (
-    <Checkbox
-      id="toggle-virtual-node"
-      label="VirtualNode"
-      checked={checked}
-      disabled={disabled}
-      handleOnChange={handleOnChange}
-    />
+    <Tooltip message={tooltipMessage} delay={200}>
+      <Checkbox
+        id="toggle-virtual-node"
+        label="VirtualNode"
+        checked={checked}
+        disabled={disabled}
+        handleOnChange={handleOnChange}
+      />
+    </Tooltip>
   ) : null; // Return null if the lab template does not exist
 }

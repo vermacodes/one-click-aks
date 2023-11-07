@@ -4,6 +4,7 @@ import { useContext, useState } from "react";
 import { WebSocketContext } from "../../../WebSocketContext";
 import Button from "../../UserInterfaceComponents/Button";
 import { useResetServerCache } from "../../../hooks/useServerCache";
+import Tooltip from "../../UserInterfaceComponents/Tooltip";
 
 export default function AzureSubscription() {
   const [subscriptionMenu, setSubscriptionMenu] = useState<boolean>(false);
@@ -73,18 +74,19 @@ export default function AzureSubscription() {
           )}
         </div>
       </div>
-
-      <Button
-        variant="secondary-text"
-        disabled={actionStatus.inProgress}
-        onClick={() =>
-          resetServerCacheAsync().finally(() => {
-            window.location.reload();
-          })
-        }
-      >
-        <FaRedo />
-      </Button>
+      <Tooltip message="Reset Server Cache" delay={200}>
+        <Button
+          variant="secondary-text"
+          disabled={actionStatus.inProgress}
+          onClick={() =>
+            resetServerCacheAsync().finally(() => {
+              window.location.reload();
+            })
+          }
+        >
+          <FaRedo />
+        </Button>
+      </Tooltip>
     </div>
   );
 }
