@@ -42,8 +42,8 @@ export default function ApplyButton({ variant, children, lab }: Props) {
         deploymentStatus: status,
       };
 
-      // Update time only when deployment either failed or completed
-      if (status === "Deployment Failed" || status === "Deployment Completed") {
+      // if deployment is auto delete, update the unix time
+      if (deployment.deploymentAutoDelete) {
         updatedDeployment.deploymentAutoDeleteUnixTime =
           calculateNewEpochTimeForDeployment(deployment);
       }

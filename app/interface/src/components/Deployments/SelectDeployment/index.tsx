@@ -40,7 +40,6 @@ export default function SelectDeployment({
         }
         onClick={() => {
           setShowModal(true);
-          console.log("on select : " + deployment.deploymentWorkspace);
           asyncSelectDeployment(deployment).finally(() => {
             // wait for 3 seconds for data to be fetched.
             // not an ideal solution, but works for now.

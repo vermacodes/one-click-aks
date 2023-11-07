@@ -2,7 +2,7 @@ package entity
 
 // Terraform workspace.
 // Terraform workspace has a name and its selected or not.
-// There is always a 'default' workspace and is slected by default.
+// There is always a 'default' workspace and is selected by default.
 type Workspace struct {
 	Name     string `json:"name"`
 	Selected bool   `json:"selected"`
@@ -10,8 +10,9 @@ type Workspace struct {
 
 type WorkspaceService interface {
 	List() ([]Workspace, error)
+	GetSelectedWorkspace() (Workspace, error)
 
-	//Follwing mutating operatins delete resources from redis.
+	//Following mutating operations delete resources from redis.
 	Add(Workspace) error
 	Select(Workspace) error
 	Delete(Workspace) error
@@ -48,7 +49,7 @@ type WorkspaceRepository interface {
 	Delete(Workspace) error
 
 	// Gets the resources in current selected workspace.
-	// The reources are just a string and thus returned as is.
+	// The Resources are just a string and thus returned as is.
 	Resources(StorageAccount string) (string, error)
 
 	GetResourcesFromRedis() (string, error)

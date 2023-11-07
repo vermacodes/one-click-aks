@@ -11,7 +11,7 @@ export default function VersionCheck() {
     }
 
     const versionNumber = parseInt(version);
-    return versionNumber >= 20231105;
+    return versionNumber >= 20231106;
   }
 
   if (data === undefined || isFetching || versionCheck(data.version)) {
@@ -21,14 +21,16 @@ export default function VersionCheck() {
   return (
     <div className="my-4">
       <div className="mt-2 rounded border border-red-500 bg-red-500 bg-opacity-20 p-2">
-        <strong>Oh no!</strong> There is a version mismatch between server and
-        client. That means its time to re-deploy your server.{" "}
+        <strong>New Version Released:</strong> The UI has been updated and needs
+        newer version of server. Running old version of server may result in
+        unexpected behavior.
+        <br />
         <a
           href="https://dev.azure.com/Supportability/AzureContainers/_wiki/wikis/Containers%20Wiki/849282/Getting-Started"
-          className="cursor-pointer hover:text-sky-500 hover:underline"
+          className="cursor-pointer text-sky-500 underline"
           target="_blank"
         >
-          Click here to get started.
+          Please follow these instructions to re-deploy your server.
         </a>
       </div>
     </div>

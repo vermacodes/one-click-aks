@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"encoding/json"
+	"strings"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/data/aztables"
 	"github.com/vermacodes/one-click-aks/app/server/entity"
@@ -20,7 +21,7 @@ func (d *deploymentRepository) GetDeployments() ([]entity.Deployment, error) {
 	return nil, nil
 }
 
-func (d *deploymentRepository) GetMyDeployments(userId string) ([]entity.Deployment, error) {
+func (d *deploymentRepository) GetMyDeployments(userId string, subscriptionId string) ([]entity.Deployment, error) {
 
 	deployment := entity.Deployment{}
 	deployments := []entity.Deployment{}
@@ -43,6 +44,12 @@ func (d *deploymentRepository) GetMyDeployments(userId string) ([]entity.Deploym
 			if err != nil {
 				slog.Error("error unmarshal deployment entity ", err)
 				return nil, err
+			}
+
+			// filter out deployments that are not for the current subscription
+			// check if RowKey contains the subscriptionId
+			if !strings.Contains(myEntity.RowKey, subscriptionId) {
+				continue
 			}
 
 			deploymentString := myEntity.Properties["Deployment"].(string)
@@ -114,6 +121,47 @@ func (d *deploymentRepository) UpsertDeployment(deployment entity.Deployment) er
 	_, err = client.UpsertEntity(context.TODO(), marshalled, nil)
 	if err != nil {
 		slog.Error("error adding deployment record ", err)
+		return err
+	}
+
+	return nil
+}
+
+func (d *deploymentRepository) DeploymentOperationEntry(deployment entity.Deployment) error {
+	client := helper.GetServiceClient().NewClient("DeploymentOperations")
+
+	marshalledDeploymentLab, err := json.Marshal(deployment.DeploymentLab)
+	if err != nil {
+		slog.Error("error occurred marshalling the deployment lab.", err)
+		return err
+	}
+
+	slog.Debug("adding record for " + deployment.DeploymentUserId)
+
+	operationEntry := entity.OperationEntry{
+		PartitionKey:                 deployment.DeploymentUserId,
+		RowKey:                       helper.Generate(64),
+		DeploymentUserId:             deployment.DeploymentUserId,
+		DeploymentSubscriptionId:     deployment.DeploymentSubscriptionId,
+		DeploymentWorkspace:          deployment.DeploymentWorkspace,
+		DeploymentStatus:             deployment.DeploymentStatus,
+		DeploymentAutoDelete:         deployment.DeploymentAutoDelete,
+		DeploymentLifespan:           deployment.DeploymentLifespan,
+		DeploymentAutoDeleteUnixTime: deployment.DeploymentAutoDeleteUnixTime,
+		DeploymentLab:                string(marshalledDeploymentLab),
+	}
+
+	marshalled, err := json.Marshal(operationEntry)
+	if err != nil {
+		slog.Error("error occurred marshalling the deployment entry record.", err)
+		return err
+	}
+
+	slog.Debug("updating deployment entry record ", "deployment", string(marshalled))
+
+	_, err = client.UpsertEntity(context.TODO(), marshalled, nil)
+	if err != nil {
+		slog.Error("error adding deployment entry record ", err)
 		return err
 	}
 
