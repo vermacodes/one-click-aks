@@ -21,15 +21,16 @@ export default function VersionCheck() {
   return (
     <div className="my-4">
       <div className="mt-2 rounded border border-red-500 bg-red-500 bg-opacity-20 p-2">
-        <strong>New Version Released:</strong> The versions of your server and
-        client do not match. This requires a server re-deployment.
+        <strong>New Version Released:</strong> The UI has been updated and needs
+        newer version of server. Running old version of server may result in
+        unexpected behavior.
         <br />
         <a
           href="https://dev.azure.com/Supportability/AzureContainers/_wiki/wikis/Containers%20Wiki/849282/Getting-Started"
           className="cursor-pointer text-sky-500 underline"
           target="_blank"
         >
-          Follow these instructions to re-deploy your server.
+          Please follow these instructions to re-deploy your server.
         </a>
       </div>
     </div>
