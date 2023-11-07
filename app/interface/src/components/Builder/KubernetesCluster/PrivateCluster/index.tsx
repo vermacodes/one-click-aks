@@ -60,14 +60,14 @@ export default function PrivateCluster({ index }: Props) {
   }
 
   return lab?.template ? (
-    <Tooltip message={tooltipMessage} delay={200}>
-      <Checkbox
-        id="toggle-privatecluster"
-        label="Private Cluster"
-        checked={checked}
-        disabled={disabled}
-        handleOnChange={handleOnChange}
-      />
-    </Tooltip>
+    <Checkbox
+      id="toggle-privatecluster"
+      label="Private Cluster"
+      checked={checked}
+      disabled={disabled}
+      tooltipMessage={tooltipMessage}
+      tooltipDelay={200}
+      handleOnChange={handleOnChange}
+    />
   ) : null;
 }

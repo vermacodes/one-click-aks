@@ -80,15 +80,15 @@ export default function AzureFirewall() {
   return (
     <>
       {lab && lab.template && (
-        <Tooltip message={tooltipMessage} delay={200}>
-          <Checkbox
-            id="toggle-azure-firewall"
-            label="Firewall"
-            checked={checked}
-            disabled={disabled}
-            handleOnChange={handleOnChange}
-          />
-        </Tooltip>
+        <Checkbox
+          id="toggle-azure-firewall"
+          label="Firewall"
+          checked={checked}
+          disabled={disabled}
+          tooltipMessage={tooltipMessage}
+          tooltipDelay={200}
+          handleOnChange={handleOnChange}
+        />
       )}
     </>
   );

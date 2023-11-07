@@ -70,14 +70,14 @@ export default function UserDefinedRouting({ index }: Props) {
   }
 
   return lab?.template ? (
-    <Tooltip message={tooltipMessage} delay={200}>
-      <Checkbox
-        id="toggle-udr"
-        label="UDR"
-        checked={checked}
-        disabled={disabled}
-        handleOnChange={handleOnChange}
-      />
-    </Tooltip>
+    <Checkbox
+      id="toggle-udr"
+      label="UDR"
+      checked={checked}
+      disabled={disabled}
+      tooltipMessage={tooltipMessage}
+      tooltipDelay={200}
+      handleOnChange={handleOnChange}
+    />
   ) : null;
 }

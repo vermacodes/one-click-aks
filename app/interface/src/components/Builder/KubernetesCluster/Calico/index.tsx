@@ -72,14 +72,14 @@ export default function Calico({ index }: Props) {
 
   // Render the Checkbox component if the lab template exists
   return lab?.template ? (
-    <Tooltip message={tooltipMessage} delay={200}>
-      <Checkbox
-        id="toggle-calico"
-        label="Calico"
-        checked={checked}
-        disabled={disabled}
-        handleOnChange={handleOnChange}
-      />
-    </Tooltip>
+    <Checkbox
+      id="toggle-calico"
+      label="Calico"
+      checked={checked}
+      disabled={disabled}
+      tooltipMessage={tooltipMessage}
+      tooltipDelay={200}
+      handleOnChange={handleOnChange}
+    />
   ) : null; // Return null if the lab template does not exist
 }

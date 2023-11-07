@@ -68,11 +68,19 @@ export default function SelectedDeployment({ sticky = true }: Props) {
           <DestroyTime deployment={selectedDeployment} />
           <div className="mx-2 h-6 border-r border-gray-300"></div>
           <Link to={"/deployments"}>
-            <Button variant="primary-text">
+            <Button
+              variant="primary-text"
+              tooltipMessage="View all deployments"
+              tooltipDelay={200}
+            >
               <FaBinoculars /> View
             </Button>
           </Link>
-          <Button variant="success-text">
+          <Button
+            variant="success-text"
+            tooltipMessage="Add new deployment"
+            tooltipDelay={200}
+          >
             <FaPlus /> Add
           </Button>
         </div>

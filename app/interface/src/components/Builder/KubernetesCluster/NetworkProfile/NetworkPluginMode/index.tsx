@@ -75,14 +75,14 @@ export default function NetworkPluginMode({ index }: Props) {
 
   // If lab or template is undefined, return nothing
   return lab?.template ? (
-    <Tooltip message={tooltipMessage} delay={200}>
-      <Checkbox
-        id="toggle-overlay"
-        label="Overlay"
-        checked={checked}
-        disabled={disabled}
-        handleOnChange={handleOnChange}
-      />
-    </Tooltip>
+    <Checkbox
+      id="toggle-overlay"
+      label="Overlay"
+      checked={checked}
+      disabled={disabled}
+      tooltipMessage={tooltipMessage}
+      tooltipDelay={200}
+      handleOnChange={handleOnChange}
+    />
   ) : null;
 }

@@ -68,14 +68,14 @@ export default function VirtualNode({ index }: Props) {
 
   // Render the Checkbox component if the lab template exists
   return lab?.template ? (
-    <Tooltip message={tooltipMessage} delay={200}>
-      <Checkbox
-        id="toggle-virtual-node"
-        label="VirtualNode"
-        checked={checked}
-        disabled={disabled}
-        handleOnChange={handleOnChange}
-      />
-    </Tooltip>
+    <Checkbox
+      id="toggle-virtual-node"
+      label="VirtualNode"
+      checked={checked}
+      disabled={disabled}
+      tooltipMessage={tooltipMessage}
+      tooltipDelay={200}
+      handleOnChange={handleOnChange}
+    />
   ) : null; // Return null if the lab template does not exist
 }

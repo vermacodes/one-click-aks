@@ -86,14 +86,14 @@ export default function AppGateway({ index }: Props) {
     lab.template.kubernetesClusters[index].networkPluginMode === "Overlay";
 
   return (
-    <Tooltip message={tooltipMessage} delay={200}>
-      <Checkbox
-        id="toggle-appgateway"
-        label="AGIC"
-        checked={checked}
-        disabled={disabled}
-        handleOnChange={handleOnChange}
-      />
-    </Tooltip>
+    <Checkbox
+      id="toggle-appgateway"
+      label="AGIC"
+      checked={checked}
+      disabled={disabled}
+      tooltipMessage={tooltipMessage}
+      tooltipDelay={200}
+      handleOnChange={handleOnChange}
+    />
   );
 }
