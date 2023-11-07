@@ -6,27 +6,35 @@ import {
   useAddDeployment,
   useGetMyDeployments,
 } from "../../../hooks/useDeployments";
-import { useSetActionStatus } from "../../../hooks/useActionStatus";
 import { useLab } from "../../../hooks/useLab";
 import { ButtonVariant } from "../../../dataStructures";
 import { WebSocketContext } from "../../../WebSocketContext";
 
 type Props = {
   variant: ButtonVariant;
+  tooltipMessage?: string;
+  tooltipDelay?: number;
   children: React.ReactNode;
 };
 
-export default function CreateNewDeployment(props: Props) {
+export default function CreateNewDeployment({
+  variant,
+  tooltipMessage,
+  tooltipDelay,
+  children,
+}: Props) {
   const [showModal, setShowModal] = useState<boolean>(false);
   const { actionStatus } = useContext(WebSocketContext);
   return (
     <>
       <Button
-        variant={props.variant}
+        variant={variant}
+        tooltipMessage={tooltipMessage}
+        tooltipDelay={tooltipDelay}
         onClick={() => setShowModal(true)}
         disabled={actionStatus.inProgress}
       >
-        {props.children}
+        {children}
       </Button>
       <Modal showModal={showModal} setShowModal={setShowModal} />
     </>
@@ -96,7 +104,7 @@ function Modal({ showModal, setShowModal }: ModalProps) {
     }
 
     // Check if input does not exceed 255 characters in length
-    if (input.length > 255) {
+    if (input.length > 16) {
       return false;
     }
 
@@ -119,7 +127,7 @@ function Modal({ showModal, setShowModal }: ModalProps) {
       }}
     >
       <div
-        className="my-20 h-1/3 w-1/3 space-y-2 divide-y divide-slate-300 overflow-y-auto rounded bg-slate-100 p-5 overflow-x-hidden scrollbar-thin  scrollbar-thumb-slate-400 dark:divide-slate-700 dark:bg-slate-900 dark:scrollbar-thumb-slate-600"
+        className="my-20 h-1/3 w-1/3 space-y-2 divide-y divide-slate-300 overflow-y-auto overflow-x-hidden rounded bg-slate-100 p-5 scrollbar-thin  scrollbar-thumb-slate-400 dark:divide-slate-700 dark:bg-slate-900 dark:scrollbar-thumb-slate-600"
         onClick={(e) => {
           e.stopPropagation();
         }}
@@ -181,7 +189,7 @@ function Modal({ showModal, setShowModal }: ModalProps) {
               <p className="error-message">{errorMessage}</p>
               <p className="text-xs">
                 Deployment name must: Be at least one character long. Not exceed
-                255 characters in length. Consist of letters, numbers, colons,
+                16 characters in length. Consist of letters, numbers, colons,
                 hyphens, or underscores only.
               </p>
             </div>

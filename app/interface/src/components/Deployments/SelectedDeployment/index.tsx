@@ -10,6 +10,7 @@ import DestroyTime from "../DestroyTime";
 import DeploymentLifespan from "../DeploymentLifespan";
 import { getSelectedDeployment } from "../../../utils/helpers";
 import DeploymentStatus from "../DeploymentStatus";
+import CreateNewDeployment from "../CreateNewDeployment";
 
 type Props = {
   sticky?: boolean;
@@ -69,20 +70,20 @@ export default function SelectedDeployment({ sticky = true }: Props) {
           <div className="mx-2 h-6 border-r border-gray-300"></div>
           <Link to={"/deployments"}>
             <Button
-              variant="primary-text"
+              variant="secondary-text"
               tooltipMessage="View all deployments"
               tooltipDelay={200}
             >
               <FaBinoculars /> View
             </Button>
           </Link>
-          <Button
-            variant="success-text"
+          <CreateNewDeployment
+            variant="primary-text"
             tooltipMessage="Add new deployment"
             tooltipDelay={200}
           >
             <FaPlus /> Add
-          </Button>
+          </CreateNewDeployment>
         </div>
       </div>
     </div>
