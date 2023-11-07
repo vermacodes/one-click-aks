@@ -96,7 +96,7 @@ export function isDefaultWorkspaceSelected(
 // set default values in local storage
 export function setDefaultValuesInLocalStorage() {
     if (localStorage.getItem("darkMode") === null) {
-        localStorage.setItem("darkMode", "true");
+        localStorage.setItem("darkMode", "false");
     }
 
     if (localStorage.getItem("autoScroll") === null) {
