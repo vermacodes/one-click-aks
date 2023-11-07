@@ -1,5 +1,11 @@
 import { Link } from "react-router-dom";
 import { Lab } from "../../../dataStructures";
+import {
+  FaRegCalendarAlt,
+  FaRegEdit,
+  FaUser,
+  FaUserEdit,
+} from "react-icons/fa";
 
 type Props = {
   lab: Lab | undefined;
@@ -36,16 +42,24 @@ export default function LabCard({ lab, children }: Props) {
           ))}
       </div>
       <>{children}</>
-      {lab.createdBy !== "" && lab.createdOn !== "" && (
-        <div className="text-xs">
-          Created on {lab.createdOn} by {lab.createdBy}
-        </div>
-      )}
-      {lab.updatedBy !== "" && lab.updatedOn !== "" && (
-        <div className="text-xs">
-          Updated on {lab.updatedOn} by {lab.updatedBy}
-        </div>
-      )}
+      <div className="flex flex-col gap-y-1 text-xs text-gray-500">
+        {lab.createdBy !== "" && lab.createdOn !== "" && (
+          <div className="flex items-center gap-x-1">
+            <FaRegCalendarAlt className="text-sm" />
+            <span>Created on {lab.createdOn}</span>
+            <FaUser className="text-sm" />
+            <span>by {lab.createdBy}</span>
+          </div>
+        )}
+        {lab.updatedBy !== "" && lab.updatedOn !== "" && (
+          <div className="flex items-center gap-x-1">
+            <FaRegEdit className="text-sm" />
+            <span>Updated on {lab.updatedOn}</span>
+            <FaUserEdit className="text-sm" />
+            <span>by {lab.updatedBy}</span>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
