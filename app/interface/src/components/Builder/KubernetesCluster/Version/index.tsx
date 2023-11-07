@@ -30,7 +30,6 @@ export default function Version({ versionMenu, setVersionMenu, index }: Props) {
       !actionStatus.inProgress &&
         setLogs({ logs: JSON.stringify(lab.template, null, 4) });
       setLab(lab);
-      console.log("version selected", patchVersion);
     }
   };
 

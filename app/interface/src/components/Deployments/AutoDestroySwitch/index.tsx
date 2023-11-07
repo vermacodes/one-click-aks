@@ -17,8 +17,6 @@ export default function AutoDestroySwitch({
   const { mutateAsync: asyncPatchDeployment } = usePatchDeployment();
 
   function handleAutoDeleteChange() {
-    console.log("on auto delete : " + deployment.deploymentWorkspace);
-
     //Switch the auto delete state
     deployment.deploymentAutoDelete = !deployment.deploymentAutoDelete;
 

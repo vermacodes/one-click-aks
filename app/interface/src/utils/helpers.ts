@@ -92,3 +92,22 @@ export function isDefaultWorkspaceSelected(
 
     return false;
   }
+
+// set default values in local storage
+export function setDefaultValuesInLocalStorage() {
+    if (localStorage.getItem("darkMode") === null) {
+        localStorage.setItem("darkMode", "true");
+    }
+
+    if (localStorage.getItem("autoScroll") === null) {
+        localStorage.setItem("autoScroll", "true");
+    }
+
+    if (localStorage.getItem("authServiceBaseUrl") === null) {
+        localStorage.setItem("authServiceBaseUrl", "https://actlabs-auth.azurewebsites.net/");
+    }
+
+    if (localStorage.getItem("baseUrl") === null) {
+        localStorage.setItem("baseUrl", "http://localhost:8880/");
+    }
+}

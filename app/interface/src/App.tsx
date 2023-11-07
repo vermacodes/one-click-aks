@@ -4,6 +4,7 @@ import { WebSocketContext } from "./WebSocketContext";
 import { ActionStatusType, LogsStreamType } from "./dataStructures";
 import ReconnectingWebSocket from "reconnecting-websocket";
 import { useQueryClient } from "react-query";
+import { setDefaultValuesInLocalStorage } from "./utils/helpers";
 
 function App() {
   const [darkMode, setDarkMode] = useState<boolean>(true);
@@ -19,6 +20,8 @@ function App() {
   const queryClient = useQueryClient();
 
   useEffect(() => {
+    setDefaultValuesInLocalStorage();
+
     var darkModeFromLocalStorage = localStorage.getItem("darkMode");
     if (darkModeFromLocalStorage === null) {
       localStorage.setItem("darkMode", "true");
