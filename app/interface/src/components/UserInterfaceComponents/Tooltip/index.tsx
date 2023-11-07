@@ -27,7 +27,11 @@ export default function Tooltip({ message, children, delay = 0 }: Props) {
     >
       {children}
       {message && visible && (
-        <div className="absolute top-10 z-50 transform rounded bg-gray-800 p-2 text-xs text-white transition-all">
+        <div
+          className="absolute top-10 z-50 transform rounded bg-slate-800 p-2 text-xs text-slate-100 transition-all
+        dark:bg-slate-100 dark:text-slate-900 
+        "
+        >
           {message}
         </div>
       )}
