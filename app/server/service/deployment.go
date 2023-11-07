@@ -92,6 +92,34 @@ func (d *DeploymentService) GetDeployment(userId string, workspace string, subsc
 	return d.deploymentRepository.GetDeployment(userId, workspace, subscriptionId)
 }
 
+func (d *DeploymentService) GetSelectedDeployment() (entity.Deployment, error) {
+	// get selected workspace
+	selectedWorkspace, err := d.workspaceService.GetSelectedWorkspace()
+	if err != nil {
+		slog.Error("not able to get selected workspace", err)
+		return entity.Deployment{}, err
+	}
+
+	//Get user principal from env variable.
+	userPrincipal := os.Getenv("ARM_USER_PRINCIPAL_NAME")
+
+	//Get all deployments.
+	deployments, err := d.GetMyDeployments(userPrincipal)
+	if err != nil {
+		slog.Error("not able to get deployments", err)
+		return entity.Deployment{}, nil
+	}
+
+	// Find the deployment for the selected workspace.
+	for _, deployment := range deployments {
+		if deployment.DeploymentWorkspace == selectedWorkspace.Name {
+			return deployment, nil
+		}
+	}
+
+	return entity.Deployment{}, nil
+}
+
 func (d *DeploymentService) SelectDeployment(deployment entity.Deployment) error {
 
 	// check if workspace exists, if not add it.
@@ -189,10 +217,10 @@ func (d *DeploymentService) PollAndDeleteDeployments(interval time.Duration) err
 			}
 
 			// Get the current workspace.
-			currentWorkspace, err := d.workspaceService.()
+			prevSelectedDeployment, err := d.GetSelectedDeployment()
 			if err != nil {
-					slog.Error("not able to get current workspace", err)
-					continue
+				slog.Error("not able to get current workspace", err)
+				continue
 			}
 
 			// Change terraform workspace.
@@ -239,11 +267,17 @@ func (d *DeploymentService) PollAndDeleteDeployments(interval time.Duration) err
 				continue
 			}
 
-			// Update deployment status to deleting.
+			// Update deployment status to destroyed.
 			deployment.DeploymentStatus = entity.ResourcesDestroyed
 			if err := d.UpsertDeployment(deployment); err != nil {
 				slog.Error("not able to update deployment", err)
 				d.actionStatusService.SetActionEnd()
+				continue
+			}
+
+			// Change back to the original workspace.
+			if err := d.ChangeTerraformWorkspace(prevSelectedDeployment); err != nil {
+				slog.Error("not able to change back to original workspace", err)
 				continue
 			}
 
