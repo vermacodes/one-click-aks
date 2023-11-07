@@ -188,6 +188,13 @@ func (d *DeploymentService) PollAndDeleteDeployments(interval time.Duration) err
 				break
 			}
 
+			// Get the current workspace.
+			currentWorkspace, err := d.workspaceService.()
+			if err != nil {
+					slog.Error("not able to get current workspace", err)
+					continue
+			}
+
 			// Change terraform workspace.
 			if err := d.ChangeTerraformWorkspace(deployment); err != nil {
 				slog.Error("not able to change terraform workspace", err)

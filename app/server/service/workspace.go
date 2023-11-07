@@ -9,7 +9,7 @@ import (
 
 type workspaceService struct {
 	workspaceRepository   entity.WorkspaceRepository
-	storageAccountService entity.StorageAccountService // Some information is needed from storage aacount service.
+	storageAccountService entity.StorageAccountService // Some information is needed from storage account service.
 	actionStatusService   entity.ActionStatusService
 }
 
@@ -54,6 +54,22 @@ func (w *workspaceService) List() ([]entity.Workspace, error) {
 	w.workspaceRepository.AddListToRedis(val)
 
 	return helperStringToWorkspaces(val), nil
+}
+
+func (w *workspaceService) GetSelectedWorkspace() (entity.Workspace, error) {
+	workspaces, err := w.List()
+	if err != nil {
+		return entity.Workspace{}, err
+	}
+
+	for _, workspace := range workspaces {
+		if workspace.Selected {
+			return workspace, nil
+		}
+	}
+
+	return entity.Workspace{}, nil
+
 }
 
 func (w *workspaceService) Add(workspace entity.Workspace) error {
@@ -114,7 +130,7 @@ func (w *workspaceService) Resources() (string, error) {
 	}
 	resources, err = w.workspaceRepository.Resources(storageAccountName)
 	if err != nil {
-		slog.Error("not able to get resouces", err)
+		slog.Error("not able to get resources", err)
 	}
 
 	w.workspaceRepository.AddResourcesToRedis(resources)
@@ -127,7 +143,7 @@ func (w *workspaceService) DeleteAllWorkspaceFromRedis() error {
 	return nil
 }
 
-// this is a helper function which takes a string (output from the commmand)
+// this is a helper function which takes a string (output from the command)
 // and converts to a list of workspaces.
 func helperStringToWorkspaces(val string) []entity.Workspace {
 	slog.Debug("Workspaces : " + val)
