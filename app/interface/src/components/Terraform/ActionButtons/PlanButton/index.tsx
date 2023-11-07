@@ -36,6 +36,8 @@ export default function PlanButton({ variant, children, lab }: Props) {
     <Button
       variant={variant}
       onClick={onClickHandler}
+      tooltipMessage="Preview the changes before deploy."
+      tooltipDelay={1000}
       disabled={actionStatus.inProgress || lab === undefined}
     >
       <span className="text-base">

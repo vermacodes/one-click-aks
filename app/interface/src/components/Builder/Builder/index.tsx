@@ -16,6 +16,7 @@ import ContainerRegistry from "../ContainerRegistry";
 import VirtualNetwork from "../VirtualNetwork";
 import KubernetesCluster from "../KubernetesCluster/KubernetesCluster";
 import AddKubernetesCluster from "../KubernetesCluster/AddKubernetesCluster";
+import Tooltip from "../../UserInterfaceComponents/Tooltip";
 
 export default function Builder() {
   const [versionMenu, setVersionMenu] = useState<boolean>(false);
@@ -48,7 +49,9 @@ export default function Builder() {
         <DestroyButton variant="danger-text" lab={lab}>
           Destroy
         </DestroyButton>
-        <CodeEditor variant="secondary-text">Extension</CodeEditor>
+        <Tooltip message="Update extension script" delay={500}>
+          <CodeEditor variant="secondary-text">Extension</CodeEditor>
+        </Tooltip>
         <LabBuilder variant="secondary-text">Save</LabBuilder>
         <Button
           variant="secondary-text"
