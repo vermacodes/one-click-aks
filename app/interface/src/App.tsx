@@ -5,6 +5,8 @@ import { ActionStatusType, LogsStreamType } from "./dataStructures";
 import ReconnectingWebSocket from "reconnecting-websocket";
 import { useQueryClient } from "react-query";
 import { setDefaultValuesInLocalStorage } from "./utils/helpers";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const [darkMode, setDarkMode] = useState<boolean>(true);
@@ -50,7 +52,7 @@ function App() {
       setActionStatusConnected(false);
     };
 
-    actionStatusWs.onmessage = (event: any) => {
+    actionStatusWs.onmessage = (event: MessageEvent) => {
       setActionStatus(JSON.parse(event.data));
       queryClient.invalidateQueries("list-deployments");
       queryClient.invalidateQueries("list-terraform-workspaces");
@@ -66,7 +68,8 @@ function App() {
     logStreamWs.onclose = () => {
       setLogStreamConnected(false);
     };
-    logStreamWs.onmessage = (event: any) => {
+
+    logStreamWs.onmessage = (event: MessageEvent) => {
       setLogStream(JSON.parse(event.data));
     };
 
@@ -77,25 +80,40 @@ function App() {
   }, []);
 
   return (
-    <div
-      className={`${
-        darkMode
-          ? " dark bg-slate-900 text-slate-200"
-          : " bg-slate-50 text-slate-900"
-      }`}
-    >
-      <WebSocketContext.Provider
-        value={{
-          actionStatus,
-          setActionStatus,
-          logStream,
-          setLogStream,
-          actionStatusConnected,
-          logStreamConnected,
-        }}
+    <div>
+      <div
+        className={`${
+          darkMode
+            ? " dark bg-slate-900 text-slate-200"
+            : " bg-slate-50 text-slate-900"
+        }`}
       >
-        <MainLayout darkMode={darkMode} setDarkMode={setDarkMode} />
-      </WebSocketContext.Provider>
+        <WebSocketContext.Provider
+          value={{
+            actionStatus,
+            setActionStatus,
+            logStream,
+            setLogStream,
+            actionStatusConnected,
+            logStreamConnected,
+          }}
+        >
+          <MainLayout darkMode={darkMode} setDarkMode={setDarkMode} />
+        </WebSocketContext.Provider>
+      </div>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme={darkMode ? "light" : "dark"}
+      />
     </div>
   );
 }

@@ -11,6 +11,7 @@ import DeploymentLifespan from "../DeploymentLifespan";
 import { getSelectedDeployment } from "../../../utils/helpers";
 import DeploymentStatus from "../DeploymentStatus";
 import CreateNewDeployment from "../CreateNewDeployment";
+import BreakBlobLease from "../BreakBlobLease";
 
 type Props = {
   sticky?: boolean;
@@ -68,6 +69,10 @@ export default function SelectedDeployment({ sticky = true }: Props) {
           <DeploymentLifespan deployment={selectedDeployment} />
           <DestroyTime deployment={selectedDeployment} />
           <div className="mx-2 h-6 border-r border-gray-300"></div>
+          <BreakBlobLease
+            deployment={selectedDeployment}
+            buttonVariant="secondary-text"
+          />
           <Link to={"/deployments"}>
             <Button
               variant="secondary-text"

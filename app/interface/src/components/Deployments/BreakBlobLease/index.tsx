@@ -1,5 +1,5 @@
-import { FaCut } from "react-icons/fa";
-import { DeploymentType } from "../../../dataStructures";
+import { FaCut, FaUnlock } from "react-icons/fa";
+import { ButtonVariant, DeploymentType } from "../../../dataStructures";
 import { useGetMyDeployments } from "../../../hooks/useDeployments";
 import { useBreakBlobLease } from "../../../hooks/useStorageAccount";
 import { useTerraformWorkspace } from "../../../hooks/useWorkspace";
@@ -8,16 +8,32 @@ import Button from "../../UserInterfaceComponents/Button";
 import { WebSocketContext } from "../../../WebSocketContext";
 import { useContext } from "react";
 import Tooltip from "../../UserInterfaceComponents/Tooltip";
+import { toast } from "react-toastify";
 
 type Props = {
   deployment: DeploymentType;
+  buttonVariant?: ButtonVariant;
 };
 
-export default function BreakBlobLease({ deployment }: Props) {
-  const { mutate: breakBlobLease } = useBreakBlobLease();
+export default function BreakBlobLease({ deployment, buttonVariant }: Props) {
+  const { mutateAsync: breakBlobLease } = useBreakBlobLease();
   const { data: deployments } = useGetMyDeployments();
   const { data: terraformWorkspaces } = useTerraformWorkspace();
   const { actionStatus } = useContext(WebSocketContext);
+
+  function handleBreakBlobLease() {
+    toast.promise(
+      breakBlobLease(deployment.deploymentWorkspace),
+      {
+        pending: "Unlocking state file...",
+        success: "State file unlocked",
+        error: "Error unlocking state file",
+      },
+      {
+        toastId: "break-blob-lease",
+      }
+    );
+  }
 
   if (deployments === undefined || terraformWorkspaces === undefined) {
     return null;
@@ -34,16 +50,13 @@ export default function BreakBlobLease({ deployment }: Props) {
     deployment.deploymentWorkspace !== selectedDeployment.deploymentWorkspace;
 
   return (
-    <Tooltip
-      message="Use this to break the lease of terraform state file"
-      delay={500}
-    >
+    <Tooltip message="Use this to unlock the state file if locked" delay={500}>
       <Button
-        variant="secondary-outline"
+        variant={buttonVariant ? buttonVariant : "secondary-outline"}
         disabled={disabled}
-        onClick={() => breakBlobLease(deployment.deploymentWorkspace)}
+        onClick={handleBreakBlobLease}
       >
-        <FaCut /> Lease
+        <FaUnlock /> State
       </Button>
     </Tooltip>
   );
