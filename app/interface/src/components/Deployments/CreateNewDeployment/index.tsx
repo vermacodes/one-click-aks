@@ -1,4 +1,5 @@
 import { useContext, useState } from "react";
+import { z } from "zod";
 import Button from "../../UserInterfaceComponents/Button";
 import { MdClose } from "react-icons/md";
 import { useTerraformWorkspace } from "../../../hooks/useWorkspace";
@@ -58,26 +59,41 @@ function Modal({ showModal, setShowModal }: ModalProps) {
   const { actionStatus } = useContext(WebSocketContext);
   const { data: lab } = useLab();
 
+  const deploymentNameSchema = z
+    .string()
+    .min(1, "Deployment name must be at least one character long.")
+    .max(16, "Deployment name must not exceed 16 characters in length.")
+    .regex(
+      /^[a-zA-Z0-9:_-]*$/,
+      "Deployment name must consist of letters, numbers, colons, hyphens, or underscores only."
+    );
+
   function handleWorkspaceNameTextField(
     event: React.ChangeEvent<HTMLInputElement>
   ) {
     const value = event.target.value;
-    const isValid = validateInput(value);
 
     setNewWorkSpaceName(value); // Always update the input
     setIsModified(true); // Set isModified to true when the user modifies the input
 
-    if (isValid) {
+    // Validate the input
+    const result = deploymentNameSchema.safeParse(value);
+
+    if (result.success) {
       setErrorMessage(""); // Clear the error message
     } else {
-      setErrorMessage("Invalid input. Please enter a valid name.");
+      // Join all error messages into a single string
+      const errorMessages = result.error.errors
+        .map((err) => err.message)
+        .join(" ");
+      setErrorMessage(errorMessages);
     }
   }
 
   function handleAddWorkspace() {
     if (lab === undefined) {
       console.error("Lab is undefined");
-      setShowModal(false);
+      handleModalClose();
       return;
     }
     addDeployment({
@@ -92,29 +108,15 @@ function Modal({ showModal, setShowModal }: ModalProps) {
       deploymentLab: lab,
     }).finally(() => {
       setTimeout(() => {
-        setShowModal(false);
+        handleModalClose();
       }, 3000);
     });
   }
 
-  const validateInput = (input: string) => {
-    // Check if input is at least one character long
-    if (input.length < 1) {
-      return false;
-    }
-
-    // Check if input does not exceed 255 characters in length
-    if (input.length > 16) {
-      return false;
-    }
-
-    // Check if input consists of letters, numbers, colons, hyphens, and underscores
-    const regex = /^[a-zA-Z0-9:_-]*$/;
-    if (!regex.test(input)) {
-      return false;
-    }
-
-    return true;
+  // Close the modal and reset the state
+  const handleModalClose = () => {
+    setIsModified(false);
+    setShowModal(false);
   };
 
   if (!showModal) return null;
@@ -122,7 +124,7 @@ function Modal({ showModal, setShowModal }: ModalProps) {
     <div
       className="fixed inset-0 z-20 flex max-h-full max-w-full justify-center bg-slate-800 bg-opacity-80 dark:bg-slate-100 dark:bg-opacity-80"
       onClick={(e) => {
-        setShowModal(false);
+        handleModalClose();
         e.stopPropagation();
       }}
     >
@@ -135,7 +137,7 @@ function Modal({ showModal, setShowModal }: ModalProps) {
         <div className="w-100 flex justify-between pb-2 ">
           <h1 className="text-3xl">New Deployment</h1>
           <button
-            onClick={() => setShowModal(false)}
+            onClick={() => handleModalClose()}
             className="hover:text-sky-500"
           >
             <MdClose className="text-3xl" />
@@ -154,7 +156,11 @@ function Modal({ showModal, setShowModal }: ModalProps) {
             ) : (
               <>
                 <div
-                  className={`flex w-96 items-center justify-between rounded border border-slate-500`}
+                  className={`${
+                    isModified &&
+                    errorMessage &&
+                    "outline outline-1 outline-rose-500"
+                  } flex w-96 items-center justify-between rounded border border-slate-500`}
                 >
                   <input
                     type="text"
@@ -168,7 +174,7 @@ function Modal({ showModal, setShowModal }: ModalProps) {
                   variant="primary"
                   onClick={() => handleAddWorkspace()}
                   disabled={
-                    !validateInput(newWorkSpaceName) ||
+                    !deploymentNameSchema.safeParse(newWorkSpaceName).success ||
                     actionStatus.inProgress ||
                     fetchingDeployments ||
                     fetchingWorkspaces ||
@@ -178,7 +184,7 @@ function Modal({ showModal, setShowModal }: ModalProps) {
                 >
                   Create
                 </Button>
-                <Button variant="secondary" onClick={() => setShowModal(false)}>
+                <Button variant="secondary" onClick={() => handleModalClose()}>
                   Cancel
                 </Button>
               </>
@@ -187,11 +193,11 @@ function Modal({ showModal, setShowModal }: ModalProps) {
           {isModified && errorMessage && (
             <div className="rounded border border-rose-500 bg-rose-500 bg-opacity-20 p-2">
               <p className="error-message">{errorMessage}</p>
-              <p className="text-xs">
+              {/* <p className="text-xs">
                 Deployment name must: Be at least one character long. Not exceed
                 16 characters in length. Consist of letters, numbers, colons,
                 hyphens, or underscores only.
-              </p>
+              </p> */}
             </div>
           )}
         </div>
