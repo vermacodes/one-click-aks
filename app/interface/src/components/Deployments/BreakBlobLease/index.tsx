@@ -9,6 +9,7 @@ import { WebSocketContext } from "../../../WebSocketContext";
 import { useContext } from "react";
 import Tooltip from "../../UserInterfaceComponents/Tooltip";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 type Props = {
   deployment: DeploymentType;
@@ -31,6 +32,7 @@ export default function BreakBlobLease({ deployment, buttonVariant }: Props) {
       },
       {
         toastId: "break-blob-lease",
+        autoClose: 2000,
       }
     );
   }

@@ -17,13 +17,15 @@ import VirtualNetwork from "../VirtualNetwork";
 import KubernetesCluster from "../KubernetesCluster/KubernetesCluster";
 import AddKubernetesCluster from "../KubernetesCluster/AddKubernetesCluster";
 import Tooltip from "../../UserInterfaceComponents/Tooltip";
+import { toast } from "react-toastify";
+import ResetLabState from "../../Lab/ResetLabState";
 
 export default function Builder() {
   const [versionMenu, setVersionMenu] = useState<boolean>(false);
 
   const { mutate: setLogs } = useSetLogs();
   const { data: lab } = useLab();
-  const { mutate: deleteLab } = useDeleteLab();
+  const { mutateAsync: deleteLab } = useDeleteLab();
 
   const [_lab, _setLab] = useState<Lab | undefined>(lab);
 
@@ -53,18 +55,7 @@ export default function Builder() {
           <CodeEditor variant="secondary-text">Extension</CodeEditor>
         </Tooltip>
         <LabBuilder variant="secondary-text">Save</LabBuilder>
-        <Button
-          variant="secondary-text"
-          onClick={() => {
-            setLogs({ logs: "" });
-            deleteLab();
-          }}
-        >
-          <span>
-            <FaRedo />
-          </span>
-          Reset
-        </Button>
+        <ResetLabState />
         <ExportLabInBuilder variant="secondary-text">
           Download
         </ExportLabInBuilder>

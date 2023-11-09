@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { axiosInstance } from "../utils/axios-interceptors";
 import { Lab } from "../dataStructures";
-import { AxiosResponse } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 
 function getLab(): Promise<AxiosResponse<Lab>> {
   return axiosInstance.get("lab");
@@ -11,7 +11,7 @@ function setLab(lab: Lab) {
   return axiosInstance.put("lab", lab);
 }
 
-function deleteLab() {
+function deleteLab(): Promise<AxiosResponse> {
   return axiosInstance.delete("lab/redis");
 }
 

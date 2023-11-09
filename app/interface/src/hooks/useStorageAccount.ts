@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { axiosInstance } from "../utils/axios-interceptors";
+import axios from "axios";
 
 function getStorageAccount() {
   return axiosInstance.get("storageaccount");
