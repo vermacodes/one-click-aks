@@ -22,17 +22,29 @@ export default function BreakBlobLease({ deployment, buttonVariant }: Props) {
   const { data: terraformWorkspaces } = useTerraformWorkspace();
   const { actionStatus } = useContext(WebSocketContext);
 
-  function handleBreakBlobLease() {
+  async function handleBreakBlobLease() {
+    // Generate a unique ID for the toast
+    const toastId = `break-blob-lease-${Date.now()}`;
+
     toast.promise(
       breakBlobLease(deployment.deploymentWorkspace),
       {
         pending: "Unlocking state file...",
-        success: "State file unlocked",
-        error: "Error unlocking state file",
+        success: {
+          render(data: any) {
+            return `State file unlocked.`;
+          },
+          autoClose: 2000,
+        },
+        error: {
+          render(data: any) {
+            return `Failed to unlock state file. ${data.data.data}`;
+          },
+          autoClose: 5000,
+        },
       },
       {
-        toastId: "break-blob-lease",
-        autoClose: 2000,
+        toastId: toastId,
       }
     );
   }

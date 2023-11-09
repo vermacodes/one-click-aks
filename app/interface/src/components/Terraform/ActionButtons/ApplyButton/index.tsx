@@ -16,6 +16,8 @@ import {
 } from "../../../../utils/helpers";
 import { WebSocketContext } from "../../../../WebSocketContext";
 import axios from "axios";
+import { toast } from "react-toastify";
+import { error } from "console";
 
 type Props = {
   variant: ButtonVariant;
@@ -72,13 +74,29 @@ export default function ApplyButton({ variant, children, lab }: Props) {
     updateDeploymentStatus(deployment, "Deployment In Progress");
 
     // apply terraform
-    applyAsync(lab).then((response) => {
-      if (axios.isAxiosError(response)) {
-        updateDeploymentStatus(deployment, "Deployment Failed");
-        return;
-      }
-      updateDeploymentStatus(deployment, "Deployment Completed");
+    const response = toast.promise(applyAsync(lab), {
+      pending: "Applying...",
+      success: {
+        render(data: any) {
+          return `Apply completed.`;
+        },
+        autoClose: 2000,
+      },
+      error: {
+        render(data: any) {
+          return `Apply failed. ${data.data.data}`;
+        },
+        autoClose: 10000,
+      },
     });
+
+    response
+      .then(() => {
+        updateDeploymentStatus(deployment, "Deployment Failed");
+      })
+      .catch(() => {
+        updateDeploymentStatus(deployment, "Deployment Failed");
+      });
   }
 
   return (

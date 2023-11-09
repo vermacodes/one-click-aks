@@ -6,6 +6,7 @@ import { usePreference } from "../../../../hooks/usePreference";
 import { usePlan } from "../../../../hooks/useTerraform";
 import Button from "../../../UserInterfaceComponents/Button";
 import { WebSocketContext } from "../../../../WebSocketContext";
+import { toast } from "react-toastify";
 
 type Props = {
   variant: ButtonVariant;
@@ -29,7 +30,16 @@ export default function PlanButton({ variant, children, lab }: Props) {
       lab.template.resourceGroup.location = preference.azureRegion;
     }
     setLogs({ logs: "" });
-    lab && planAsync(lab);
+    lab &&
+      toast.promise(planAsync(lab), {
+        pending: "Planning...",
+        success: "Plan completed.",
+        error: {
+          render(data: any) {
+            return `Plan failed: ${data.data.data}`;
+          },
+        },
+      });
   }
 
   return (

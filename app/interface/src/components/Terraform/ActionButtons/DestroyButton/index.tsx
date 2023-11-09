@@ -14,6 +14,7 @@ import {
 import { WebSocketContext } from "../../../../WebSocketContext";
 import { getSelectedDeployment } from "../../../../utils/helpers";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 type Props = {
   variant: ButtonVariant;
@@ -93,14 +94,29 @@ export default function DestroyButton({
     updateDeploymentStatus(deployment, "Destroying Resources");
 
     // destroy terraform
-    destroyAsync(lab).then((response) => {
-      if (axios.isAxiosError(response)) {
-        updateDeploymentStatus(deployment, "Destroy Failed");
-        return;
-      }
-      updateDeploymentStatus(deployment, "Resources Destroyed");
-      handleDeleteWorkspace();
+    const response = toast.promise(destroyAsync(lab), {
+      pending: "Destroying...",
+      success: {
+        render(data: any) {
+          return `Destroy completed.`;
+        },
+        autoClose: 2000,
+      },
+      error: {
+        render(data: any) {
+          return `Destroy failed. ${data.data.data}`;
+        },
+        autoClose: 10000,
+      },
     });
+
+    response
+      .then(() => {
+        updateDeploymentStatus(deployment, "Resources Destroyed");
+      })
+      .catch(() => {
+        updateDeploymentStatus(deployment, "Destroy Failed");
+      });
   }
 
   // This is used by Navbar
