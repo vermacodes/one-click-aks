@@ -56,6 +56,8 @@ export default function AutoDestroySwitch({
       checked={deployment.deploymentAutoDelete}
       handleOnChange={handleAutoDeleteChange}
       disabled={disabled}
+      tooltipMessage="If enabled, the deployment will be automatically deleted after the specified time."
+      tooltipDelay={1000}
     />
   );
 }

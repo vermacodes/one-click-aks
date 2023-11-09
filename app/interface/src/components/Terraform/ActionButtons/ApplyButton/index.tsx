@@ -92,7 +92,7 @@ export default function ApplyButton({ variant, children, lab }: Props) {
 
     response
       .then(() => {
-        updateDeploymentStatus(deployment, "Deployment Failed");
+        updateDeploymentStatus(deployment, "Deployment Completed");
       })
       .catch(() => {
         updateDeploymentStatus(deployment, "Deployment Failed");
