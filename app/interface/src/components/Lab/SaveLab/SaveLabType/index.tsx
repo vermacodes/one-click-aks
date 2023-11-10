@@ -48,7 +48,7 @@ export default function SaveLabType({ lab, setLab }: Props) {
               roles.roles.includes("contributor")
             )
               ? "You must be an admin, mentor, or contributor to create a public lab."
-              : ""
+              : "Public labs are visible to all users."
           }
           id="sharedtemplate"
           key={"sharedtemplate"}
@@ -63,7 +63,7 @@ export default function SaveLabType({ lab, setLab }: Props) {
           tooltipMessage={
             !(roles.roles.includes("admin") || roles.roles.includes("mentor"))
               ? "You must be an admin or mentor to create a learning lab."
-              : ""
+              : "Use this to save lab as learning lab."
           }
           id="labexercise"
           key={"labexercise"}
@@ -78,7 +78,7 @@ export default function SaveLabType({ lab, setLab }: Props) {
           tooltipMessage={
             !(roles.roles.includes("admin") || roles.roles.includes("mentor"))
               ? "You must be an admin or mentor to create a mock case."
-              : ""
+              : "Use this to save the lab as a mock case."
           }
           id="mockcase"
           key={"mockcase"}
