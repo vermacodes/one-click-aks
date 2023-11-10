@@ -15,6 +15,7 @@ import {
 } from "react-icons/fa";
 import Link from "@tiptap/extension-link";
 import Heading from "@tiptap/extension-heading";
+import { labDescriptionSchema } from "../../../../zodSchemas";
 
 type Props = {
   lab: Lab;
@@ -24,14 +25,6 @@ type Props = {
 export default function SaveLabDescription({ lab, setLab }: Props) {
   const [labDescriptionError, setLabDescriptionError] = useState<string>("");
   const [isModified, setIsModified] = useState<boolean>(false);
-
-  //zod schema for lab description
-  const labDescriptionSchema = z
-    .string()
-    .max(
-      1000,
-      "Lab description must not exceed 1000 characters. Wanna write more? Add wiki page and link here."
-    );
 
   function handleLabDescriptionChange(newLabDescription: string) {
     const validationResult = labDescriptionSchema.safeParse(newLabDescription);

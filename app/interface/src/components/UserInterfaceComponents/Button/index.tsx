@@ -11,6 +11,7 @@ type Props = {
   disabled?: boolean;
   tooltipMessage?: string;
   tooltipDelay?: number;
+  tooltipDirection?: "top" | "bottom" | "left" | "right";
 };
 
 export default function Button({
@@ -21,10 +22,15 @@ export default function Button({
   disabled,
   tooltipMessage,
   tooltipDelay,
+  tooltipDirection,
   children,
 }: Props) {
   return (
-    <Tooltip message={tooltipMessage} delay={tooltipDelay}>
+    <Tooltip
+      message={tooltipMessage}
+      delay={tooltipDelay}
+      direction={tooltipDirection}
+    >
       <button
         className={`${
           hidden && "hidden "

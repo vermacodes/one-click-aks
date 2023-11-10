@@ -193,11 +193,6 @@ function Modal({ showModal, setShowModal }: ModalProps) {
           {isModified && errorMessage && (
             <div className="rounded border border-rose-500 bg-rose-500 bg-opacity-20 p-2">
               <p className="error-message">{errorMessage}</p>
-              {/* <p className="text-xs">
-                Deployment name must: Be at least one character long. Not exceed
-                16 characters in length. Consist of letters, numbers, colons,
-                hyphens, or underscores only.
-              </p> */}
             </div>
           )}
         </div>

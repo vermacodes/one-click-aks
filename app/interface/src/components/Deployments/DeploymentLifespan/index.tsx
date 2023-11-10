@@ -74,6 +74,7 @@ export default function DeploymentLifespan({
       <Tooltip
         message="The deployment will be automatically deleted after the specified duration."
         delay={1000}
+        direction="top"
       >
         <div
           className={`flex w-32 items-center justify-between rounded border border-slate-500 px-2 py-1`}

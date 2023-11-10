@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { Lab } from "../../../../dataStructures";
 import { z } from "zod";
+import { labNameSchema } from "../../../../zodSchemas";
 
 type Props = {
   lab: Lab;
@@ -11,17 +12,6 @@ export default function SaveLabName({ lab, setLab }: Props) {
   const [labNameError, setLabNameError] = useState<string>("");
   const [isModified, setIsModified] = useState<boolean>(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  //zod schema for lab name
-  const labNameSchema = z
-    .string()
-    .min(3, "Lab name must be at least 3 characters.")
-    .max(50, "Lab name must not exceed 50 characters.")
-    .regex(
-      /^[a-zA-Z0-9_-][a-zA-Z0-9 _-]*[a-zA-Z0-9_-]$/,
-      "Lab name must only contain letters, numbers, spaces, underscores and dashes and must not start or end with a space."
-    )
-    .trim();
 
   function handleLabNameChange(event: React.ChangeEvent<HTMLInputElement>) {
     const newLabName = event.target.value;
@@ -46,7 +36,7 @@ export default function SaveLabName({ lab, setLab }: Props) {
           .map((err) => err.message)
           .join(" ");
         setLabNameError(errorMessages);
-      }, 3000);
+      }, 1000);
     }
   }
 

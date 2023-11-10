@@ -8,6 +8,7 @@ import Button from "../../../UserInterfaceComponents/Button";
 import { useSetLab } from "../../../../hooks/useLab";
 import { useCreateLab, useCreateMyLab } from "../../../../hooks/useBlobs";
 import { toast } from "react-toastify";
+import { labDescriptionSchema, labNameSchema } from "../../../../zodSchemas";
 
 type Props = {
   lab: Lab;
@@ -34,6 +35,7 @@ export default function SaveLabModal({ lab, showModal, setShowModal }: Props) {
     });
 
     response.then(() => {
+      setLab(labState);
       handleModalClose();
     });
   }
@@ -95,6 +97,11 @@ export default function SaveLabModal({ lab, showModal, setShowModal }: Props) {
             variant="primary"
             tooltipMessage="Updates the lab in place."
             tooltipDelay={1000}
+            tooltipDirection="top"
+            disabled={
+              !labNameSchema.safeParse(labState.name).success ||
+              !labDescriptionSchema.safeParse(labState.description).success
+            }
             onClick={() => {
               labState.type === "template"
                 ? handleCreateMyLab()
@@ -108,6 +115,11 @@ export default function SaveLabModal({ lab, showModal, setShowModal }: Props) {
               variant="primary"
               tooltipMessage="Saves as new copy of lab."
               tooltipDelay={1000}
+              tooltipDirection="top"
+              disabled={
+                !labNameSchema.safeParse(labState.name).success ||
+                !labDescriptionSchema.safeParse(labState.description).success
+              }
               onClick={() => {
                 labState.type === "template"
                   ? handleCreateMyLab()
@@ -121,6 +133,7 @@ export default function SaveLabModal({ lab, showModal, setShowModal }: Props) {
             variant="secondary"
             tooltipMessage="Cancel Changes"
             tooltipDelay={1000}
+            tooltipDirection="top"
             onClick={handleModalClose}
           >
             Cancel
