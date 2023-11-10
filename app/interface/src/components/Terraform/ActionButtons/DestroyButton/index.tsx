@@ -13,7 +13,6 @@ import {
 } from "../../../../hooks/useDeployments";
 import { WebSocketContext } from "../../../../WebSocketContext";
 import { getSelectedDeployment } from "../../../../utils/helpers";
-import axios from "axios";
 import { toast } from "react-toastify";
 
 type Props = {
@@ -65,10 +64,27 @@ export default function DestroyButton({
       return;
     }
 
-    deleteDeploymentAsync([
-      deployment.deploymentWorkspace,
-      deployment.deploymentSubscriptionId,
-    ]);
+    toast.promise(
+      deleteDeploymentAsync([
+        deployment.deploymentWorkspace,
+        deployment.deploymentSubscriptionId,
+      ]),
+      {
+        pending: "Deleting workspace...",
+        success: {
+          render(data: any) {
+            return `Workspace deleted.`;
+          },
+          autoClose: 2000,
+        },
+        error: {
+          render(data: any) {
+            return `Failed to delete workspace. ${data.data.data}`;
+          },
+          autoClose: 10000,
+        },
+      }
+    );
   }
 
   function onClickHandler() {
@@ -113,6 +129,7 @@ export default function DestroyButton({
     response
       .then(() => {
         updateDeploymentStatus(deployment, "Resources Destroyed");
+        handleDeleteWorkspace();
       })
       .catch(() => {
         updateDeploymentStatus(deployment, "Destroy Failed");
