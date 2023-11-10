@@ -44,10 +44,10 @@ export default function SaveLabName({ lab, setLab }: Props) {
     <>
       <div className="flex flex-col ">
         <label htmlFor="labName" className="text-lg">
-          Lab Name
+          Name
         </label>
         <input
-          className="h-10 rounded border border-slate-500 bg-slate-100 p-2 dark:bg-slate-800"
+          className="h-10 rounded border border-slate-500 bg-slate-100 p-2 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700"
           id="labName"
           type="text"
           placeholder="Lab Name"

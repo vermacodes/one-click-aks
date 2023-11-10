@@ -7,6 +7,8 @@ import {
   FaUser,
   FaUserEdit,
 } from "react-icons/fa";
+import { Buffer } from "buffer";
+import { decodeIfEncoded, stringToHTML } from "../../../utils/helpers";
 
 type Props = {
   lab: Lab | undefined;
@@ -30,9 +32,10 @@ export default function LabCard({ lab, children }: Props) {
           {lab.name}
         </h1>
       )}
+
       {/* <p className="whitespace-pre-line text-sm">{lab.description}</p> */}
       <div className="max-h-[360px] overflow-y-auto overflow-x-hidden">
-        {ReactHtmlParser(lab.description)}
+        {ReactHtmlParser(decodeIfEncoded(stringToHTML(lab.description)))}
       </div>
       <div className="flex flex-wrap gap-x-1 gap-y-1  pb-4 dark:border-slate-700">
         {lab.tags &&
@@ -63,6 +66,7 @@ export default function LabCard({ lab, children }: Props) {
             <span>by {lab.updatedBy}</span>
           </div>
         )}
+        <p className="text-xs text-slate-200 dark:text-slate-800">{lab.id}</p>
       </div>
     </div>
   );

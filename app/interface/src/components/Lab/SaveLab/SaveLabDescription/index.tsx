@@ -1,6 +1,5 @@
 import { useCallback, useState } from "react";
 import { Lab } from "../../../../dataStructures";
-import { z } from "zod";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import BulletList from "@tiptap/extension-bullet-list";
@@ -16,6 +15,7 @@ import {
 import Link from "@tiptap/extension-link";
 import Heading from "@tiptap/extension-heading";
 import { labDescriptionSchema } from "../../../../zodSchemas";
+import { decodeIfEncoded } from "../../../../utils/helpers";
 
 type Props = {
   lab: Lab;
@@ -30,7 +30,7 @@ export default function SaveLabDescription({ lab, setLab }: Props) {
     const validationResult = labDescriptionSchema.safeParse(newLabDescription);
     setLab({
       ...lab,
-      description: newLabDescription,
+      description: btoa(newLabDescription),
     });
     setIsModified(true);
     if (validationResult.success) {
@@ -67,11 +67,11 @@ export default function SaveLabDescription({ lab, setLab }: Props) {
         },
       }),
     ],
-    content: lab.description,
+    content: decodeIfEncoded(lab.description),
     editorProps: {
       attributes: {
         class:
-          "min-h-[160px] h-fit rounded p-2 border border-slate-500 bg-slate-100 dark:bg-slate-800",
+          "min-h-[160px] h-fit rounded p-2 border border-slate-500 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700",
       },
     },
     onUpdate: ({ editor }) => {
@@ -110,7 +110,7 @@ export default function SaveLabDescription({ lab, setLab }: Props) {
     <>
       <div className="flex flex-col space-y-2">
         <label htmlFor="labDescription" className="text-lg">
-          Lab Description
+          Description
         </label>
         <div className="flex space-x-1">
           <Button

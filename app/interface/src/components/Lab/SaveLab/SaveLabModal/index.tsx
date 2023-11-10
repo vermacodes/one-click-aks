@@ -9,6 +9,7 @@ import { useSetLab } from "../../../../hooks/useLab";
 import { useCreateLab, useCreateMyLab } from "../../../../hooks/useBlobs";
 import { toast } from "react-toastify";
 import { labDescriptionSchema, labNameSchema } from "../../../../zodSchemas";
+import SaveLabTags from "../SaveLabTags";
 
 type Props = {
   lab: Lab;
@@ -89,9 +90,9 @@ export default function SaveLabModal({ lab, showModal, setShowModal }: Props) {
           </button>
         </div>
         <SaveLabName lab={labState} setLab={setLabState} />
+        <SaveLabTags lab={labState} setLab={setLabState} />
         <SaveLabDescription lab={labState} setLab={setLabState} />
         <SaveLabType lab={labState} setLab={setLabState} />
-
         <div className="flex items-end justify-end gap-x-4">
           <Button
             variant="primary"
