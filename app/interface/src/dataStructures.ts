@@ -192,7 +192,7 @@ export type Lab = {
   template: TfvarConfigType | undefined;
   extendScript: string;
   message: string;
-  type: string;
+  type: "template" | "sharedtemplate" | "labexercise" | "mockcase";
   createdBy: string;
   createdOn: string;
   updatedBy: string;

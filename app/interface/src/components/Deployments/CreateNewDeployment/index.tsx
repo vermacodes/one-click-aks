@@ -64,8 +64,8 @@ function Modal({ showModal, setShowModal }: ModalProps) {
     .min(1, "Deployment name must be at least one character long.")
     .max(16, "Deployment name must not exceed 16 characters in length.")
     .regex(
-      /^[a-zA-Z0-9:_-]*$/,
-      "Deployment name must consist of letters, numbers, colons, hyphens, or underscores only."
+      /^[a-zA-Z0-9_-]*$/,
+      "Deployment name must consist of letters, numbers, hyphens, or underscores only."
     );
 
   function handleWorkspaceNameTextField(

@@ -1,11 +1,8 @@
 import { useState } from "react";
-import { FaRedo } from "react-icons/fa";
 import { Lab } from "../../../dataStructures";
 import { useDeleteLab, useLab } from "../../../hooks/useLab";
 import { useSetLogs } from "../../../hooks/useLogs";
 import CodeEditor from "../../../modals/CodeEditorModal";
-import LabBuilder from "../../../modals/SaveLabModal";
-import Button from "../../UserInterfaceComponents/Button";
 import ExportLabInBuilder from "../../Lab/Export/ExportLabInBuilder";
 import ImportLabToBuilder from "../../Lab/Import/ImportLabToBuilder";
 import ApplyButton from "../../Terraform/ActionButtons/ApplyButton";
@@ -17,8 +14,8 @@ import VirtualNetwork from "../VirtualNetwork";
 import KubernetesCluster from "../KubernetesCluster/KubernetesCluster";
 import AddKubernetesCluster from "../KubernetesCluster/AddKubernetesCluster";
 import Tooltip from "../../UserInterfaceComponents/Tooltip";
-import { toast } from "react-toastify";
 import ResetLabState from "../../Lab/ResetLabState";
+import SaveLabButton from "../../Lab/SaveLab/SaveLabButton";
 
 export default function Builder() {
   const [versionMenu, setVersionMenu] = useState<boolean>(false);
@@ -54,7 +51,8 @@ export default function Builder() {
         <Tooltip message="Update extension script" delay={500}>
           <CodeEditor variant="secondary-text">Extension</CodeEditor>
         </Tooltip>
-        <LabBuilder variant="secondary-text">Save</LabBuilder>
+        {/* <LabBuilder variant="secondary-text">Save</LabBuilder> */}
+        <SaveLabButton />
         <ResetLabState />
         <ExportLabInBuilder variant="secondary-text">
           Download

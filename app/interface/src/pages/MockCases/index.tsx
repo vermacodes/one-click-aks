@@ -13,9 +13,9 @@ import { Lab } from "../../dataStructures";
 import { useSharedMockCases } from "../../hooks/useBlobs";
 import LabGridLayout from "../../layouts/LabGridLayout";
 import PageLayout from "../../layouts/PageLayout";
-import LabBuilder from "../../modals/SaveLabModal";
 import Button from "../../components/UserInterfaceComponents/Button";
 import SelectedDeployment from "../../components/Deployments/SelectedDeployment";
+import SaveLabButton from "../../components/Lab/SaveLab/SaveLabButton";
 
 export default function MockCases() {
   const [more, setMore] = useState<string>("");
@@ -79,9 +79,9 @@ export default function MockCases() {
                     <ExportLabButton lab={lab} variant="secondary-text">
                       Export
                     </ExportLabButton>
-                    <LabBuilder lab={lab} variant="secondary-text">
+                    <SaveLabButton lab={lab} variant="secondary-text">
                       Edit
-                    </LabBuilder>
+                    </SaveLabButton>
                     <LoadToBuilderButton variant="secondary-text" lab={lab}>
                       Open
                     </LoadToBuilderButton>

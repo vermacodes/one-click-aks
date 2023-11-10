@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Lab } from "../../../dataStructures";
+import ReactHtmlParser from "html-react-parser";
 import {
   FaRegCalendarAlt,
   FaRegEdit,
@@ -29,7 +30,10 @@ export default function LabCard({ lab, children }: Props) {
           {lab.name}
         </h1>
       )}
-      <p className="whitespace-pre-line text-sm">{lab.description}</p>
+      {/* <p className="whitespace-pre-line text-sm">{lab.description}</p> */}
+      <div className="max-h-[360px] overflow-y-auto overflow-x-hidden">
+        {ReactHtmlParser(lab.description)}
+      </div>
       <div className="flex flex-wrap gap-x-1 gap-y-1  pb-4 dark:border-slate-700">
         {lab.tags &&
           lab.tags.map((tag) => (

@@ -15,8 +15,8 @@ import { Lab } from "../../dataStructures";
 import { useSharedLabs } from "../../hooks/useBlobs";
 import LabGridLayout from "../../layouts/LabGridLayout";
 import PageLayout from "../../layouts/PageLayout";
-import LabBuilder from "../../modals/SaveLabModal";
 import ServerError from "../ServerError";
+import SaveLabButton from "../../components/Lab/SaveLab/SaveLabButton";
 
 export default function ReadinessLabs() {
   const [more, setMore] = useState<string>("");
@@ -83,9 +83,9 @@ export default function ReadinessLabs() {
                       <DestroyButton variant="danger-text" lab={lab}>
                         Destroy
                       </DestroyButton>
-                      <LabBuilder lab={lab} variant="secondary-text">
+                      <SaveLabButton lab={lab} variant="secondary-text">
                         Edit
-                      </LabBuilder>
+                      </SaveLabButton>
                       <LoadToBuilderButton variant="secondary-text" lab={lab}>
                         Open
                       </LoadToBuilderButton>

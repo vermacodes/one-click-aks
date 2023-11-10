@@ -1,4 +1,5 @@
 import {
+  Lab,
   TfvarAddonsType,
   TfvarAppGatewayType,
   TfvarConfigType,
@@ -122,3 +123,18 @@ export const defaultTfvarConfig: TfvarConfigType = {
   containerRegistries: [],
   appGateways: [],
 };
+
+export const defaultLab: Lab = {
+  id: "",
+  name: "",
+  description: "",
+  tags: [""],
+  type: "template",
+  template: defaultTfvarConfig,
+  extendScript: "",
+  message: "",
+  createdBy: "",
+  updatedBy: "",
+  createdOn: "",
+  updatedOn: "",
+}
