@@ -6,6 +6,8 @@ import BulletList from "@tiptap/extension-bullet-list";
 import Button from "../../../UserInterfaceComponents/Button";
 import {
   FaBold,
+  FaCode,
+  FaFileCode,
   FaHeading,
   FaItalic,
   FaLink,
@@ -16,6 +18,8 @@ import Link from "@tiptap/extension-link";
 import Heading from "@tiptap/extension-heading";
 import { labDescriptionSchema } from "../../../../zodSchemas";
 import { decodeIfEncoded } from "../../../../utils/helpers";
+import Code from "@tiptap/extension-code";
+import CodeBlock from "@tiptap/extension-code-block";
 
 type Props = {
   lab: Lab;
@@ -64,6 +68,16 @@ export default function SaveLabDescription({ lab, setLab }: Props) {
         levels: [2],
         HTMLAttributes: {
           class: "font-bold text-xl",
+        },
+      }),
+      Code.configure({
+        HTMLAttributes: {
+          class: "px-2 bg-slate-300 rounded dark:bg-slate-600",
+        },
+      }),
+      CodeBlock.configure({
+        HTMLAttributes: {
+          class: "p-2 my-2 bg-slate-300 rounded dark:bg-slate-600",
         },
       }),
     ],
@@ -133,7 +147,6 @@ export default function SaveLabDescription({ lab, setLab }: Props) {
           >
             <FaBold />
           </Button>
-
           <Button
             variant={
               editor.isActive("italic") ? "secondary" : "secondary-outline"
@@ -144,13 +157,28 @@ export default function SaveLabDescription({ lab, setLab }: Props) {
           </Button>
           <Button
             variant={
+              editor.isActive("code") ? "secondary" : "secondary-outline"
+            }
+            onClick={() => editor.chain().focus().toggleCode().run()}
+          >
+            <FaCode />
+          </Button>
+          <Button
+            variant={
+              editor.isActive("codeBlock") ? "secondary" : "secondary-outline"
+            }
+            onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+          >
+            <FaFileCode />
+          </Button>
+          <Button
+            variant={
               editor.isActive("bulletList") ? "secondary" : "secondary-outline"
             }
             onClick={() => editor.chain().focus().toggleBulletList().run()}
           >
             <FaListUl />
           </Button>
-
           <Button
             onClick={setLink}
             variant={

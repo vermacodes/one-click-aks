@@ -15,8 +15,8 @@ export const labNameSchema = z
 export const labDescriptionSchema = z
   .string()
   .max(
-    1000,
-    "Lab description must not exceed 1000 characters. Wanna write more? Add wiki page and link here."
+    5000,
+    "Lab description must not exceed 5000 characters. Wanna write more? Add wiki page and link here."
   );
 
 //lab tag

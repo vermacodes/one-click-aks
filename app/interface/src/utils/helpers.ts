@@ -138,7 +138,6 @@ export function decodeIfEncoded(value: string) {
     value = atob(value);
     return value;
   } catch (error) {
-    console.log(error);
     // If an error is thrown, return the original value
     return value;
   }
