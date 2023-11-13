@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import MainLayout from "./layouts/MainLayout";
 import { WebSocketContext } from "./WebSocketContext";
-import { ActionStatusType, LogsStreamType } from "./dataStructures";
+import { ActionStatusType, GraphData, LogsStreamType } from "./dataStructures";
 import ReconnectingWebSocket from "reconnecting-websocket";
 import { useQueryClient } from "react-query";
 import { setDefaultValuesInLocalStorage } from "./utils/helpers";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import AuthenticatingFullScreen from "./components/Authentication/AuthenticatingFullScreen";
 
 function App() {
   const [darkMode, setDarkMode] = useState<boolean>(true);
@@ -18,6 +19,7 @@ function App() {
   });
   const [actionStatusConnected, setActionStatusConnected] = useState(false);
   const [logStreamConnected, setLogStreamConnected] = useState(false);
+  const [graphResponse, setGraphResponse] = useState<GraphData | undefined>();
 
   const queryClient = useQueryClient();
 
@@ -98,7 +100,14 @@ function App() {
             logStreamConnected,
           }}
         >
-          <MainLayout darkMode={darkMode} setDarkMode={setDarkMode} />
+          {graphResponse ? (
+            <MainLayout darkMode={darkMode} setDarkMode={setDarkMode} />
+          ) : (
+            <AuthenticatingFullScreen
+              graphResponse={graphResponse}
+              setGraphResponse={setGraphResponse}
+            />
+          )}
         </WebSocketContext.Provider>
       </div>
 
