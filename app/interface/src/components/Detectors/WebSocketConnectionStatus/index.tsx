@@ -11,8 +11,12 @@ export default function WebSocketConnectionStatus() {
 
   return (
     <div className="z-5 mt-2 rounded border border-yellow-500 bg-yellow-500 bg-opacity-20 p-2">
-      <strong>⚠️ Connection Issue Detected:</strong> There seems to be a problem
-      with the websocket connection. This gets fixed if you{" "}
+      <strong>⚠️ Connection Issue Detected:</strong> Goto{" "}
+      <a href="/settings" className="cursor-pointer text-sky-600 underline">
+        Settings
+      </a>
+      , ensure that server is running and Endpoint is correct. All good? this
+      should get fixed if you{" "}
       <a
         href="#"
         onClick={() => window.location.reload()}
