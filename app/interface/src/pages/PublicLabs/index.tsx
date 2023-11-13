@@ -9,6 +9,7 @@ import { Lab } from "../../dataStructures";
 import { useSharedTemplates } from "../../hooks/useBlobs";
 import LabGridLayout from "../../layouts/LabGridLayout";
 import PageLayout from "../../layouts/PageLayout";
+import { toast } from "react-toastify";
 
 export default function PublicLabs() {
   const {
@@ -53,6 +54,11 @@ function TemplateCards({ lab }: TemplateCardsProps) {
     navigator.clipboard.writeText(
       `${window.location.origin}/lab/sharedtemplate/${lab.id}`
     );
+
+    toast.success("Link copied to clipboard.", {
+      autoClose: 1000,
+      toastId: "copy-link-to-lab",
+    });
 
     // Set copied to true for 2 seconds
     setCopied(true);

@@ -5,6 +5,7 @@ import { useSetLogs } from "../../../hooks/useLogs";
 import { useExtend } from "../../../hooks/useTerraform";
 import Button from "../../UserInterfaceComponents/Button";
 import { WebSocketContext } from "../../../WebSocketContext";
+import { toast } from "react-toastify";
 
 type Props = {
   variant: ButtonVariant;
@@ -19,7 +20,16 @@ export default function ValidateLabButton({ variant, children, lab }: Props) {
 
   function onClickHandler() {
     setLogs({ logs: "" });
-    lab && validateAsync([lab, "validate"]);
+    lab &&
+      toast.promise(validateAsync([lab, "validate"]), {
+        pending: "Validating Lab...",
+        success: "Lab Validated.",
+        error: {
+          render(data: any) {
+            return `Failed to validate lab. ${data.data.data}`;
+          },
+        },
+      });
   }
 
   return (
