@@ -2,6 +2,7 @@ import { useState } from "react";
 import { RoleMutation, Roles } from "../../../../dataStructures";
 import { useAddRole, useRemoveRole } from "../../../../hooks/useAuth";
 import Button from "../../../UserInterfaceComponents/Button";
+import { toast } from "react-toastify";
 
 type Props = {
   roleRecord: Roles;
@@ -11,22 +12,38 @@ export default function Role({ roleRecord }: Props) {
   const [addRoleFlag, setAddRoleFlag] = useState(false);
   const [selectedRole, setSelectedRole] = useState("user");
 
-  const { mutate: removeRole } = useRemoveRole();
+  const { mutateAsync: removeRole } = useRemoveRole();
   function handleRemoveRole(userPrincipal: string, role: string) {
     let roleMutation: RoleMutation = {
       userPrincipal: userPrincipal,
       role: role,
     };
-    removeRole(roleMutation);
+    toast.promise(removeRole(roleMutation), {
+      pending: "Removing Role...",
+      success: "Role Removed.",
+      error: {
+        render(data: any) {
+          return `Failed to remove role. ${data.data.data}`;
+        },
+      },
+    });
   }
 
-  const { mutate: addRole } = useAddRole();
+  const { mutateAsync: addRole } = useAddRole();
   function handleAddRole(userPrincipal: string, role: string) {
     let roleMutation: RoleMutation = {
       userPrincipal: userPrincipal,
       role: role,
     };
-    addRole(roleMutation);
+    toast.promise(addRole(roleMutation), {
+      pending: "Adding Role...",
+      success: "Role Added.",
+      error: {
+        render(data: any) {
+          return `Failed to add role. ${data.data.data}`;
+        },
+      },
+    });
   }
 
   return (
@@ -54,6 +71,7 @@ export default function Role({ roleRecord }: Props) {
             <option value="user">User</option>
             <option value="admin">Admin</option>
             <option value="mentor">Mentor</option>
+            <option value="mentor">Contributor</option>
           </select>
         </div>
         <Button

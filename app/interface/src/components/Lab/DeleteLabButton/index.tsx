@@ -4,6 +4,7 @@ import { ButtonVariant, Lab } from "../../../dataStructures";
 import { useDeleteLab, useDeleteMyLab } from "../../../hooks/useBlobs";
 import Button from "../../UserInterfaceComponents/Button";
 import { WebSocketContext } from "../../../WebSocketContext";
+import { toast } from "react-toastify";
 
 type Props = {
   variant: ButtonVariant;
@@ -13,16 +14,32 @@ type Props = {
 
 export default function DeleteLabButton({ variant, children, lab }: Props) {
   const { actionStatus } = useContext(WebSocketContext);
-  const { mutate: deleteLab } = useDeleteLab();
-  const { mutate: deleteMyLab } = useDeleteMyLab();
+  const { mutateAsync: deleteLab } = useDeleteLab();
+  const { mutateAsync: deleteMyLab } = useDeleteMyLab();
 
   function onClickHandler() {
     //setLogs({ logs: "" });
     if (lab !== undefined) {
       if (lab.type === "template") {
-        deleteMyLab(lab);
+        toast.promise(deleteMyLab(lab), {
+          pending: "Deleting Lab...",
+          success: "Lab Deleted.",
+          error: {
+            render(data: any) {
+              return `Failed to delete lab. ${data.data.data}`;
+            },
+          },
+        });
       } else {
-        deleteLab(lab);
+        toast.promise(deleteLab(lab), {
+          pending: "Deleting Lab...",
+          success: "Lab Deleted.",
+          error: {
+            render(data: any) {
+              return `Failed to delete lab. ${data.data.data}`;
+            },
+          },
+        });
       }
     }
   }

@@ -107,7 +107,7 @@ function App() {
           darkMode ? "bg-slate-100" : "bg-slate-800"
         } relative flex p-1 min-h-10 rounded-md justify-between overflow-hidden cursor-pointer`}
         position="top-right"
-        autoClose={5000}
+        autoClose={2000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
