@@ -12,11 +12,22 @@ import PageLayout from "../../layouts/PageLayout";
 import { toast } from "react-toastify";
 
 export default function PublicLabs() {
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const {
     data: sharedLabs,
     isLoading: sharedLabsLoading,
     isFetching: sharedLabsFetching,
   } = useSharedTemplates();
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const filteredLabs = sharedLabs?.filter((lab: Lab) => {
+    return Object.values(lab).some((value: any) =>
+      value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
 
   if (sharedLabsLoading || sharedLabsFetching) {
     return (
@@ -29,10 +40,17 @@ export default function PublicLabs() {
   return (
     <>
       <PageLayout heading="Public Labs">
+        <input
+          type="text"
+          placeholder="Search labs"
+          value={searchTerm}
+          onChange={handleSearchChange}
+          className="mb-2 w-full rounded border p-4 text-lg focus:outline-none focus:ring-2 focus:ring-sky-500 hover:border-sky-500 dark:border-slate-700 dark:bg-slate-900 dark:hover:border-sky-500 dark:hover:bg-slate-800"
+        />
         {sharedLabs && sharedLabs?.length !== 0 && (
           <LabGridLayout>
-            {sharedLabs &&
-              sharedLabs.map((lab: Lab) => (
+            {filteredLabs &&
+              filteredLabs.map((lab: Lab) => (
                 <TemplateCards lab={lab} key={lab.id} />
               ))}
           </LabGridLayout>

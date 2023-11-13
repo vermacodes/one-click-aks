@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaArrowRight } from "react-icons/fa";
+import { FaArrowRight, FaSearch } from "react-icons/fa";
 import DeleteLabButton from "../../components/Lab/DeleteLabButton";
 import ExportLabButton from "../../components/Lab/Export/ExportLabButton";
 import LabCard from "../../components/Lab/LabCard";
@@ -19,6 +19,7 @@ import SaveLabButton from "../../components/Lab/SaveLab/SaveLabButton";
 
 export default function MockCases() {
   const [more, setMore] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const { data: labs, isLoading, isFetching } = useSharedMockCases();
 
   function handleShowMore(lab: Lab) {
@@ -28,6 +29,16 @@ export default function MockCases() {
       setMore("");
     }
   }
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const filteredLabs = labs?.filter((lab: Lab) => {
+    return Object.values(lab).some((value: any) =>
+      value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
 
   if (isLoading || isFetching) {
     return (
@@ -40,9 +51,16 @@ export default function MockCases() {
   return (
     <PageLayout heading="Mock Cases">
       <SelectedDeployment />
+      <input
+        type="text"
+        placeholder="Search labs"
+        value={searchTerm}
+        onChange={handleSearchChange}
+        className="mb-2 w-full rounded border p-4 text-lg focus:outline-none focus:ring-2 focus:ring-sky-500 hover:border-sky-500 dark:border-slate-700 dark:bg-slate-900 dark:hover:border-sky-500 dark:hover:bg-slate-800"
+      />
       <LabGridLayout>
-        {labs !== undefined &&
-          labs.map((lab: Lab) => (
+        {filteredLabs &&
+          filteredLabs.map((lab: Lab) => (
             <TemplateCard key={lab.name}>
               <LabCard lab={lab}>
                 <>
