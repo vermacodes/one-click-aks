@@ -3,6 +3,7 @@ import { FaArrowRight, FaCheck, FaTimes } from "react-icons/fa";
 import { Assignment, Lab } from "../../../../dataStructures";
 import { useCreateAssignment } from "../../../../hooks/useAssignment";
 import Button from "../../../UserInterfaceComponents/Button";
+import { toast } from "react-toastify";
 
 type Props = {
   lab: Lab;
@@ -12,12 +13,8 @@ export default function CreateAssignment({ lab }: Props) {
   const [userAlias, setUserAlias] = useState<string>("");
   const [createdColor, setCreatedColor] = useState<boolean>(false);
   const [failedColor, setFailedColor] = useState<boolean>(false);
-  const {
-    mutateAsync: createAssignment,
-    isLoading: creating,
-    data: createData,
-    isError,
-  } = useCreateAssignment();
+  const { mutateAsync: createAssignment, isLoading: creating } =
+    useCreateAssignment();
 
   function handleAssignment(lab: Lab) {
     if (userAlias.length < 4) {
@@ -36,7 +33,21 @@ export default function CreateAssignment({ lab }: Props) {
       status: "Assigned",
     };
     setUserAlias("");
-    createAssignment(assignment).then((response) => {
+
+    const createAssignmentPromise = toast.promise(
+      createAssignment(assignment),
+      {
+        pending: "Creating Assignment...",
+        success: "Assignment Created.",
+        error: {
+          render(data: any) {
+            return `Failed to create assignment. ${data.data.data}`;
+          },
+        },
+      }
+    );
+
+    createAssignmentPromise.then((response) => {
       if (response.status === 201) {
         setCreatedColor(true);
         setTimeout(() => {
