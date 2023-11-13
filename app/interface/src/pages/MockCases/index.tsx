@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaArrowDown, FaArrowRight, FaEllipsisV } from "react-icons/fa";
+import { FaArrowRight } from "react-icons/fa";
 import DeleteLabButton from "../../components/Lab/DeleteLabButton";
 import ExportLabButton from "../../components/Lab/Export/ExportLabButton";
 import LabCard from "../../components/Lab/LabCard";
