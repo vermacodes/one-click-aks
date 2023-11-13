@@ -35,7 +35,7 @@ export default function Tooltip({
       {message && visible && (
         <div
           className={`
-          absolute z-50 transform rounded bg-slate-800 p-2 text-xs text-slate-100 transition-all
+          absolute z-10 transform rounded bg-slate-800 p-2 text-xs text-slate-100 transition-all
           dark:bg-slate-100 dark:text-slate-900 
           ${direction === "top" ? "bottom-10" : ""}
           ${direction === "bottom" ? "top-10" : ""}

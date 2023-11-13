@@ -34,7 +34,7 @@ export default function LabCard({ lab, children }: Props) {
       )}
 
       {/* <p className="whitespace-pre-line text-sm">{lab.description}</p> */}
-      <div className="max-h-[360px] overflow-y-auto overflow-x-hidden">
+      <div className="max-h-[360px] overflow-y-auto px-1 overflow-x-hidden">
         {ReactHtmlParser(decodeIfEncoded(stringToHTML(lab.description)))}
       </div>
       <div className="flex flex-wrap gap-x-1 gap-y-1  pb-4 dark:border-slate-700">

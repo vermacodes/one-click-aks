@@ -44,7 +44,7 @@ export default function SelectedDeployment({ sticky = true }: Props) {
   return (
     <div
       className={`${
-        sticky && "sticky top-0"
+        sticky && "sticky top-0 z-20"
       } mb-3 rounded bg-slate-50 p-3 shadow outline-1 outline-sky-500 hover:outline dark:bg-slate-900`}
     >
       <div

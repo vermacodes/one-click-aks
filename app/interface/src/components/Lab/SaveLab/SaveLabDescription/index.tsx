@@ -52,7 +52,7 @@ export default function SaveLabDescription({ lab, setLab }: Props) {
       StarterKit.configure({}),
       BulletList.configure({
         HTMLAttributes: {
-          class: "ml-4 list-disc",
+          class: "ml-6 list-disc",
         },
       }),
       Link.configure({
@@ -136,6 +136,9 @@ export default function SaveLabDescription({ lab, setLab }: Props) {
             onClick={() =>
               editor.chain().focus().toggleHeading({ level: 2 }).run()
             }
+            tooltipMessage="Heading"
+            tooltipDelay={200}
+            tooltipDirection="top"
           >
             <FaHeading />
           </Button>
@@ -144,6 +147,9 @@ export default function SaveLabDescription({ lab, setLab }: Props) {
               editor.isActive("bold") ? "secondary" : "secondary-outline"
             }
             onClick={() => editor.chain().focus().toggleBold().run()}
+            tooltipMessage="Bold"
+            tooltipDelay={200}
+            tooltipDirection="top"
           >
             <FaBold />
           </Button>
@@ -152,6 +158,9 @@ export default function SaveLabDescription({ lab, setLab }: Props) {
               editor.isActive("italic") ? "secondary" : "secondary-outline"
             }
             onClick={() => editor.chain().focus().toggleItalic().run()}
+            tooltipMessage="Italic"
+            tooltipDelay={200}
+            tooltipDirection="top"
           >
             <FaItalic />
           </Button>
@@ -160,6 +169,9 @@ export default function SaveLabDescription({ lab, setLab }: Props) {
               editor.isActive("code") ? "secondary" : "secondary-outline"
             }
             onClick={() => editor.chain().focus().toggleCode().run()}
+            tooltipMessage="Inline Code"
+            tooltipDelay={200}
+            tooltipDirection="top"
           >
             <FaCode />
           </Button>
@@ -168,6 +180,9 @@ export default function SaveLabDescription({ lab, setLab }: Props) {
               editor.isActive("codeBlock") ? "secondary" : "secondary-outline"
             }
             onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+            tooltipMessage="Code Block"
+            tooltipDelay={200}
+            tooltipDirection="top"
           >
             <FaFileCode />
           </Button>
@@ -176,6 +191,9 @@ export default function SaveLabDescription({ lab, setLab }: Props) {
               editor.isActive("bulletList") ? "secondary" : "secondary-outline"
             }
             onClick={() => editor.chain().focus().toggleBulletList().run()}
+            tooltipMessage="Bullet List"
+            tooltipDelay={200}
+            tooltipDirection="top"
           >
             <FaListUl />
           </Button>
@@ -184,6 +202,9 @@ export default function SaveLabDescription({ lab, setLab }: Props) {
             variant={
               editor.isActive("link") ? "secondary" : "secondary-outline"
             }
+            tooltipMessage="Link"
+            tooltipDelay={200}
+            tooltipDirection="top"
           >
             <FaLink />
           </Button>
@@ -191,6 +212,9 @@ export default function SaveLabDescription({ lab, setLab }: Props) {
             onClick={() => editor.chain().focus().unsetLink().run()}
             disabled={!editor.isActive("link")}
             variant="secondary-outline"
+            tooltipMessage="Unlink"
+            tooltipDelay={200}
+            tooltipDirection="top"
           >
             <FaUnlink />
           </Button>
