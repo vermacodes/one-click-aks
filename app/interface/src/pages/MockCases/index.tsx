@@ -56,7 +56,7 @@ export default function MockCases() {
         placeholder="Search labs"
         value={searchTerm}
         onChange={handleSearchChange}
-        className="mb-2 w-full rounded border p-4 text-lg shadow focus:outline-none focus:ring-2 focus:ring-sky-500 hover:border-sky-500 dark:border-slate-700 dark:bg-slate-900 dark:hover:border-sky-500 dark:hover:bg-slate-800"
+        className="mb-2 w-full rounded border bg-slate-50 p-4 text-lg shadow focus:outline-none focus:ring-2 focus:ring-sky-500 hover:border-sky-500 dark:border-slate-700 dark:bg-slate-900 dark:hover:border-sky-500 dark:hover:bg-slate-800"
       />
       <LabGridLayout>
         {filteredLabs &&
