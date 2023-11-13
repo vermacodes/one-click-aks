@@ -71,7 +71,7 @@ export default function Role({ roleRecord }: Props) {
             <option value="user">User</option>
             <option value="admin">Admin</option>
             <option value="mentor">Mentor</option>
-            <option value="mentor">Contributor</option>
+            <option value="contributor">Contributor</option>
           </select>
         </div>
         <Button
