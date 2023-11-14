@@ -31,7 +31,7 @@ export default function MainLayout({ darkMode, setDarkMode }: Props) {
   return (
     <div className="flex h-screen overflow-hidden">
       <div
-        className="top-0 left-0 h-screen w-1/5 min-w-fit overflow-y-auto overflow-x-hidden 
+        className="top-0 left-0 h-screen w-1/6 min-w-fit overflow-y-auto overflow-x-hidden 
       scrollbar-thin  scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full dark:scrollbar-thumb-slate-600"
       >
         <Navbar darkMode={darkMode} setDarkMode={handleSetDarkMode} />
