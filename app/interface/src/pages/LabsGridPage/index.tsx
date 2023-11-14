@@ -81,7 +81,7 @@ export default function LabsGridPage({}: Props) {
 
   if (!labs) {
     return (
-      <PageLayout heading="Lab">
+      <PageLayout heading={pageHeading}>
         <div className="space-y-4">
           <p className="text-4xl">Well, nothing to show here.</p>
           <p>Do you have right access to see the details of this lab?</p>
@@ -92,7 +92,7 @@ export default function LabsGridPage({}: Props) {
 
   if (labs.length === 0) {
     return (
-      <PageLayout heading="Lab">
+      <PageLayout heading={pageHeading}>
         <div className="space-y-4">
           <p className="text-4xl">No labs found!</p>
         </div>
