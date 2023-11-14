@@ -12,6 +12,7 @@ import ReadinessLabs from "../../pages/ReadinessLabs";
 import SavedLabs from "../../pages/SavedLabs";
 import Settings from "../../pages/Settings";
 import Deployments from "../../pages/Deployments";
+import LabPageLoader from "../../components/Lab/LabPageLoader";
 
 type Props = {
   darkMode: boolean;
@@ -43,7 +44,7 @@ export default function MainLayout({ darkMode, setDarkMode }: Props) {
           <Route path="/deployments" element={<Deployments />} />
           <Route path="/mylabs" element={<SavedLabs />} />
           <Route path="/publiclabs" element={<PublicLabs />} />
-          <Route path="/lab/:type/:id" element={<LabPage />} />
+          <Route path="/lab/:type/:id" element={<LabPageLoader />} />
           <Route path="/learning" element={<Learning />} />
           <Route path="/readinesslabs" element={<ReadinessLabs />} />
           <Route path="/mockcases" element={<MockCases />} />

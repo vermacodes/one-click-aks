@@ -1,16 +1,14 @@
-import DeleteLabButton from "../../components/Lab/DeleteLabButton";
-import ExportLabButton from "../../components/Lab/Export/ExportLabButton";
+import { useState } from "react";
 import LabCard from "../../components/Lab/LabCard";
-import LoadToBuilderButton from "../../components/Lab/LoadToBuilderButton";
-import TemplateCard from "../../components/TemplateCard";
 import { Lab } from "../../dataStructures";
 import { useTemplates } from "../../hooks/useBlobs";
-import { useServerStatus } from "../../hooks/useServerStatus";
 import LabGridLayout from "../../layouts/LabGridLayout";
 import PageLayout from "../../layouts/PageLayout";
+import { useServerStatus } from "../../hooks/useServerStatus";
 import ServerError from "../ServerError";
 
 export default function SavedLabs() {
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const {
     data: myLabs,
     isLoading: myLabsLoading,
@@ -23,6 +21,16 @@ export default function SavedLabs() {
     return <ServerError />;
   }
 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const filteredLabs = myLabs?.filter((lab: Lab) => {
+    return Object.values(lab).some((value: any) =>
+      value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
+
   if (myLabsLoading || myLabsFetching) {
     return (
       <PageLayout heading="My Saved Labs">
@@ -34,9 +42,16 @@ export default function SavedLabs() {
   return (
     <>
       <PageLayout heading="My Saved Labs">
+        <input
+          type="text"
+          placeholder="Search labs"
+          value={searchTerm}
+          onChange={handleSearchChange}
+          className="mb-4 w-full rounded border bg-slate-50 p-4 text-lg shadow focus:outline-none focus:ring-2 focus:ring-sky-500 hover:border-sky-500 dark:border-slate-700 dark:bg-slate-900 dark:hover:border-sky-500 dark:hover:bg-slate-800"
+        />
         <LabGridLayout>
-          {myLabs !== undefined &&
-            myLabs.map((lab: Lab) => <TemplateCards lab={lab} key={lab.id} />)}
+          {filteredLabs !== undefined &&
+            filteredLabs.map((lab: Lab) => <LabCard lab={lab} key={lab.id} />)}
         </LabGridLayout>
         <p className="text-2xl">
           {myLabs?.length === 0 &&
@@ -44,33 +59,5 @@ export default function SavedLabs() {
         </p>
       </PageLayout>
     </>
-  );
-}
-
-// Template Cards display the cards for both template types.
-
-type TemplateCardsProps = {
-  lab: Lab;
-};
-
-function TemplateCards({ lab }: TemplateCardsProps) {
-  return (
-    <TemplateCard key={lab.name}>
-      <LabCard lab={lab}>
-        <>
-          <div className="flex justify-start gap-1">
-            <LoadToBuilderButton lab={lab} variant="primary">
-              Open
-            </LoadToBuilderButton>
-            <ExportLabButton lab={lab} variant="secondary-text">
-              Export
-            </ExportLabButton>
-            <DeleteLabButton lab={lab} variant="danger-text">
-              Delete
-            </DeleteLabButton>
-          </div>
-        </>
-      </LabCard>
-    </TemplateCard>
   );
 }
