@@ -1,10 +1,11 @@
-import { FaShare } from "react-icons/fa";
+import { FaShare, FaTrash } from "react-icons/fa";
 import { Lab } from "../../../../dataStructures";
 import Button from "../../../UserInterfaceComponents/Button";
 import ExportLabButton from "../../Export/ExportLabButton";
 import LoadToBuilderButton from "../../LoadToBuilderButton";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import DeleteLabButton from "../../DeleteLabButton";
 
 type Props = {
   lab: Lab;
@@ -47,6 +48,9 @@ export default function PublicLabActionButtons({ lab }: Props) {
         </span>
         {copied ? "Done" : "Share"}
       </Button>
+      {/* <DeleteLabButton lab={lab} variant="danger-text">
+        Delete
+      </DeleteLabButton> */}
     </div>
   );
 }

@@ -26,7 +26,7 @@ export default function DeleteAssignment({ assignment }: Props) {
       variant="danger-outline"
       onClick={() => handleDeleteAssignment(assignment)}
     >
-      Delete
+      🗑️ Delete
     </Button>
   );
 }
