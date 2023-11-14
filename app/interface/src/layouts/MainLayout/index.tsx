@@ -3,16 +3,16 @@ import Navbar from "../../components/Navbar";
 import AccessControl from "../../pages/AccessControl";
 import Assignments from "../../pages/Assignments";
 import LabBuilder from "../../pages/LabBuilder";
-import LabPage from "../../pages/LabPage";
 import Landing from "../../pages/Landing";
-import Learning from "../../pages/Learning";
-import MockCases from "../../pages/MockCases";
-import PublicLabs from "../../pages/PublicLabs";
-import ReadinessLabs from "../../pages/ReadinessLabs";
-import SavedLabs from "../../pages/SavedLabs";
+// import Learning from "../../pages/Learning";
+// import MockCases from "../../pages/MockCases";
+// import PublicLabs from "../../pages/PublicLabs";
+// import ReadinessLabs from "../../pages/ReadinessLabs";
+// import SavedLabs from "../../pages/SavedLabs";
 import Settings from "../../pages/Settings";
 import Deployments from "../../pages/Deployments";
-import LabPageLoader from "../../components/Lab/LabPageLoader";
+import LabsGridPage from "../../pages/LabsGridPage";
+import LabPage from "../../pages/LabPage";
 
 type Props = {
   darkMode: boolean;
@@ -42,12 +42,13 @@ export default function MainLayout({ darkMode, setDarkMode }: Props) {
           <Route path="/" element={<Landing />} />
           <Route path="/builder" element={<LabBuilder />} />
           <Route path="/deployments" element={<Deployments />} />
-          <Route path="/mylabs" element={<SavedLabs />} />
-          <Route path="/publiclabs" element={<PublicLabs />} />
-          <Route path="/lab/:type/:id" element={<LabPageLoader />} />
-          <Route path="/learning" element={<Learning />} />
+          {/* <Route path="/mylabs" element={<SavedLabs />} />
+          <Route path="/publiclabs" element={<PublicLabs />} /> */}
+          <Route path="/lab/:type/:id" element={<LabPage />} />
+          <Route path="/labs/:type" element={<LabsGridPage />} />
+          {/* <Route path="/learning" element={<Learning />} />
           <Route path="/readinesslabs" element={<ReadinessLabs />} />
-          <Route path="/mockcases" element={<MockCases />} />
+          <Route path="/mockcases" element={<MockCases />} /> */}
           <Route path="/assignments" element={<Assignments />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/rbac" element={<AccessControl />} />

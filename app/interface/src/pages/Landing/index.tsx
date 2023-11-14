@@ -1,9 +1,13 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import StartCommand from "../../components/LandingPageComponents/StartCommand";
 import PageLayout from "../../layouts/PageLayout";
 
 export default function Landing() {
   const optionsRef = useRef<null | HTMLDivElement>(null);
+
+  useEffect(() => {
+    document.title = "ACT Labs | Home";
+  }, []);
 
   return (
     <PageLayout>

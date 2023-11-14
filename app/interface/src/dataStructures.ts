@@ -96,10 +96,10 @@ export type TfvarNetworkSecurityGroupType = {};
 
 export type TfvarServiceMeshType = {
   enabled: boolean;
-  mode: "Istio",
+  mode: "Istio";
   internalIngressGatewayEnabled: boolean;
   externalIngressGatewayEnabled: boolean;
-}
+};
 
 export type TfvarAddonsType = {
   appGateway: boolean;
@@ -192,7 +192,12 @@ export type Lab = {
   template: TfvarConfigType | undefined;
   extendScript: string;
   message: string;
-  type: "template" | "sharedtemplate" | "labexercise" | "mockcase";
+  type:
+    | "template"
+    | "sharedtemplate"
+    | "labexercise"
+    | "assignment"
+    | "mockcase";
   createdBy: string;
   createdOn: string;
   updatedBy: string;
@@ -249,15 +254,15 @@ export type PatchVersions = {
 };
 
 export type Capabilities = {
-	SupportPlan: string[]
-}
+  SupportPlan: string[];
+};
 
 export type Value = {
-	capabilities:  Capabilities;
-	isPreview: boolean | null;
-	patchVersions: PatchVersions;
-	version: string;
-}
+  capabilities: Capabilities;
+  isPreview: boolean | null;
+  patchVersions: PatchVersions;
+  version: string;
+};
 
 export type ServerStatus = {
   status: "" | "OK";
@@ -314,9 +319,16 @@ export type DeploymentType = {
   deploymentUserId: string;
   deploymentWorkspace: string;
   deploymentSubscriptionId: string;
-  deploymentStatus: "Deployment In Progress" | "Deployment Failed" | "Deployment Completed" | "Deployment Not Started" | "Destroying Resources" | "Resources Destroyed" | "Destroy Failed";
-  deploymentLab: Lab
+  deploymentStatus:
+    | "Deployment In Progress"
+    | "Deployment Failed"
+    | "Deployment Completed"
+    | "Deployment Not Started"
+    | "Destroying Resources"
+    | "Resources Destroyed"
+    | "Destroy Failed";
+  deploymentLab: Lab;
   deploymentAutoDelete: boolean;
   deploymentLifespan: number;
   deploymentAutoDeleteUnixTime: number;
-}
+};

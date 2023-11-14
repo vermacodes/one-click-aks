@@ -1,4 +1,5 @@
 import { Lab } from "../../../../dataStructures";
+import AssignmentActionButtons from "../AssignmentActionButtons";
 import MockCaseActionButtons from "../MockCaseActionButtons";
 import MySavedLabActionButtons from "../MySavedLabActionButtons";
 import PublicLabActionButtons from "../PublicLabActionButtons";
@@ -19,6 +20,10 @@ export default function LabActionButtons({ lab }: Props) {
 
   if (lab.type === "labexercise") {
     return <ReadinessLabActionButtons lab={lab} />;
+  }
+
+  if (lab.type === "assignment") {
+    return <AssignmentActionButtons lab={lab} />;
   }
 
   if (lab.type === "template") {
