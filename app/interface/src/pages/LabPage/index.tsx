@@ -60,7 +60,7 @@ export default function LabPage({}: Props) {
   return (
     <PageLayout heading={lab ? lab.name : "Lab"}>
       <TemplateCard>
-        <LabCard lab={lab}>
+        <LabCard lab={lab} labCard={false}>
           <>
             <div className="flex items-center justify-between gap-2">
               <div className="flex justify-start gap-2">

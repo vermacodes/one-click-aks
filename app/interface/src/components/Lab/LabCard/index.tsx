@@ -7,18 +7,19 @@ import {
   FaUser,
   FaUserEdit,
 } from "react-icons/fa";
-import { Buffer } from "buffer";
-import { decodeIfEncoded, stringToHTML } from "../../../utils/helpers";
+import { decodeIfEncoded } from "../../../utils/helpers";
 
 type Props = {
   lab: Lab | undefined;
   children: React.ReactNode;
+  labCard?: boolean;
 };
 
-export default function LabCard({ lab, children }: Props) {
+export default function LabCard({ lab, children, labCard = true }: Props) {
   if (lab === undefined) {
     return <></>;
   }
+
   return (
     <div className="flex h-full flex-col justify-between gap-y-6">
       {lab.type === "sharedtemplate" ? (
@@ -34,8 +35,12 @@ export default function LabCard({ lab, children }: Props) {
       )}
 
       {/* <p className="whitespace-pre-line text-sm">{lab.description}</p> */}
-      <div className="max-h-[360px] overflow-y-auto px-1 overflow-x-hidden">
-        {ReactHtmlParser(decodeIfEncoded(stringToHTML(lab.description)))}
+      <div
+        className={`${
+          labCard && "max-h-[360px]"
+        } overflow-y-auto px-1 overflow-x-hidden`}
+      >
+        {ReactHtmlParser(decodeIfEncoded(lab.description))}
       </div>
       <div className="flex flex-wrap gap-x-1 gap-y-1  pb-4 dark:border-slate-700">
         {lab.tags &&

@@ -132,14 +132,17 @@ export function setDefaultValuesInLocalStorage() {
   }
 }
 
+// This function uses a hack to decode base64 strings.
+// If the string is not base64 encoded, it returns the original string.
+// It also replaces empty paragraphs with paragraphs with margin.
 export function decodeIfEncoded(value: string) {
   try {
     // Decode base64 string
     value = atob(value);
-    return value;
+    return value.replace(/<p><\/p>/g, '<p class="mb-4"></p>');
   } catch (error) {
     // If an error is thrown, return the original value
-    return value;
+    return value.replace(/<p><\/p>/g, '<p class="mb-4"></p>');
   }
 }
 
