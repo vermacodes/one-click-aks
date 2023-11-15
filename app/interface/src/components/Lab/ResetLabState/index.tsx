@@ -4,6 +4,8 @@ import { FaRedo } from "react-icons/fa";
 import { useSetLogs } from "../../../hooks/useLogs";
 import { useDeleteLab } from "../../../hooks/useLab";
 import { ButtonVariant } from "../../../dataStructures";
+import { useState } from "react";
+import ConfirmationModal from "../../UserInterfaceComponents/Modal/ConfirmationModal";
 
 type Props = {
   buttonVariant?: ButtonVariant;
@@ -13,8 +15,14 @@ type Props = {
 export default function ResetLabState({ buttonVariant, children }: Props) {
   const { mutate: setLogs } = useSetLogs();
   const { mutateAsync: deleteLab } = useDeleteLab();
+  const [showModal, setShowModal] = useState(false);
+
+  function onClickHandler() {
+    setShowModal(true);
+  }
 
   function handleResetLabState() {
+    setShowModal(false);
     setLogs({
       logs: "",
     });
@@ -41,17 +49,31 @@ export default function ResetLabState({ buttonVariant, children }: Props) {
   }
 
   return (
-    <Button
-      variant={buttonVariant ? buttonVariant : "secondary-text"}
-      onClick={() => handleResetLabState()}
-    >
-      {children ? (
-        children
-      ) : (
-        <>
-          <FaRedo /> Reset
-        </>
+    <>
+      <Button
+        variant={buttonVariant ? buttonVariant : "secondary-text"}
+        onClick={() => onClickHandler()}
+      >
+        {children ? (
+          children
+        ) : (
+          <>
+            <FaRedo /> Reset
+          </>
+        )}
+      </Button>
+      {showModal && (
+        <ConfirmationModal
+          onClose={() => setShowModal(false)}
+          onConfirm={handleResetLabState}
+          title="Confirm Lab Reset"
+        >
+          <p className="text-xl">
+            <strong>Are you sure?</strong> This will irreversibly reset all
+            changes you made to lab including the extension script.
+          </p>
+        </ConfirmationModal>
       )}
-    </Button>
+    </>
   );
 }
