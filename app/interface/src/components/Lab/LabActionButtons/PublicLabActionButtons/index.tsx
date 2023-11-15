@@ -6,6 +6,7 @@ import LoadToBuilderButton from "../../LoadToBuilderButton";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import DeleteLabButton from "../../DeleteLabButton";
+import { useGetMyRoles } from "../../../../hooks/useAuth";
 
 type Props = {
   lab: Lab;
@@ -13,6 +14,7 @@ type Props = {
 
 export default function PublicLabActionButtons({ lab }: Props) {
   const [copied, setCopied] = useState(false);
+  const { data: roles } = useGetMyRoles();
 
   function copyLinkToLab(lab: Lab) {
     navigator.clipboard.writeText(
@@ -48,9 +50,11 @@ export default function PublicLabActionButtons({ lab }: Props) {
         </span>
         {copied ? "Done" : "Share"}
       </Button>
-      {/* <DeleteLabButton lab={lab} variant="danger-text">
-        Delete
-      </DeleteLabButton> */}
+      {roles?.roles.includes("admin") && (
+        <DeleteLabButton lab={lab} variant="danger-text">
+          Delete
+        </DeleteLabButton>
+      )}
     </div>
   );
 }
