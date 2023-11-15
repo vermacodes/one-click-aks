@@ -82,7 +82,7 @@ export default function LabsGridPage() {
         placeholder={`Search ${pageHeading.toLowerCase()}`}
         value={searchTerm}
         onChange={handleSearchChange}
-        className="mb-4 w-full rounded border bg-slate-50 p-4 text-lg shadow focus:outline-none focus:ring-2 focus:ring-sky-500 hover:border-sky-500 dark:border-slate-700 dark:bg-slate-900 dark:hover:border-sky-500 dark:hover:bg-slate-800"
+        className="mb-4 w-full rounded border bg-slate-50 p-4 text-lg shadow focus:outline-none focus:ring-2 focus:ring-sky-500 hover:border-sky-500 dark:border-slate-700 dark:bg-slate-900 dark:hover:border-sky-500"
       />
       <LabGridLayout>
         {filteredLabs.map((lab) => (
