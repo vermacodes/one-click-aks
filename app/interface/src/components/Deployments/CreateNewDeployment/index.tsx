@@ -120,7 +120,7 @@ function Modal({ showModal, setShowModal }: ModalProps) {
       }}
     >
       <div
-        className="my-20 h-1/3 w-1/3 space-y-2 divide-y divide-slate-300 overflow-y-auto rounded bg-slate-100 p-5 overflow-x-hidden scrollbar-thin  scrollbar-thumb-slate-400 dark:divide-slate-700 dark:bg-slate-900 dark:scrollbar-thumb-slate-600"
+        className="my-20 h-[35%] max-h-80 w-1/3 space-y-2 divide-y divide-slate-300 overflow-y-auto rounded bg-slate-100 p-5 overflow-x-hidden scrollbar-thin  scrollbar-thumb-slate-400 dark:divide-slate-700 dark:bg-slate-900 dark:scrollbar-thumb-slate-600"
         onClick={(e) => {
           e.stopPropagation();
         }}
@@ -150,10 +150,10 @@ function Modal({ showModal, setShowModal }: ModalProps) {
                   type="text"
                   aria-label="New Deployment Name"
                   className={`${
-                    isModified &&
-                    errorMessage &&
-                    "border-rose-500  focus:ring-rose-500"
-                  } block h-10 w-full rounded border border-slate-500 bg-inherit px-2 text-inherit focus:outline-none focus:ring-1 focus:ring-slate-500`}
+                    isModified && errorMessage
+                      ? "border-rose-500 focus:ring-rose-500"
+                      : "focus:ring-slate-500"
+                  } block h-10 w-full rounded border border-slate-500 bg-inherit px-2 text-inherit focus:outline-none focus:ring-1`}
                   placeholder="Name your new deployment."
                   value={newWorkSpaceName}
                   onChange={handleWorkspaceNameTextField}
