@@ -9,10 +9,22 @@ import CreateNewDeployment from "../../components/Deployments/CreateNewDeploymen
 import { getSelectedDeployment } from "../../utils/helpers";
 import { useTerraformWorkspace } from "../../hooks/useWorkspace";
 import { FaPlus, FaTools } from "react-icons/fa";
+import { useServerStatus } from "../../hooks/useServerStatus";
+import ServerError from "../ServerError";
+import { useEffect } from "react";
 
 export default function Deployments() {
   const { data: deployments } = useGetMyDeployments();
   const { data: workspaces } = useTerraformWorkspace();
+  const { data: serverStatus } = useServerStatus();
+
+  useEffect(() => {
+    document.title = "ACT Labs | Deployments";
+  }, []);
+
+  if (serverStatus?.status !== "OK") {
+    return <ServerError />;
+  }
 
   if (deployments === undefined || workspaces === undefined) {
     return <></>;

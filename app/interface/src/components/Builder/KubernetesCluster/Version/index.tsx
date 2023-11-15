@@ -5,6 +5,7 @@ import { useGetOrchestrators } from "../../../../hooks/useOrchestrators";
 import { useContext } from "react";
 import { WebSocketContext } from "../../../../WebSocketContext";
 import { PatchVersions, Value } from "../../../../dataStructures";
+import Tooltip from "../../../UserInterfaceComponents/Tooltip";
 
 type Props = {
   versionMenu: boolean;
@@ -55,22 +56,24 @@ export default function Version({ versionMenu, setVersionMenu, index }: Props) {
 
   return (
     <div className={`${versionMenu ? "relative" : ""} inline-block text-left`}>
-      <div
-        className={`${
-          disabled && "text-slate-500"
-        } flex w-64 items-center justify-between rounded border border-slate-500 px-2 py-1`}
-        onClick={(e) => {
-          if (!disabled) {
-            setVersionMenu(!versionMenu);
-          }
-          e.stopPropagation();
-        }}
-      >
-        {currentVersion}
-        <p>
-          <FaChevronDown />
-        </p>
-      </div>
+      <Tooltip message="Kubernetes Version" delay={1000}>
+        <div
+          className={`${
+            disabled && "text-slate-500"
+          } flex w-64 items-center justify-between rounded border border-slate-500 px-2 py-1`}
+          onClick={(e) => {
+            if (!disabled) {
+              setVersionMenu(!versionMenu);
+            }
+            e.stopPropagation();
+          }}
+        >
+          {currentVersion}
+          <p>
+            <FaChevronDown />
+          </p>
+        </div>
+      </Tooltip>
       {versionMenu && (
         <div
           className="absolute right-0 z-10 mt-2 h-56 w-64 origin-top-right items-center gap-y-2 overflow-y-auto  rounded border border-slate-500 bg-slate-100 p-2 overflow-x-hidden scrollbar-thin scrollbar-thumb-slate-400 dark:bg-slate-800 dark:scrollbar-thumb-slate-600"

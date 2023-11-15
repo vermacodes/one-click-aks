@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AzureRegion from "../../components/Config/AzureRegion";
 import AuthServiceEndpoint from "../../components/Config/AuthServiceEndpoint";
 import ServerEndpoint from "../../components/Config/ServerEndpoint";
@@ -14,6 +14,10 @@ import ServerStatus from "../../components/Config/ServerStatus";
 
 export default function Settings() {
   const [regionEdit, setRegionEdit] = useState<boolean>(false);
+
+  useEffect(() => {
+    document.title = "ACT Labs | Settings";
+  }, []);
 
   return (
     <PageLayout heading="Settings">

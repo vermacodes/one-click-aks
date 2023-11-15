@@ -5,6 +5,7 @@ import { useContext } from "react";
 import { WebSocketContext } from "../../../../WebSocketContext";
 import { useSetLogs } from "../../../../hooks/useLogs";
 import { ButtonVariant, Lab } from "../../../../dataStructures";
+import { toast } from "react-toastify";
 
 type Props = {
   variant: ButtonVariant;
@@ -19,7 +20,16 @@ export default function InitButton({ variant, children }: Props) {
 
   function initHandler() {
     setLogs({ logs: "" });
-    lab && initAsync(lab);
+    lab &&
+      toast.promise(initAsync(lab), {
+        pending: "Initializing Terraform...",
+        success: "Terraform Initialized.",
+        error: {
+          render(data: any) {
+            return `Failed to initialize terraform. ${data.data.data}`;
+          },
+        },
+      });
   }
 
   return (

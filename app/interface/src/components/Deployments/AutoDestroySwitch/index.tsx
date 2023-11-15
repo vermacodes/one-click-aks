@@ -2,6 +2,7 @@ import { DeploymentType } from "../../../dataStructures";
 import Checkbox from "../../UserInterfaceComponents/Checkbox";
 import { usePatchDeployment } from "../../../hooks/useDeployments";
 import { calculateNewEpochTimeForDeployment } from "../../../utils/helpers";
+import { toast } from "react-toastify";
 
 type AutoDestroySwitchProps = {
   disabled: boolean;
@@ -19,25 +20,33 @@ export default function AutoDestroySwitch({
   function handleAutoDeleteChange() {
     //Switch the auto delete state
     deployment.deploymentAutoDelete = !deployment.deploymentAutoDelete;
-
-    // if the auto delete is disabled, then set the time to 0.
-    if (!deployment.deploymentAutoDelete) {
-      asyncPatchDeployment({
-        ...deployment,
-        deploymentAutoDeleteUnixTime: 0,
-      });
-      return;
-    }
+    var deploymentAutoDeleteUnixTime = 0;
 
     // if auto delete is enabled, then set the time to whatever it should be.
     if (deployment.deploymentAutoDelete) {
+      deploymentAutoDeleteUnixTime =
+        calculateNewEpochTimeForDeployment(deployment);
+    }
+
+    toast.promise(
       asyncPatchDeployment({
         ...deployment,
-        deploymentAutoDeleteUnixTime:
-          calculateNewEpochTimeForDeployment(deployment),
-      });
-      return;
-    }
+        deploymentAutoDeleteUnixTime: deploymentAutoDeleteUnixTime,
+      }),
+      {
+        pending: "Updating deployment...",
+        success: "Deployment updated.",
+        error: {
+          render(data: any) {
+            return `Failed to update deployment. ${data.data.data}`;
+          },
+          autoClose: 5000,
+        },
+      },
+      {
+        toastId: "auto-destroy-switch",
+      }
+    );
   }
 
   return (
@@ -47,6 +56,8 @@ export default function AutoDestroySwitch({
       checked={deployment.deploymentAutoDelete}
       handleOnChange={handleAutoDeleteChange}
       disabled={disabled}
+      tooltipMessage="If enabled, the deployment will be automatically deleted after the specified time."
+      tooltipDelay={1000}
     />
   );
 }

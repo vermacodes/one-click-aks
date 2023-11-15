@@ -4,7 +4,7 @@ import { useContext, useState } from "react";
 import { WebSocketContext } from "../../../WebSocketContext";
 import Button from "../../UserInterfaceComponents/Button";
 import { useResetServerCache } from "../../../hooks/useServerCache";
-import Tooltip from "../../UserInterfaceComponents/Tooltip";
+import { toast } from "react-toastify";
 
 export default function AzureSubscription() {
   const [subscriptionMenu, setSubscriptionMenu] = useState<boolean>(false);
@@ -13,6 +13,22 @@ export default function AzureSubscription() {
   const { mutate: setAccount } = useSetAccount();
   const { actionStatus } = useContext(WebSocketContext);
   const { mutateAsync: resetServerCacheAsync } = useResetServerCache();
+
+  function handleResetServerCache() {
+    const response = toast.promise(resetServerCacheAsync(), {
+      pending: "Resetting Server Cache...",
+      success: "Server Cache Reset.",
+      error: {
+        render(data: any) {
+          return `Failed to reset server cache. ${data.data.data}`;
+        },
+      },
+    });
+
+    response.finally(() => {
+      window.location.reload();
+    });
+  }
 
   return (
     <div className="flex gap-2">
@@ -74,19 +90,15 @@ export default function AzureSubscription() {
           )}
         </div>
       </div>
-      <Tooltip message="Reset Server Cache" delay={200}>
-        <Button
-          variant="secondary-text"
-          disabled={actionStatus.inProgress}
-          onClick={() =>
-            resetServerCacheAsync().finally(() => {
-              window.location.reload();
-            })
-          }
-        >
-          <FaRedo />
-        </Button>
-      </Tooltip>
+      <Button
+        variant="secondary-text"
+        disabled={actionStatus.inProgress}
+        tooltipMessage="Reset Server Cache"
+        tooltipDelay={200}
+        onClick={handleResetServerCache}
+      >
+        <FaRedo />
+      </Button>
     </div>
   );
 }

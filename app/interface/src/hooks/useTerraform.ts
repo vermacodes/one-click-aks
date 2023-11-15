@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "react-query";
 import { Lab } from "../dataStructures";
 import { axiosInstance } from "../utils/axios-interceptors";
+import { Axios, AxiosResponse } from "axios";
 
 function init(lab: Lab) {
   return axiosInstance.post("/terraform/init", lab);
@@ -10,7 +11,7 @@ function plan(lab: Lab) {
   return axiosInstance.post("/terraform/plan", lab);
 }
 
-function apply(lab: Lab) {
+function apply(lab: Lab): Promise<AxiosResponse> {
   return axiosInstance.post("/terraform/apply", lab);
 }
 

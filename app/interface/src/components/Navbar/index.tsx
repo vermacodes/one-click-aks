@@ -71,7 +71,7 @@ function Pages() {
           </Link>
         </li>
         <li>
-          <Link to={"/mylabs"}>
+          <Link to={"/labs/mylabs"}>
             <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
               <span>
                 <FaFileCode />
@@ -81,7 +81,7 @@ function Pages() {
           </Link>
         </li>
         <li>
-          <Link to={"/publiclabs"}>
+          <Link to={"/labs/publiclabs"}>
             <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
               <span>
                 <FaPeopleCarry />
@@ -91,7 +91,7 @@ function Pages() {
           </Link>
         </li>
         <li>
-          <Link to={"/learning"}>
+          <Link to={"/labs/assignments"}>
             <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
               <span>
                 <FaUserGraduate />
@@ -103,7 +103,7 @@ function Pages() {
         {roles && roles.roles.includes("mentor") && (
           <>
             <li>
-              <Link to={"/readinesslabs"}>
+              <Link to={"/labs/readinesslabs"}>
                 <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
                   <span>
                     <FaFlask />
@@ -113,7 +113,7 @@ function Pages() {
               </Link>
             </li>
             <li>
-              <Link to={"/mockcases"}>
+              <Link to={"/labs/mockcases"}>
                 <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
                   <span>
                     <FaClipboard />

@@ -3,15 +3,16 @@ import Navbar from "../../components/Navbar";
 import AccessControl from "../../pages/AccessControl";
 import Assignments from "../../pages/Assignments";
 import LabBuilder from "../../pages/LabBuilder";
-import LabPage from "../../pages/LabPage";
 import Landing from "../../pages/Landing";
-import Learning from "../../pages/Learning";
-import MockCases from "../../pages/MockCases";
-import PublicLabs from "../../pages/PublicLabs";
-import ReadinessLabs from "../../pages/ReadinessLabs";
-import SavedLabs from "../../pages/SavedLabs";
+// import Learning from "../../pages/Learning";
+// import MockCases from "../../pages/MockCases";
+// import PublicLabs from "../../pages/PublicLabs";
+// import ReadinessLabs from "../../pages/ReadinessLabs";
+// import SavedLabs from "../../pages/SavedLabs";
 import Settings from "../../pages/Settings";
 import Deployments from "../../pages/Deployments";
+import LabsGridPage from "../../pages/LabsGridPage";
+import LabPage from "../../pages/LabPage";
 
 type Props = {
   darkMode: boolean;
@@ -31,7 +32,7 @@ export default function MainLayout({ darkMode, setDarkMode }: Props) {
   return (
     <div className="flex h-screen overflow-hidden">
       <div
-        className="top-0 left-0 h-screen w-1/5 min-w-fit overflow-y-auto overflow-x-hidden 
+        className="top-0 left-0 h-screen w-1/6 min-w-fit overflow-y-auto overflow-x-hidden 
       scrollbar-thin  scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full dark:scrollbar-thumb-slate-600"
       >
         <Navbar darkMode={darkMode} setDarkMode={handleSetDarkMode} />
@@ -41,12 +42,13 @@ export default function MainLayout({ darkMode, setDarkMode }: Props) {
           <Route path="/" element={<Landing />} />
           <Route path="/builder" element={<LabBuilder />} />
           <Route path="/deployments" element={<Deployments />} />
-          <Route path="/mylabs" element={<SavedLabs />} />
-          <Route path="/publiclabs" element={<PublicLabs />} />
+          {/* <Route path="/mylabs" element={<SavedLabs />} />
+          <Route path="/publiclabs" element={<PublicLabs />} /> */}
           <Route path="/lab/:type/:id" element={<LabPage />} />
-          <Route path="/learning" element={<Learning />} />
+          <Route path="/labs/:type" element={<LabsGridPage />} />
+          {/* <Route path="/learning" element={<Learning />} />
           <Route path="/readinesslabs" element={<ReadinessLabs />} />
-          <Route path="/mockcases" element={<MockCases />} />
+          <Route path="/mockcases" element={<MockCases />} /> */}
           <Route path="/assignments" element={<Assignments />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/rbac" element={<AccessControl />} />

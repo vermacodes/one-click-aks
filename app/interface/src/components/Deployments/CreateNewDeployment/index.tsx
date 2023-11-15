@@ -1,5 +1,4 @@
 import { useContext, useState } from "react";
-import { z } from "zod";
 import Button from "../../UserInterfaceComponents/Button";
 import { MdClose } from "react-icons/md";
 import { useTerraformWorkspace } from "../../../hooks/useWorkspace";
@@ -10,6 +9,7 @@ import {
 import { useLab } from "../../../hooks/useLab";
 import { ButtonVariant } from "../../../dataStructures";
 import { WebSocketContext } from "../../../WebSocketContext";
+import { deploymentNameSchema } from "../../../zodSchemas";
 
 type Props = {
   variant: ButtonVariant;
@@ -58,15 +58,6 @@ function Modal({ showModal, setShowModal }: ModalProps) {
   const { mutateAsync: addDeployment } = useAddDeployment();
   const { actionStatus } = useContext(WebSocketContext);
   const { data: lab } = useLab();
-
-  const deploymentNameSchema = z
-    .string()
-    .min(1, "Deployment name must be at least one character long.")
-    .max(16, "Deployment name must not exceed 16 characters in length.")
-    .regex(
-      /^[a-zA-Z0-9:_-]*$/,
-      "Deployment name must consist of letters, numbers, colons, hyphens, or underscores only."
-    );
 
   function handleWorkspaceNameTextField(
     event: React.ChangeEvent<HTMLInputElement>
@@ -129,7 +120,7 @@ function Modal({ showModal, setShowModal }: ModalProps) {
       }}
     >
       <div
-        className="my-20 h-1/3 w-1/3 space-y-2 divide-y divide-slate-300 overflow-y-auto overflow-x-hidden rounded bg-slate-100 p-5 scrollbar-thin  scrollbar-thumb-slate-400 dark:divide-slate-700 dark:bg-slate-900 dark:scrollbar-thumb-slate-600"
+        className="my-20 h-1/3 w-1/3 space-y-2 divide-y divide-slate-300 overflow-y-auto rounded bg-slate-100 p-5 overflow-x-hidden scrollbar-thin  scrollbar-thumb-slate-400 dark:divide-slate-700 dark:bg-slate-900 dark:scrollbar-thumb-slate-600"
         onClick={(e) => {
           e.stopPropagation();
         }}
@@ -155,21 +146,18 @@ function Modal({ showModal, setShowModal }: ModalProps) {
               </div>
             ) : (
               <>
-                <div
+                <input
+                  type="text"
+                  aria-label="New Deployment Name"
                   className={`${
                     isModified &&
                     errorMessage &&
-                    "outline outline-1 outline-rose-500"
-                  } flex w-96 items-center justify-between rounded border border-slate-500`}
-                >
-                  <input
-                    type="text"
-                    className="block h-10 w-full bg-inherit px-2 text-inherit"
-                    placeholder="Name your new deployment."
-                    value={newWorkSpaceName}
-                    onChange={handleWorkspaceNameTextField}
-                  ></input>
-                </div>
+                    "border-rose-500  focus:ring-rose-500"
+                  } block h-10 w-full rounded border border-slate-500 bg-inherit px-2 text-inherit focus:outline-none focus:ring-1 focus:ring-slate-500`}
+                  placeholder="Name your new deployment."
+                  value={newWorkSpaceName}
+                  onChange={handleWorkspaceNameTextField}
+                />
                 <Button
                   variant="primary"
                   onClick={() => handleAddWorkspace()}
@@ -193,11 +181,6 @@ function Modal({ showModal, setShowModal }: ModalProps) {
           {isModified && errorMessage && (
             <div className="rounded border border-rose-500 bg-rose-500 bg-opacity-20 p-2">
               <p className="error-message">{errorMessage}</p>
-              {/* <p className="text-xs">
-                Deployment name must: Be at least one character long. Not exceed
-                16 characters in length. Consist of letters, numbers, colons,
-                hyphens, or underscores only.
-              </p> */}
             </div>
           )}
         </div>

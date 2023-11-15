@@ -1,89 +1,63 @@
 import { useEffect, useState } from "react";
-import { FaShare } from "react-icons/fa";
 import { useParams } from "react-router-dom";
-import Button from "../../components/UserInterfaceComponents/Button";
-import ExportLabButton from "../../components/Lab/Export/ExportLabButton";
-import LabCard from "../../components/Lab/LabCard";
-import LoadToBuilderButton from "../../components/Lab/LoadToBuilderButton";
-import TemplateCard from "../../components/TemplateCard";
 import { Lab } from "../../dataStructures";
-import { useSharedTemplates } from "../../hooks/useBlobs";
+import {
+  useSharedLabs,
+  useSharedMockCases,
+  useSharedTemplates,
+  useTemplates,
+} from "../../hooks/useBlobs";
 import PageLayout from "../../layouts/PageLayout";
+import LabCard from "../../components/Lab/LabCard";
+import { useGetUserAssignedLabs } from "../../hooks/useAssignment";
 
-type Props = {};
-
-export default function LabPage({}: Props) {
+export default function LabPage() {
   const { type, id } = useParams();
-  const [lab, setLab] = useState<Lab | undefined>(undefined);
-  const [copied, setCopied] = useState(false);
+  const [lab, setLab] = useState<Lab | undefined>();
 
-  const {
-    data: sharedLabs,
-    isLoading: sharedLabsLoading,
-    isFetching: sharedLabsFetching,
-  } = useSharedTemplates();
+  const sharedTemplates = useSharedTemplates();
+  const mockCases = useSharedMockCases();
+  const myLabs = useTemplates();
+  const readinessLabs = useSharedLabs();
+  const assignments = useGetUserAssignedLabs();
 
   useEffect(() => {
-    if (type === "sharedtemplate" && sharedLabs) {
-      sharedLabs.forEach((lab) => {
-        if (lab.id === id) {
-          setLab(lab);
-        }
-      });
+    let labs;
+    if (type === "sharedtemplate") {
+      labs = sharedTemplates.data;
+    } else if (type === "mockcase") {
+      labs = mockCases.data;
+    } else if (type === "template") {
+      labs = myLabs.data;
+    } else if (type === "labexercise") {
+      labs = readinessLabs.data;
+    } else if (type === "assignment") {
+      labs = assignments.data;
     }
-  }, [sharedLabs]);
 
-  function copyLinkToLab(lab: Lab) {
-    navigator.clipboard.writeText(
-      `${window.location.origin}/lab/sharedtemplate/${lab.id}`
-    );
+    if (labs) {
+      const foundLab = labs.find((lab) => lab.id === id);
+      if (foundLab) {
+        setLab(foundLab);
+        document.title = "ACT Labs | " + foundLab.name;
+      }
+    }
+  }, [sharedTemplates, mockCases, myLabs, readinessLabs, type, id]);
 
-    // Set copied to true for 2 seconds
-    setCopied(true);
-    setTimeout(() => {
-      setCopied(false);
-    }, 2000);
-  }
-
-  if (sharedLabsLoading || sharedLabsFetching) {
-    return <PageLayout heading="Loading..." children={undefined}></PageLayout>;
-  }
-
-  if (lab === undefined) {
+  if (!lab) {
     return (
       <PageLayout heading="Lab">
-        <p className="text-4xl">Lab Not Found</p>
+        <div className="space-y-4">
+          <p className="text-3xl">Well, nothing to show here.</p>
+          <p>Do you have right access to see the details of this lab?</p>
+        </div>
       </PageLayout>
-    );
+    ); // or your custom loading component
   }
 
   return (
-    <PageLayout heading={lab ? lab.name : "Lab"}>
-      <TemplateCard>
-        <LabCard lab={lab}>
-          <>
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex justify-start gap-2">
-                <LoadToBuilderButton lab={lab} variant="primary">
-                  Open
-                </LoadToBuilderButton>
-                <ExportLabButton lab={lab} variant="secondary-text">
-                  Export
-                </ExportLabButton>
-                <Button
-                  variant={`${copied ? "success-text" : "secondary-text"}`}
-                  onClick={() => copyLinkToLab(lab)}
-                >
-                  <span>
-                    <FaShare />
-                  </span>
-                  {copied ? "Done" : "Share"}
-                </Button>
-              </div>
-            </div>
-          </>
-        </LabCard>
-      </TemplateCard>
+    <PageLayout heading={lab.name}>
+      <LabCard lab={lab} fullPage={true} />
     </PageLayout>
   );
 }

@@ -1,8 +1,13 @@
+import { useEffect } from "react";
 import DeployWebAppCommand from "../../components/LandingPageComponents/DeployWebAppCommand";
 import StartCommand from "../../components/LandingPageComponents/StartCommand";
 import PageLayout from "../../layouts/PageLayout";
 
 export default function ServerError() {
+  useEffect(() => {
+    document.title = "ACT Labs | Server Error";
+  }, []);
+
   return (
     <PageLayout heading="Server Error">
       <div className="flex flex-col gap-8 pb-12">

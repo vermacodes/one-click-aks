@@ -2,7 +2,7 @@ import {
   InteractionRequiredAuthError,
   PublicClientApplication,
 } from "@azure/msal-browser";
-import axios, { AxiosRequestConfig } from "axios";
+import axios, { AxiosError, AxiosRequestConfig } from "axios";
 import { loginRequest, msalConfig } from "../authConfig";
 
 const pca = new PublicClientApplication(msalConfig);
@@ -15,11 +15,11 @@ axiosInstance.interceptors.response.use(
   (response) => {
     return response;
   },
-  (error) => {
+  (error: AxiosError) => {
     if (error.code === "ERR_NETWORK") {
       console.log(`Server not running.`);
     }
-    return error;
+    return Promise.reject(error.response);
   }
 );
 

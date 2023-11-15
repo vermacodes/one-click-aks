@@ -2,6 +2,7 @@ import { useState } from "react";
 import { RoleMutation, Roles } from "../../../../dataStructures";
 import { useAddRole, useRemoveRole } from "../../../../hooks/useAuth";
 import Button from "../../../UserInterfaceComponents/Button";
+import { toast } from "react-toastify";
 
 type Props = {
   roleRecord: Roles;
@@ -11,26 +12,42 @@ export default function Role({ roleRecord }: Props) {
   const [addRoleFlag, setAddRoleFlag] = useState(false);
   const [selectedRole, setSelectedRole] = useState("user");
 
-  const { mutate: removeRole } = useRemoveRole();
+  const { mutateAsync: removeRole } = useRemoveRole();
   function handleRemoveRole(userPrincipal: string, role: string) {
     let roleMutation: RoleMutation = {
       userPrincipal: userPrincipal,
       role: role,
     };
-    removeRole(roleMutation);
+    toast.promise(removeRole(roleMutation), {
+      pending: "Removing Role...",
+      success: "Role Removed.",
+      error: {
+        render(data: any) {
+          return `Failed to remove role. ${data.data.data}`;
+        },
+      },
+    });
   }
 
-  const { mutate: addRole } = useAddRole();
+  const { mutateAsync: addRole } = useAddRole();
   function handleAddRole(userPrincipal: string, role: string) {
     let roleMutation: RoleMutation = {
       userPrincipal: userPrincipal,
       role: role,
     };
-    addRole(roleMutation);
+    toast.promise(addRole(roleMutation), {
+      pending: "Adding Role...",
+      success: "Role Added.",
+      error: {
+        render(data: any) {
+          return `Failed to add role. ${data.data.data}`;
+        },
+      },
+    });
   }
 
   return (
-    <div className="flex items-center justify-between rounded bg-slate-50 p-4 dark:bg-slate-900">
+    <div className="flex items-center justify-between rounded bg-slate-50 p-4 shadow-md outline-1 outline-slate-400 hover:shadow-lg hover:outline  hover:outline-sky-500 dark:bg-slate-900 dark:outline-slate-600 dark:hover:outline-sky-500">
       <div className="text-xl">{roleRecord.userPrincipal}</div>
       <div className="flex gap-x-2">
         {roleRecord.roles.map((role) => (
@@ -54,6 +71,7 @@ export default function Role({ roleRecord }: Props) {
             <option value="user">User</option>
             <option value="admin">Admin</option>
             <option value="mentor">Mentor</option>
+            <option value="contributor">Contributor</option>
           </select>
         </div>
         <Button

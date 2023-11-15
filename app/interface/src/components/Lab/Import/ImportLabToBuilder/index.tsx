@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { FaUpload } from "react-icons/fa";
 import { Lab } from "../../../../dataStructures";
 import { useSetLab } from "../../../../hooks/useLab";
@@ -14,6 +14,12 @@ export default function ImportLabToBuilder({}: Props) {
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
 
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const onButtonClick = () => {
+    fileInputRef.current?.click();
+  };
+
   useEffect(() => {
     if (lab != undefined) {
       !actionStatus.inProgress &&
@@ -27,9 +33,11 @@ export default function ImportLabToBuilder({}: Props) {
   function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (!file) {
+      console.log("No file found.");
       return;
     }
 
+    console.log("File found.");
     const reader = new FileReader();
     reader.onload = (e) => {
       const contents = e.target?.result;
@@ -43,7 +51,7 @@ export default function ImportLabToBuilder({}: Props) {
   return (
     <>
       <label htmlFor="file_input">
-        <Button variant="secondary-text">
+        <Button variant="secondary-text" onClick={onButtonClick}>
           <span>
             <FaUpload />
           </span>
@@ -51,6 +59,7 @@ export default function ImportLabToBuilder({}: Props) {
         </Button>
       </label>
       <input
+        ref={fileInputRef}
         id="file_input"
         className="hidden"
         type="file"

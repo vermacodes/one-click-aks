@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import DeleteAssignment from "../../components/Lab/Assignment/DeleteAssignment";
 import { useGetAssignments } from "../../hooks/useAssignment";
 import PageLayout from "../../layouts/PageLayout";
@@ -6,6 +7,10 @@ type Props = {};
 
 export default function Assignments({}: Props) {
   const { data: assignments } = useGetAssignments();
+
+  useEffect(() => {
+    document.title = "ACT Labs | Assignments";
+  }, []);
 
   return (
     <PageLayout heading="Lab Assignments">
