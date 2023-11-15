@@ -19,7 +19,7 @@ export default function Rbac({}: Props) {
   });
 
   return (
-    <div className="flex flex-col gap-y-2">
+    <div className="flex flex-col gap-y-2 pb-4">
       <input
         type="text"
         placeholder="Search roles"

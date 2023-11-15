@@ -11,7 +11,7 @@ type Props = {
 
 export default function PageLayout({ heading, children }: Props) {
   return (
-    <div className="">
+    <div>
       <Detectors />
       {heading && (
         <div className="mb-6 flex justify-between border-b-2 border-slate-500 py-4 ">
