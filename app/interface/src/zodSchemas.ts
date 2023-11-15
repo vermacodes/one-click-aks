@@ -1,5 +1,14 @@
 import { z } from "zod";
 
+export const deploymentNameSchema = z
+  .string()
+  .min(1, "Deployment name must be at least one character long.")
+  .max(12, "Deployment name must not exceed 12 characters in length.")
+  .regex(
+    /^[a-z][a-z0-9]*$/,
+    "Deployment name must start with a lowercase letter and consist of lowercase letters and numbers only."
+  );
+
 // lab name
 export const labNameSchema = z
   .string()
