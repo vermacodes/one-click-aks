@@ -55,7 +55,7 @@ function LabDescription({ lab, fullPage = false }: LabDescriptionProps) {
     <div
       className={`${
         !fullPage && "max-h-[360px]"
-      } overflow-y-auto px-1 overflow-x-hidden`}
+      } overflow-y-auto px-1 overflow-x-hidden scrollbar-thin scrollbar-track-slate-100 scrollbar-thumb-slate-300 scrollbar-thumb-rounded-full dark:scrollbar-track-slate-900 dark:scrollbar-thumb-slate-700`}
     >
       {ReactHtmlParser(decodeIfEncoded(lab.description))}
     </div>
