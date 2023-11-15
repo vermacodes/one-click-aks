@@ -14,6 +14,7 @@ import {
 import { WebSocketContext } from "../../../../WebSocketContext";
 import { getSelectedDeployment } from "../../../../utils/helpers";
 import { toast } from "react-toastify";
+import ConfirmationModal from "../../../UserInterfaceComponents/Modal/ConfirmationModal";
 
 type Props = {
   variant: ButtonVariant;
@@ -42,6 +43,11 @@ export default function DestroyButton({
   const { data: terraformWorkspaces } = useTerraformWorkspace();
   const { mutate: patchDeployment } = usePatchDeployment();
   const { mutateAsync: deleteDeploymentAsync } = useDeleteDeployment();
+  const [showModal, setShowModal] = React.useState(false);
+
+  function onClickHandler() {
+    setShowModal(true);
+  }
 
   function updateDeploymentStatus(
     deployment: DeploymentType | undefined,
@@ -87,7 +93,8 @@ export default function DestroyButton({
     );
   }
 
-  function onClickHandler() {
+  function onConfirmDelete() {
+    setShowModal(false);
     // if lab is undefined, do nothing
     if (
       lab === undefined ||
@@ -150,15 +157,30 @@ export default function DestroyButton({
   }
 
   return (
-    <Button
-      variant={variant}
-      onClick={onClickHandler}
-      disabled={actionStatus.inProgress || lab === undefined || disabled}
-    >
-      <span className="text-base">
-        <FaTrash />
-      </span>
-      {children}
-    </Button>
+    <>
+      <Button
+        variant={variant}
+        onClick={onClickHandler}
+        disabled={actionStatus.inProgress || lab === undefined || disabled}
+      >
+        <span className="text-base">
+          <FaTrash />
+        </span>
+        {children}
+      </Button>
+      {showModal && (
+        <ConfirmationModal
+          title={"Confirm Destroy" + (deleteWorkspace ? " and Delete" : "")}
+          onClose={() => setShowModal(false)}
+          onConfirm={onConfirmDelete}
+        >
+          <p className="text-2xl">
+            Are you sure you want to destroy resources{" "}
+            {deleteWorkspace ? " and delete " : " of "} this deployment? This is
+            not reversible.
+          </p>
+        </ConfirmationModal>
+      )}
+    </>
   );
 }

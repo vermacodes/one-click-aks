@@ -34,7 +34,7 @@ export default function ConfirmationModal({
             <MdClose className="text-3xl" />
           </button>
         </div>
-        <div className="flex flex-col justify-between gap-y-2 pt-4">
+        <div className="flex flex-col justify-between gap-y-12 pt-4">
           {children}
           <div className="flex justify-end space-x-4">
             <Button variant="danger" onClick={() => onConfirm()}>
