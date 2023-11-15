@@ -1,5 +1,4 @@
 import { useContext, useState } from "react";
-import { z } from "zod";
 import Button from "../../UserInterfaceComponents/Button";
 import { MdClose } from "react-icons/md";
 import { useTerraformWorkspace } from "../../../hooks/useWorkspace";
