@@ -57,7 +57,6 @@ func main() {
 
 	authRouter := router.Group("/")
 	actionStatusRouter := router.Group("/")
-	authWithActionRouter := authRouter.Group("/")
 
 	// TODO: We are in service dependency hell down here. Should we use HTTP instead? It will but may not add noticeable latency.
 	logStreamRepository := repository.NewLogStreamRepository()
@@ -82,6 +81,8 @@ func main() {
 	handler.NewLoginHandler(router, authService)
 
 	authRouter.Use(middleware.AuthRequired(authService, logStreamService))
+
+	authWithActionRouter := authRouter.Group("/")
 	authWithActionRouter.Use(middleware.ActionStatusMiddleware(actionStatusService))
 
 	handler.NewAuthHandler(authRouter, authService)

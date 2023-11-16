@@ -5,9 +5,14 @@ export default function NoSubscriptionsFound() {
     data: accounts,
     refetch: getAccounts,
     isLoading: accountsLoading,
+    isFetching: accountsFetching,
   } = useAccount();
 
-  if ((accounts && accounts?.length > 0) || accountsLoading) {
+  if (
+    (accounts && accounts?.length > 0) ||
+    accountsLoading ||
+    accountsFetching
+  ) {
     return null;
   }
 

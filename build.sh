@@ -57,7 +57,7 @@ rm server
 
 docker tag repro:${TAG} actlab.azurecr.io/repro:${TAG}
 
-az acr login --name actlab
+az acr login --name actlab --subscription ACT-CSS-Readiness
 docker push actlab.azurecr.io/repro:${TAG}
 
 docker tag repro:${TAG} ashishvermapu/repro:${TAG}

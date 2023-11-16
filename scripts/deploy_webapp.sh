@@ -84,7 +84,7 @@ function create_storage_account() {
 
   if [[ -n "${SA_EXISTS}" ]]; then
     log "storage account already exists with name ${SA_EXISTS}"
-    return 0
+    STORAGE_ACCOUNT_NAME="$SA_EXISTS"
   else
     # Generate a random name for the storage account
     RANDOM_NAME=$(openssl rand -hex 4)
@@ -98,6 +98,40 @@ function create_storage_account() {
       return 1
     else
       log "storage account ${STORAGE_ACCOUNT_NAME} created"
+    fi
+  fi
+
+  # check if a blob container named 'tfstate' exists in the storage account
+  # if not create one
+  log "checking if blob container tfstate exists in storage account ${STORAGE_ACCOUNT_NAME}"
+  CONTAINER_EXISTS=$(az storage container exists --name "tfstate" --account-name "${STORAGE_ACCOUNT_NAME}" --query "exists" -o tsv)
+  if [[ "${CONTAINER_EXISTS}" == "true" ]]; then
+    log "Blob container tfstate already exists in storage account ${STORAGE_ACCOUNT_NAME}"
+  else
+    log "Blob container tfstate does not exist in storage account ${STORAGE_ACCOUNT_NAME}, creating"
+    az storage container create --name "tfstate" --account-name "${STORAGE_ACCOUNT_NAME}"
+    if [ $? -ne 0 ]; then
+      err "Failed to create blob container tfstate in storage account ${STORAGE_ACCOUNT_NAME}"
+      return 1
+    else
+      log "Blob container tfstate created in storage account ${STORAGE_ACCOUNT_NAME}"
+    fi
+  fi
+
+  # check if a blob container named 'labs' exists in the storage account
+  # if not create one
+  log "checking if blob container labs exists in storage account ${STORAGE_ACCOUNT_NAME}"
+  CONTAINER_EXISTS=$(az storage container exists --name "labs" --account-name "${STORAGE_ACCOUNT_NAME}" --query "exists" -o tsv)
+  if [[ "${CONTAINER_EXISTS}" == "true" ]]; then
+    log "Blob container labs already exists in storage account ${STORAGE_ACCOUNT_NAME}"
+  else
+    log "Blob container labs does not exist in storage account ${STORAGE_ACCOUNT_NAME}, creating"
+    az storage container create --name "labs" --account-name "${STORAGE_ACCOUNT_NAME}"
+    if [ $? -ne 0 ]; then
+      err "Failed to create blob container labs in storage account ${STORAGE_ACCOUNT_NAME}"
+      return 1
+    else
+      log "Blob container labs created in storage account ${STORAGE_ACCOUNT_NAME}"
     fi
   fi
 
@@ -372,6 +406,7 @@ function deploy_webapp() {
     ARM_SUBSCRIPTION_ID=$ARM_SUBSCRIPTION_ID \
     ARM_TENANT_ID=$ARM_TENANT_ID \
     ARM_USER_PRINCIPAL_NAME=$ARM_USER_PRINCIPAL_NAME \
+    LOG_LEVEL=$LOG_LEVEL \
     WEBSITES_PORT=80 >/dev/null 2>&1
 
   if [ $? -ne 0 ]; then
@@ -456,8 +491,40 @@ function get_secrets_from_keyvault() {
 
 # setting known variables.
 gap
+# gather input parameters
+# -t tag
+# -d debug
+
+while getopts ":t:d" opt; do
+  case $opt in
+  t)
+    TAG=$OPTARG
+    ;;
+  d)
+    DEBUG=true
+    ;;
+  \?)
+    echo "Invalid option: -$OPTARG" >&2
+    ;;
+  esac
+done
+
+if [ -z "${TAG}" ]; then
+  TAG="latest"
+fi
+
+if [ ${DEBUG} ]; then
+  export LOG_LEVEL="-4"
+else
+  export LOG_LEVEL="0"
+fi
+
+log "🏷️ TAG = ${TAG}"
+log "🪵 LEVEL = ${LOG_LEVEL}"
+
+gap
 log "📝 setting variables"
-DOCKER_IMAGE="ashishvermapu/repro"
+DOCKER_IMAGE="ashishvermapu/repro:${TAG}"
 RESOURCE_GROUP="repro-project"
 
 ARM_SUBSCRIPTION_ID=$(az account show --query id --output tsv)

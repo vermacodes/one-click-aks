@@ -60,6 +60,9 @@ export default function ApplyButton({ variant, children, lab }: Props) {
       terraformWorkspaces === undefined ||
       deployments === undefined
     ) {
+      toast.error(
+        "Something isn't right. Try 'Reset Server Cache' from settings."
+      );
       return;
     }
     // update lab's azure region based on users preference

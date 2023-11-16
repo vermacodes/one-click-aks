@@ -10,6 +10,7 @@ import {
 import PageLayout from "../../layouts/PageLayout";
 import LabCard from "../../components/Lab/LabCard";
 import { useGetUserAssignedLabs } from "../../hooks/useAssignment";
+import Terminal from "../../components/Terminal";
 
 export default function LabPage() {
   const { type, id } = useParams();
@@ -58,6 +59,7 @@ export default function LabPage() {
   return (
     <PageLayout heading={lab.name}>
       <LabCard lab={lab} fullPage={true} />
+      <Terminal />
     </PageLayout>
   );
 }
