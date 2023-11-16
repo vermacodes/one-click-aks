@@ -108,7 +108,7 @@ export default function ButtonContainer({
             </Button>
             {showDropdown && (
               <div
-                className="space-2 absolute right-0 mt-2 flex w-fit flex-col gap-2 whitespace-nowrap border bg-white p-4 shadow-lg"
+                className="space-2 absolute right-0 mx-4 mt-2 flex w-fit flex-col gap-2 whitespace-nowrap rounded border border-slate-500 bg-slate-50 py-2 px-8 shadow-lg dark:bg-slate-900"
                 onMouseLeave={() => setShowDropdown(false)}
                 onMouseEnter={handleMouseEnterDropdown}
               >
