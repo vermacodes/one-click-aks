@@ -3,7 +3,7 @@ import { ButtonContainerObj, Lab } from "../../../../dataStructures";
 import Button from "../../../UserInterfaceComponents/Button";
 import ExportLabButton from "../../Export/ExportLabButton";
 import LoadToBuilderButton from "../../LoadToBuilderButton";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import DeleteLabButton from "../../DeleteLabButton";
 import { useGetMyRoles } from "../../../../hooks/useAuth";
@@ -69,18 +69,17 @@ export default function PublicLabActionButtons({ lab }: Props) {
 
   function upsertButton(button: ButtonContainerObj) {
     if (overflowButtons[button.id]) {
-      console.log("overflow button", overflowButtons);
       setOverflowButtons((prevOverflowButtons) => {
         return { ...prevOverflowButtons, [button.id]: button };
       });
+      //add some delay do avoid flickering. This is not the best solution.
+      setTimeout(() => {}, 10);
       return;
     }
 
     setButtons((prevButtons) => {
       return { ...prevButtons, [button.id]: button };
     });
-
-    console.log("buttons", buttons);
   }
 
   function deleteButton(buttonId: string) {
