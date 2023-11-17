@@ -98,6 +98,9 @@ export default function ServerEndpoint({}: Props) {
             Server Endpoint. You probably don't want to edit this unless you
             know what you are doing. But, if you know, you know. Go ahead.
           </p>
+          <p className="text-xs text-yellow-500">
+            Note: ARO labs only work with the Docker option.
+          </p>
         </div>
 
         <div className="flex w-full flex-col gap-2">

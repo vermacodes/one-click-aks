@@ -120,10 +120,10 @@ export default function PlanButton({ variant, children, lab }: Props) {
 
     // submit plan operation
     const response = toast.promise(planAsync(lab), {
-      pending: "Submitting plan operation...",
+      pending: "Starting plan...",
       success: {
         render(data: any) {
-          return `Plan submitted.`;
+          return `Plan started.`;
         },
         autoClose: 5000,
       },

@@ -176,10 +176,10 @@ export default function DestroyButton({
 
     // destroy terraform
     const response = toast.promise(destroyAsync(lab), {
-      pending: "Submitting Destroy Operation",
+      pending: "Starting Destroy",
       success: {
         render(data: any) {
-          return `Destroy operation submitted.`;
+          return `Destroy started.`;
         },
         autoClose: 5000,
       },

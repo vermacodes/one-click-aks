@@ -125,16 +125,16 @@ export default function ApplyButton({ variant, children, lab }: Props) {
     updateDeploymentStatus(deployment, "Deployment In Progress");
 
     const response = toast.promise(applyAsync(lab), {
-      pending: "Submitting Apply Operation...",
+      pending: "Starting deployment...",
       success: {
         render(data: any) {
-          return `Apply operation submitted.`;
+          return `Deployment started.`;
         },
         autoClose: 5000,
       },
       error: {
         render(data: any) {
-          return `Apply Failed. ${data.data.data}`;
+          return `Deployment Failed. ${data.data.data}`;
         },
         autoClose: 10000,
       },
