@@ -101,10 +101,13 @@ function create_storage_account() {
     fi
   fi
 
+  # get storage account key
+  STORAGE_ACCOUNT_KEY=$(az storage account keys list --resource-group "${RESOURCE_GROUP}" --account-name "${STORAGE_ACCOUNT_NAME}" --query "[0].value" -o tsv)
+
   # check if a blob container named 'tfstate' exists in the storage account
   # if not create one
   log "checking if blob container tfstate exists in storage account ${STORAGE_ACCOUNT_NAME}"
-  CONTAINER_EXISTS=$(az storage container exists --name "tfstate" --account-name "${STORAGE_ACCOUNT_NAME}" --query "exists" -o tsv)
+  CONTAINER_EXISTS=$(az storage container exists --name "tfstate" --account-name "${STORAGE_ACCOUNT_NAME}" --account-key "${STORAGE_ACCOUNT_KEY}" --query "exists" -o tsv)
   if [[ "${CONTAINER_EXISTS}" == "true" ]]; then
     log "Blob container tfstate already exists in storage account ${STORAGE_ACCOUNT_NAME}"
   else
@@ -121,7 +124,7 @@ function create_storage_account() {
   # check if a blob container named 'labs' exists in the storage account
   # if not create one
   log "checking if blob container labs exists in storage account ${STORAGE_ACCOUNT_NAME}"
-  CONTAINER_EXISTS=$(az storage container exists --name "labs" --account-name "${STORAGE_ACCOUNT_NAME}" --query "exists" -o tsv)
+  CONTAINER_EXISTS=$(az storage container exists --name "labs" --account-name "${STORAGE_ACCOUNT_NAME}" --account-key "${STORAGE_ACCOUNT_KEY}" --query "exists" -o tsv)
   if [[ "${CONTAINER_EXISTS}" == "true" ]]; then
     log "Blob container labs already exists in storage account ${STORAGE_ACCOUNT_NAME}"
   else
