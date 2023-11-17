@@ -1,6 +1,11 @@
 import React, { useContext } from "react";
 import { FaRocket } from "react-icons/fa";
-import { ButtonVariant, DeploymentType, Lab } from "../../../../dataStructures";
+import {
+  ButtonVariant,
+  DeploymentType,
+  Lab,
+  TerraformOperation,
+} from "../../../../dataStructures";
 import { useSetLogs } from "../../../../hooks/useLogs";
 import { usePreference } from "../../../../hooks/usePreference";
 import { useApply } from "../../../../hooks/useTerraform";
@@ -15,9 +20,8 @@ import {
   getSelectedDeployment,
 } from "../../../../utils/helpers";
 import { WebSocketContext } from "../../../../WebSocketContext";
-import axios from "axios";
 import { toast } from "react-toastify";
-import { error } from "console";
+import { axiosInstance } from "../../../../utils/axios-interceptors";
 
 type Props = {
   variant: ButtonVariant;
@@ -54,6 +58,44 @@ export default function ApplyButton({ variant, children, lab }: Props) {
     }
   }
 
+  async function checkStatusAsync(
+    operationId: string
+  ): Promise<TerraformOperation> {
+    try {
+      const response = await axiosInstance.get(
+        `/terraform/status/${operationId}`
+      );
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async function checkDeploymentStatus(
+    operation: TerraformOperation,
+    deployment: DeploymentType
+  ) {
+    const intervalId = setInterval(async () => {
+      const terraformOp = await checkStatusAsync(operation.operationId);
+      if (!terraformOp.inProgress) {
+        if (terraformOp.status === "Deployment Completed") {
+          toast.success("Deployment Completed"),
+            {
+              autoClose: 5000,
+            };
+          updateDeploymentStatus(deployment, "Deployment Completed");
+        } else if (terraformOp.status === "Deployment Failed") {
+          toast.error("Deployment Failed"),
+            {
+              autoCLose: 10000,
+            };
+          updateDeploymentStatus(deployment, "Deployment Failed");
+        }
+        clearInterval(intervalId);
+      }
+    }, 10000);
+  }
+
   function onClickHandler() {
     if (
       lab === undefined ||
@@ -65,37 +107,42 @@ export default function ApplyButton({ variant, children, lab }: Props) {
       );
       return;
     }
-    // update lab's azure region based on users preference
+
     if (lab.template !== undefined && preference !== undefined) {
       lab.template.resourceGroup.location = preference.azureRegion;
     }
 
-    // reset logs
     setLogs({ logs: "" });
 
     const deployment = getSelectedDeployment(deployments, terraformWorkspaces);
+    if (deployment === undefined) {
+      toast.error(
+        "No deployment selected. Try 'Reset Server Cache' from settings."
+      );
+      return;
+    }
+
     updateDeploymentStatus(deployment, "Deployment In Progress");
 
-    // apply terraform
     const response = toast.promise(applyAsync(lab), {
-      pending: "Applying...",
+      pending: "Submitting Apply Operation...",
       success: {
         render(data: any) {
-          return `Apply completed.`;
+          return `Apply operation submitted.`;
         },
-        autoClose: 2000,
+        autoClose: 5000,
       },
       error: {
         render(data: any) {
-          return `Apply failed. ${data.data.data}`;
+          return `Apply Failed. ${data.data.data}`;
         },
         autoClose: 10000,
       },
     });
 
     response
-      .then(() => {
-        updateDeploymentStatus(deployment, "Deployment Completed");
+      .then((data) => {
+        checkDeploymentStatus(data.data, deployment);
       })
       .catch(() => {
         updateDeploymentStatus(deployment, "Deployment Failed");

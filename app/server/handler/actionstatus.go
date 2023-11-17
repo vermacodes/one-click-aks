@@ -20,7 +20,7 @@ func NewActionStatusHandler(r *gin.Engine, service entity.ActionStatusService) {
 
 	r.GET("/actionstatus", handler.GetActionStatus)
 	r.PUT("/actionstatus", handler.SetActionStatus)
-	r.GET("/terraformoperation/:id", handler.GetTerraformOperationStatus)
+	r.GET("/terraform/status/:id", handler.GetTerraformOperationStatus)
 	r.GET("/actionstatusws", func(c *gin.Context) {
 		handler.GetActionStatusWs(c.Writer, c.Request)
 	})

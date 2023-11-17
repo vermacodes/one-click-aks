@@ -5,12 +5,9 @@ type ActionStatus struct {
 }
 
 type TerraformOperation struct {
-	OperationId     string `json:"operationId"`
-	OperationType   string `json:"operationType"`
-	OperationStatus string `json:"operationStatus"`
-	LabId           string `json:"labId"`
-	LabName         string `json:"labName"`
-	LabType         string `json:"labType"`
+	OperationId string           `json:"operationId"`
+	InProgress  bool             `json:"inProgress"`
+	Status      DeploymentStatus `json:"status"`
 }
 
 type ActionStatusService interface {

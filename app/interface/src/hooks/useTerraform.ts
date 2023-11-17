@@ -1,5 +1,5 @@
-import { useMutation, useQueryClient } from "react-query";
-import { Lab } from "../dataStructures";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { Lab, TerraformOperation } from "../dataStructures";
 import { axiosInstance } from "../utils/axios-interceptors";
 import { Axios, AxiosResponse } from "axios";
 
@@ -11,7 +11,7 @@ function plan(lab: Lab) {
   return axiosInstance.post("/terraform/plan", lab);
 }
 
-function apply(lab: Lab): Promise<AxiosResponse> {
+function apply(lab: Lab): Promise<AxiosResponse<TerraformOperation>> {
   return axiosInstance.post("/terraform/apply", lab);
 }
 
@@ -92,6 +92,12 @@ export function useExtend() {
       queryClient.invalidateQueries("list-terraform-workspaces");
       queryClient.invalidateQueries("get-selected-terraform-workspace");
       queryClient.invalidateQueries("get-resources");
-    }
+    },
   });
+}
+
+export function useTerraformOperationStatus(id: string) {
+  return useQuery("get-terraform-action-status", () =>
+    axiosInstance.get(`/terraform/status/${id}`)
+  );
 }

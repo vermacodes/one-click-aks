@@ -8,8 +8,8 @@ import (
 	"golang.org/x/exp/slog"
 )
 
-// ActionStatusMiddleware checks for already running operation and rejects new requests.
-func ActionStatusMiddleware(actionStatusService entity.ActionStatusService) gin.HandlerFunc {
+// TerraformMiddleware checks for already running operation and rejects new requests.
+func TerraformActionMiddleware(actionStatusService entity.ActionStatusService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		actionStatus, err := actionStatusService.GetActionStatus()
@@ -32,14 +32,6 @@ func ActionStatusMiddleware(actionStatusService entity.ActionStatusService) gin.
 			c.AbortWithStatus(http.StatusConflict)
 			return
 		}
-
-		// set action status
-		actionStatusService.SetActionStart()
-
-		defer func() {
-			// reset action status
-			actionStatusService.SetActionEnd()
-		}()
 
 		c.Next()
 	}

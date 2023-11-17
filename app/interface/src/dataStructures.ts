@@ -320,21 +320,32 @@ export type GraphData = {
   id: string;
 };
 
+export type DeploymentStatus =
+  | "Plan In Progress"
+  | "Plan Failed"
+  | "Plan Completed"
+  | "Deployment In Progress"
+  | "Deployment Failed"
+  | "Deployment Completed"
+  | "Deployment Not Started"
+  | "Destroying Resources"
+  | "Resources Destroyed"
+  | "Destroy Failed";
+
 export type DeploymentType = {
   deploymentId: string;
   deploymentUserId: string;
   deploymentWorkspace: string;
   deploymentSubscriptionId: string;
-  deploymentStatus:
-    | "Deployment In Progress"
-    | "Deployment Failed"
-    | "Deployment Completed"
-    | "Deployment Not Started"
-    | "Destroying Resources"
-    | "Resources Destroyed"
-    | "Destroy Failed";
+  deploymentStatus: DeploymentStatus;
   deploymentLab: Lab;
   deploymentAutoDelete: boolean;
   deploymentLifespan: number;
   deploymentAutoDeleteUnixTime: number;
+};
+
+export type TerraformOperation = {
+  operationId: string;
+  inProgress: boolean;
+  status: DeploymentStatus;
 };

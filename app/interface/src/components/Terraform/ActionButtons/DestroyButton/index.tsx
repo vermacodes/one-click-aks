@@ -1,6 +1,11 @@
 import React, { useContext } from "react";
 import { FaTrash } from "react-icons/fa";
-import { ButtonVariant, DeploymentType, Lab } from "../../../../dataStructures";
+import {
+  ButtonVariant,
+  DeploymentType,
+  Lab,
+  TerraformOperation,
+} from "../../../../dataStructures";
 import { useSetLogs } from "../../../../hooks/useLogs";
 import { usePreference } from "../../../../hooks/usePreference";
 import { useDestroy } from "../../../../hooks/useTerraform";
@@ -15,6 +20,7 @@ import { WebSocketContext } from "../../../../WebSocketContext";
 import { getSelectedDeployment } from "../../../../utils/helpers";
 import { toast } from "react-toastify";
 import ConfirmationModal from "../../../UserInterfaceComponents/Modal/ConfirmationModal";
+import { axiosInstance } from "../../../../utils/axios-interceptors";
 
 type Props = {
   variant: ButtonVariant;
@@ -61,6 +67,48 @@ export default function DestroyButton({
     }
   }
 
+  async function checkStatusAsync(
+    operationId: string
+  ): Promise<TerraformOperation> {
+    try {
+      const response = await axiosInstance.get(
+        `/terraform/status/${operationId}`
+      );
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async function checkDeploymentStatus(
+    operation: TerraformOperation,
+    deployment: DeploymentType
+  ) {
+    const intervalId = setInterval(async () => {
+      const terraformOp = await checkStatusAsync(operation.operationId);
+      if (!terraformOp.inProgress) {
+        if (terraformOp.status === "Resources Destroyed") {
+          toast.success("Resources Destroyed"),
+            {
+              autoClose: 5000,
+            };
+
+          updateDeploymentStatus(deployment, "Resources Destroyed");
+
+          // handle deleting workspace.
+          handleDeleteWorkspace();
+        } else if (terraformOp.status === "Destroy Failed") {
+          toast.error("Destroy Failed"),
+            {
+              autoCLose: 10000,
+            };
+          updateDeploymentStatus(deployment, "Destroy Failed");
+        }
+        clearInterval(intervalId);
+      }
+    }, 10000);
+  }
+
   function handleDeleteWorkspace() {
     if (
       deployment === undefined ||
@@ -101,6 +149,9 @@ export default function DestroyButton({
       terraformWorkspaces === undefined ||
       deployments === undefined
     ) {
+      toast.error(
+        "Something isn't right. Try 'Reset Server Cache' from settings."
+      );
       return;
     }
 
@@ -114,16 +165,23 @@ export default function DestroyButton({
 
     //get the deployment for the selected workspace
     const deployment = getSelectedDeployment(deployments, terraformWorkspaces);
+    if (deployment === undefined) {
+      toast.error(
+        "No deployment selected. Try 'Reset Server Cache' from settings."
+      );
+      return;
+    }
+
     updateDeploymentStatus(deployment, "Destroying Resources");
 
     // destroy terraform
     const response = toast.promise(destroyAsync(lab), {
-      pending: "Destroying...",
+      pending: "Submitting Destroy Operation",
       success: {
         render(data: any) {
-          return `Destroy completed.`;
+          return `Destroy operation submitted.`;
         },
-        autoClose: 2000,
+        autoClose: 5000,
       },
       error: {
         render(data: any) {
@@ -134,9 +192,8 @@ export default function DestroyButton({
     });
 
     response
-      .then(() => {
-        updateDeploymentStatus(deployment, "Resources Destroyed");
-        handleDeleteWorkspace();
+      .then((data) => {
+        checkDeploymentStatus(data.data, deployment);
       })
       .catch(() => {
         updateDeploymentStatus(deployment, "Destroy Failed");

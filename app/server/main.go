@@ -85,6 +85,9 @@ func main() {
 	authWithActionRouter := authRouter.Group("/")
 	authWithActionRouter.Use(middleware.ActionStatusMiddleware(actionStatusService))
 
+	authWithTerraformActionRouter := authRouter.Group("/")
+	authWithTerraformActionRouter.Use(middleware.TerraformActionMiddleware(actionStatusService))
+
 	handler.NewAuthHandler(authRouter, authService)
 	handler.NewAuthWithActionStatusHandler(authWithActionRouter, authService)
 
@@ -111,7 +114,7 @@ func main() {
 
 	terraformRepository := repository.NewTerraformRepository()
 	terraformService := service.NewTerraformService(terraformRepository, labService, workspaceService, logStreamService, actionStatusService, kVersionService, storageAccountService, loggingService, authService)
-	handler.NewTerraformWithActionStatusHandler(authWithActionRouter, terraformService)
+	handler.NewTerraformWithActionStatusHandler(authWithTerraformActionRouter, terraformService, actionStatusService)
 
 	deploymentRepository := repository.NewDeploymentRepository()
 	deploymentService := service.NewDeploymentService(deploymentRepository, labService, terraformService, actionStatusService, logStreamService, authService, workspaceService)

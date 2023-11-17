@@ -4,16 +4,19 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/vermacodes/one-click-aks/app/server/entity"
 )
 
 type terraformHandler struct {
-	terraformService entity.TerraformService
+	terraformService    entity.TerraformService
+	actionStatusService entity.ActionStatusService
 }
 
-func NewTerraformWithActionStatusHandler(r *gin.RouterGroup, service entity.TerraformService) {
+func NewTerraformWithActionStatusHandler(r *gin.RouterGroup, service entity.TerraformService, actionStatusService entity.ActionStatusService) {
 	handler := &terraformHandler{
-		terraformService: service,
+		terraformService:    service,
+		actionStatusService: actionStatusService,
 	}
 
 	r.POST("/terraform/init", handler.Init)
@@ -42,14 +45,29 @@ func (t *terraformHandler) Plan(c *gin.Context) {
 		return
 	}
 
-	w := c.Writer
-	header := w.Header()
-	header.Set("Transfer-Encoding", "chunked")
-	header.Set("Content-type", "text/html")
-	w.WriteHeader(http.StatusOK)
-	w.(http.Flusher).Flush()
+	terraformOperation := entity.TerraformOperation{
+		OperationId: uuid.New().String(),
+		InProgress:  true,
+		Status:      entity.PlanInProgress,
+	}
 
-	t.terraformService.Plan(lab)
+	t.actionStatusService.SetTerraformOperation(terraformOperation)
+
+	// Start the long-running operation in a goroutine
+	go func() {
+		t.actionStatusService.SetActionStart()
+		if err := t.terraformService.Plan(lab); err != nil {
+			terraformOperation.Status = entity.PlanFailed
+		} else {
+			terraformOperation.Status = entity.PlanCompleted
+		}
+		terraformOperation.InProgress = false
+		t.actionStatusService.SetTerraformOperation(terraformOperation)
+		t.actionStatusService.SetActionEnd()
+	}()
+
+	// Respond back to the request with the operation ID
+	c.IndentedJSON(http.StatusOK, terraformOperation)
 }
 
 func (t *terraformHandler) Apply(c *gin.Context) {
@@ -59,19 +77,29 @@ func (t *terraformHandler) Apply(c *gin.Context) {
 		return
 	}
 
-	w := c.Writer
-	header := w.Header()
-	header.Set("Transfer-Encoding", "chunked")
-	header.Set("Content-type", "text/html")
-	// w.WriteHeader(http.StatusOK)
-
-	if err := t.terraformService.Apply(lab); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-	} else {
-		w.WriteHeader(http.StatusOK)
+	terraformOperation := entity.TerraformOperation{
+		OperationId: uuid.New().String(),
+		InProgress:  true,
+		Status:      entity.DeploymentInProgress,
 	}
 
-	w.(http.Flusher).Flush()
+	t.actionStatusService.SetTerraformOperation(terraformOperation)
+
+	// Start the long-running operation in a goroutine
+	go func() {
+		t.actionStatusService.SetActionStart()
+		if err := t.terraformService.Apply(lab); err != nil {
+			terraformOperation.Status = entity.DeploymentFailed
+		} else {
+			terraformOperation.Status = entity.DeploymentCompleted
+		}
+		terraformOperation.InProgress = false
+		t.actionStatusService.SetTerraformOperation(terraformOperation)
+		t.actionStatusService.SetActionEnd()
+	}()
+
+	// Respond back to the request with the action ID
+	c.IndentedJSON(http.StatusOK, terraformOperation)
 }
 
 func (t *terraformHandler) Extend(c *gin.Context) {
@@ -103,16 +131,27 @@ func (t *terraformHandler) Destroy(c *gin.Context) {
 		return
 	}
 
-	w := c.Writer
-	header := w.Header()
-	header.Set("Transfer-Encoding", "chunked")
-	header.Set("Content-type", "text/html")
-
-	if err := t.terraformService.Destroy(lab); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-	} else {
-		w.WriteHeader(http.StatusOK)
+	terraformOperation := entity.TerraformOperation{
+		OperationId: uuid.New().String(),
+		InProgress:  true,
+		Status:      entity.DestroyingResources,
 	}
 
-	w.(http.Flusher).Flush()
+	t.actionStatusService.SetTerraformOperation(terraformOperation)
+
+	// Start the long-running operation in a goroutine
+	go func() {
+		t.actionStatusService.SetActionStart()
+		if err := t.terraformService.Destroy(lab); err != nil {
+			terraformOperation.Status = entity.DestroyFailed
+		} else {
+			terraformOperation.Status = entity.ResourcesDestroyed
+		}
+		terraformOperation.InProgress = false
+		t.actionStatusService.SetTerraformOperation(terraformOperation)
+		t.actionStatusService.SetActionEnd()
+	}()
+
+	// Respond back to the request with the operation ID
+	c.IndentedJSON(http.StatusOK, terraformOperation)
 }
