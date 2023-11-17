@@ -24,9 +24,24 @@ export function useLab() {
 }
 
 export function useSetLab() {
-  var queryClient = useQueryClient();
+  const queryClient = useQueryClient();
   return useMutation(setLab, {
-    onSuccess: () => {
+    onMutate: async (newLab) => {
+      // Snapshot the previous value
+      const previousLab = queryClient.getQueryData("get-lab");
+
+      // Optimistically update to the new value
+      queryClient.setQueryData("get-lab", newLab);
+
+      // Return the snapshot value for use in onError
+      return { previousLab };
+    },
+    onError: (err, newLab, context) => {
+      // Roll back to the previous value if the mutation fails
+      queryClient.setQueryData("get-lab", context?.previousLab);
+    },
+    onSettled: () => {
+      // Invalidate the query to refetch it after the mutation succeeds
       queryClient.invalidateQueries("get-lab");
     },
   });
