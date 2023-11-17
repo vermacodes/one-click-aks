@@ -10,6 +10,7 @@ import { useCreateLab, useCreateMyLab } from "../../../../hooks/useBlobs";
 import { toast } from "react-toastify";
 import { labDescriptionSchema, labNameSchema } from "../../../../zodSchemas";
 import SaveLabTags from "../SaveLabTags";
+import ConfirmationModal from "../../../UserInterfaceComponents/Modal/ConfirmationModal";
 
 type Props = {
   lab: Lab;
@@ -19,6 +20,7 @@ type Props = {
 
 export default function SaveLabModal({ lab, showModal, setShowModal }: Props) {
   const [labState, setLabState] = useState<Lab>({ ...lab });
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const { mutate: setLab } = useSetLab();
   const { mutateAsync: createMyLab } = useCreateMyLab();
   const { mutateAsync: createLab } = useCreateLab();
@@ -42,6 +44,14 @@ export default function SaveLabModal({ lab, showModal, setShowModal }: Props) {
   }
 
   function handleCreateLab() {
+    if (lab.id !== "") {
+      setShowConfirmationModal(true);
+    } else {
+      onConfirmCreateLab();
+    }
+  }
+
+  function onConfirmCreateLab() {
     const response = toast.promise(createLab(labState), {
       pending: "Saving lab...",
       success: "Lab saved.",
@@ -141,6 +151,18 @@ export default function SaveLabModal({ lab, showModal, setShowModal }: Props) {
           </Button>
         </div>
       </div>
+      {showConfirmationModal && (
+        <ConfirmationModal
+          title="Confirm Update"
+          onClose={() => setShowConfirmationModal(false)}
+          onConfirm={onConfirmCreateLab}
+        >
+          <p className="text-xl">
+            Are you sure you want to update this lab? This will irreversibly
+            overwrite existing lab for all users.
+          </p>
+        </ConfirmationModal>
+      )}
     </div>
   );
 }
