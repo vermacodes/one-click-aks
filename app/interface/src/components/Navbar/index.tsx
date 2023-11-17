@@ -199,14 +199,14 @@ function FixedPages({ darkMode, setDarkMode }: FixedPagesProps) {
           </Link>
         </li>
         <li>
-          <a target="_blank" href="https://forms.office.com/r/R513F2YfXE">
+          <Link to={"/feedback"}>
             <button className="flex h-full w-full items-center justify-start gap-2 rounded bg-sky-500 bg-opacity-10 py-3 px-4 text-left text-lg hover:bg-slate-200 dark:hover:bg-slate-800">
               <span>
                 <FaComments />
               </span>
               <span className="font-bold text-green-500">Help & Feedback</span>
             </button>
-          </a>
+          </Link>
         </li>
         <li>
           <LoginButton />

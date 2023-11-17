@@ -290,6 +290,12 @@ export type ButtonVariant =
   | "primary-icon"
   | "secondary-icon";
 
+export type ButtonContainerObj = {
+  id: string;
+  order: number;
+  button: React.ReactNode;
+};
+
 export type Roles = {
   userPrincipal: string;
   roles: string[];

@@ -43,9 +43,19 @@ export default function LabsGridPage() {
   const isLoading = dataSource?.isLoading || dataSource?.isFetching;
 
   useEffect(() => {
-    setPageHeading(
-      type.charAt(0).toUpperCase() + type.slice(1).replace(/labs$/, " Labs")
-    );
+    if (type.endsWith("labs")) {
+      setPageHeading(
+        type.charAt(0).toUpperCase() + type.slice(1).replace(/labs$/, " Labs")
+      );
+    }
+    if (type.endsWith("cases")) {
+      setPageHeading(
+        type.charAt(0).toUpperCase() + type.slice(1).replace(/cases$/, " Cases")
+      );
+    }
+    if (type.endsWith("assignments")) {
+      setPageHeading(type.charAt(0).toUpperCase() + type.slice(1));
+    }
     document.title = "ACT Labs | " + pageHeading;
   }, [type, pageHeading]);
 

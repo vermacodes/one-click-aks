@@ -77,7 +77,8 @@ export default function SaveLabDescription({ lab, setLab }: Props) {
       }),
       CodeBlock.configure({
         HTMLAttributes: {
-          class: "p-2 my-2 bg-slate-300 rounded dark:bg-slate-600",
+          class:
+            "p-2 my-2 bg-slate-300 rounded dark:bg-slate-600 w-full break-words whitespace-pre-wrap",
         },
       }),
     ],
@@ -123,7 +124,7 @@ export default function SaveLabDescription({ lab, setLab }: Props) {
   return (
     <>
       <div className="flex flex-col space-y-2">
-        <label htmlFor="labDescription" className="text-lg">
+        <label htmlFor="labDescription" className="line break-words text-lg">
           Description
         </label>
         <div className="flex space-x-1">

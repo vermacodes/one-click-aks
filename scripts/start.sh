@@ -82,7 +82,7 @@ function create_storage_account() {
 
     if [[ -n "${SA_EXISTS}" ]]; then
         log "Storage account already exists with name ${SA_EXISTS}"
-        return 0
+        STORAGE_ACCOUNT_NAME="$SA_EXISTS"
     else
         # Generate a random name for the storage account
         RANDOM_NAME=$(openssl rand -hex 4)
@@ -113,6 +113,23 @@ function create_storage_account() {
             return 1
         else
             log "Blob container tfstate created in storage account ${STORAGE_ACCOUNT_NAME}"
+        fi
+    fi
+
+    # check if a blob container named 'labs' exists in the storage account
+    # if not create one
+    log "checking if blob container labs exists in storage account ${STORAGE_ACCOUNT_NAME}"
+    CONTAINER_EXISTS=$(az storage container exists --name "labs" --account-name "${STORAGE_ACCOUNT_NAME}" --query "exists" -o tsv)
+    if [[ "${CONTAINER_EXISTS}" == "true" ]]; then
+        log "Blob container labs already exists in storage account ${STORAGE_ACCOUNT_NAME}"
+    else
+        log "Blob container labs does not exist in storage account ${STORAGE_ACCOUNT_NAME}, creating"
+        az storage container create --name "labs" --account-name "${STORAGE_ACCOUNT_NAME}"
+        if [ $? -ne 0 ]; then
+            err "Failed to create blob container labs in storage account ${STORAGE_ACCOUNT_NAME}"
+            return 1
+        else
+            log "Blob container labs created in storage account ${STORAGE_ACCOUNT_NAME}"
         fi
     fi
 
