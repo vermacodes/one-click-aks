@@ -1,13 +1,12 @@
 import { FaShare } from "react-icons/fa";
 import { ButtonContainerObj, Lab } from "../../../../dataStructures";
-import Button from "../../../UserInterfaceComponents/Button";
 import ExportLabButton from "../../Export/ExportLabButton";
 import LoadToBuilderButton from "../../LoadToBuilderButton";
-import { useCallback, useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { useEffect, useState } from "react";
 import DeleteLabButton from "../../DeleteLabButton";
 import { useGetMyRoles } from "../../../../hooks/useAuth";
 import ButtonContainer from "../ButtonContainer";
+import CopyLinkToLabButton from "../../CopyLinkToLabButton";
 
 type Props = {
   lab: Lab;
@@ -54,12 +53,12 @@ export default function PublicLabActionButtons({ lab }: Props) {
         id: "shareLabButton",
         order: 3,
         button: (
-          <Button variant="secondary-text" onClick={() => copyLinkToLab(lab)}>
+          <CopyLinkToLabButton key={"shareLabButton"} lab={lab}>
             <span>
               <FaShare />
             </span>
             Share
-          </Button>
+          </CopyLinkToLabButton>
         ),
       },
     };
@@ -110,48 +109,6 @@ export default function PublicLabActionButtons({ lab }: Props) {
       deleteButton("deleteLabButton");
     }
   }, [roles, lab]);
-
-  const copyLinkToLab = useCallback((lab: Lab) => {
-    navigator.clipboard.writeText(
-      `${window.location.origin}/lab/sharedtemplate/${lab.id}`
-    );
-
-    toast.success("Link copied to clipboard.", {
-      autoClose: 1000,
-      toastId: "copy-link-to-lab",
-    });
-
-    const shareLabButtonSuccess: ButtonContainerObj = {
-      id: "shareLabButton",
-      order: 3,
-      button: (
-        <Button variant="success" onClick={() => copyLinkToLab(lab)}>
-          <span>
-            <FaShare />
-          </span>
-          Copied
-        </Button>
-      ),
-    };
-
-    const shareLabButton: ButtonContainerObj = {
-      id: "shareLabButton",
-      order: 3,
-      button: (
-        <Button variant="secondary-text" onClick={() => copyLinkToLab(lab)}>
-          <span>
-            <FaShare />
-          </span>
-          Share
-        </Button>
-      ),
-    };
-
-    upsertButton(shareLabButtonSuccess);
-    setTimeout(() => {
-      upsertButton(shareLabButton);
-    }, 2000);
-  }, []);
 
   return (
     <div className="flex flex-wrap justify-start gap-2">
