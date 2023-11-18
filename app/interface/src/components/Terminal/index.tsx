@@ -7,6 +7,8 @@ import Checkbox from "../UserInterfaceComponents/Checkbox";
 import { WebSocketContext } from "../../WebSocketContext";
 import Button from "../UserInterfaceComponents/Button";
 import { FaCompress, FaExpand, FaTrashAlt } from "react-icons/fa";
+import { useSelectedDeployment } from "../../hooks/useSelectedDeployment";
+import DeploymentStatus from "../Deployments/DeploymentStatus";
 
 export default function Terminal() {
   const [autoScroll, setAutoScroll] = useState(false);
@@ -130,6 +132,7 @@ function Modal({ showModal, setShowModal }: ModalProps) {
   const { logStream: data } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const { actionStatus } = useContext(WebSocketContext);
+  const { selectedDeployment } = useSelectedDeployment();
 
   const logContainerRef = useRef<null | HTMLDivElement>(null);
   const logContentRef = useRef<null | HTMLDivElement>(null);
@@ -200,12 +203,17 @@ function Modal({ showModal, setShowModal }: ModalProps) {
       }}
     >
       <div
-        className="w-screen gap-y-2 rounded bg-slate-100 p-5 scrollbar-thin  scrollbar-thumb-slate-400 dark:divide-slate-700 dark:bg-slate-900 dark:scrollbar-thumb-slate-600"
+        className="w-screen gap-y-2 bg-slate-100 p-5 scrollbar-thin  scrollbar-thumb-slate-400 dark:divide-slate-700 dark:bg-slate-900 dark:scrollbar-thumb-slate-600"
         onClick={(e) => {
           e.stopPropagation();
         }}
       >
         <div className="space-2 mb-1 flex items-center justify-end gap-x-2 gap-y-2 divide-x divide-slate-500">
+          <div>
+            {selectedDeployment && (
+              <DeploymentStatus deployment={selectedDeployment} />
+            )}
+          </div>
           <div className="pl-2">
             <Checkbox
               id="terminal-auto-scroll"
