@@ -21,6 +21,7 @@ import { getSelectedDeployment } from "../../../../utils/helpers";
 import { toast } from "react-toastify";
 import ConfirmationModal from "../../../UserInterfaceComponents/Modal/ConfirmationModal";
 import { axiosInstance } from "../../../../utils/axios-interceptors";
+import { useTerraformOperation } from "../../../../hooks/useTerraformOperation";
 
 type Props = {
   variant: ButtonVariant;
@@ -55,150 +56,152 @@ export default function DestroyButton({
     setShowModal(true);
   }
 
-  function updateDeploymentStatus(
-    deployment: DeploymentType | undefined,
-    status: DeploymentType["deploymentStatus"]
-  ) {
-    if (deployment !== undefined) {
-      patchDeployment({
-        ...deployment,
-        deploymentStatus: status,
-      });
-    }
-  }
+  const { onClickHandler: onConfirmDelete } = useTerraformOperation();
 
-  async function checkStatusAsync(
-    operationId: string
-  ): Promise<TerraformOperation> {
-    try {
-      const response = await axiosInstance.get(
-        `/terraform/status/${operationId}`
-      );
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  }
+  // function updateDeploymentStatus(
+  //   deployment: DeploymentType | undefined,
+  //   status: DeploymentType["deploymentStatus"]
+  // ) {
+  //   if (deployment !== undefined) {
+  //     patchDeployment({
+  //       ...deployment,
+  //       deploymentStatus: status,
+  //     });
+  //   }
+  // }
 
-  async function checkDeploymentStatus(
-    operation: TerraformOperation,
-    deployment: DeploymentType
-  ) {
-    const intervalId = setInterval(async () => {
-      const terraformOp = await checkStatusAsync(operation.operationId);
-      if (!terraformOp.inProgress) {
-        if (terraformOp.status === "Resources Destroyed") {
-          toast.success("Resources Destroyed"),
-            {
-              autoClose: 5000,
-            };
+  // async function checkStatusAsync(
+  //   operationId: string
+  // ): Promise<TerraformOperation> {
+  //   try {
+  //     const response = await axiosInstance.get(
+  //       `/terraform/status/${operationId}`
+  //     );
+  //     return response.data;
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 
-          updateDeploymentStatus(deployment, "Resources Destroyed");
+  // async function checkDeploymentStatus(
+  //   operation: TerraformOperation,
+  //   deployment: DeploymentType
+  // ) {
+  //   const intervalId = setInterval(async () => {
+  //     const terraformOp = await checkStatusAsync(operation.operationId);
+  //     if (!terraformOp.inProgress) {
+  //       if (terraformOp.status === "Resources Destroyed") {
+  //         toast.success("Resources Destroyed"),
+  //           {
+  //             autoClose: 5000,
+  //           };
 
-          // handle deleting workspace.
-          handleDeleteWorkspace();
-        } else if (terraformOp.status === "Destroy Failed") {
-          toast.error("Destroy Failed"),
-            {
-              autoCLose: 10000,
-            };
-          updateDeploymentStatus(deployment, "Destroy Failed");
-        }
-        clearInterval(intervalId);
-      }
-    }, 10000);
-  }
+  //         updateDeploymentStatus(deployment, "Resources Destroyed");
 
-  function handleDeleteWorkspace() {
-    if (
-      deployment === undefined ||
-      terraformWorkspaces === undefined ||
-      !deleteWorkspace
-    ) {
-      return;
-    }
+  //         // handle deleting workspace.
+  //         handleDeleteWorkspace();
+  //       } else if (terraformOp.status === "Destroy Failed") {
+  //         toast.error("Destroy Failed"),
+  //           {
+  //             autoCLose: 10000,
+  //           };
+  //         updateDeploymentStatus(deployment, "Destroy Failed");
+  //       }
+  //       clearInterval(intervalId);
+  //     }
+  //   }, 10000);
+  // }
 
-    toast.promise(
-      deleteDeploymentAsync([
-        deployment.deploymentWorkspace,
-        deployment.deploymentSubscriptionId,
-      ]),
-      {
-        pending: "Deleting workspace...",
-        success: {
-          render(data: any) {
-            return `Workspace deleted.`;
-          },
-          autoClose: 2000,
-        },
-        error: {
-          render(data: any) {
-            return `Failed to delete workspace. ${data.data.data}`;
-          },
-          autoClose: 10000,
-        },
-      }
-    );
-  }
+  // function handleDeleteWorkspace() {
+  //   if (
+  //     deployment === undefined ||
+  //     terraformWorkspaces === undefined ||
+  //     !deleteWorkspace
+  //   ) {
+  //     return;
+  //   }
 
-  function onConfirmDelete() {
-    setShowModal(false);
-    // if lab is undefined, do nothing
-    if (
-      lab === undefined ||
-      terraformWorkspaces === undefined ||
-      deployments === undefined
-    ) {
-      toast.error(
-        "Something isn't right. Try 'Reset Server Cache' from settings."
-      );
-      return;
-    }
+  //   toast.promise(
+  //     deleteDeploymentAsync([
+  //       deployment.deploymentWorkspace,
+  //       deployment.deploymentSubscriptionId,
+  //     ]),
+  //     {
+  //       pending: "Deleting workspace...",
+  //       success: {
+  //         render(data: any) {
+  //           return `Workspace deleted.`;
+  //         },
+  //         autoClose: 2000,
+  //       },
+  //       error: {
+  //         render(data: any) {
+  //           return `Failed to delete workspace. ${data.data.data}`;
+  //         },
+  //         autoClose: 10000,
+  //       },
+  //     }
+  //   );
+  // }
 
-    // update lab's azure region based on users preference
-    if (lab.template !== undefined && preference !== undefined) {
-      lab.template.resourceGroup.location = preference.azureRegion;
-    }
+  // function onConfirmDelete() {
+  //   setShowModal(false);
+  //   // if lab is undefined, do nothing
+  //   if (
+  //     lab === undefined ||
+  //     terraformWorkspaces === undefined ||
+  //     deployments === undefined
+  //   ) {
+  //     toast.error(
+  //       "Something isn't right. Try 'Reset Server Cache' from settings."
+  //     );
+  //     return;
+  //   }
 
-    // reset logs.
-    setLogs({ logs: "" });
+  //   // update lab's azure region based on users preference
+  //   if (lab.template !== undefined && preference !== undefined) {
+  //     lab.template.resourceGroup.location = preference.azureRegion;
+  //   }
 
-    //get the deployment for the selected workspace
-    const deployment = getSelectedDeployment(deployments, terraformWorkspaces);
-    if (deployment === undefined) {
-      toast.error(
-        "No deployment selected. Try 'Reset Server Cache' from settings."
-      );
-      return;
-    }
+  //   // reset logs.
+  //   setLogs({ logs: "" });
 
-    updateDeploymentStatus(deployment, "Destroying Resources");
+  //   //get the deployment for the selected workspace
+  //   const deployment = getSelectedDeployment(deployments, terraformWorkspaces);
+  //   if (deployment === undefined) {
+  //     toast.error(
+  //       "No deployment selected. Try 'Reset Server Cache' from settings."
+  //     );
+  //     return;
+  //   }
 
-    // destroy terraform
-    const response = toast.promise(destroyAsync(lab), {
-      pending: "Starting Destroy",
-      success: {
-        render(data: any) {
-          return `Destroy started.`;
-        },
-        autoClose: 5000,
-      },
-      error: {
-        render(data: any) {
-          return `Destroy failed. ${data.data.data}`;
-        },
-        autoClose: 10000,
-      },
-    });
+  //   updateDeploymentStatus(deployment, "Destroying Resources");
 
-    response
-      .then((data) => {
-        checkDeploymentStatus(data.data, deployment);
-      })
-      .catch(() => {
-        updateDeploymentStatus(deployment, "Destroy Failed");
-      });
-  }
+  //   // destroy terraform
+  //   const response = toast.promise(destroyAsync(lab), {
+  //     pending: "Starting Destroy",
+  //     success: {
+  //       render(data: any) {
+  //         return `Destroy started.`;
+  //       },
+  //       autoClose: 5000,
+  //     },
+  //     error: {
+  //       render(data: any) {
+  //         return `Destroy failed. ${data.data.data}`;
+  //       },
+  //       autoClose: 10000,
+  //     },
+  //   });
+
+  //   response
+  //     .then((data) => {
+  //       checkDeploymentStatus(data.data, deployment);
+  //     })
+  //     .catch(() => {
+  //       updateDeploymentStatus(deployment, "Destroy Failed");
+  //     });
+  // }
 
   // This is used by Navbar
   if (navbarButton) {
@@ -229,7 +232,18 @@ export default function DestroyButton({
         <ConfirmationModal
           title={"Confirm Destroy" + (deleteWorkspace ? " and Delete" : "")}
           onClose={() => setShowModal(false)}
-          onConfirm={onConfirmDelete}
+          onConfirm={() => {
+            setShowModal(false);
+            onConfirmDelete(
+              "destroy",
+              lab,
+              "Destroying Resources",
+              "Destroy Failed",
+              "Resources Destroyed",
+              false,
+              deleteWorkspace || false
+            );
+          }}
         >
           <p className="text-2xl">
             Are you sure you want to destroy resources{" "}

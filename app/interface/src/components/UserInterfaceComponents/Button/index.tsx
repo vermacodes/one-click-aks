@@ -71,6 +71,9 @@ export default function Button({
           variant === "success-text" &&
           " border-1 border-slate-50 py-1 px-3 disabled:text-slate-400 hover:border-green-500 hover:bg-green-500 hover:bg-opacity-20 disabled:hover:border-slate-50 disabled:hover:bg-slate-50 dark:border-slate-900 hover:dark:border-green-500 dark:disabled:hover:border-slate-900 dark:disabled:hover:bg-slate-900"
         } ${
+          variant === "text" &&
+          " border-0 px-3 disabled:cursor-not-allowed  disabled:text-slate-400 hover:text-sky-500  disabled:hover:text-slate-400 dark:hover:text-sky-500 dark:disabled:hover:text-slate-400 "
+        } ${
           variant === "primary-icon" &&
           " border-1 rounded-full border-slate-50 py-2 px-2 hover:bg-sky-500 hover:bg-opacity-20 dark:border-slate-900"
         } ${

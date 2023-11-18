@@ -97,7 +97,11 @@ export function useExtend() {
 }
 
 export function useTerraformOperationStatus(id: string) {
-  return useQuery("get-terraform-action-status", () =>
-    axiosInstance.get(`/terraform/status/${id}`)
+  return useQuery(
+    "get-terraform-action-status",
+    () => axiosInstance.get(`/terraform/status/${id}`),
+    {
+      select: (data): TerraformOperation => data.data.data,
+    }
   );
 }

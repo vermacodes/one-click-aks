@@ -288,7 +288,8 @@ export type ButtonVariant =
   | "danger-text"
   | "success-text"
   | "primary-icon"
-  | "secondary-icon";
+  | "secondary-icon"
+  | "text";
 
 export type ButtonContainerObj = {
   id: string;
