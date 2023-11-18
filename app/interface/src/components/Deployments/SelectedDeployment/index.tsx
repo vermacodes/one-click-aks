@@ -8,10 +8,10 @@ import { Link } from "react-router-dom";
 import AutoDestroySwitch from "../AutoDestroySwitch";
 import DestroyTime from "../DestroyTime";
 import DeploymentLifespan from "../DeploymentLifespan";
-import { getSelectedDeployment } from "../../../utils/helpers";
 import DeploymentStatus from "../DeploymentStatus";
 import CreateNewDeployment from "../CreateNewDeployment";
 import BreakBlobLease from "../BreakBlobLease";
+import { useSelectedDeployment } from "../../../hooks/useSelectedDeployment";
 
 type Props = {
   sticky?: boolean;
@@ -30,10 +30,8 @@ export default function SelectedDeployment({ sticky = true }: Props) {
     return <></>;
   }
 
-  var selectedDeployment = getSelectedDeployment(
-    deployments,
-    terraformWorkspace
-  );
+  var { selectedDeployment } = useSelectedDeployment();
+
   if (selectedDeployment === undefined) {
     //set default deployment as selected
     selectedDeployment = deployments.filter(

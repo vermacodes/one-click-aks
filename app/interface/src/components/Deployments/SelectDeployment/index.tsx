@@ -5,6 +5,7 @@ import { getSelectedTerraformWorkspace } from "../../../utils/helpers";
 import Button from "../../UserInterfaceComponents/Button";
 import { WebSocketContext } from "../../../WebSocketContext";
 import { useSelectDeployment } from "../../../hooks/useDeployments";
+import { useGetSelectedTerraformWorkspace } from "../../../hooks/useGetSelectedTerraformWorkspace";
 
 type SelectDeploymentProps = {
   variant: ButtonVariant;
@@ -19,6 +20,7 @@ export default function SelectDeployment({
   const { actionStatus } = useContext(WebSocketContext);
   const { data: workspaces } = useTerraformWorkspace();
   const { mutateAsync: asyncSelectDeployment } = useSelectDeployment();
+  const { selectedTerraformWorkspace } = useGetSelectedTerraformWorkspace();
 
   if (workspaces === undefined) {
     return (
@@ -28,7 +30,6 @@ export default function SelectDeployment({
     );
   }
 
-  const selectedTerraformWorkspace = getSelectedTerraformWorkspace(workspaces);
   return (
     <>
       <Button

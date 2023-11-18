@@ -12,6 +12,7 @@ import { FaPlus, FaTools } from "react-icons/fa";
 import { useServerStatus } from "../../hooks/useServerStatus";
 import ServerError from "../ServerError";
 import { useEffect } from "react";
+import { useSelectedDeployment } from "../../hooks/useSelectedDeployment";
 
 export default function Deployments() {
   const { data: deployments } = useGetMyDeployments();
@@ -30,7 +31,7 @@ export default function Deployments() {
     return <></>;
   }
 
-  const selectedDeployment = getSelectedDeployment(deployments, workspaces);
+  const { selectedDeployment } = useSelectedDeployment();
 
   return (
     <PageLayout heading="Deployments">
