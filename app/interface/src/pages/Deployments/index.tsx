@@ -6,7 +6,6 @@ import PageLayout from "../../layouts/PageLayout";
 import Button from "../../components/UserInterfaceComponents/Button";
 import Terminal from "../../components/Terminal";
 import CreateNewDeployment from "../../components/Deployments/CreateNewDeployment";
-import { getSelectedDeployment } from "../../utils/helpers";
 import { useTerraformWorkspace } from "../../hooks/useWorkspace";
 import { FaPlus, FaTools } from "react-icons/fa";
 import { useServerStatus } from "../../hooks/useServerStatus";

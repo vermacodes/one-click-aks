@@ -1,30 +1,16 @@
 import React, { useContext } from "react";
 import { FaRocket } from "react-icons/fa";
-import {
-  ButtonVariant,
-  DeploymentType,
-  Lab,
-  TerraformOperation,
-} from "../../../../dataStructures";
+import { ButtonVariant, Lab } from "../../../../dataStructures";
 import { useSetLogs } from "../../../../hooks/useLogs";
 import { usePreference } from "../../../../hooks/usePreference";
-import {
-  useApply,
-  useTerraformOperationStatus,
-} from "../../../../hooks/useTerraform";
+import { useApply } from "../../../../hooks/useTerraform";
 import Button from "../../../UserInterfaceComponents/Button";
 import {
   useGetMyDeployments,
   usePatchDeployment,
 } from "../../../../hooks/useDeployments";
 import { useTerraformWorkspace } from "../../../../hooks/useWorkspace";
-import {
-  calculateNewEpochTimeForDeployment,
-  getSelectedDeployment,
-} from "../../../../utils/helpers";
 import { WebSocketContext } from "../../../../WebSocketContext";
-import { toast } from "react-toastify";
-import { axiosInstance } from "../../../../utils/axios-interceptors";
 import { useTerraformOperation } from "../../../../hooks/useTerraformOperation";
 
 type Props = {

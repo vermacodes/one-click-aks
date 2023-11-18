@@ -17,11 +17,9 @@ import { WebSocketContext } from "../WebSocketContext";
 import { usePreference } from "./usePreference";
 import { useTerraformWorkspace } from "./useWorkspace";
 import { toast } from "react-toastify";
-import {
-  calculateNewEpochTimeForDeployment,
-  getSelectedDeployment,
-} from "../utils/helpers";
+import { calculateNewEpochTimeForDeployment } from "../utils/helpers";
 import { axiosInstance } from "../utils/axios-interceptors";
+import { useSelectedDeployment } from "./useSelectedDeployment";
 
 export function useTerraformOperation() {
   const { mutate: setLogs } = useSetLogs();
@@ -34,6 +32,7 @@ export function useTerraformOperation() {
   const { data: terraformWorkspaces } = useTerraformWorkspace();
   const { mutate: patchDeployment } = usePatchDeployment();
   const { mutateAsync: deleteDeploymentAsync } = useDeleteDeployment();
+  const { selectedDeployment: deployment } = useSelectedDeployment();
 
   function updateDeploymentStatus(
     deployment: DeploymentType | undefined,
@@ -204,7 +203,7 @@ export function useTerraformOperation() {
 
     setLogs({ logs: "" });
 
-    const deployment = getSelectedDeployment(deployments, terraformWorkspaces);
+    //const deployment = getSelectedDeployment(deployments, terraformWorkspaces);
     if (deployment === undefined) {
       toast.error(
         "No deployment selected. Try 'Reset Server Cache' from settings."

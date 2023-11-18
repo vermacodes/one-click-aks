@@ -1,11 +1,6 @@
 import React, { useContext } from "react";
 import { FaTrash } from "react-icons/fa";
-import {
-  ButtonVariant,
-  DeploymentType,
-  Lab,
-  TerraformOperation,
-} from "../../../../dataStructures";
+import { ButtonVariant, DeploymentType, Lab } from "../../../../dataStructures";
 import { useSetLogs } from "../../../../hooks/useLogs";
 import { usePreference } from "../../../../hooks/usePreference";
 import { useDestroy } from "../../../../hooks/useTerraform";
@@ -17,10 +12,7 @@ import {
   usePatchDeployment,
 } from "../../../../hooks/useDeployments";
 import { WebSocketContext } from "../../../../WebSocketContext";
-import { getSelectedDeployment } from "../../../../utils/helpers";
-import { toast } from "react-toastify";
 import ConfirmationModal from "../../../UserInterfaceComponents/Modal/ConfirmationModal";
-import { axiosInstance } from "../../../../utils/axios-interceptors";
 import { useTerraformOperation } from "../../../../hooks/useTerraformOperation";
 
 type Props = {

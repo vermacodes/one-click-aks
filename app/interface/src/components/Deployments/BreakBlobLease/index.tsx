@@ -1,15 +1,13 @@
-import { FaCut, FaUnlock } from "react-icons/fa";
+import { FaUnlock } from "react-icons/fa";
 import { ButtonVariant, DeploymentType } from "../../../dataStructures";
 import { useGetMyDeployments } from "../../../hooks/useDeployments";
 import { useBreakBlobLease } from "../../../hooks/useStorageAccount";
 import { useTerraformWorkspace } from "../../../hooks/useWorkspace";
-import { getSelectedDeployment } from "../../../utils/helpers";
 import Button from "../../UserInterfaceComponents/Button";
 import { WebSocketContext } from "../../../WebSocketContext";
 import { useContext } from "react";
 import Tooltip from "../../UserInterfaceComponents/Tooltip";
 import { toast } from "react-toastify";
-import axios from "axios";
 import { useSelectedDeployment } from "../../../hooks/useSelectedDeployment";
 
 type Props = {

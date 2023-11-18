@@ -1,21 +1,11 @@
 import React, { useContext } from "react";
 import { FaFile } from "react-icons/fa";
-import {
-  ButtonVariant,
-  DeploymentType,
-  Lab,
-  TerraformOperation,
-} from "../../../../dataStructures";
+import { ButtonVariant, Lab } from "../../../../dataStructures";
 import { useSetLogs } from "../../../../hooks/useLogs";
 import { usePreference } from "../../../../hooks/usePreference";
-import {
-  usePlan,
-  useTerraformOperationStatus,
-} from "../../../../hooks/useTerraform";
+import { usePlan } from "../../../../hooks/useTerraform";
 import Button from "../../../UserInterfaceComponents/Button";
 import { WebSocketContext } from "../../../../WebSocketContext";
-import { toast } from "react-toastify";
-import { getSelectedDeployment } from "../../../../utils/helpers";
 import {
   useGetMyDeployments,
   usePatchDeployment,

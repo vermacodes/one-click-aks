@@ -1,7 +1,6 @@
 import { useContext, useState } from "react";
 import { ButtonVariant, DeploymentType } from "../../../dataStructures";
 import { useTerraformWorkspace } from "../../../hooks/useWorkspace";
-import { getSelectedTerraformWorkspace } from "../../../utils/helpers";
 import Button from "../../UserInterfaceComponents/Button";
 import { WebSocketContext } from "../../../WebSocketContext";
 import { useSelectDeployment } from "../../../hooks/useDeployments";
