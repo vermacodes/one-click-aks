@@ -20,7 +20,13 @@ type DeploymentService struct {
 	authService          entity.AuthService
 }
 
-func NewDeploymentService(deploymentRepo entity.DeploymentRepository, labService entity.LabService, terraformService entity.TerraformService, actionStatusService entity.ActionStatusService, logstreamService entity.LogStreamService, authService entity.AuthService, workspaceService entity.WorkspaceService) entity.DeploymentService {
+func NewDeploymentService(deploymentRepo entity.DeploymentRepository,
+	labService entity.LabService,
+	terraformService entity.TerraformService,
+	actionStatusService entity.ActionStatusService,
+	logstreamService entity.LogStreamService,
+	authService entity.AuthService,
+	workspaceService entity.WorkspaceService) entity.DeploymentService {
 	return &DeploymentService{
 		deploymentRepository: deploymentRepo,
 		labService:           labService,
@@ -303,7 +309,11 @@ func (d *DeploymentService) FetchDeploymentsToBeDeleted() []entity.Deployment {
 	for _, deployment := range deployments {
 		currentEpochTime := time.Now().Unix()
 		slog.Debug("currentEpochTime: " + strconv.FormatInt(currentEpochTime, 10))
-		if deployment.DeploymentAutoDelete && deployment.DeploymentAutoDeleteUnixTime < currentEpochTime && deployment.DeploymentAutoDeleteUnixTime != 0 && deployment.DeploymentStatus != entity.DestroyingResources && deployment.DeploymentStatus != entity.DestroyFailed && deployment.DeploymentStatus != entity.ResourcesDestroyed {
+		if deployment.DeploymentAutoDelete &&
+			deployment.DeploymentAutoDeleteUnixTime < currentEpochTime &&
+			deployment.DeploymentAutoDeleteUnixTime != 0 &&
+			(deployment.DeploymentStatus == entity.DeploymentCompleted ||
+				deployment.DeploymentStatus == entity.DeploymentFailed) {
 			deploymentsToBeDeleted = append(deploymentsToBeDeleted, deployment)
 		}
 	}
