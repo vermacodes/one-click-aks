@@ -17,6 +17,7 @@ export default function Deployments() {
   const { data: deployments } = useGetMyDeployments();
   const { data: workspaces } = useTerraformWorkspace();
   const { data: serverStatus } = useServerStatus();
+  const { selectedDeployment } = useSelectedDeployment();
 
   useEffect(() => {
     document.title = "ACT Labs | Deployments";
@@ -30,11 +31,9 @@ export default function Deployments() {
     return <></>;
   }
 
-  const { selectedDeployment } = useSelectedDeployment();
-
   return (
     <PageLayout heading="Deployments">
-      <div className={`mb-3 flex justify-end space-x-4 rounded`}>
+      <div className={`mb-3 flex justify-end gap-x-2 rounded`}>
         <Link to="/builder">
           <Button variant="secondary-outline">
             <FaTools /> Lab Builder

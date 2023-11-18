@@ -226,15 +226,15 @@ export default function DestroyButton({
           onClose={() => setShowModal(false)}
           onConfirm={() => {
             setShowModal(false);
-            onConfirmDelete(
-              "destroy",
-              lab,
-              "Destroying Resources",
-              "Destroy Failed",
-              "Resources Destroyed",
-              false,
-              deleteWorkspace || false
-            );
+            onConfirmDelete({
+              operationType: "destroy",
+              lab: lab,
+              inProgressStatus: "Destroying Resources",
+              failedStatus: "Destroy Failed",
+              completedStatus: "Resources Destroyed",
+              extendLifespan: false,
+              deleteWorkspace: deleteWorkspace || false,
+            });
           }}
         >
           <p className="text-2xl">

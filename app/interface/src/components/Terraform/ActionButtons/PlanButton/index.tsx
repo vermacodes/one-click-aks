@@ -133,15 +133,15 @@ export default function PlanButton({ variant, children, lab }: Props) {
     <Button
       variant={variant}
       onClick={() =>
-        onClickHandler(
-          "plan",
-          lab,
-          "Plan In Progress",
-          "Plan Failed",
-          "Plan Completed",
-          false,
-          false
-        )
+        onClickHandler({
+          operationType: "plan",
+          lab: lab,
+          inProgressStatus: "Plan In Progress",
+          failedStatus: "Plan Failed",
+          completedStatus: "Plan Completed",
+          extendLifespan: false,
+          deleteWorkspace: false,
+        })
       }
       tooltipMessage="Preview the changes before deploy."
       tooltipDelay={1000}

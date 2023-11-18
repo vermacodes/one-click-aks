@@ -136,14 +136,15 @@ export default function ApplyButton({ variant, children, lab }: Props) {
     <Button
       variant={variant}
       onClick={() =>
-        onClickHandler(
-          "apply",
-          lab,
-          "Deployment In Progress",
-          "Deployment Failed",
-          "Deployment Completed",
-          true
-        )
+        onClickHandler({
+          operationType: "apply",
+          lab: lab,
+          inProgressStatus: "Deployment In Progress",
+          failedStatus: "Deployment Failed",
+          completedStatus: "Deployment Completed",
+          extendLifespan: true,
+          deleteWorkspace: false,
+        })
       }
       disabled={actionStatus.inProgress || lab === undefined}
     >

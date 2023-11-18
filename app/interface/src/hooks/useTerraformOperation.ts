@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import {
   DeploymentStatus,
   DeploymentType,
@@ -13,20 +13,21 @@ import {
 } from "./useDeployments";
 import { useSetLogs } from "./useLogs";
 import { useApply, useDestroy, usePlan } from "./useTerraform";
-import { WebSocketContext } from "../WebSocketContext";
+import { useWebSocketContext } from "../WebSocketContext";
 import { usePreference } from "./usePreference";
 import { useTerraformWorkspace } from "./useWorkspace";
 import { toast } from "react-toastify";
 import { calculateNewEpochTimeForDeployment } from "../utils/helpers";
 import { axiosInstance } from "../utils/axios-interceptors";
 import { useSelectedDeployment } from "./useSelectedDeployment";
+import { AxiosResponse } from "axios";
 
 export function useTerraformOperation() {
   const { mutate: setLogs } = useSetLogs();
   const { mutateAsync: planAsync } = usePlan();
   const { mutateAsync: applyAsync } = useApply();
   const { mutateAsync: destroyAsync } = useDestroy();
-  const { actionStatus } = useContext(WebSocketContext);
+  const { actionStatus } = useWebSocketContext();
   const { data: preference } = usePreference();
   const { data: deployments } = useGetMyDeployments();
   const { data: terraformWorkspaces } = useTerraformWorkspace();
@@ -34,24 +35,53 @@ export function useTerraformOperation() {
   const { mutateAsync: deleteDeploymentAsync } = useDeleteDeployment();
   const { selectedDeployment: deployment } = useSelectedDeployment();
 
-  function updateDeploymentStatus(
-    deployment: DeploymentType | undefined,
-    status: DeploymentType["deploymentStatus"],
-    extendLifespan: boolean
-  ) {
-    if (deployment !== undefined) {
-      patchDeployment({
-        ...deployment,
-        deploymentStatus: status,
-      });
+  // const [actionStatusState, setActionStatusState] = useState(
+  //   actionStatus.inProgress
+  // );
+
+  // //const actionStatusRef = useRef(actionStatus);
+  // const actionStatusStateRef = useRef(actionStatusState);
+
+  // useEffect(() => {
+  //   console.log("actionStatus: ", actionStatus);
+  //   //actionStatusStateRef.current = actionStatus.inProgress;
+  //   if (actionStatus.inProgress !== actionStatusState) {
+  //     setActionStatusState(actionStatus.inProgress);
+  //   }
+  // }, [actionStatus]);
+
+  type UpdateDeploymentStatusProps = {
+    operationType: "plan" | "apply" | "destroy";
+    deployment: DeploymentType | undefined;
+    status: DeploymentStatus;
+    extendLifespan: boolean;
+  };
+
+  function updateDeploymentStatus({
+    operationType,
+    deployment,
+    status,
+    extendLifespan,
+  }: UpdateDeploymentStatusProps) {
+    if (operationType === "plan") {
+      // When planning a deployment, we don't want to update the deployment status.
+      return;
     }
 
-    if (extendLifespan && deployment?.deploymentAutoDelete) {
-      patchDeployment({
-        ...deployment,
-        deploymentAutoDeleteUnixTime:
-          calculateNewEpochTimeForDeployment(deployment),
-      });
+    if (deployment !== undefined) {
+      if (extendLifespan) {
+        patchDeployment({
+          ...deployment,
+          deploymentAutoDeleteUnixTime:
+            calculateNewEpochTimeForDeployment(deployment),
+          deploymentStatus: status,
+        });
+      } else {
+        patchDeployment({
+          ...deployment,
+          deploymentStatus: status,
+        });
+      }
     }
   }
 
@@ -68,51 +98,94 @@ export function useTerraformOperation() {
     }
   }
 
-  async function checkDeploymentStatus(
-    operationType: "plan" | "apply" | "destroy",
-    operation: TerraformOperation,
-    deployment: DeploymentType,
-    completedStatus: DeploymentStatus,
-    failedStatus: DeploymentStatus,
-    extendLifespan: boolean,
-    deleteWorkspace: boolean
-  ) {
+  type CheckDeploymentStatusProps = {
+    operationType: "plan" | "apply" | "destroy";
+    operation: TerraformOperation;
+    deployment: DeploymentType;
+    completedStatus: DeploymentStatus;
+    failedStatus: DeploymentStatus;
+    extendLifespan: boolean;
+    deleteWorkspace: boolean;
+  };
+
+  function checkDeploymentStatus({
+    operationType,
+    operation,
+    deployment,
+    completedStatus,
+    failedStatus,
+    extendLifespan,
+    deleteWorkspace,
+  }: CheckDeploymentStatusProps) {
+    console.log("checkDeploymentStatus: ", operation);
     const intervalId = setInterval(async () => {
+      // console.log("actionStatusRef.current: ", actionStatusRef.current);
+      // if (actionStatusRef.current.inProgress) {
+      //   return;
+      // }
+      // console.log("actionStatusState: ", actionStatusState);
+      // console.log(
+      //   "actionStatusStateRef.current: ",
+      //   actionStatusStateRef.current
+      // );
+
+      // if (actionStatusStateRef.current) {
+      //   return;
+      // }
       const terraformOp = await checkStatusAsync(operation.operationId);
+
       if (terraformOp === undefined || terraformOp.inProgress) {
         return;
       }
 
+      console.log("terraformOp: ", terraformOp);
       if (terraformOp.status === completedStatus) {
         toast.success(completedStatus),
           {
             autoClose: 5000,
           };
-        updateDeploymentStatus(deployment, completedStatus, extendLifespan);
+        updateDeploymentStatus({
+          operationType,
+          deployment,
+          status: completedStatus,
+          extendLifespan,
+        });
 
         if (operationType === "destroy") {
-          handleDeleteWorkspace(
+          console.log("Deleting Workspace?, ", deleteWorkspace);
+          handleDeleteWorkspace({
             deployment,
             terraformWorkspaces,
-            deleteWorkspace
-          );
+            deleteWorkspace,
+          });
         }
       } else if (terraformOp.status === failedStatus) {
         toast.error(failedStatus),
           {
-            autoCLose: 10000,
+            autoClose: 10000,
           };
-        updateDeploymentStatus(deployment, failedStatus, extendLifespan);
+        updateDeploymentStatus({
+          operationType,
+          deployment,
+          status: failedStatus,
+          extendLifespan,
+        });
       }
       clearInterval(intervalId);
-    }, 5000);
+    }, 500);
   }
 
-  function handleDeleteWorkspace(
-    deployment: DeploymentType | undefined,
-    terraformWorkspaces: TerraformWorkspace[] | undefined,
-    deleteWorkspace: boolean
-  ) {
+  type HandleDeleteWorkspaceProps = {
+    deployment: DeploymentType | undefined;
+    terraformWorkspaces: TerraformWorkspace[] | undefined;
+    deleteWorkspace: boolean;
+  };
+
+  function handleDeleteWorkspace({
+    deployment,
+    terraformWorkspaces,
+    deleteWorkspace,
+  }: HandleDeleteWorkspaceProps) {
     if (
       deployment === undefined ||
       terraformWorkspaces === undefined ||
@@ -129,26 +202,28 @@ export function useTerraformOperation() {
       {
         pending: "Deleting workspace...",
         success: {
-          render(data: any) {
-            return `Workspace deleted.`;
-          },
+          render: `Workspace deleted.`,
           autoClose: 2000,
         },
         error: {
-          render(data: any) {
-            return `Failed to delete workspace. ${data.data.data}`;
-          },
+          render: `Failed to delete workspace.`,
           autoClose: 10000,
         },
       }
     );
   }
 
-  function submitOperation(
-    operationType: "plan" | "apply" | "destroy",
-    lab: Lab
-  ) {
+  type SubmitOperationProps = {
+    operationType: "plan" | "apply" | "destroy";
+    lab: Lab;
+  };
+
+  function submitOperation({
+    operationType,
+    lab,
+  }: SubmitOperationProps): Promise<AxiosResponse<TerraformOperation>> {
     if (operationType === "apply") {
+      console.log("submitting apply");
       return toast.promise(applyAsync(lab), {
         pending: "Starting apply...",
         success: "Apply started.",
@@ -157,6 +232,7 @@ export function useTerraformOperation() {
     }
 
     if (operationType === "destroy") {
+      console.log("submitting destroy");
       return toast.promise(destroyAsync(lab), {
         pending: "Starting destroy...",
         success: "Destroy started.",
@@ -171,15 +247,25 @@ export function useTerraformOperation() {
     });
   }
 
-  const onClickHandler = (
-    operationType: "plan" | "apply" | "destroy",
-    lab: Lab | undefined,
-    inProgressStatus: DeploymentStatus,
-    failedStatus: DeploymentStatus,
-    completedStatus: DeploymentStatus,
-    extendLifespan: boolean = false,
-    deleteWorkspace: boolean = false
-  ) => {
+  type OnClickHandlerProps = {
+    operationType: "plan" | "apply" | "destroy";
+    lab: Lab | undefined;
+    inProgressStatus: DeploymentStatus;
+    failedStatus: DeploymentStatus;
+    completedStatus: DeploymentStatus;
+    extendLifespan: boolean;
+    deleteWorkspace: boolean;
+  };
+
+  const onClickHandler = ({
+    operationType,
+    lab,
+    inProgressStatus,
+    failedStatus,
+    completedStatus,
+    extendLifespan,
+    deleteWorkspace,
+  }: OnClickHandlerProps) => {
     if (
       lab === undefined ||
       lab.template === undefined ||
@@ -192,10 +278,10 @@ export function useTerraformOperation() {
       return;
     }
 
-    if (actionStatus.inProgress) {
-      toast.error("An operation is already in progress.");
-      return;
-    }
+    // if (actionStatus.inProgress) {
+    //   toast.error("An operation is already in progress.");
+    //   return;
+    // }
 
     if (preference !== undefined) {
       lab.template.resourceGroup.location = preference.azureRegion;
@@ -211,24 +297,35 @@ export function useTerraformOperation() {
       return;
     }
 
-    updateDeploymentStatus(deployment, inProgressStatus, extendLifespan);
+    updateDeploymentStatus({
+      operationType,
+      deployment,
+      status: inProgressStatus,
+      extendLifespan,
+    });
 
-    const response = submitOperation(operationType, lab);
+    const response = submitOperation({ operationType, lab });
 
     response
       .then((result) => {
-        checkDeploymentStatus(
+        console.log("result: ", result);
+        checkDeploymentStatus({
           operationType,
-          result.data,
+          operation: result.data,
           deployment,
           completedStatus,
           failedStatus,
           extendLifespan,
-          deleteWorkspace
-        );
+          deleteWorkspace,
+        });
       })
       .catch(() => {
-        updateDeploymentStatus(deployment, failedStatus, extendLifespan);
+        updateDeploymentStatus({
+          operationType,
+          deployment,
+          status: failedStatus,
+          extendLifespan,
+        });
       });
   };
 

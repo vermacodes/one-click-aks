@@ -47,13 +47,9 @@ export default function AzureSubscription() {
           ) : (
             <>
               {accounts?.map((account) => (
-                <>
-                  {account.isDefault === true && (
-                    <div key={account.id}>
-                      <p>{account.name}</p>
-                    </div>
-                  )}
-                </>
+                <div key={account.id}>
+                  {account.isDefault === true && <p>{account.name}</p>}
+                </div>
               ))}
             </>
           )}
@@ -72,18 +68,15 @@ export default function AzureSubscription() {
           ) : (
             <>
               {accounts?.map((account) => (
-                <div key={account.id}>
-                  {account.isDefault !== true && (
-                    <div
-                      className="items-center rounded p-2 hover:bg-sky-500 hover:text-slate-100"
-                      onClick={() => {
-                        setSubscriptionMenu(!subscriptionMenu);
-                        !actionStatus.inProgress && setAccount(account);
-                      }}
-                    >
-                      {account.name}
-                    </div>
-                  )}
+                <div
+                  key={account.id}
+                  className="items-center rounded p-2 hover:bg-sky-500 hover:text-slate-100"
+                  onClick={() => {
+                    setSubscriptionMenu(!subscriptionMenu);
+                    !actionStatus.inProgress && setAccount(account);
+                  }}
+                >
+                  {account.isDefault !== true && <>{account.name}</>}
                 </div>
               ))}
             </>

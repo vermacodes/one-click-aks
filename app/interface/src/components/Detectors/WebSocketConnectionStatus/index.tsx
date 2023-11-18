@@ -1,11 +1,28 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { WebSocketContext } from "../../../WebSocketContext";
 
 export default function WebSocketConnectionStatus() {
   const { actionStatusConnected, logStreamConnected } =
     useContext(WebSocketContext);
+  const [showWarning, setShowWarning] = useState(false);
 
-  if (actionStatusConnected && logStreamConnected) {
+  useEffect(() => {
+    // If both are connected, no need to show the warning
+    if (actionStatusConnected && logStreamConnected) {
+      setShowWarning(false);
+      return;
+    }
+
+    // Set a timeout to show the warning after 10 seconds
+    const timeoutId = setTimeout(() => {
+      setShowWarning(true);
+    }, 10000);
+
+    // Clear the timeout if the component unmounts or if the connections change
+    return () => clearTimeout(timeoutId);
+  }, [actionStatusConnected, logStreamConnected]);
+
+  if (!showWarning) {
     return null;
   }
 
