@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useWebSocketContext } from "../../../WebSocketContext";
+import { useWebSocketContext } from "../../Context/WebSocketContext";
 import { toast } from "react-toastify";
 import {
   useDeleteDeployment,
@@ -9,7 +9,7 @@ import { useSelectedDeployment } from "../../../hooks/useSelectedDeployment";
 import { calculateNewEpochTimeForDeployment } from "../../../utils/helpers";
 
 type Props = {
-  operationId: "plan" | "apply" | "destroy";
+  operationId: "init" | "plan" | "apply" | "destroy";
   extendLifespan?: boolean;
   deleteWorkspace?: boolean;
 };
@@ -24,7 +24,9 @@ export default function OperationStatus({
   const { selectedDeployment: deployment } = useSelectedDeployment();
   const { mutateAsync: deleteDeploymentAsync } = useDeleteDeployment();
 
-  function updateDeploymentStatus(operationId: "plan" | "apply" | "destroy") {
+  function updateDeploymentStatus(
+    operationId: "init" | "plan" | "apply" | "destroy"
+  ) {
     console.log("operationId: ", operationId);
     if (operationId === "plan") {
       // When planning a deployment, we don't want to update the deployment status.

@@ -11,7 +11,7 @@ import {
   usePatchDeployment,
 } from "./useDeployments";
 import { useSetLogs } from "./useLogs";
-import { useApply, useDestroy, usePlan } from "./useTerraform";
+import { useApply, useDestroy, useInit, usePlan } from "./useTerraform";
 import { usePreference } from "./usePreference";
 import { useTerraformWorkspace } from "./useWorkspace";
 import { toast } from "react-toastify";
@@ -21,6 +21,7 @@ import { AxiosResponse } from "axios";
 
 export function useTerraformOperation() {
   const { mutate: setLogs } = useSetLogs();
+  const { mutateAsync: initAsync } = useInit();
   const { mutateAsync: planAsync } = usePlan();
   const { mutateAsync: applyAsync } = useApply();
   const { mutateAsync: destroyAsync } = useDestroy();
@@ -89,7 +90,7 @@ export function useTerraformOperation() {
   }
 
   type SubmitOperationProps = {
-    operationType: "plan" | "apply" | "destroy";
+    operationType: "init" | "plan" | "apply" | "destroy";
     operationId: string;
     lab: Lab;
   };
@@ -99,17 +100,21 @@ export function useTerraformOperation() {
     operationId,
     lab,
   }: SubmitOperationProps): Promise<AxiosResponse<TerraformOperation>> {
+    if (operationType === "plan") {
+      return planAsync([lab, operationId]);
+    }
     if (operationType === "apply") {
       return applyAsync([lab, operationId]);
     }
     if (operationType === "destroy") {
       return destroyAsync([lab, operationId]);
     }
-    return planAsync([lab, operationId]);
+
+    return initAsync([lab, operationId]);
   }
 
   type OnClickHandlerProps = {
-    operationType: "plan" | "apply" | "destroy";
+    operationType: "init" | "plan" | "apply" | "destroy";
     operationId: string;
     lab: Lab | undefined;
   };

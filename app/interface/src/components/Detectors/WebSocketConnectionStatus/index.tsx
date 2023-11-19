@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { WebSocketContext } from "../../../WebSocketContext";
+import { WebSocketContext } from "../../Context/WebSocketContext";
 
 export default function WebSocketConnectionStatus() {
   const { actionStatusConnected, logStreamConnected } =

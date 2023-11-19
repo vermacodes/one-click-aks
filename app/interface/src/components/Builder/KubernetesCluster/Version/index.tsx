@@ -3,7 +3,7 @@ import { useLab, useSetLab } from "../../../../hooks/useLab";
 import { useSetLogs } from "../../../../hooks/useLogs";
 import { useGetOrchestrators } from "../../../../hooks/useOrchestrators";
 import { useContext } from "react";
-import { WebSocketContext } from "../../../../WebSocketContext";
+import { WebSocketContext } from "../../../Context/WebSocketContext";
 import { PatchVersions, Value } from "../../../../dataStructures";
 import Tooltip from "../../../UserInterfaceComponents/Tooltip";
 

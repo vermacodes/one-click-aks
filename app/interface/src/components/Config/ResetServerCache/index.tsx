@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { WebSocketContext } from "../../../WebSocketContext";
+import { WebSocketContext } from "../../Context/WebSocketContext";
 import { useResetServerCache } from "../../../hooks/useServerCache";
 import Button from "../../UserInterfaceComponents/Button";
 import { toast } from "react-toastify";

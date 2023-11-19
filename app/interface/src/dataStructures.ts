@@ -322,6 +322,9 @@ export type GraphData = {
 };
 
 export type DeploymentStatus =
+  | "Init In Progress"
+  | "Init Failed"
+  | "Init Completed"
   | "Plan In Progress"
   | "Plan Failed"
   | "Plan Completed"

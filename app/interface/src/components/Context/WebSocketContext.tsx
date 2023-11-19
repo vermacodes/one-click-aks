@@ -3,9 +3,9 @@ import {
   ActionStatusType,
   LogsStreamType,
   TerraformOperation,
-} from "./dataStructures";
+} from "../../dataStructures";
 import React from "react";
-import { defaultTerraformOperation } from "./defaults";
+import { defaultTerraformOperation } from "../../defaults";
 
 export interface WebSocketContextData {
   actionStatus: ActionStatusType;
@@ -15,8 +15,11 @@ export interface WebSocketContextData {
   terraformOperation: TerraformOperation;
   setTerraformOperation: (value: TerraformOperation) => void;
   actionStatusConnected: boolean;
+  setActionStatusConnected: React.Dispatch<React.SetStateAction<boolean>>;
   logStreamConnected: boolean;
+  setLogStreamConnected: React.Dispatch<React.SetStateAction<boolean>>;
   terraformOperationConnected: boolean;
+  setTerraformOperationConnected: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const webSocketContextDataDefaultValue: WebSocketContextData = {
@@ -27,8 +30,11 @@ export const webSocketContextDataDefaultValue: WebSocketContextData = {
   terraformOperation: defaultTerraformOperation,
   setTerraformOperation: () => null,
   actionStatusConnected: false,
+  setActionStatusConnected: () => null,
   logStreamConnected: false,
+  setLogStreamConnected: () => null,
   terraformOperationConnected: false,
+  setTerraformOperationConnected: () => null,
 };
 
 export const WebSocketContext = createContext<WebSocketContextData>(

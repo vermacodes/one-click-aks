@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { ButtonVariant, DeploymentType } from "../../../dataStructures";
 import { useTerraformWorkspace } from "../../../hooks/useWorkspace";
 import Button from "../../UserInterfaceComponents/Button";
-import { WebSocketContext } from "../../../WebSocketContext";
+import { WebSocketContext } from "../../Context/WebSocketContext";
 import { useSelectDeployment } from "../../../hooks/useDeployments";
 import { useGetSelectedTerraformWorkspace } from "../../../hooks/useGetSelectedTerraformWorkspace";
 import { useQueryClient } from "react-query";

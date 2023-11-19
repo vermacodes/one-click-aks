@@ -8,7 +8,7 @@ import {
 } from "../../../hooks/useDeployments";
 import { useLab } from "../../../hooks/useLab";
 import { ButtonVariant } from "../../../dataStructures";
-import { WebSocketContext } from "../../../WebSocketContext";
+import { WebSocketContext } from "../../Context/WebSocketContext";
 import { deploymentNameSchema } from "../../../zodSchemas";
 import PleaseWaitModal from "../../UserInterfaceComponents/Modal/PleaseWaitModal";
 import { useQueryClient } from "react-query";
@@ -175,7 +175,7 @@ function Modal({
       }}
     >
       <div
-        className="my-20 h-[35%] max-h-80 w-1/3 space-y-2 divide-y divide-slate-300 overflow-y-auto overflow-x-hidden rounded bg-slate-100 p-5 scrollbar-thin  scrollbar-thumb-slate-400 dark:divide-slate-700 dark:bg-slate-900 dark:scrollbar-thumb-slate-600"
+        className="my-20 h-[35%] max-h-80 w-1/3 space-y-2 divide-y divide-slate-300 overflow-y-auto rounded bg-slate-100 p-5 overflow-x-hidden scrollbar-thin  scrollbar-thumb-slate-400 dark:divide-slate-700 dark:bg-slate-900 dark:scrollbar-thumb-slate-600"
         onClick={(e) => {
           e.stopPropagation();
         }}

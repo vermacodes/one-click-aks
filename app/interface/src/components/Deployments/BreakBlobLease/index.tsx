@@ -4,7 +4,7 @@ import { useGetMyDeployments } from "../../../hooks/useDeployments";
 import { useBreakBlobLease } from "../../../hooks/useStorageAccount";
 import { useTerraformWorkspace } from "../../../hooks/useWorkspace";
 import Button from "../../UserInterfaceComponents/Button";
-import { WebSocketContext } from "../../../WebSocketContext";
+import { WebSocketContext } from "../../Context/WebSocketContext";
 import { useContext } from "react";
 import Tooltip from "../../UserInterfaceComponents/Tooltip";
 import { toast } from "react-toastify";

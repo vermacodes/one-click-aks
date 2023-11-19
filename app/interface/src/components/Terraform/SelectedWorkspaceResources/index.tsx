@@ -3,7 +3,7 @@ import {
   useGetResources,
   useTerraformWorkspace,
 } from "../../../hooks/useWorkspace";
-import { WebSocketContext } from "../../../WebSocketContext";
+import { WebSocketContext } from "../../Context/WebSocketContext";
 
 type Props = {};
 
@@ -15,7 +15,7 @@ export default function SelectedWorkspaceResources({}: Props) {
 
   return (
     <div className="w-full justify-between gap-y-4 rounded border border-slate-500 py-2">
-      <div className="h-48 overflow-x-hidden rounded px-2 scrollbar-thin  scrollbar-thumb-slate-400 scrollbar-track-rounded-full scrollbar-thumb-rounded-full dark:scrollbar-thumb-slate-600">
+      <div className="h-48 rounded px-2 overflow-x-hidden scrollbar-thin  scrollbar-thumb-slate-400 scrollbar-track-rounded-full scrollbar-thumb-rounded-full dark:scrollbar-thumb-slate-600">
         {fetchingResources || gettingWorkspaces || fetchingWorkspaces ? (
           <pre className="text-slate-500">Please wait...</pre>
         ) : (

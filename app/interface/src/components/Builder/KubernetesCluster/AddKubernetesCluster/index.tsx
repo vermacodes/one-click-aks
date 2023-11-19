@@ -5,7 +5,7 @@ import { useSetLogs } from "../../../../hooks/useLogs";
 import { useGetOrchestrators } from "../../../../hooks/useOrchestrators";
 import Checkbox from "../../../UserInterfaceComponents/Checkbox";
 import { defaultKubernetesCluster } from "../../../../defaults";
-import { WebSocketContext } from "../../../../WebSocketContext";
+import { WebSocketContext } from "../../../Context/WebSocketContext";
 
 export default function AddKubernetesCluster() {
   const {

@@ -6,7 +6,7 @@ import { useSetLab } from "../../../hooks/useLab";
 import { useSetLogs } from "../../../hooks/useLogs";
 import { usePreference } from "../../../hooks/usePreference";
 import Button from "../../UserInterfaceComponents/Button";
-import { WebSocketContext } from "../../../WebSocketContext";
+import { WebSocketContext } from "../../Context/WebSocketContext";
 
 type Props = {
   variant: ButtonVariant;

@@ -3,7 +3,7 @@ import { v4 as uuid } from "uuid";
 import { FaTrash } from "react-icons/fa";
 import { ButtonVariant, Lab } from "../../../../dataStructures";
 import Button from "../../../UserInterfaceComponents/Button";
-import { useWebSocketContext } from "../../../../WebSocketContext";
+import { useWebSocketContext } from "../../../Context/WebSocketContext";
 import ConfirmationModal from "../../../UserInterfaceComponents/Modal/ConfirmationModal";
 import { useTerraformOperation } from "../../../../hooks/useTerraformOperation";
 import { toast } from "react-toastify";

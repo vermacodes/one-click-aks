@@ -4,7 +4,7 @@ import ReactHtmlParser from "html-react-parser";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useSetLogs } from "../../hooks/useLogs";
 import Checkbox from "../UserInterfaceComponents/Checkbox";
-import { WebSocketContext } from "../../WebSocketContext";
+import { WebSocketContext } from "../Context/WebSocketContext";
 import Button from "../UserInterfaceComponents/Button";
 import { FaCompress, FaExpand, FaTrashAlt } from "react-icons/fa";
 import { useSelectedDeployment } from "../../hooks/useSelectedDeployment";

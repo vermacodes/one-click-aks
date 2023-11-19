@@ -1,13 +1,11 @@
-import { useMsal } from "@azure/msal-react";
 import { useEffect, useState } from "react";
 import { FaCheck, FaEdit, FaTimes } from "react-icons/fa";
-import { loginRequest } from "../../../authConfig";
-import { GraphData } from "../../../dataStructures";
 import SettingsItemLayout from "../../../layouts/SettingsItemLayout";
 import Checkbox from "../../UserInterfaceComponents/Checkbox";
 import { useQueryClient } from "react-query";
 import { useResetServerCache } from "../../../hooks/useServerCache";
 import Button from "../../UserInterfaceComponents/Button";
+import { useAuth } from "../../Context/AuthContext";
 
 type Props = {};
 
@@ -15,54 +13,8 @@ export default function ServerEndpoint({}: Props) {
   const [baseUrl, setBaseUrl] = useState<string>("http://localhost:8880/");
   const [showEditButton, setShowEditButton] = useState<boolean>(false);
   const [edit, setEdit] = useState<boolean>(false);
-  const { instance, accounts, inProgress } = useMsal();
-  const [graphResponse, setGraphResponse] = useState<GraphData | undefined>();
-  const [accessToken, setAccessToken] = useState<string>("");
-  const [tokenAcquired, setTokenAcquired] = useState<boolean>(false);
   const { mutateAsync: resetServerCache } = useResetServerCache();
-
-  // call RequestAccessToken after the component has mounted
-  useEffect(() => {
-    RequestAccessToken();
-  }, []);
-
-  useEffect(() => {
-    if (tokenAcquired || accessToken !== "") {
-      getGraphData();
-    }
-  }, [tokenAcquired, accessToken]);
-
-  async function getGraphData() {
-    fetch("https://graph.microsoft.com/v1.0/me", {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }).then((response) => {
-      if (response.ok) {
-        response.json().then((data) => {
-          setGraphResponse(data);
-        });
-      }
-    });
-  }
-
-  async function RequestAccessToken() {
-    const request = {
-      ...loginRequest,
-      account: accounts[0],
-    };
-
-    // Silently acquires an access token which is then attached to a request for Microsoft Graph data
-    instance
-      .acquireTokenSilent(request)
-      .then((response) => {
-        setAccessToken(response.accessToken);
-        setTokenAcquired(true);
-      })
-      .catch((e) => {
-        instance.acquireTokenRedirect(request);
-      });
-  }
+  const { graphResponse } = useAuth();
 
   useEffect(() => {
     const baseUrlFromLocalStorage = localStorage.getItem("baseUrl");

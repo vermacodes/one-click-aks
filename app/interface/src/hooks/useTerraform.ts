@@ -3,8 +3,8 @@ import { Lab, TerraformOperation } from "../dataStructures";
 import { axiosInstance } from "../utils/axios-interceptors";
 import { Axios, AxiosResponse } from "axios";
 
-function init(lab: Lab) {
-  return axiosInstance.post("/terraform/init", lab);
+function init(lab: Lab, operationId: string) {
+  return axiosInstance.post(`/terraform/init/${operationId}`, lab);
 }
 
 function plan(lab: Lab, operationId: string) {
@@ -28,7 +28,7 @@ function extend(lab: Lab, mode: string) {
 
 export function useInit() {
   const queryClient = useQueryClient();
-  return useMutation(init, {
+  return useMutation((params: [Lab, string]) => init(params[0], params[1]), {
     onMutate: async () => {
       await queryClient.cancelQueries("get-action-status");
       setTimeout(() => {

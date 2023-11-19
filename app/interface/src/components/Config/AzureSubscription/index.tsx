@@ -1,7 +1,7 @@
 import { FaChevronDown, FaRedo } from "react-icons/fa";
 import { useAccount, useSetAccount } from "../../../hooks/useAccount";
 import { useContext, useState } from "react";
-import { WebSocketContext } from "../../../WebSocketContext";
+import { WebSocketContext } from "../../Context/WebSocketContext";
 import Button from "../../UserInterfaceComponents/Button";
 import { useResetServerCache } from "../../../hooks/useServerCache";
 import { toast } from "react-toastify";
@@ -58,7 +58,7 @@ export default function AzureSubscription() {
           </p>
         </div>
         <div
-          className={`absolute right-0 z-10 mt-2 h-56 w-96 origin-top-right overflow-y-auto overflow-x-hidden scrollbar ${
+          className={`absolute right-0 z-10 mt-2 h-56 w-96 origin-top-right overflow-y-auto scrollbar overflow-x-hidden ${
             !subscriptionMenu && "hidden"
           } items-center gap-y-2 rounded border bg-slate-100 p-2 dark:bg-slate-800`}
           onMouseLeave={() => setSubscriptionMenu(false)}
