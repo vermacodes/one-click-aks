@@ -116,16 +116,16 @@ func (a *actionStatusService) SetTerraformOperation(terraformOperation entity.Te
 		return err
 	}
 
-	if err = a.actionStatusRepository.SetTerraformOperation(terraformOperation.OperationId, string(val)); err != nil {
+	if err = a.actionStatusRepository.SetTerraformOperation(string(val)); err != nil {
 		slog.Error("not able to set terraform operation in redis", err)
 	}
 
 	return nil
 }
 
-func (a *actionStatusService) GetTerraformOperation(id string) (entity.TerraformOperation, error) {
+func (a *actionStatusService) GetTerraformOperation() (entity.TerraformOperation, error) {
 	terraformOperation := entity.TerraformOperation{}
-	val, err := a.actionStatusRepository.GetTerraformOperation(id)
+	val, err := a.actionStatusRepository.GetTerraformOperation()
 	if err != nil {
 		slog.Error("terraform operation not found in redis", err)
 		return terraformOperation, err
@@ -133,6 +133,22 @@ func (a *actionStatusService) GetTerraformOperation(id string) (entity.Terraform
 
 	if err = json.Unmarshal([]byte(val), &terraformOperation); err != nil {
 		slog.Error("not able to translate terraform operation string to object", err)
+		return terraformOperation, err
+	}
+
+	return terraformOperation, nil
+}
+
+func (a *actionStatusService) WaitForTerraformOperationChange() (entity.TerraformOperation, error) {
+	terraformOperation := entity.TerraformOperation{}
+	val, err := a.actionStatusRepository.WaitForTerraformOperationChange()
+	if err != nil {
+		slog.Error("action status not found in redis", err)
+		return terraformOperation, err
+	}
+
+	if err = json.Unmarshal([]byte(val), &terraformOperation); err != nil {
+		slog.Error("not able to translate action status string to object", err)
 		return terraformOperation, err
 	}
 

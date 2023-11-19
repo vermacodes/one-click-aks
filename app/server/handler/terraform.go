@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"github.com/vermacodes/one-click-aks/app/server/entity"
 )
 
@@ -19,11 +18,11 @@ func NewTerraformWithActionStatusHandler(r *gin.RouterGroup, service entity.Terr
 		actionStatusService: actionStatusService,
 	}
 
-	r.POST("/terraform/init", handler.Init)
-	r.POST("/terraform/plan", handler.Plan)
-	r.POST("/terraform/apply", handler.Apply)
-	r.POST("/terraform/destroy", handler.Destroy)
-	r.POST("/terraform/extend/:mode", handler.Extend)
+	r.POST("/terraform/init/", handler.Init)
+	r.POST("/terraform/plan/:operationId", handler.Plan)
+	r.POST("/terraform/apply/:operationId", handler.Apply)
+	r.POST("/terraform/destroy/:operationId", handler.Destroy)
+	r.POST("/terraform/extend/:mode/:operationId", handler.Extend)
 }
 
 func (t *terraformHandler) Init(c *gin.Context) {
@@ -46,12 +45,14 @@ func (t *terraformHandler) Plan(c *gin.Context) {
 	}
 
 	terraformOperation := entity.TerraformOperation{
-		OperationId: uuid.New().String(),
+		OperationId: c.Param("operationId"),
 		InProgress:  true,
 		Status:      entity.PlanInProgress,
 	}
 
-	t.actionStatusService.SetTerraformOperation(terraformOperation)
+	if err := t.actionStatusService.SetTerraformOperation(terraformOperation); err != nil {
+		c.Status(http.StatusInternalServerError)
+	}
 
 	// Start the long-running operation in a goroutine
 	go func() {
@@ -78,12 +79,14 @@ func (t *terraformHandler) Apply(c *gin.Context) {
 	}
 
 	terraformOperation := entity.TerraformOperation{
-		OperationId: uuid.New().String(),
+		OperationId: c.Param("operationId"),
 		InProgress:  true,
 		Status:      entity.DeploymentInProgress,
 	}
 
-	t.actionStatusService.SetTerraformOperation(terraformOperation)
+	if err := t.actionStatusService.SetTerraformOperation(terraformOperation); err != nil {
+		c.Status(http.StatusInternalServerError)
+	}
 
 	// Start the long-running operation in a goroutine
 	go func() {
@@ -132,12 +135,14 @@ func (t *terraformHandler) Destroy(c *gin.Context) {
 	}
 
 	terraformOperation := entity.TerraformOperation{
-		OperationId: uuid.New().String(),
+		OperationId: c.Param("operationId"),
 		InProgress:  true,
-		Status:      entity.DestroyingResources,
+		Status:      entity.DestroyInProgress,
 	}
 
-	t.actionStatusService.SetTerraformOperation(terraformOperation)
+	if err := t.actionStatusService.SetTerraformOperation(terraformOperation); err != nil {
+		c.Status(http.StatusInternalServerError)
+	}
 
 	// Start the long-running operation in a goroutine
 	go func() {
@@ -145,7 +150,7 @@ func (t *terraformHandler) Destroy(c *gin.Context) {
 		if err := t.terraformService.Destroy(lab); err != nil {
 			terraformOperation.Status = entity.DestroyFailed
 		} else {
-			terraformOperation.Status = entity.ResourcesDestroyed
+			terraformOperation.Status = entity.DestroyCompleted
 		}
 		terraformOperation.InProgress = false
 		t.actionStatusService.SetTerraformOperation(terraformOperation)

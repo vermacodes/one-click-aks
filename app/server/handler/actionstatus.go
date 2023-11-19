@@ -20,7 +20,10 @@ func NewActionStatusHandler(r *gin.Engine, service entity.ActionStatusService) {
 
 	r.GET("/actionstatus", handler.GetActionStatus)
 	r.PUT("/actionstatus", handler.SetActionStatus)
-	r.GET("/terraform/status/:id", handler.GetTerraformOperationStatus)
+	r.GET("/terraform/status", handler.GetTerraformOperationStatus)
+	r.GET("/terraform/statusws", func(c *gin.Context) {
+		handler.GetTerraformOperationWs(c.Writer, c.Request)
+	})
 	r.GET("/actionstatusws", func(c *gin.Context) {
 		handler.GetActionStatusWs(c.Writer, c.Request)
 	})
@@ -48,8 +51,7 @@ func (a *actionStatusHandler) SetActionStatus(c *gin.Context) {
 }
 
 func (a *actionStatusHandler) GetTerraformOperationStatus(c *gin.Context) {
-	terraformOperationId := c.Param("id")
-	terraformOperation, err := a.actionStatusService.GetTerraformOperation(terraformOperationId)
+	terraformOperation, err := a.actionStatusService.GetTerraformOperation()
 	if err != nil {
 		c.Status(http.StatusInternalServerError)
 		return
@@ -105,16 +107,48 @@ func (a *actionStatusHandler) GetActionStatusWs(w http.ResponseWriter, r *http.R
 			slog.Error("Failed to send action status to client:", err)
 			return
 		}
-		// if actionStatus.InProgress != previousActionStatus.InProgress {
-		// 	slog.Debug("Sending action status to client: ", actionStatus.InProgress)
-		// 	if err := conn.WriteJSON(actionStatus); err != nil {
-		// 		slog.Error("Failed to send action status to client:", err)
-		// 		return
-		// 	}
-		// }
 
-		// previousActionStatus = actionStatus
+	}
+}
 
-		// time.Sleep(1 * time.Second)
+func (a *actionStatusHandler) GetTerraformOperationWs(w http.ResponseWriter, r *http.Request) {
+	conn, err := actionStatusUpgrader.Upgrade(w, r, nil)
+	if err != nil {
+		slog.Error("Failed to upgrade action status websocket connection:", err)
+		return
+	}
+
+	defer conn.Close()
+
+	// // Get initial action status
+	// initialTerraformOperation, err := a.actionStatusService.GetTerraformOperation("plan")
+	// if err != nil {
+	// 	w.WriteHeader(http.StatusInternalServerError)
+	// 	slog.Error("Failed to retrieve initial action status:", err)
+	// 	return
+	// }
+
+	// // Send the initial action status to the client
+	// if err := conn.WriteJSON(initialActionStatus); err != nil {
+	// 	slog.Error("Failed to send initial action status to client:", err)
+	// 	return
+	// }
+
+	// previousActionStatus := initialActionStatus
+
+	for {
+		// Get the current action status
+		actionStatus, err := a.actionStatusService.WaitForTerraformOperationChange()
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			slog.Error("Failed to retrieve action status:", err)
+			return
+		}
+
+		// Check for changes in action status
+		if err := conn.WriteJSON(actionStatus); err != nil {
+			slog.Error("Failed to send action status to client:", err)
+			return
+		}
 	}
 }

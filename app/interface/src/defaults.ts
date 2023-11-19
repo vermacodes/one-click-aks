@@ -1,5 +1,6 @@
 import {
   Lab,
+  TerraformOperation,
   TfvarAddonsType,
   TfvarAppGatewayType,
   TfvarConfigType,
@@ -24,7 +25,7 @@ export const defaultServiceMesh: TfvarServiceMeshType = {
   mode: "Istio",
   internalIngressGatewayEnabled: false,
   externalIngressGatewayEnabled: false,
-}
+};
 
 export const defaultAKSAddons: TfvarAddonsType = {
   appGateway: false,
@@ -48,7 +49,7 @@ export const defaultKubernetesCluster: TfvarKubernetesClusterType = {
   outboundType: "loadBalancer",
   privateClusterEnabled: "false",
   addons: defaultAKSAddons,
-  defaultNodePool: defaultNodePool
+  defaultNodePool: defaultNodePool,
 };
 
 export const defaultTfvarConfig: TfvarConfigType = {
@@ -137,4 +138,10 @@ export const defaultLab: Lab = {
   updatedBy: "",
   createdOn: "",
   updatedOn: "",
-}
+};
+
+export const defaultTerraformOperation: TerraformOperation = {
+  inProgress: false,
+  operationId: "",
+  status: "Deployment Not Started",
+};

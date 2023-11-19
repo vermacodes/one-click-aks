@@ -329,8 +329,8 @@ export type DeploymentStatus =
   | "Deployment Failed"
   | "Deployment Completed"
   | "Deployment Not Started"
-  | "Destroying Resources"
-  | "Resources Destroyed"
+  | "Destroy In Progress"
+  | "Destroy Completed"
   | "Destroy Failed";
 
 export type DeploymentType = {

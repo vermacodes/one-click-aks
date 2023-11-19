@@ -1,25 +1,18 @@
-import React, { useContext } from "react";
+import React, { useEffect } from "react";
+import { v4 as uuid } from "uuid";
 import { FaTrash } from "react-icons/fa";
-import { ButtonVariant, DeploymentType, Lab } from "../../../../dataStructures";
-import { useSetLogs } from "../../../../hooks/useLogs";
-import { usePreference } from "../../../../hooks/usePreference";
-import { useDestroy } from "../../../../hooks/useTerraform";
+import { ButtonVariant, Lab } from "../../../../dataStructures";
 import Button from "../../../UserInterfaceComponents/Button";
-import { useTerraformWorkspace } from "../../../../hooks/useWorkspace";
-import {
-  useDeleteDeployment,
-  useGetMyDeployments,
-  usePatchDeployment,
-} from "../../../../hooks/useDeployments";
-import { WebSocketContext } from "../../../../WebSocketContext";
+import { useWebSocketContext } from "../../../../WebSocketContext";
 import ConfirmationModal from "../../../UserInterfaceComponents/Modal/ConfirmationModal";
 import { useTerraformOperation } from "../../../../hooks/useTerraformOperation";
+import { toast } from "react-toastify";
+import { useSelectedDeployment } from "../../../../hooks/useSelectedDeployment";
 
 type Props = {
   variant: ButtonVariant;
   navbarButton?: boolean;
   deleteWorkspace?: boolean;
-  deployment?: DeploymentType;
   disabled?: boolean;
   children: React.ReactNode;
   lab: Lab | undefined;
@@ -29,171 +22,92 @@ export default function DestroyButton({
   variant,
   navbarButton,
   deleteWorkspace,
-  deployment,
   disabled,
   children,
   lab,
 }: Props) {
-  const { mutate: setLogs } = useSetLogs();
-  const { mutateAsync: destroyAsync } = useDestroy();
-  const { actionStatus } = useContext(WebSocketContext);
-  const { data: preference } = usePreference();
-  const { data: deployments } = useGetMyDeployments();
-  const { data: terraformWorkspaces } = useTerraformWorkspace();
-  const { mutate: patchDeployment } = usePatchDeployment();
-  const { mutateAsync: deleteDeploymentAsync } = useDeleteDeployment();
+  const { actionStatus, terraformOperation } = useWebSocketContext();
+  const { selectedDeployment: deployment } = useSelectedDeployment();
+
   const [showModal, setShowModal] = React.useState(false);
+  const [operationId, setOperationId] = React.useState<string>(uuid());
 
   function onClickHandler() {
     setShowModal(true);
   }
 
-  const { onClickHandler: onConfirmDelete } = useTerraformOperation();
+  const {
+    onClickHandler: onConfirmDelete,
+    deleteDeployment,
+    updateDeploymentStatus,
+  } = useTerraformOperation();
 
-  // function updateDeploymentStatus(
-  //   deployment: DeploymentType | undefined,
-  //   status: DeploymentType["deploymentStatus"]
-  // ) {
-  //   if (deployment !== undefined) {
-  //     patchDeployment({
-  //       ...deployment,
-  //       deploymentStatus: status,
-  //     });
-  //   }
-  // }
+  useEffect(() => {
+    // get the operationId from localStorage
+    let operationIdFromLocalStorage = localStorage.getItem(
+      deployment?.deploymentWorkspace +
+        "-" +
+        (deleteWorkspace ? "delete" : "destroy") +
+        "-operation-id"
+    );
+    if (operationIdFromLocalStorage !== null) {
+      setOperationId(operationIdFromLocalStorage);
+    }
+  }, []);
 
-  // async function checkStatusAsync(
-  //   operationId: string
-  // ): Promise<TerraformOperation> {
-  //   try {
-  //     const response = await axiosInstance.get(
-  //       `/terraform/status/${operationId}`
-  //     );
-  //     return response.data;
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
+  useEffect(() => {
+    if (terraformOperation.operationId === operationId) {
+      updateDeploymentStatus({
+        deployment: deployment,
+        status: terraformOperation.status,
+      });
 
-  // async function checkDeploymentStatus(
-  //   operation: TerraformOperation,
-  //   deployment: DeploymentType
-  // ) {
-  //   const intervalId = setInterval(async () => {
-  //     const terraformOp = await checkStatusAsync(operation.operationId);
-  //     if (!terraformOp.inProgress) {
-  //       if (terraformOp.status === "Resources Destroyed") {
-  //         toast.success("Resources Destroyed"),
-  //           {
-  //             autoClose: 5000,
-  //           };
+      if (terraformOperation.status === "Destroy Failed") {
+        toast.error(terraformOperation.status);
+        setOperationId(uuid());
 
-  //         updateDeploymentStatus(deployment, "Resources Destroyed");
+        // remove the operationId from localStorage
+        if (deployment !== undefined) {
+          localStorage.removeItem(
+            deployment.deploymentWorkspace +
+              "-" +
+              (deleteWorkspace ? "delete" : "destroy") +
+              "-operation-id"
+          );
+        }
+      }
+      if (terraformOperation.status === "Destroy Completed") {
+        console.log("Destroy Completed");
+        toast.success(terraformOperation.status);
+        setOperationId(uuid());
+        deleteWorkspace && deleteDeployment({ deployment: deployment });
 
-  //         // handle deleting workspace.
-  //         handleDeleteWorkspace();
-  //       } else if (terraformOp.status === "Destroy Failed") {
-  //         toast.error("Destroy Failed"),
-  //           {
-  //             autoCLose: 10000,
-  //           };
-  //         updateDeploymentStatus(deployment, "Destroy Failed");
-  //       }
-  //       clearInterval(intervalId);
-  //     }
-  //   }, 10000);
-  // }
+        // remove the operationId from localStorage
+        if (deployment !== undefined) {
+          localStorage.removeItem(
+            deployment.deploymentWorkspace +
+              "-" +
+              (deleteWorkspace ? "delete" : "destroy") +
+              "-operation-id"
+          );
+        }
+      }
+      if (terraformOperation.status === "Destroy In Progress") {
+        toast.info(terraformOperation.status);
 
-  // function handleDeleteWorkspace() {
-  //   if (
-  //     deployment === undefined ||
-  //     terraformWorkspaces === undefined ||
-  //     !deleteWorkspace
-  //   ) {
-  //     return;
-  //   }
-
-  //   toast.promise(
-  //     deleteDeploymentAsync([
-  //       deployment.deploymentWorkspace,
-  //       deployment.deploymentSubscriptionId,
-  //     ]),
-  //     {
-  //       pending: "Deleting workspace...",
-  //       success: {
-  //         render(data: any) {
-  //           return `Workspace deleted.`;
-  //         },
-  //         autoClose: 2000,
-  //       },
-  //       error: {
-  //         render(data: any) {
-  //           return `Failed to delete workspace. ${data.data.data}`;
-  //         },
-  //         autoClose: 10000,
-  //       },
-  //     }
-  //   );
-  // }
-
-  // function onConfirmDelete() {
-  //   setShowModal(false);
-  //   // if lab is undefined, do nothing
-  //   if (
-  //     lab === undefined ||
-  //     terraformWorkspaces === undefined ||
-  //     deployments === undefined
-  //   ) {
-  //     toast.error(
-  //       "Something isn't right. Try 'Reset Server Cache' from settings."
-  //     );
-  //     return;
-  //   }
-
-  //   // update lab's azure region based on users preference
-  //   if (lab.template !== undefined && preference !== undefined) {
-  //     lab.template.resourceGroup.location = preference.azureRegion;
-  //   }
-
-  //   // reset logs.
-  //   setLogs({ logs: "" });
-
-  //   //get the deployment for the selected workspace
-  //   const deployment = getSelectedDeployment(deployments, terraformWorkspaces);
-  //   if (deployment === undefined) {
-  //     toast.error(
-  //       "No deployment selected. Try 'Reset Server Cache' from settings."
-  //     );
-  //     return;
-  //   }
-
-  //   updateDeploymentStatus(deployment, "Destroying Resources");
-
-  //   // destroy terraform
-  //   const response = toast.promise(destroyAsync(lab), {
-  //     pending: "Starting Destroy",
-  //     success: {
-  //       render(data: any) {
-  //         return `Destroy started.`;
-  //       },
-  //       autoClose: 5000,
-  //     },
-  //     error: {
-  //       render(data: any) {
-  //         return `Destroy failed. ${data.data.data}`;
-  //       },
-  //       autoClose: 10000,
-  //     },
-  //   });
-
-  //   response
-  //     .then((data) => {
-  //       checkDeploymentStatus(data.data, deployment);
-  //     })
-  //     .catch(() => {
-  //       updateDeploymentStatus(deployment, "Destroy Failed");
-  //     });
-  // }
+        // store the operationId in localStorage
+        if (deployment !== undefined) {
+          localStorage.setItem(
+            deployment.deploymentWorkspace +
+              "-" +
+              (deleteWorkspace ? "delete" : "destroy") +
+              "-operation-id",
+            operationId
+          );
+        }
+      }
+    }
+  }, [terraformOperation]);
 
   // This is used by Navbar
   if (navbarButton) {
@@ -228,12 +142,8 @@ export default function DestroyButton({
             setShowModal(false);
             onConfirmDelete({
               operationType: "destroy",
+              operationId: operationId,
               lab: lab,
-              inProgressStatus: "Destroying Resources",
-              failedStatus: "Destroy Failed",
-              completedStatus: "Resources Destroyed",
-              extendLifespan: false,
-              deleteWorkspace: deleteWorkspace || false,
             });
           }}
         >

@@ -28,7 +28,7 @@ func (t *terraformRepository) TerraformAction(tfvar entity.TfvarConfigType, acti
 	setEnvironmentVariable("container_name", "tfstate")
 	setEnvironmentVariable("tf_state_file_name", "terraform.tfstate")
 
-	// Sets terrform environment variables from tfvar
+	// Sets terraform environment variables from tfvar
 
 	tr := reflect.TypeOf(tfvar)
 	// Loop over the fields in the struct.
@@ -37,12 +37,12 @@ func (t *terraformRepository) TerraformAction(tfvar entity.TfvarConfigType, acti
 		field := reflect.TypeOf(tfvar).Field(i)
 		value := reflect.ValueOf(tfvar).Field(i)
 
-		// Set the evironment variable of resource.
+		// Set the environment variable of resource.
 		encoded, _ := json.Marshal(conjson.NewMarshaler(value.Interface(), transform.ConventionalKeys()))
 
 		slog.Debug("Field :" + field.Name + " Encoded String : " + string(encoded))
 
-		// If a variable doesnt exist, just skip it and let terraform default do the magic.
+		// If a variable doesn't exist, just skip it and let terraform default do the magic.
 		if string(encoded) != "null" {
 			setEnvironmentVariable("TF_VAR_"+helper.CamelToConventional(field.Name), string(encoded))
 		}

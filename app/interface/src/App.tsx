@@ -1,13 +1,19 @@
 import { useEffect, useState } from "react";
 import MainLayout from "./layouts/MainLayout";
 import { WebSocketContext } from "./WebSocketContext";
-import { ActionStatusType, GraphData, LogsStreamType } from "./dataStructures";
+import {
+  ActionStatusType,
+  GraphData,
+  LogsStreamType,
+  TerraformOperation,
+} from "./dataStructures";
 import ReconnectingWebSocket from "reconnecting-websocket";
 import { useQueryClient } from "react-query";
 import { setDefaultValuesInLocalStorage } from "./utils/helpers";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AuthenticatingFullScreen from "./components/Authentication/AuthenticatingFullScreen";
+import { defaultTerraformOperation } from "./defaults";
 
 function App() {
   const [darkMode, setDarkMode] = useState<boolean>(true);
@@ -17,8 +23,13 @@ function App() {
   const [logStream, setLogStream] = useState<LogsStreamType>({
     logs: "",
   });
+  const [terraformOperation, setTerraformOperation] =
+    useState<TerraformOperation>(defaultTerraformOperation);
   const [actionStatusConnected, setActionStatusConnected] = useState(false);
   const [logStreamConnected, setLogStreamConnected] = useState(false);
+  const [terraformOperationConnected, setTerraformOperationConnected] =
+    useState(false);
+
   const [graphResponse, setGraphResponse] = useState<GraphData | undefined>();
 
   const queryClient = useQueryClient();
@@ -75,9 +86,26 @@ function App() {
       setLogStream(JSON.parse(event.data));
     };
 
+    const terraformOperationWs = new ReconnectingWebSocket(
+      baseUrl + "terraform/statusws"
+    );
+    terraformOperationWs.onopen = () => {
+      setTerraformOperationConnected(true);
+    };
+
+    terraformOperationWs.onclose = () => {
+      setTerraformOperationConnected(false);
+    };
+
+    terraformOperationWs.onmessage = (event: MessageEvent) => {
+      setTerraformOperation(JSON.parse(event.data));
+      console.log(JSON.parse(event.data));
+    };
+
     return () => {
       actionStatusWs.close();
       logStreamWs.close();
+      terraformOperationWs.close();
     };
   }, []);
 
@@ -96,8 +124,11 @@ function App() {
             setActionStatus,
             logStream,
             setLogStream,
+            terraformOperation,
+            setTerraformOperation,
             actionStatusConnected,
             logStreamConnected,
+            terraformOperationConnected,
           }}
         >
           {graphResponse ? (

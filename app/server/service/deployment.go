@@ -236,7 +236,7 @@ func (d *DeploymentService) PollAndDeleteDeployments(interval time.Duration) err
 			}
 
 			// Update deployment status to deleting.
-			deployment.DeploymentStatus = entity.DestroyingResources
+			deployment.DeploymentStatus = entity.DestroyInProgress
 			if err := d.UpsertDeployment(deployment); err != nil {
 				slog.Error("not able to update deployment", err)
 				continue
@@ -274,7 +274,7 @@ func (d *DeploymentService) PollAndDeleteDeployments(interval time.Duration) err
 			}
 
 			// Update deployment status to destroyed.
-			deployment.DeploymentStatus = entity.ResourcesDestroyed
+			deployment.DeploymentStatus = entity.DestroyCompleted
 			if err := d.UpsertDeployment(deployment); err != nil {
 				slog.Error("not able to update deployment", err)
 				d.actionStatusService.SetActionEnd()

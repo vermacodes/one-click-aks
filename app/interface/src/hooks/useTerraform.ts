@@ -7,16 +7,19 @@ function init(lab: Lab) {
   return axiosInstance.post("/terraform/init", lab);
 }
 
-function plan(lab: Lab) {
-  return axiosInstance.post("/terraform/plan", lab);
+function plan(lab: Lab, operationId: string) {
+  return axiosInstance.post(`/terraform/plan/${operationId}`, lab);
 }
 
-function apply(lab: Lab): Promise<AxiosResponse<TerraformOperation>> {
-  return axiosInstance.post("/terraform/apply", lab);
+function apply(
+  lab: Lab,
+  operationId: string
+): Promise<AxiosResponse<TerraformOperation>> {
+  return axiosInstance.post(`/terraform/apply/${operationId}`, lab);
 }
 
-function destroy(lab: Lab) {
-  return axiosInstance.post("/terraform/destroy", lab);
+function destroy(lab: Lab, operationId: string) {
+  return axiosInstance.post(`/terraform/destroy/${operationId}`, lab);
 }
 
 function extend(lab: Lab, mode: string) {
@@ -42,7 +45,7 @@ export function useInit() {
 
 export function usePlan() {
   const queryClient = useQueryClient();
-  return useMutation(plan, {
+  return useMutation((params: [Lab, string]) => plan(params[0], params[1]), {
     onMutate: async () => {
       await queryClient.cancelQueries("get-action-status");
       setTimeout(() => {
@@ -59,7 +62,7 @@ export function usePlan() {
 
 export function useApply() {
   const queryClient = useQueryClient();
-  return useMutation(apply, {
+  return useMutation((params: [Lab, string]) => apply(params[0], params[1]), {
     onSuccess: () => {
       queryClient.invalidateQueries("list-terraform-workspaces");
       queryClient.invalidateQueries("get-selected-terraform-workspace");
@@ -70,7 +73,7 @@ export function useApply() {
 
 export function useDestroy() {
   const queryClient = useQueryClient();
-  return useMutation(destroy, {
+  return useMutation((params: [Lab, string]) => destroy(params[0], params[1]), {
     onMutate: async () => {
       await queryClient.cancelQueries("get-action-status");
       setTimeout(() => {

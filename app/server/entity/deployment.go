@@ -16,8 +16,8 @@ const (
 	DeploymentFailed     DeploymentStatus = "Deployment Failed"
 	DeploymentCompleted  DeploymentStatus = "Deployment Completed"
 	DeploymentNotStarted DeploymentStatus = "Deployment Not Started"
-	DestroyingResources  DeploymentStatus = "Destroying Resources"
-	ResourcesDestroyed   DeploymentStatus = "Resources Destroyed"
+	DestroyInProgress    DeploymentStatus = "Destroy In Progress"
+	DestroyCompleted     DeploymentStatus = "Destroy Completed"
 	DestroyFailed        DeploymentStatus = "Destroy Failed"
 )
 

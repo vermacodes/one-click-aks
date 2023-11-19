@@ -58,12 +58,30 @@ func (a *actionStatusRepository) WaitForActionStatusChange() (string, error) {
 	}
 }
 
-func (a *actionStatusRepository) SetTerraformOperation(id string, val string) error {
+func (a *actionStatusRepository) SetTerraformOperation(val string) error {
 	rdb := newActionStatusRedisClient()
-	return rdb.Set(actionStatusCtx, id, val, 0).Err()
+	if err := rdb.Set(actionStatusCtx, "terraform-operation", val, 0).Err(); err != nil {
+		return err
+	}
+
+	return rdb.Publish(actionStatusCtx, "redis-terraform-operation-pubsub-channel", val).Err()
 }
 
-func (a *actionStatusRepository) GetTerraformOperation(id string) (string, error) {
+func (a *actionStatusRepository) GetTerraformOperation() (string, error) {
 	rdb := newActionStatusRedisClient()
-	return rdb.Get(actionStatusCtx, id).Result()
+	return rdb.Get(actionStatusCtx, "terraform-operation").Result()
+}
+
+func (a *actionStatusRepository) WaitForTerraformOperationChange() (string, error) {
+	rdb := newActionStatusRedisClient().Subscribe(actionStatusCtx, "redis-terraform-operation-pubsub-channel")
+	defer rdb.Close()
+
+	for {
+		msg, err := rdb.ReceiveMessage(actionStatusCtx)
+		if err != nil {
+			return "", err
+		}
+
+		return msg.Payload, nil
+	}
 }
