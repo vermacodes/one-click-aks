@@ -71,6 +71,40 @@ func (t *terraformHandler) Plan(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, terraformOperation)
 }
 
+func (t *terraformHandler) Plan(c *gin.Context) {
+	lab := entity.LabType{}
+	if err := c.Bind(&lab); err != nil {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	terraformOperation := entity.TerraformOperation{
+		OperationId: c.Param("operationId"),
+		InProgress:  true,
+		Status:      entity.PlanInProgress,
+	}
+
+	if err := t.actionStatusService.SetTerraformOperation(terraformOperation); err != nil {
+		c.Status(http.StatusInternalServerError)
+	}
+
+	// Start the long-running operation in a goroutine
+	go func() {
+		t.actionStatusService.SetActionStart()
+		if err := t.terraformService.Plan(lab); err != nil {
+			terraformOperation.Status = entity.PlanFailed
+		} else {
+			terraformOperation.Status = entity.PlanCompleted
+		}
+		terraformOperation.InProgress = false
+		t.actionStatusService.SetTerraformOperation(terraformOperation)
+		t.actionStatusService.SetActionEnd()
+	}()
+
+	// Respond back to the request with the operation ID
+	c.IndentedJSON(http.StatusOK, terraformOperation)
+}
+
 func (t *terraformHandler) Apply(c *gin.Context) {
 	lab := entity.LabType{}
 	if err := c.Bind(&lab); err != nil {

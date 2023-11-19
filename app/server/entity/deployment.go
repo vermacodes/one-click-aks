@@ -9,6 +9,9 @@ import (
 type DeploymentStatus string
 
 const (
+	InitInProgress       DeploymentStatus = "Init In Progress"
+	InitFailed           DeploymentStatus = "Init Failed"
+	InitCompleted        DeploymentStatus = "Init Completed"
 	PlanInProgress       DeploymentStatus = "Plan In Progress"
 	PlanFailed           DeploymentStatus = "Plan Failed"
 	PlanCompleted        DeploymentStatus = "Plan Completed"
