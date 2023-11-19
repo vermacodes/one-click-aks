@@ -18,7 +18,7 @@ func NewTerraformWithActionStatusHandler(r *gin.RouterGroup, service entity.Terr
 		actionStatusService: actionStatusService,
 	}
 
-	r.POST("/terraform/init/", handler.Init)
+	r.POST("/terraform/init/:operationId", handler.Init)
 	r.POST("/terraform/plan/:operationId", handler.Plan)
 	r.POST("/terraform/apply/:operationId", handler.Apply)
 	r.POST("/terraform/destroy/:operationId", handler.Destroy)
@@ -26,28 +26,10 @@ func NewTerraformWithActionStatusHandler(r *gin.RouterGroup, service entity.Terr
 }
 
 func (t *terraformHandler) Init(c *gin.Context) {
-
-	w := c.Writer
-	header := w.Header()
-	header.Set("Transfer-Encoding", "chunked")
-	header.Set("Content-type", "text/html")
-	w.WriteHeader(http.StatusOK)
-	w.(http.Flusher).Flush()
-
-	t.terraformService.Init()
-}
-
-func (t *terraformHandler) Plan(c *gin.Context) {
-	lab := entity.LabType{}
-	if err := c.Bind(&lab); err != nil {
-		c.Status(http.StatusBadRequest)
-		return
-	}
-
 	terraformOperation := entity.TerraformOperation{
 		OperationId: c.Param("operationId"),
 		InProgress:  true,
-		Status:      entity.PlanInProgress,
+		Status:      entity.InitInProgress,
 	}
 
 	if err := t.actionStatusService.SetTerraformOperation(terraformOperation); err != nil {
@@ -57,10 +39,10 @@ func (t *terraformHandler) Plan(c *gin.Context) {
 	// Start the long-running operation in a goroutine
 	go func() {
 		t.actionStatusService.SetActionStart()
-		if err := t.terraformService.Plan(lab); err != nil {
-			terraformOperation.Status = entity.PlanFailed
+		if err := t.terraformService.Init(); err != nil {
+			terraformOperation.Status = entity.InitFailed
 		} else {
-			terraformOperation.Status = entity.PlanCompleted
+			terraformOperation.Status = entity.InitCompleted
 		}
 		terraformOperation.InProgress = false
 		t.actionStatusService.SetTerraformOperation(terraformOperation)
