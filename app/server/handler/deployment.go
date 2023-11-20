@@ -1,21 +1,30 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/vermacodes/one-click-aks/app/server/entity"
 	"github.com/vermacodes/one-click-aks/app/server/helper"
+	"golang.org/x/exp/slog"
 )
 
 type deploymentHandler struct {
-	deploymentService entity.DeploymentService
+	deploymentService   entity.DeploymentService
+	terraformService    entity.TerraformService
+	actionStatusService entity.ActionStatusService
 }
 
-func NewDeploymentHandler(r *gin.RouterGroup, service entity.DeploymentService) {
+func NewDeploymentHandler(r *gin.RouterGroup,
+	service entity.DeploymentService,
+	terraformService entity.TerraformService,
+	actionStatusService entity.ActionStatusService) {
 	handler := &deploymentHandler{
-		deploymentService: service,
+		deploymentService:   service,
+		terraformService:    terraformService,
+		actionStatusService: actionStatusService,
 	}
 
 	//r.GET("/deployments", handler.GetDeployments)
@@ -27,15 +36,19 @@ func NewDeploymentHandler(r *gin.RouterGroup, service entity.DeploymentService) 
 	r.PATCH("/deployments", handler.UpsertDeployment)
 }
 
-func NewDeploymentWithActionStatusHandler(r *gin.RouterGroup, service entity.DeploymentService) {
+func NewDeploymentWithActionStatusHandler(r *gin.RouterGroup, service entity.DeploymentService,
+	terraformService entity.TerraformService,
+	actionStatusService entity.ActionStatusService) {
 	handler := &deploymentHandler{
-		deploymentService: service,
+		deploymentService:   service,
+		terraformService:    terraformService,
+		actionStatusService: actionStatusService,
 	}
 
 	r.PUT("/deployments", handler.UpsertDeployment)
 	r.POST("/deployments", handler.UpsertDeployment)
 	r.PUT("/deployments/select", handler.SelectDeployment)
-	r.DELETE("/deployments/:workspace/:subscriptionId", handler.DeleteDeployment)
+	r.DELETE("/deployments/:workspace/:subscriptionId/:operationId", handler.DeleteDeployment)
 }
 
 func (d *deploymentHandler) GetMyDeployments(c *gin.Context) {
@@ -93,7 +106,7 @@ func (d *deploymentHandler) UpsertDeployment(c *gin.Context) {
 	authToken = strings.Split(authToken, "Bearer ")[1]
 	userPrincipal, _ := helper.GetUserPrincipalFromMSALAuthToken(authToken)
 
-	deployment.DeploymentId = helper.Generate(5)
+	deployment.DeploymentId = userPrincipal + "-" + deployment.DeploymentWorkspace + "-" + deployment.DeploymentSubscriptionId
 	deployment.DeploymentUserId = userPrincipal
 
 	if err := d.deploymentService.UpsertDeployment(deployment); err != nil {
@@ -104,6 +117,9 @@ func (d *deploymentHandler) UpsertDeployment(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
+// This needs to to destroy first. Then delete the deployment
+// This will be a long running operation
+// Thus implemented like terraform destroy
 func (d *deploymentHandler) DeleteDeployment(c *gin.Context) {
 	workspace := c.Param("workspace")
 	subscriptionId := c.Param("subscriptionId")
@@ -113,10 +129,53 @@ func (d *deploymentHandler) DeleteDeployment(c *gin.Context) {
 	authToken = strings.Split(authToken, "Bearer ")[1]
 	userPrincipal, _ := helper.GetUserPrincipalFromMSALAuthToken(authToken)
 
-	if err := d.deploymentService.DeleteDeployment(userPrincipal, workspace, subscriptionId); err != nil {
+	deployment, err := d.deploymentService.GetDeployment(userPrincipal, workspace, subscriptionId)
+	if err != nil {
 		c.Status(http.StatusInternalServerError)
 		return
 	}
+
+	terraformOperation := entity.TerraformOperation{
+		OperationId: c.Param("operationId"),
+		InProgress:  true,
+		Status:      entity.DestroyInProgress,
+	}
+
+	fmt.Println(d.actionStatusService)
+	fmt.Println(terraformOperation)
+
+	if err := d.actionStatusService.SetTerraformOperation(terraformOperation); err != nil {
+		slog.Error("error setting terraform operation ", err)
+		c.Status(http.StatusInternalServerError)
+	}
+
+	// Start the long-running operation in a goroutine
+	go func() {
+		if err := d.actionStatusService.SetActionStart(); err != nil {
+			slog.Error("error setting action start ", err)
+		}
+
+		if err := d.terraformService.Destroy(deployment.DeploymentLab); err != nil {
+			terraformOperation.Status = entity.DestroyFailed
+		} else {
+			terraformOperation.Status = entity.DestroyCompleted
+		}
+
+		terraformOperation.InProgress = false
+		if err := d.actionStatusService.SetTerraformOperation(terraformOperation); err != nil {
+			slog.Error("error setting terraform operation ", err)
+		}
+
+		// Delete the deployment
+		if err := d.deploymentService.DeleteDeployment(userPrincipal, workspace, subscriptionId); err != nil {
+			slog.Error("error deleting deployment ", err)
+		}
+
+		if err := d.actionStatusService.SetActionEnd(); err != nil {
+			slog.Error("error setting action end ", err)
+		}
+
+	}()
 
 	c.Status(http.StatusNoContent)
 }

@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import DeleteAssignment from "../../components/Lab/Assignment/DeleteAssignment";
 import { useGetAssignments } from "../../hooks/useAssignment";
 import PageLayout from "../../layouts/PageLayout";
+import Terminal from "../../components/Terminal";
 
 type Props = {};
 
@@ -40,6 +41,7 @@ export default function Assignments({}: Props) {
             ))}
         </tbody>
       </table>
+      <Terminal />
     </PageLayout>
   );
 }

@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { Lab, TerraformOperation } from "../dataStructures";
+import { DeploymentType, Lab, TerraformOperation } from "../dataStructures";
 import { axiosInstance } from "../utils/axios-interceptors";
 import { Axios, AxiosResponse } from "axios";
 
@@ -20,6 +20,13 @@ function apply(
 
 function destroy(lab: Lab, operationId: string) {
   return axiosInstance.post(`/terraform/destroy/${operationId}`, lab);
+}
+
+function destroyAndDelete(deployment: DeploymentType, operationId: string) {
+  return axiosInstance.post(
+    `/terraform/destroyAndDelete/${operationId}`,
+    deployment
+  );
 }
 
 function extend(lab: Lab, mode: string) {
@@ -86,6 +93,27 @@ export function useDestroy() {
       queryClient.invalidateQueries("get-resources");
     },
   });
+}
+
+export function useDestroyAndDelete() {
+  const queryClient = useQueryClient();
+  return useMutation(
+    (params: [DeploymentType, string]) =>
+      destroyAndDelete(params[0], params[1]),
+    {
+      onMutate: async () => {
+        await queryClient.cancelQueries("get-action-status");
+        setTimeout(() => {
+          queryClient.invalidateQueries("get-action-status");
+        }, 100);
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries("list-terraform-workspaces");
+        queryClient.invalidateQueries("get-selected-terraform-workspace");
+        queryClient.invalidateQueries("get-resources");
+      },
+    }
+  );
 }
 
 export function useExtend() {

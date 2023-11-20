@@ -12,7 +12,9 @@ type terraformHandler struct {
 	actionStatusService entity.ActionStatusService
 }
 
-func NewTerraformWithActionStatusHandler(r *gin.RouterGroup, service entity.TerraformService, actionStatusService entity.ActionStatusService) {
+func NewTerraformWithActionStatusHandler(r *gin.RouterGroup,
+	service entity.TerraformService,
+	actionStatusService entity.ActionStatusService) {
 	handler := &terraformHandler{
 		terraformService:    service,
 		actionStatusService: actionStatusService,

@@ -24,6 +24,10 @@ function selectDeployment(deployment: DeploymentType) {
   return axiosInstance.put(`deployments/select`, deployment);
 }
 
+// function deleteDeployment(deployment: DeploymentType) {
+//   return axiosInstance.delete(`deployments`, { data: deployment });
+// }
+
 export function useGetMyDeployments() {
   return useQuery("list-deployments", listDeployments, {
     select: (data): DeploymentType[] => {
@@ -84,8 +88,10 @@ export function useUpsertDeployment() {
 export function useDeleteDeployment() {
   const queryClient = useQueryClient();
   return useMutation(
-    (params: [string, string]) =>
-      axiosInstance.delete(`deployments/${params[0]}/${params[1]}`),
+    (params: [string, string, string]) =>
+      axiosInstance.delete(
+        `deployments/${params[0]}/${params[1]}/${params[2]}`
+      ),
     {
       onSuccess: () => {
         queryClient.invalidateQueries("list-deployments");

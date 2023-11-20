@@ -11,7 +11,13 @@ import {
   usePatchDeployment,
 } from "./useDeployments";
 import { useSetLogs } from "./useLogs";
-import { useApply, useDestroy, useInit, usePlan } from "./useTerraform";
+import {
+  useApply,
+  useDestroy,
+  useDestroyAndDelete,
+  useInit,
+  usePlan,
+} from "./useTerraform";
 import { usePreference } from "./usePreference";
 import { useTerraformWorkspace } from "./useWorkspace";
 import { toast } from "react-toastify";
@@ -25,6 +31,7 @@ export function useTerraformOperation() {
   const { mutateAsync: planAsync } = usePlan();
   const { mutateAsync: applyAsync } = useApply();
   const { mutateAsync: destroyAsync } = useDestroy();
+  const { mutateAsync: destroyAndDeleteAsync } = useDestroyAndDelete();
   const { data: preference } = usePreference();
   const { data: deployments } = useGetMyDeployments();
   const { data: terraformWorkspaces } = useTerraformWorkspace();
@@ -61,25 +68,30 @@ export function useTerraformOperation() {
   }
 
   type DeleteDeploymentProps = {
+    operationId: string;
     deployment: DeploymentType | undefined;
   };
 
-  function deleteDeployment({ deployment }: DeleteDeploymentProps) {
+  async function deleteDeployment({
+    operationId,
+    deployment,
+  }: DeleteDeploymentProps) {
     if (deployment === undefined) {
       toast.error("No deployment selected.");
-      return;
+      return Promise.reject();
     }
 
-    toast.promise(
+    return toast.promise(
       deleteDeploymentAsync([
         deployment.deploymentWorkspace,
         deployment.deploymentSubscriptionId,
+        operationId,
       ]),
       {
         pending: "Deleting deployment...",
         success: {
-          render: `Deployment deleted.`,
-          autoClose: 2000,
+          render: `Delete In Progress`,
+          autoClose: 5000,
         },
         error: {
           render: `Failed to delete deployment.`,
@@ -93,12 +105,16 @@ export function useTerraformOperation() {
     operationType: "init" | "plan" | "apply" | "destroy";
     operationId: string;
     lab: Lab;
+    deployment: DeploymentType | undefined;
+    deleteDeployment?: boolean | undefined;
   };
 
   function submitOperation({
     operationType,
     operationId,
     lab,
+    deployment,
+    deleteDeployment: deleteDeploymentFlag = false,
   }: SubmitOperationProps): Promise<AxiosResponse<TerraformOperation>> {
     if (operationType === "plan") {
       return planAsync([lab, operationId]);
@@ -106,7 +122,14 @@ export function useTerraformOperation() {
     if (operationType === "apply") {
       return applyAsync([lab, operationId]);
     }
-    if (operationType === "destroy") {
+    if (operationType === "destroy" && deleteDeploymentFlag) {
+      if (deployment === undefined) {
+        toast.error("No deployment selected.");
+        return Promise.reject();
+      }
+      return deleteDeployment({ operationId, deployment });
+    }
+    if (operationType === "destroy" && !deleteDeploymentFlag) {
       return destroyAsync([lab, operationId]);
     }
 
@@ -117,12 +140,16 @@ export function useTerraformOperation() {
     operationType: "init" | "plan" | "apply" | "destroy";
     operationId: string;
     lab: Lab | undefined;
+    deployment?: DeploymentType | undefined;
+    deleteDeployment?: boolean | undefined;
   };
 
   const onClickHandler = ({
     operationType,
     operationId,
     lab,
+    deployment,
+    deleteDeployment = false,
   }: OnClickHandlerProps) => {
     if (
       lab === undefined ||
@@ -150,7 +177,13 @@ export function useTerraformOperation() {
       return;
     }
 
-    submitOperation({ operationType, operationId, lab });
+    submitOperation({
+      operationType,
+      operationId,
+      lab,
+      deployment,
+      deleteDeployment,
+    });
   };
 
   return { onClickHandler, deleteDeployment, updateDeploymentStatus };

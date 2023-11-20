@@ -80,7 +80,7 @@ export default function DestroyButton({
         console.log("Destroy Completed");
         toast.success(terraformOperation.status);
         setOperationId(uuid());
-        deleteWorkspace && deleteDeployment({ deployment: deployment });
+        // deleteWorkspace && deleteDeployment({ deployment: deployment });
 
         // remove the operationId from localStorage
         if (deployment !== undefined) {
@@ -144,6 +144,8 @@ export default function DestroyButton({
               operationType: "destroy",
               operationId: operationId,
               lab: lab,
+              deployment: deployment,
+              deleteDeployment: deleteWorkspace || false,
             });
           }}
         >
