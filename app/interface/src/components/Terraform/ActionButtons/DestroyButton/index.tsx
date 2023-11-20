@@ -1,7 +1,7 @@
 import React from "react";
 import { v4 as uuid } from "uuid";
 import { FaTrash } from "react-icons/fa";
-import { ButtonVariant, Lab } from "../../../../dataStructures";
+import { ButtonVariant, DeploymentType, Lab } from "../../../../dataStructures";
 import Button from "../../../UserInterfaceComponents/Button";
 import { useWebSocketContext } from "../../../Context/WebSocketContext";
 import ConfirmationModal from "../../../UserInterfaceComponents/Modal/ConfirmationModal";
@@ -11,6 +11,7 @@ import { useSelectedDeployment } from "../../../../hooks/useSelectedDeployment";
 type Props = {
   variant: ButtonVariant;
   navbarButton?: boolean;
+  deployment?: DeploymentType | undefined;
   deleteWorkspace?: boolean;
   disabled?: boolean;
   children: React.ReactNode;
@@ -19,13 +20,14 @@ type Props = {
 
 export default function DestroyButton({
   variant,
+  deployment,
   deleteWorkspace,
   disabled,
   children,
   lab,
 }: Props) {
   const { actionStatus } = useWebSocketContext();
-  const { selectedDeployment: deployment } = useSelectedDeployment();
+  const { selectedDeployment } = useSelectedDeployment();
   const { onClickHandler: onConfirmDelete } = useTerraformOperation();
 
   const [showModal, setShowModal] = React.useState(false);
@@ -56,7 +58,7 @@ export default function DestroyButton({
               operationType: "destroy",
               operationId: uuid(),
               lab: lab,
-              deployment: deployment,
+              deployment: deployment || selectedDeployment,
               deleteDeployment: deleteWorkspace || false,
             });
           }}
