@@ -111,7 +111,6 @@ export default function WebSocketContextProvider({
     };
     serverNotificationWs.onmessage = (event: MessageEvent) => {
       setServerNotification(JSON.parse(event.data));
-      console.log(JSON.parse(event.data));
     };
 
     return () => {

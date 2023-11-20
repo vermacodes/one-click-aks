@@ -34,7 +34,6 @@ export default function ResetLabState({ buttonVariant, children }: Props) {
         error: {
           //TODO: any ain't good. Fix this.
           render(data: any) {
-            console.log("Data:", data);
             return `Lab state reset failed: ${data.data.data}`;
           },
 

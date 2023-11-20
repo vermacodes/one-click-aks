@@ -28,7 +28,6 @@ export default function SaveLabType({ lab, setLab }: Props) {
           key={"template"}
           label="My Lab"
           handleOnChange={() => {
-            console.log("clicked");
             setLab({ ...lab, type: "template" });
           }}
         />

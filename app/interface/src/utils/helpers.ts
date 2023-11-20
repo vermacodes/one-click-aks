@@ -11,7 +11,6 @@ export function calculateNewEpochTimeForDeployment(deployment: DeploymentType) {
   const now = new Date();
   // Get epoch time in seconds
   const epochTime = Math.floor(now.getTime() / 1000);
-  console.log("epochTime: ", epochTime);
 
   return deployment.deploymentLifespan + epochTime;
 }
