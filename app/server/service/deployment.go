@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/vermacodes/one-click-aks/app/server/entity"
-	"github.com/vermacodes/one-click-aks/app/server/helper"
 	"golang.org/x/exp/slog"
 )
 
@@ -77,7 +76,7 @@ func (d *DeploymentService) GetMyDeployments(userId string) ([]entity.Deployment
 			DeploymentUserId:             userId,
 			DeploymentWorkspace:          "default",
 			DeploymentSubscriptionId:     activeAccount.Id,
-			DeploymentId:                 helper.Generate(5),
+			DeploymentId:                 userId + "-default-" + activeAccount.Id,
 			DeploymentLab:                defaultLab,
 			DeploymentAutoDelete:         false,
 			DeploymentLifespan:           28800,

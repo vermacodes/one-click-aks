@@ -116,12 +116,13 @@ func main() {
 
 	terraformRepository := repository.NewTerraformRepository()
 	terraformService := service.NewTerraformService(terraformRepository, labService, workspaceService, logStreamService, actionStatusService, kVersionService, storageAccountService, loggingService, authService)
-	handler.NewTerraformWithActionStatusHandler(authWithTerraformActionRouter, terraformService, actionStatusService)
 
 	deploymentRepository := repository.NewDeploymentRepository()
 	deploymentService := service.NewDeploymentService(deploymentRepository, labService, terraformService, actionStatusService, logStreamService, authService, workspaceService)
 	handler.NewDeploymentHandler(authRouter, deploymentService, terraformService, actionStatusService)
 	handler.NewDeploymentWithActionStatusHandler(authWithActionRouter, deploymentService, terraformService, actionStatusService)
+
+	handler.NewTerraformWithActionStatusHandler(authWithTerraformActionRouter, terraformService, actionStatusService, deploymentService)
 
 	// take seconds and multiply with 1000000000 and pass it to the function.
 	go deploymentService.PollAndDeleteDeployments(60000000000)

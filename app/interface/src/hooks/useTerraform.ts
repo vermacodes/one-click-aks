@@ -3,23 +3,23 @@ import { DeploymentType, Lab, TerraformOperation } from "../dataStructures";
 import { axiosInstance } from "../utils/axios-interceptors";
 import { Axios, AxiosResponse } from "axios";
 
-function init(lab: Lab, operationId: string) {
-  return axiosInstance.post(`/terraform/init/${operationId}`, lab);
+function init(deployment: DeploymentType, operationId: string) {
+  return axiosInstance.post(`/terraform/init/${operationId}`, deployment);
 }
 
-function plan(lab: Lab, operationId: string) {
-  return axiosInstance.post(`/terraform/plan/${operationId}`, lab);
+function plan(deployment: DeploymentType, operationId: string) {
+  return axiosInstance.post(`/terraform/plan/${operationId}`, deployment);
 }
 
 function apply(
-  lab: Lab,
+  deployment: DeploymentType,
   operationId: string
 ): Promise<AxiosResponse<TerraformOperation>> {
-  return axiosInstance.post(`/terraform/apply/${operationId}`, lab);
+  return axiosInstance.post(`/terraform/apply/${operationId}`, deployment);
 }
 
-function destroy(lab: Lab, operationId: string) {
-  return axiosInstance.post(`/terraform/destroy/${operationId}`, lab);
+function destroy(deployment: DeploymentType, operationId: string) {
+  return axiosInstance.post(`/terraform/destroy/${operationId}`, deployment);
 }
 
 function destroyAndDelete(deployment: DeploymentType, operationId: string) {
@@ -35,64 +35,76 @@ function extend(lab: Lab, mode: string) {
 
 export function useInit() {
   const queryClient = useQueryClient();
-  return useMutation((params: [Lab, string]) => init(params[0], params[1]), {
-    onMutate: async () => {
-      await queryClient.cancelQueries("get-action-status");
-      setTimeout(() => {
-        queryClient.invalidateQueries("get-action-status");
-      }, 100);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries("list-terraform-workspaces");
-      queryClient.invalidateQueries("get-selected-terraform-workspace");
-      queryClient.invalidateQueries("get-resources");
-    },
-  });
+  return useMutation(
+    (params: [DeploymentType, string]) => init(params[0], params[1]),
+    {
+      onMutate: async () => {
+        await queryClient.cancelQueries("get-action-status");
+        setTimeout(() => {
+          queryClient.invalidateQueries("get-action-status");
+        }, 100);
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries("list-terraform-workspaces");
+        queryClient.invalidateQueries("get-selected-terraform-workspace");
+        queryClient.invalidateQueries("get-resources");
+      },
+    }
+  );
 }
 
 export function usePlan() {
   const queryClient = useQueryClient();
-  return useMutation((params: [Lab, string]) => plan(params[0], params[1]), {
-    onMutate: async () => {
-      await queryClient.cancelQueries("get-action-status");
-      setTimeout(() => {
-        queryClient.invalidateQueries("get-action-status");
-      }, 100);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries("list-terraform-workspaces");
-      queryClient.invalidateQueries("get-selected-terraform-workspace");
-      queryClient.invalidateQueries("get-resources");
-    },
-  });
+  return useMutation(
+    (params: [DeploymentType, string]) => plan(params[0], params[1]),
+    {
+      onMutate: async () => {
+        await queryClient.cancelQueries("get-action-status");
+        setTimeout(() => {
+          queryClient.invalidateQueries("get-action-status");
+        }, 100);
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries("list-terraform-workspaces");
+        queryClient.invalidateQueries("get-selected-terraform-workspace");
+        queryClient.invalidateQueries("get-resources");
+      },
+    }
+  );
 }
 
 export function useApply() {
   const queryClient = useQueryClient();
-  return useMutation((params: [Lab, string]) => apply(params[0], params[1]), {
-    onSuccess: () => {
-      queryClient.invalidateQueries("list-terraform-workspaces");
-      queryClient.invalidateQueries("get-selected-terraform-workspace");
-      queryClient.invalidateQueries("get-resources");
-    },
-  });
+  return useMutation(
+    (params: [DeploymentType, string]) => apply(params[0], params[1]),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("list-terraform-workspaces");
+        queryClient.invalidateQueries("get-selected-terraform-workspace");
+        queryClient.invalidateQueries("get-resources");
+      },
+    }
+  );
 }
 
 export function useDestroy() {
   const queryClient = useQueryClient();
-  return useMutation((params: [Lab, string]) => destroy(params[0], params[1]), {
-    onMutate: async () => {
-      await queryClient.cancelQueries("get-action-status");
-      setTimeout(() => {
-        queryClient.invalidateQueries("get-action-status");
-      }, 100);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries("list-terraform-workspaces");
-      queryClient.invalidateQueries("get-selected-terraform-workspace");
-      queryClient.invalidateQueries("get-resources");
-    },
-  });
+  return useMutation(
+    (params: [DeploymentType, string]) => destroy(params[0], params[1]),
+    {
+      onMutate: async () => {
+        await queryClient.cancelQueries("get-action-status");
+        setTimeout(() => {
+          queryClient.invalidateQueries("get-action-status");
+        }, 100);
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries("list-terraform-workspaces");
+        queryClient.invalidateQueries("get-selected-terraform-workspace");
+        queryClient.invalidateQueries("get-resources");
+      },
+    }
+  );
 }
 
 export function useDestroyAndDelete() {

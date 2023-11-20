@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"strings"
+	"time"
 	"unicode"
 	"unsafe"
 
@@ -81,4 +82,16 @@ func GetServiceClient() *aztables.ServiceClient {
 	}
 
 	return serviceClient
+}
+
+// CalculateNewEpochTimeForDeployment updates the deployment's destroy time in place.
+func CalculateNewEpochTimeForDeployment(deployment *entity.Deployment) {
+	if !deployment.DeploymentAutoDelete {
+		deployment.DeploymentAutoDeleteUnixTime = 0
+	} else {
+		now := time.Now()
+		// Get epoch time in seconds
+		epochTime := now.Unix()
+		deployment.DeploymentAutoDeleteUnixTime = deployment.DeploymentLifespan + epochTime
+	}
 }

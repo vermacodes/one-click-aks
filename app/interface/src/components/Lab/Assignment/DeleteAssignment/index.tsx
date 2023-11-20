@@ -2,6 +2,7 @@ import { toast } from "react-toastify";
 import { Assignment } from "../../../../dataStructures";
 import { useDeleteAssignment } from "../../../../hooks/useAssignment";
 import Button from "../../../UserInterfaceComponents/Button";
+import { FaTrash } from "react-icons/fa";
 
 type Props = {
   assignment: Assignment;
@@ -26,7 +27,7 @@ export default function DeleteAssignment({ assignment }: Props) {
       variant="danger-outline"
       onClick={() => handleDeleteAssignment(assignment)}
     >
-      🗑️ Delete
+      <FaTrash /> Delete
     </Button>
   );
 }

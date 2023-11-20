@@ -68,6 +68,7 @@ export default function PlanButton({ variant, children, lab }: Props) {
       onClick={() =>
         onClickHandler({
           lab: lab,
+          deployment: deployment,
           operationId: operationId,
           operationType: "plan",
         })

@@ -27,14 +27,18 @@ func NewActionStatusHandler(r *gin.Engine, service entity.ActionStatusService) {
 	r.GET("/actionstatusws", func(c *gin.Context) {
 		handler.GetActionStatusWs(c.Writer, c.Request)
 	})
+
+	r.GET("/serverNotificationWs", func(c *gin.Context) {
+		handler.GetServerNotificationWs(c.Writer, c.Request)
+	})
 }
 
 func NewAuthActionStatusHandler(r *gin.RouterGroup, service entity.ActionStatusService) {
 	handler := &actionStatusHandler{
 		actionStatusService: service,
 	}
-	r.GET("/serverNotificationWs", func(c *gin.Context) {
-		handler.GetActionStatusWs(c.Writer, c.Request)
+	r.GET("/secureServerNotificationWs", func(c *gin.Context) {
+		handler.GetServerNotificationWs(c.Writer, c.Request)
 	})
 }
 

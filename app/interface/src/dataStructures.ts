@@ -1,3 +1,5 @@
+import { TypeOptions } from "react-toastify";
+
 interface User {
   name: string;
   type: string;
@@ -356,7 +358,7 @@ export type TerraformOperation = {
 
 export type ServerNotification = {
   id: string;
-  type: "info" | "promise" | "success" | "warning" | "error";
+  type: TypeOptions;
   message: string;
-  autoClose: boolean | number;
+  autoClose: number;
 };

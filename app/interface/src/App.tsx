@@ -5,6 +5,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import WebSocketContextProvider from "./components/Context/WebSocketContextProvider";
 import { AuthProvider } from "./components/Context/AuthContext";
+import ServerNotification from "./components/ServerNotification";
 
 function App() {
   const [darkMode, setDarkMode] = useState<boolean>(true);
@@ -47,6 +48,7 @@ function App() {
             pauseOnHover
             theme={darkMode ? "light" : "dark"}
           />
+          <ServerNotification />
         </WebSocketContextProvider>
       </AuthProvider>
     </div>

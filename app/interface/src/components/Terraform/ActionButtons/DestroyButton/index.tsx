@@ -36,78 +36,74 @@ export default function DestroyButton({
     setShowModal(true);
   }
 
-  const {
-    onClickHandler: onConfirmDelete,
-    deleteDeployment,
-    updateDeploymentStatus,
-  } = useTerraformOperation();
+  const { onClickHandler: onConfirmDelete } = useTerraformOperation();
 
-  useEffect(() => {
-    // get the operationId from localStorage
-    let operationIdFromLocalStorage = localStorage.getItem(
-      deployment?.deploymentWorkspace +
-        "-" +
-        (deleteWorkspace ? "delete" : "destroy") +
-        "-operation-id"
-    );
-    if (operationIdFromLocalStorage !== null) {
-      setOperationId(operationIdFromLocalStorage);
-    }
-  }, []);
+  // useEffect(() => {
+  //   // get the operationId from localStorage
+  //   let operationIdFromLocalStorage = localStorage.getItem(
+  //     deployment?.deploymentWorkspace +
+  //       "-" +
+  //       (deleteWorkspace ? "delete" : "destroy") +
+  //       "-operation-id"
+  //   );
+  //   if (operationIdFromLocalStorage !== null) {
+  //     setOperationId(operationIdFromLocalStorage);
+  //   }
+  // }, []);
 
-  useEffect(() => {
-    if (terraformOperation.operationId === operationId) {
-      updateDeploymentStatus({
-        deployment: deployment,
-        status: terraformOperation.status,
-      });
+  // useEffect(() => {
+  //   if (terraformOperation.operationId === operationId) {
+  //     updateDeploymentStatus({
+  //       deployment: deployment,
+  //       status: terraformOperation.status,
+  //     });
 
-      if (terraformOperation.status === "Destroy Failed") {
-        toast.error(terraformOperation.status);
-        setOperationId(uuid());
+  //     if (terraformOperation.status === "Destroy Failed") {
+  //       toast.error(terraformOperation.status);
+  //       setOperationId(uuid());
 
-        // remove the operationId from localStorage
-        if (deployment !== undefined) {
-          localStorage.removeItem(
-            deployment.deploymentWorkspace +
-              "-" +
-              (deleteWorkspace ? "delete" : "destroy") +
-              "-operation-id"
-          );
-        }
-      }
-      if (terraformOperation.status === "Destroy Completed") {
-        console.log("Destroy Completed");
-        toast.success(terraformOperation.status);
-        setOperationId(uuid());
-        // deleteWorkspace && deleteDeployment({ deployment: deployment });
+  //       // remove the operationId from localStorage
+  //       if (deployment !== undefined) {
+  //         localStorage.removeItem(
+  //           deployment.deploymentWorkspace +
+  //             "-" +
+  //             (deleteWorkspace ? "delete" : "destroy") +
+  //             "-operation-id"
+  //         );
+  //       }
+  //     }
+  //     if (terraformOperation.status === "Destroy Completed") {
+  //       console.log("Destroy Completed");
+  //       toast.success(terraformOperation.status);
+  //       setOperationId(uuid());
+  //       // deleteWorkspace && deleteDeployment({ deployment: deployment });
 
-        // remove the operationId from localStorage
-        if (deployment !== undefined) {
-          localStorage.removeItem(
-            deployment.deploymentWorkspace +
-              "-" +
-              (deleteWorkspace ? "delete" : "destroy") +
-              "-operation-id"
-          );
-        }
-      }
-      if (terraformOperation.status === "Destroy In Progress") {
-        toast.info(terraformOperation.status);
+  //       // remove the operationId from localStorage
+  //       if (deployment !== undefined) {
+  //         localStorage.removeItem(
+  //           deployment.deploymentWorkspace +
+  //             "-" +
+  //             (deleteWorkspace ? "delete" : "destroy") +
+  //             "-operation-id"
+  //         );
+  //       }
+  //     }
+  //     if (terraformOperation.status === "Destroy In Progress") {
+  //       toast.info(terraformOperation.status);
 
-        // store the operationId in localStorage
-        if (deployment !== undefined) {
-          localStorage.setItem(
-            deployment.deploymentWorkspace +
-              "-" +
-              (deleteWorkspace ? "delete" : "destroy") +
-              "-operation-id",
-            operationId
-          );
-        }
-      }
-    }
-  }, [terraformOperation]);
+  //       // store the operationId in localStorage
+  //       if (deployment !== undefined) {
+  //         localStorage.setItem(
+  //           deployment.deploymentWorkspace +
+  //             "-" +
+  //             (deleteWorkspace ? "delete" : "destroy") +
+  //             "-operation-id",
+  //           operationId
+  //         );
+  //       }
+  //     }
+  //   }
+  // }, [terraformOperation]);
 
   // This is used by Navbar
   if (navbarButton) {

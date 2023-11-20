@@ -3,9 +3,13 @@ import { WebSocketContext } from "./WebSocketContext";
 import {
   ActionStatusType,
   LogsStreamType,
+  ServerNotification,
   TerraformOperation,
 } from "../../dataStructures";
-import { defaultTerraformOperation } from "../../defaults";
+import {
+  defaultServerNotification,
+  defaultTerraformOperation,
+} from "../../defaults";
 import { useQueryClient } from "react-query";
 import ReconnectingWebSocket from "reconnecting-websocket";
 
@@ -14,18 +18,29 @@ export default function WebSocketContextProvider({
 }: {
   children: React.ReactNode;
 }) {
+  // action status
   const [actionStatus, setActionStatus] = useState<ActionStatusType>({
     inProgress: false,
   });
+  const [actionStatusConnected, setActionStatusConnected] = useState(false);
+
+  // log stream
   const [logStream, setLogStream] = useState<LogsStreamType>({
     logs: "",
   });
+  const [logStreamConnected, setLogStreamConnected] = useState(false);
+
+  // terraform operation
   const [terraformOperation, setTerraformOperation] =
     useState<TerraformOperation>(defaultTerraformOperation);
-  const [actionStatusConnected, setActionStatusConnected] = useState(false);
-  const [logStreamConnected, setLogStreamConnected] = useState(false);
   const [terraformOperationConnected, setTerraformOperationConnected] =
     useState(false);
+
+  // server notification
+  const [serverNotification, setServerNotification] =
+    useState<ServerNotification>(defaultServerNotification);
+  const [serverNotificationConnected, setServerNotificationConnected] =
+    useState<boolean>(false);
 
   const queryClient = useQueryClient();
   useEffect(() => {
@@ -36,6 +51,8 @@ export default function WebSocketContextProvider({
     if (baseUrl && !baseUrl.endsWith("/")) {
       baseUrl += "/";
     }
+
+    // action status
     const actionStatusWs = new ReconnectingWebSocket(
       baseUrl + "actionstatusws"
     );
@@ -56,32 +73,44 @@ export default function WebSocketContextProvider({
       queryClient.invalidateQueries("get-resources");
     };
 
+    // log stream
     const logStreamWs = new ReconnectingWebSocket(baseUrl + "logsws");
     logStreamWs.onopen = () => {
       setLogStreamConnected(true);
     };
-
     logStreamWs.onclose = () => {
       setLogStreamConnected(false);
     };
-
     logStreamWs.onmessage = (event: MessageEvent) => {
       setLogStream(JSON.parse(event.data));
     };
 
+    // terraform operation
     const terraformOperationWs = new ReconnectingWebSocket(
       baseUrl + "terraform/statusws"
     );
     terraformOperationWs.onopen = () => {
       setTerraformOperationConnected(true);
     };
-
     terraformOperationWs.onclose = () => {
       setTerraformOperationConnected(false);
     };
-
     terraformOperationWs.onmessage = (event: MessageEvent) => {
       setTerraformOperation(JSON.parse(event.data));
+    };
+
+    // server notification
+    const serverNotificationWs = new ReconnectingWebSocket(
+      baseUrl + "serverNotificationWs"
+    );
+    serverNotificationWs.onopen = () => {
+      setServerNotificationConnected(true);
+    };
+    serverNotificationWs.onclose = () => {
+      setServerNotificationConnected(false);
+    };
+    serverNotificationWs.onmessage = (event: MessageEvent) => {
+      setServerNotification(JSON.parse(event.data));
       console.log(JSON.parse(event.data));
     };
 
@@ -89,6 +118,7 @@ export default function WebSocketContextProvider({
       actionStatusWs.close();
       logStreamWs.close();
       terraformOperationWs.close();
+      serverNotificationWs.close();
     };
   }, []);
 
@@ -107,6 +137,10 @@ export default function WebSocketContextProvider({
         setLogStreamConnected,
         terraformOperationConnected,
         setTerraformOperationConnected,
+        serverNotification,
+        setServerNotification,
+        serverNotificationConnected,
+        setServerNotificationConnected,
       }}
     >
       {children}

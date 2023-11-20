@@ -16,7 +16,7 @@ const (
 	Info    ServerNotificationType = "info"
 	Error   ServerNotificationType = "error"
 	Success ServerNotificationType = "success"
-	Promise ServerNotificationType = "promise"
+	Default ServerNotificationType = "default"
 	Warning ServerNotificationType = "warning"
 )
 
@@ -24,7 +24,7 @@ type ServerNotification struct {
 	Id               string                 `json:"id"`
 	NotificationType ServerNotificationType `json:"type"`
 	Message          string                 `json:"message"`
-	AutoClose        int                    `json:"autoClose"`
+	AutoClose        int                    `json:"autoClose"` // 0 to never close
 }
 
 type ActionStatusService interface {

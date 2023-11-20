@@ -16,34 +16,34 @@ type Props = {
 
 export default function ApplyButton({ variant, children, lab }: Props) {
   const { actionStatus, terraformOperation } = useWebSocketContext();
-  const { onClickHandler, updateDeploymentStatus } = useTerraformOperation();
+  const { onClickHandler } = useTerraformOperation();
   const { selectedDeployment } = useSelectedDeployment();
   const [operationId, setOperationId] = React.useState<string>(uuid());
 
-  useEffect(() => {
-    if (terraformOperation.operationId === operationId) {
-      updateDeploymentStatus({
-        deployment: selectedDeployment,
-        status: terraformOperation.status,
-        extendLifespan: true,
-      });
-      if (terraformOperation.status === "Deployment Failed") {
-        toast.error(terraformOperation.status);
-        setOperationId(uuid());
-      }
-      if (terraformOperation.status === "Deployment Completed") {
-        toast.success(terraformOperation.status);
-        setOperationId(uuid());
-      }
-      if (terraformOperation.status === "Deployment In Progress") {
-        toast.info(terraformOperation.status);
-      }
-    }
+  // useEffect(() => {
+  //   if (terraformOperation.operationId === operationId) {
+  //     updateDeploymentStatus({
+  //       deployment: selectedDeployment,
+  //       status: terraformOperation.status,
+  //       extendLifespan: true,
+  //     });
+  //     if (terraformOperation.status === "Deployment Failed") {
+  //       toast.error(terraformOperation.status);
+  //       setOperationId(uuid());
+  //     }
+  //     if (terraformOperation.status === "Deployment Completed") {
+  //       toast.success(terraformOperation.status);
+  //       setOperationId(uuid());
+  //     }
+  //     if (terraformOperation.status === "Deployment In Progress") {
+  //       toast.info(terraformOperation.status);
+  //     }
+  //   }
 
-    return () => {
-      console.log("Apply Button Unmounted");
-    };
-  }, [terraformOperation]);
+  //   return () => {
+  //     console.log("Apply Button Unmounted");
+  //   };
+  // }, [terraformOperation]);
 
   return (
     <>
@@ -53,6 +53,7 @@ export default function ApplyButton({ variant, children, lab }: Props) {
           onClickHandler({
             operationType: "apply",
             lab: lab,
+            deployment: selectedDeployment,
             operationId: operationId,
           })
         }

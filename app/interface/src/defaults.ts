@@ -1,5 +1,6 @@
 import {
   Lab,
+  ServerNotification,
   TerraformOperation,
   TfvarAddonsType,
   TfvarAppGatewayType,
@@ -144,4 +145,11 @@ export const defaultTerraformOperation: TerraformOperation = {
   inProgress: false,
   operationId: "",
   status: "Deployment Not Started",
+};
+
+export const defaultServerNotification: ServerNotification = {
+  id: "",
+  message: "",
+  type: "info",
+  autoClose: 0,
 };

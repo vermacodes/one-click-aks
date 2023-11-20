@@ -39,33 +39,33 @@ export function useTerraformOperation() {
   const { mutateAsync: deleteDeploymentAsync } = useDeleteDeployment();
   const { selectedDeployment: deployment } = useSelectedDeployment();
 
-  type UpdateDeploymentStatusProps = {
-    deployment: DeploymentType | undefined;
-    status: DeploymentStatus;
-    extendLifespan?: boolean;
-  };
+  // type UpdateDeploymentStatusProps = {
+  //   deployment: DeploymentType | undefined;
+  //   status: DeploymentStatus;
+  //   extendLifespan?: boolean;
+  // };
 
-  function updateDeploymentStatus({
-    deployment,
-    status,
-    extendLifespan = false,
-  }: UpdateDeploymentStatusProps) {
-    if (deployment !== undefined) {
-      if (extendLifespan) {
-        patchDeployment({
-          ...deployment,
-          deploymentAutoDeleteUnixTime:
-            calculateNewEpochTimeForDeployment(deployment),
-          deploymentStatus: status,
-        });
-      } else {
-        patchDeployment({
-          ...deployment,
-          deploymentStatus: status,
-        });
-      }
-    }
-  }
+  // function updateDeploymentStatus({
+  //   deployment,
+  //   status,
+  //   extendLifespan = false,
+  // }: UpdateDeploymentStatusProps) {
+  //   if (deployment !== undefined) {
+  //     if (extendLifespan) {
+  //       patchDeployment({
+  //         ...deployment,
+  //         deploymentAutoDeleteUnixTime:
+  //           calculateNewEpochTimeForDeployment(deployment),
+  //         deploymentStatus: status,
+  //       });
+  //     } else {
+  //       patchDeployment({
+  //         ...deployment,
+  //         deploymentStatus: status,
+  //       });
+  //     }
+  //   }
+  // }
 
   type DeleteDeploymentProps = {
     operationId: string;
@@ -81,31 +81,18 @@ export function useTerraformOperation() {
       return Promise.reject();
     }
 
-    return toast.promise(
-      deleteDeploymentAsync([
-        deployment.deploymentWorkspace,
-        deployment.deploymentSubscriptionId,
-        operationId,
-      ]),
-      {
-        pending: "Deleting deployment...",
-        success: {
-          render: `Delete In Progress`,
-          autoClose: 5000,
-        },
-        error: {
-          render: `Failed to delete deployment.`,
-          autoClose: 10000,
-        },
-      }
-    );
+    return deleteDeploymentAsync([
+      deployment.deploymentWorkspace,
+      deployment.deploymentSubscriptionId,
+      operationId,
+    ]);
   }
 
   type SubmitOperationProps = {
     operationType: "init" | "plan" | "apply" | "destroy";
     operationId: string;
     lab: Lab;
-    deployment: DeploymentType | undefined;
+    deployment: DeploymentType;
     deleteDeployment?: boolean | undefined;
   };
 
@@ -116,24 +103,23 @@ export function useTerraformOperation() {
     deployment,
     deleteDeployment: deleteDeploymentFlag = false,
   }: SubmitOperationProps): Promise<AxiosResponse<TerraformOperation>> {
+    // update deployment with current lab.
+    deployment.deploymentLab = lab;
+
     if (operationType === "plan") {
-      return planAsync([lab, operationId]);
+      return planAsync([deployment, operationId]);
     }
     if (operationType === "apply") {
-      return applyAsync([lab, operationId]);
+      return applyAsync([deployment, operationId]);
     }
     if (operationType === "destroy" && deleteDeploymentFlag) {
-      if (deployment === undefined) {
-        toast.error("No deployment selected.");
-        return Promise.reject();
-      }
       return deleteDeployment({ operationId, deployment });
     }
     if (operationType === "destroy" && !deleteDeploymentFlag) {
-      return destroyAsync([lab, operationId]);
+      return destroyAsync([deployment, operationId]);
     }
 
-    return initAsync([lab, operationId]);
+    return initAsync([deployment, operationId]);
   }
 
   type OnClickHandlerProps = {
@@ -186,5 +172,5 @@ export function useTerraformOperation() {
     });
   };
 
-  return { onClickHandler, deleteDeployment, updateDeploymentStatus };
+  return { onClickHandler, deleteDeployment };
 }
