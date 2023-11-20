@@ -85,3 +85,31 @@ func (a *actionStatusRepository) WaitForTerraformOperationChange() (string, erro
 		return msg.Payload, nil
 	}
 }
+
+func (a *actionStatusRepository) SetServerNotification(val string) error {
+	rdb := newActionStatusRedisClient()
+	if err := rdb.Set(actionStatusCtx, "server-notification", val, 0).Err(); err != nil {
+		return err
+	}
+
+	return rdb.Publish(actionStatusCtx, "redis-server-notification-pubsub-channel", val).Err()
+}
+
+func (a *actionStatusRepository) GetServerNotification() (string, error) {
+	rdb := newActionStatusRedisClient()
+	return rdb.Get(actionStatusCtx, "server-notification").Result()
+}
+
+func (a *actionStatusRepository) WaitForServerNotificationChange() (string, error) {
+	rdb := newActionStatusRedisClient().Subscribe(actionStatusCtx, "redis-server-notification-pubsub-channel")
+	defer rdb.Close()
+
+	for {
+		msg, err := rdb.ReceiveMessage(actionStatusCtx)
+		if err != nil {
+			return "", err
+		}
+
+		return msg.Payload, nil
+	}
+}

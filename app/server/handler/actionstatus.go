@@ -29,6 +29,15 @@ func NewActionStatusHandler(r *gin.Engine, service entity.ActionStatusService) {
 	})
 }
 
+func NewAuthActionStatusHandler(r *gin.RouterGroup, service entity.ActionStatusService) {
+	handler := &actionStatusHandler{
+		actionStatusService: service,
+	}
+	r.GET("/serverNotificationWs", func(c *gin.Context) {
+		handler.GetActionStatusWs(c.Writer, c.Request)
+	})
+}
+
 func (a *actionStatusHandler) GetActionStatus(c *gin.Context) {
 	actionStatus, err := a.actionStatusService.GetActionStatus()
 	if err != nil {
@@ -120,22 +129,6 @@ func (a *actionStatusHandler) GetTerraformOperationWs(w http.ResponseWriter, r *
 
 	defer conn.Close()
 
-	// // Get initial action status
-	// initialTerraformOperation, err := a.actionStatusService.GetTerraformOperation("plan")
-	// if err != nil {
-	// 	w.WriteHeader(http.StatusInternalServerError)
-	// 	slog.Error("Failed to retrieve initial action status:", err)
-	// 	return
-	// }
-
-	// // Send the initial action status to the client
-	// if err := conn.WriteJSON(initialActionStatus); err != nil {
-	// 	slog.Error("Failed to send initial action status to client:", err)
-	// 	return
-	// }
-
-	// previousActionStatus := initialActionStatus
-
 	for {
 		// Get the current action status
 		actionStatus, err := a.actionStatusService.WaitForTerraformOperationChange()
@@ -148,6 +141,32 @@ func (a *actionStatusHandler) GetTerraformOperationWs(w http.ResponseWriter, r *
 		// Check for changes in action status
 		if err := conn.WriteJSON(actionStatus); err != nil {
 			slog.Error("Failed to send action status to client:", err)
+			return
+		}
+	}
+}
+
+func (a *actionStatusHandler) GetServerNotificationWs(w http.ResponseWriter, r *http.Request) {
+	conn, err := actionStatusUpgrader.Upgrade(w, r, nil)
+	if err != nil {
+		slog.Error("Failed to upgrade server notification websocket connection:", err)
+		return
+	}
+
+	defer conn.Close()
+
+	for {
+		// Get the current server notification
+		actionStatus, err := a.actionStatusService.WaitForServerNotificationChange()
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			slog.Error("Failed to retrieve server notification:", err)
+			return
+		}
+
+		// Check for changes in server notification
+		if err := conn.WriteJSON(actionStatus); err != nil {
+			slog.Error("Failed to send server notification to client:", err)
 			return
 		}
 	}

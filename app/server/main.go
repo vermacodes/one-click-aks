@@ -82,6 +82,8 @@ func main() {
 
 	authRouter.Use(middleware.AuthRequired(authService, logStreamService))
 
+	handler.NewAuthActionStatusHandler(authRouter, actionStatusService)
+
 	authWithActionRouter := authRouter.Group("/")
 	authWithActionRouter.Use(middleware.ActionStatusMiddleware(actionStatusService))
 

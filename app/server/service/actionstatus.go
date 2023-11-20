@@ -154,3 +154,49 @@ func (a *actionStatusService) WaitForTerraformOperationChange() (entity.Terrafor
 
 	return terraformOperation, nil
 }
+
+func (a *actionStatusService) SetServerNotification(serverNotification entity.ServerNotification) error {
+	val, err := json.Marshal(serverNotification)
+	if err != nil {
+		slog.Error("not able to marshal object to string", err)
+		return err
+	}
+
+	if err = a.actionStatusRepository.SetServerNotification(string(val)); err != nil {
+		slog.Error("not able to set server notification in redis", err)
+	}
+
+	return nil
+}
+
+func (a *actionStatusService) GetServerNotification() (entity.ServerNotification, error) {
+	serverNotification := entity.ServerNotification{}
+	val, err := a.actionStatusRepository.GetServerNotification()
+	if err != nil {
+		slog.Error("server notification not found in redis", err)
+		return serverNotification, err
+	}
+
+	if err = json.Unmarshal([]byte(val), &serverNotification); err != nil {
+		slog.Error("not able to translate server notification string to object", err)
+		return serverNotification, err
+	}
+
+	return serverNotification, nil
+}
+
+func (a *actionStatusService) WaitForServerNotificationChange() (entity.ServerNotification, error) {
+	serverNotification := entity.ServerNotification{}
+	val, err := a.actionStatusRepository.WaitForServerNotificationChange()
+	if err != nil {
+		slog.Error("server notification not found in redis", err)
+		return serverNotification, err
+	}
+
+	if err = json.Unmarshal([]byte(val), &serverNotification); err != nil {
+		slog.Error("not able to translate server notification string to object", err)
+		return serverNotification, err
+	}
+
+	return serverNotification, nil
+}
