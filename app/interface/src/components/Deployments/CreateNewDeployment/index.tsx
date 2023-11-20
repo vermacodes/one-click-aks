@@ -14,6 +14,7 @@ import PleaseWaitModal from "../../UserInterfaceComponents/Modal/PleaseWaitModal
 import { useQueryClient } from "react-query";
 import { useSelectedDeployment } from "../../../hooks/useSelectedDeployment";
 import ModalBackdrop from "../../UserInterfaceComponents/Modal/ModalBackdrop";
+import { useDefaultAccount } from "../../../hooks/useDefaultAccount";
 
 type Props = {
   variant: ButtonVariant;
@@ -40,6 +41,7 @@ export default function CreateNewDeployment({
   const { data: lab } = useLab();
   const queryClient = useQueryClient();
   const { selectedDeployment } = useSelectedDeployment();
+  const { defaultAccount } = useDefaultAccount();
 
   useEffect(() => {
     if (selectedDeployment?.deploymentWorkspace === newWorkSpaceName) {
@@ -64,6 +66,12 @@ export default function CreateNewDeployment({
       return;
     }
 
+    if (defaultAccount === undefined) {
+      console.error("Default subscription is undefined");
+      handleModalClose();
+      return;
+    }
+
     setModalMessage("⌛ Adding deployment, Please wait...");
     setShowPleaseWaitModal(true);
     handleModalClose();
@@ -72,7 +80,7 @@ export default function CreateNewDeployment({
       deploymentId: "",
       deploymentUserId: "",
       deploymentWorkspace: newWorkSpaceName,
-      deploymentSubscriptionId: "",
+      deploymentSubscriptionId: defaultAccount.id,
       deploymentAutoDelete: false,
       deploymentAutoDeleteUnixTime: 0,
       deploymentLifespan: 28800,

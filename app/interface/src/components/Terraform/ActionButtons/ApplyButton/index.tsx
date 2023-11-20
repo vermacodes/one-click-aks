@@ -1,11 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { v4 as uuid } from "uuid";
 import { FaRocket } from "react-icons/fa";
 import { ButtonVariant, Lab } from "../../../../dataStructures";
 import Button from "../../../UserInterfaceComponents/Button";
 import { useWebSocketContext } from "../../../Context/WebSocketContext";
 import { useTerraformOperation } from "../../../../hooks/useTerraformOperation";
-import { toast } from "react-toastify";
 import { useSelectedDeployment } from "../../../../hooks/useSelectedDeployment";
 
 type Props = {
@@ -15,35 +14,9 @@ type Props = {
 };
 
 export default function ApplyButton({ variant, children, lab }: Props) {
-  const { actionStatus, terraformOperation } = useWebSocketContext();
+  const { actionStatus } = useWebSocketContext();
   const { onClickHandler } = useTerraformOperation();
   const { selectedDeployment } = useSelectedDeployment();
-  const [operationId, setOperationId] = React.useState<string>(uuid());
-
-  // useEffect(() => {
-  //   if (terraformOperation.operationId === operationId) {
-  //     updateDeploymentStatus({
-  //       deployment: selectedDeployment,
-  //       status: terraformOperation.status,
-  //       extendLifespan: true,
-  //     });
-  //     if (terraformOperation.status === "Deployment Failed") {
-  //       toast.error(terraformOperation.status);
-  //       setOperationId(uuid());
-  //     }
-  //     if (terraformOperation.status === "Deployment Completed") {
-  //       toast.success(terraformOperation.status);
-  //       setOperationId(uuid());
-  //     }
-  //     if (terraformOperation.status === "Deployment In Progress") {
-  //       toast.info(terraformOperation.status);
-  //     }
-  //   }
-
-  //   return () => {
-  //     console.log("Apply Button Unmounted");
-  //   };
-  // }, [terraformOperation]);
 
   return (
     <>
@@ -54,7 +27,7 @@ export default function ApplyButton({ variant, children, lab }: Props) {
             operationType: "apply",
             lab: lab,
             deployment: selectedDeployment,
-            operationId: operationId,
+            operationId: uuid(),
           })
         }
         disabled={actionStatus.inProgress || lab === undefined}
