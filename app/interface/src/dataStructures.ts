@@ -353,3 +353,10 @@ export type TerraformOperation = {
   inProgress: boolean;
   status: DeploymentStatus;
 };
+
+export type ServerNotification = {
+  id: string;
+  type: "info" | "promise" | "success" | "warning" | "error";
+  message: string;
+  autoClose: boolean | number;
+};
