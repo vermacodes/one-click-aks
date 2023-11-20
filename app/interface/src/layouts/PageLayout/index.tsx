@@ -1,8 +1,5 @@
-import AzureSubscription from "../../components/Config/AzureSubscription";
-import VersionCheck from "../../components/Detectors/VersionCheck";
-import WebSocketConnectionStatus from "../../components/Detectors/WebSocketConnectionStatus";
-import StorageAccountNotConfigured from "../../components/Detectors/StorageAccountNotConfigured";
 import Detectors from "../../components/Detectors/Detectors";
+import { useDefaultAccount } from "../../hooks/useDefaultAccount";
 
 type Props = {
   heading?: string;
@@ -10,14 +7,15 @@ type Props = {
 };
 
 export default function PageLayout({ heading, children }: Props) {
+  const { defaultAccount } = useDefaultAccount();
   return (
     <div>
       <Detectors />
       {heading && (
-        <div className="mb-6 flex justify-between border-b-2 border-slate-500 py-4 ">
+        <div className="mb-6 flex items-center justify-between border-b-2 border-slate-500 py-4 ">
           <h1 className="text-4xl">{heading}</h1>
-          <div>
-            <AzureSubscription />
+          <div className="text-sm text-slate-500">
+            {defaultAccount ? defaultAccount.name : ""}
           </div>
         </div>
       )}
