@@ -6,11 +6,15 @@ import { GraphData } from "../../../dataStructures";
 type Props = {
   graphResponse: GraphData | undefined;
   setGraphResponse: (updatedGraphData: GraphData | undefined) => void;
+  profilePhotoUrl: string | undefined;
+  setProfilePhotoUrl: (profilePhotoUrl: string | undefined) => void;
 };
 
 export default function AuthenticatingFullScreen({
   graphResponse,
   setGraphResponse,
+  profilePhotoUrl,
+  setProfilePhotoUrl,
 }: Props) {
   const { instance, accounts } = useMsal();
   const [accessToken, setAccessToken] = useState<string>("");
@@ -25,6 +29,7 @@ export default function AuthenticatingFullScreen({
   useEffect(() => {
     if (tokenAcquired || accessToken !== "") {
       getGraphData();
+      getProfilePhoto();
     }
   }, [tokenAcquired, accessToken]);
 
@@ -38,6 +43,20 @@ export default function AuthenticatingFullScreen({
         response.json().then((data) => {
           setGraphResponse(data);
           setLoading(false);
+        });
+      }
+    });
+  }
+
+  async function getProfilePhoto() {
+    fetch("https://graph.microsoft.com/v1.0/me/photo/$value", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }).then((response) => {
+      if (response.ok) {
+        response.blob().then((data) => {
+          setProfilePhotoUrl(URL.createObjectURL(data));
         });
       }
     });

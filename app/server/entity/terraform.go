@@ -17,28 +17,28 @@ type TerraformService interface {
 	Apply(LabType) error
 
 	// Apply terraform and then run extend script if any
-	// This is async and doesnt stream logs.
+	// This is async and doesn't stream logs.
 	// ApplyAsync(LabType) (TerraformOperation, error)
 
 	// Executes shell script to run extension of infra.
-	// runs against selected workspace. This doesnt send any response body
+	// runs against selected workspace. This doesn't send any response body
 	// and logs are streamed.
 	Extend(LabType, string) error
 
 	// Executes shell script to run extension of infra.
-	// runs against selected workspace. This is async and doesnt stream logs.
+	// runs against selected workspace. This is async and doesn't stream logs.
 	// ExtendAsync(LabType, string) (TerraformOperation, error)
 
-	// destroy the resources in current worksapce.
+	// destroy the resources in current workspace.
 	// Streams logs
 	Destroy(LabType) error
 
-	// destroy the resources in current worksapce.
-	// This is async and doesnt stream logs.
+	// destroy the resources in current workspace.
+	// This is async and doesn't stream logs.
 	// DestroyAsync(LabType) (TerraformOperation, error)
 
-	// Executes shell script to run vlidation aginst infra.
-	// runs against selected workspace. This doesnt send any response body
+	// Executes shell script to run validation against infra.
+	// runs against selected workspace. This doesn't send any response body
 	// and logs are streamed.
 	// Validate(LabType) error
 }

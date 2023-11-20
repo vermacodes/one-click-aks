@@ -4,7 +4,8 @@ import { Lab } from "../../../../dataStructures";
 import { useSetLab } from "../../../../hooks/useLab";
 import { useSetLogs } from "../../../../hooks/useLogs";
 import Button from "../../../UserInterfaceComponents/Button";
-import { WebSocketContext } from "../../../../WebSocketContext";
+import { WebSocketContext } from "../../../Context/WebSocketContext";
+import { toast } from "react-toastify";
 
 type Props = {};
 
@@ -33,11 +34,10 @@ export default function ImportLabToBuilder({}: Props) {
   function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (!file) {
-      console.log("No file found.");
+      toast.error("No file found.");
       return;
     }
 
-    console.log("File found.");
     const reader = new FileReader();
     reader.onload = (e) => {
       const contents = e.target?.result;

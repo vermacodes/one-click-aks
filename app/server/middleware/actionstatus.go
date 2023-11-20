@@ -8,7 +8,7 @@ import (
 	"golang.org/x/exp/slog"
 )
 
-// ActionStatusMiddleware checks for already running opration and rejects new requests.
+// ActionStatusMiddleware checks for already running operation and rejects new requests.
 func ActionStatusMiddleware(actionStatusService entity.ActionStatusService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 

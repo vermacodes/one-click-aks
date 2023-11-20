@@ -4,7 +4,7 @@ import { ButtonVariant, Lab } from "../../../dataStructures";
 import { useSetLogs } from "../../../hooks/useLogs";
 import { useExtend } from "../../../hooks/useTerraform";
 import Button from "../../UserInterfaceComponents/Button";
-import { WebSocketContext } from "../../../WebSocketContext";
+import { WebSocketContext } from "../../Context/WebSocketContext";
 import { toast } from "react-toastify";
 
 type Props = {

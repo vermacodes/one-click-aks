@@ -17,7 +17,7 @@ axiosInstance.interceptors.response.use(
   },
   (error: AxiosError) => {
     if (error.code === "ERR_NETWORK") {
-      console.log(`Server not running.`);
+      console.error(`Server not running.`);
     }
     return Promise.reject(error.response);
   }
@@ -25,7 +25,9 @@ axiosInstance.interceptors.response.use(
 
 axiosInstance.interceptors.request.use(
   async (config: AxiosRequestConfig) => {
-    const authToken = await getAuthToken().catch((e) => myInteractionInProgressHandler());
+    const authToken = await getAuthToken().catch((e) =>
+      myInteractionInProgressHandler()
+    );
     if (config.headers) {
       config.headers.Authorization = `Bearer ${authToken}`;
     } else {
@@ -78,7 +80,6 @@ async function getAuthToken(): Promise<string> {
 }
 
 async function myInteractionInProgressHandler() {
-  
   // I am just going to wait for 5 seconds and then call myAcquireToken again.
   // Ideally, it should really be tracking the state of the interaction and then
   // call myAcquireToken again when the interaction is complete.
@@ -87,13 +88,15 @@ async function myInteractionInProgressHandler() {
   await new Promise((resolve) => setTimeout(resolve, 5000));
 
   // wait is over, call myAcquireToken again to re-try acquireTokenSilent
-  return (await getAuthToken());
-};
+  return await getAuthToken();
+}
 
 // Axios interceptor to add the auth token to outgoing requests
 authAxiosInstance.interceptors.request.use(
   async (config: AxiosRequestConfig) => {
-    const authToken = await getAuthToken().catch((e) => myInteractionInProgressHandler());
+    const authToken = await getAuthToken().catch((e) =>
+      myInteractionInProgressHandler()
+    );
     if (config.headers) {
       config.headers.Authorization = `Bearer ${authToken}`;
     } else {

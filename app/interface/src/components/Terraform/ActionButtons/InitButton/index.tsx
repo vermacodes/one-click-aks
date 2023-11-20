@@ -1,11 +1,9 @@
 import Button from "../../../UserInterfaceComponents/Button";
-import { useInit } from "../../../../hooks/useTerraform";
 import { useLab } from "../../../../hooks/useLab";
-import { useContext } from "react";
-import { WebSocketContext } from "../../../../WebSocketContext";
-import { useSetLogs } from "../../../../hooks/useLogs";
-import { ButtonVariant, Lab } from "../../../../dataStructures";
-import { toast } from "react-toastify";
+import { v4 as uuid } from "uuid";
+import { useWebSocketContext } from "../../../Context/WebSocketContext";
+import { ButtonVariant } from "../../../../dataStructures";
+import { useTerraformOperation } from "../../../../hooks/useTerraformOperation";
 
 type Props = {
   variant: ButtonVariant;
@@ -13,29 +11,20 @@ type Props = {
 };
 
 export default function InitButton({ variant, children }: Props) {
-  const { actionStatus } = useContext(WebSocketContext);
-  const { mutate: setLogs } = useSetLogs();
-  const { mutateAsync: initAsync } = useInit();
+  const { actionStatus } = useWebSocketContext();
   const { data: lab } = useLab();
-
-  function initHandler() {
-    setLogs({ logs: "" });
-    lab &&
-      toast.promise(initAsync(lab), {
-        pending: "Initializing Terraform...",
-        success: "Terraform Initialized.",
-        error: {
-          render(data: any) {
-            return `Failed to initialize terraform. ${data.data.data}`;
-          },
-        },
-      });
-  }
+  const { onClickHandler } = useTerraformOperation();
 
   return (
     <Button
       variant={variant}
-      onClick={initHandler}
+      onClick={() =>
+        onClickHandler({
+          operationType: "init",
+          lab: lab,
+          operationId: uuid(),
+        })
+      }
       disabled={actionStatus.inProgress}
     >
       {children}

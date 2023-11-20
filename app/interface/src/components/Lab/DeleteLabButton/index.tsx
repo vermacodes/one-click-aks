@@ -3,7 +3,7 @@ import { FaTrash } from "react-icons/fa";
 import { ButtonVariant, Lab } from "../../../dataStructures";
 import { useDeleteLab, useDeleteMyLab } from "../../../hooks/useBlobs";
 import Button from "../../UserInterfaceComponents/Button";
-import { WebSocketContext } from "../../../WebSocketContext";
+import { WebSocketContext } from "../../Context/WebSocketContext";
 import { toast } from "react-toastify";
 import ConfirmationModal from "../../UserInterfaceComponents/Modal/ConfirmationModal";
 

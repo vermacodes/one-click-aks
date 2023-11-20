@@ -6,17 +6,18 @@ import PageLayout from "../../layouts/PageLayout";
 import Button from "../../components/UserInterfaceComponents/Button";
 import Terminal from "../../components/Terminal";
 import CreateNewDeployment from "../../components/Deployments/CreateNewDeployment";
-import { getSelectedDeployment } from "../../utils/helpers";
 import { useTerraformWorkspace } from "../../hooks/useWorkspace";
 import { FaPlus, FaTools } from "react-icons/fa";
 import { useServerStatus } from "../../hooks/useServerStatus";
 import ServerError from "../ServerError";
 import { useEffect } from "react";
+import { useSelectedDeployment } from "../../hooks/useSelectedDeployment";
 
 export default function Deployments() {
   const { data: deployments } = useGetMyDeployments();
   const { data: workspaces } = useTerraformWorkspace();
   const { data: serverStatus } = useServerStatus();
+  const { selectedDeployment } = useSelectedDeployment();
 
   useEffect(() => {
     document.title = "ACT Labs | Deployments";
@@ -30,11 +31,9 @@ export default function Deployments() {
     return <></>;
   }
 
-  const selectedDeployment = getSelectedDeployment(deployments, workspaces);
-
   return (
     <PageLayout heading="Deployments">
-      <div className={`mb-3 flex justify-end space-x-4 rounded`}>
+      <div className={`mb-3 flex justify-end gap-x-2 rounded`}>
         <Link to="/builder">
           <Button variant="secondary-outline">
             <FaTools /> Lab Builder

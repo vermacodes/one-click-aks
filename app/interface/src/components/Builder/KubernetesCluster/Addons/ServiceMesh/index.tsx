@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { WebSocketContext } from "../../../../../WebSocketContext";
+import { WebSocketContext } from "../../../../Context/WebSocketContext";
 import { defaultServiceMesh } from "../../../../../defaults";
 import { useLab, useSetLab } from "../../../../../hooks/useLab";
 import BuilderContainer from "../../../../UserInterfaceComponents/BuilderContainer";

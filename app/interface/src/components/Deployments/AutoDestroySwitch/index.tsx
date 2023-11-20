@@ -3,6 +3,8 @@ import Checkbox from "../../UserInterfaceComponents/Checkbox";
 import { usePatchDeployment } from "../../../hooks/useDeployments";
 import { calculateNewEpochTimeForDeployment } from "../../../utils/helpers";
 import { toast } from "react-toastify";
+import { useState } from "react";
+import { set } from "zod";
 
 type AutoDestroySwitchProps = {
   disabled: boolean;
@@ -16,9 +18,11 @@ export default function AutoDestroySwitch({
   label,
 }: AutoDestroySwitchProps) {
   const { mutateAsync: asyncPatchDeployment } = usePatchDeployment();
+  const [checked, setChecked] = useState(deployment.deploymentAutoDelete);
 
   function handleAutoDeleteChange() {
     //Switch the auto delete state
+    setChecked(!checked);
     deployment.deploymentAutoDelete = !deployment.deploymentAutoDelete;
     var deploymentAutoDeleteUnixTime = 0;
 
@@ -53,7 +57,7 @@ export default function AutoDestroySwitch({
     <Checkbox
       id={"auto-destroy-" + deployment.deploymentWorkspace}
       label={label}
-      checked={deployment.deploymentAutoDelete}
+      checked={checked}
       handleOnChange={handleAutoDeleteChange}
       disabled={disabled}
       tooltipMessage="If enabled, the deployment will be automatically deleted after the specified time."

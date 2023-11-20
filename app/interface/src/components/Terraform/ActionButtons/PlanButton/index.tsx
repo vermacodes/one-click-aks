@@ -1,12 +1,11 @@
-import React, { useContext } from "react";
+import React from "react";
 import { FaFile } from "react-icons/fa";
 import { ButtonVariant, Lab } from "../../../../dataStructures";
-import { useSetLogs } from "../../../../hooks/useLogs";
-import { usePreference } from "../../../../hooks/usePreference";
-import { usePlan } from "../../../../hooks/useTerraform";
 import Button from "../../../UserInterfaceComponents/Button";
-import { WebSocketContext } from "../../../../WebSocketContext";
-import { toast } from "react-toastify";
+import { useWebSocketContext } from "../../../Context/WebSocketContext";
+import { useTerraformOperation } from "../../../../hooks/useTerraformOperation";
+import { v4 as uuid } from "uuid";
+import { useSelectedDeployment } from "../../../../hooks/useSelectedDeployment";
 
 type Props = {
   variant: ButtonVariant;
@@ -15,37 +14,21 @@ type Props = {
 };
 
 export default function PlanButton({ variant, children, lab }: Props) {
-  const { mutate: setLogs } = useSetLogs();
-  const { mutateAsync: planAsync } = usePlan();
-  const { actionStatus, setActionStatus } = useContext(WebSocketContext);
-  const { data: preference } = usePreference();
-
-  function onClickHandler() {
-    // Apply Preference
-    if (
-      lab !== undefined &&
-      lab.template !== undefined &&
-      preference !== undefined
-    ) {
-      lab.template.resourceGroup.location = preference.azureRegion;
-    }
-    setLogs({ logs: "" });
-    lab &&
-      toast.promise(planAsync(lab), {
-        pending: "Planning...",
-        success: "Plan completed.",
-        error: {
-          render(data: any) {
-            return `Plan failed: ${data.data.data}`;
-          },
-        },
-      });
-  }
+  const { actionStatus } = useWebSocketContext();
+  const { onClickHandler } = useTerraformOperation();
+  const { selectedDeployment: deployment } = useSelectedDeployment();
 
   return (
     <Button
       variant={variant}
-      onClick={onClickHandler}
+      onClick={() =>
+        onClickHandler({
+          lab: lab,
+          deployment: deployment,
+          operationId: uuid(),
+          operationType: "plan",
+        })
+      }
       tooltipMessage="Preview the changes before deploy."
       tooltipDelay={1000}
       disabled={actionStatus.inProgress || lab === undefined}

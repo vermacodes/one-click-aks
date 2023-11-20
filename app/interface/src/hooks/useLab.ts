@@ -24,7 +24,7 @@ export function useLab() {
 }
 
 export function useSetLab() {
-  var queryClient = useQueryClient();
+  const queryClient = useQueryClient();
   return useMutation(setLab, {
     onSuccess: () => {
       queryClient.invalidateQueries("get-lab");

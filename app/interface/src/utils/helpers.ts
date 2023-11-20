@@ -15,43 +15,6 @@ export function calculateNewEpochTimeForDeployment(deployment: DeploymentType) {
   return deployment.deploymentLifespan + epochTime;
 }
 
-// Function returns the selected terraform workspace.
-export function getSelectedTerraformWorkspace(
-  terraformWorkspaces: TerraformWorkspace[]
-): TerraformWorkspace | undefined {
-  var selectedWorkspace = terraformWorkspaces.find(
-    (workspace) => workspace.selected
-  );
-  if (selectedWorkspace) {
-    return selectedWorkspace;
-  } else {
-    return undefined;
-  }
-}
-
-// Function returns the selected deployment.
-export function getSelectedDeployment(
-  deployments: DeploymentType[],
-  terraformWorkspaces: TerraformWorkspace[]
-): DeploymentType | undefined {
-  var selectedTerraformWorkspace =
-    getSelectedTerraformWorkspace(terraformWorkspaces);
-
-  if (selectedTerraformWorkspace === undefined) {
-    return undefined;
-  }
-
-  var selectedDeployment = deployments.find(
-    (deployment) =>
-      deployment.deploymentWorkspace === selectedTerraformWorkspace?.name
-  );
-  if (selectedDeployment) {
-    return selectedDeployment;
-  } else {
-    return undefined;
-  }
-}
-
 // Function returns the time when the deployment will be destroyed in user's local time.
 export function getDeploymentDestroyTime(deployment: DeploymentType) {
   if (deployment.deploymentAutoDelete === false) {
@@ -89,25 +52,6 @@ export function getDeploymentDestroyTimeRemaining(
 
     return hours + "h " + minutes + "m " + seconds + "s";
   }, 1000);
-}
-
-export function isDefaultWorkspaceSelected(
-  workspaces: TerraformWorkspace[] | undefined
-): boolean {
-  if (workspaces === undefined) {
-    return true;
-  }
-
-  const selectedWorkspace = getSelectedTerraformWorkspace(workspaces);
-  if (selectedWorkspace === undefined) {
-    return true;
-  }
-
-  if (selectedWorkspace.name === "default") {
-    return true;
-  }
-
-  return false;
 }
 
 // set default values in local storage

@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Button from "../../UserInterfaceComponents/Button";
 import { MdClose } from "react-icons/md";
 import { useTerraformWorkspace } from "../../../hooks/useWorkspace";
@@ -8,8 +8,13 @@ import {
 } from "../../../hooks/useDeployments";
 import { useLab } from "../../../hooks/useLab";
 import { ButtonVariant } from "../../../dataStructures";
-import { WebSocketContext } from "../../../WebSocketContext";
+import { WebSocketContext } from "../../Context/WebSocketContext";
 import { deploymentNameSchema } from "../../../zodSchemas";
+import PleaseWaitModal from "../../UserInterfaceComponents/Modal/PleaseWaitModal";
+import { useQueryClient } from "react-query";
+import { useSelectedDeployment } from "../../../hooks/useSelectedDeployment";
+import ModalBackdrop from "../../UserInterfaceComponents/Modal/ModalBackdrop";
+import { useDefaultAccount } from "../../../hooks/useDefaultAccount";
 
 type Props = {
   variant: ButtonVariant;
@@ -25,7 +30,84 @@ export default function CreateNewDeployment({
   children,
 }: Props) {
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [newWorkSpaceName, setNewWorkSpaceName] = useState<string>("");
+  const [isNewWorkspaceNameModified, setIsNewWorkspaceNameModified] =
+    useState<boolean>(false);
   const { actionStatus } = useContext(WebSocketContext);
+  const [showPleaseWaitModal, setShowPleaseWaitModal] =
+    useState<boolean>(false);
+  const [modalMessage, setModalMessage] = useState<string>("");
+  const { mutateAsync: addDeployment } = useAddDeployment();
+  const { data: lab } = useLab();
+  const queryClient = useQueryClient();
+  const { selectedDeployment } = useSelectedDeployment();
+  const { defaultAccount } = useDefaultAccount();
+
+  useEffect(() => {
+    if (selectedDeployment?.deploymentWorkspace === newWorkSpaceName) {
+      setModalMessage("✅ All done.");
+      setTimeout(() => {
+        setShowPleaseWaitModal(false);
+        setNewWorkSpaceName("");
+      }, 2000);
+    }
+  }, [selectedDeployment]);
+
+  // Close the modal and reset the state
+  const handleModalClose = () => {
+    setIsNewWorkspaceNameModified(false);
+    setShowModal(false);
+  };
+
+  function handleAddWorkspace() {
+    if (lab === undefined) {
+      console.error("Lab is undefined");
+      handleModalClose();
+      return;
+    }
+
+    if (defaultAccount === undefined) {
+      console.error("Default subscription is undefined");
+      handleModalClose();
+      return;
+    }
+
+    setModalMessage("⌛ Adding deployment, Please wait...");
+    setShowPleaseWaitModal(true);
+    handleModalClose();
+
+    addDeployment({
+      deploymentId: "",
+      deploymentUserId: "",
+      deploymentWorkspace: newWorkSpaceName,
+      deploymentSubscriptionId: defaultAccount.id,
+      deploymentAutoDelete: false,
+      deploymentAutoDeleteUnixTime: 0,
+      deploymentLifespan: 28800,
+      deploymentStatus: "Deployment Not Started",
+      deploymentLab: lab,
+    })
+      .then(() => {
+        setModalMessage("⌛ Almost done. Please wait...");
+        queryClient.invalidateQueries(["list-deployments"]);
+
+        setTimeout(() => {
+          setModalMessage("❌ Failed to add deployment.");
+          setTimeout(() => {
+            setShowPleaseWaitModal(false);
+            setNewWorkSpaceName("");
+          }, 5000);
+        }, 60000);
+      })
+      .catch(() => {
+        setModalMessage("❌ Failed to add deployment.");
+        setTimeout(() => {
+          setShowPleaseWaitModal(false);
+          setNewWorkSpaceName("");
+        }, 5000);
+      });
+  }
+
   return (
     <>
       <Button
@@ -37,43 +119,55 @@ export default function CreateNewDeployment({
       >
         {children}
       </Button>
-      <Modal showModal={showModal} setShowModal={setShowModal} />
+      {showModal && (
+        <Modal
+          setShowModal={setShowModal}
+          newWorkSpaceName={newWorkSpaceName}
+          setNewWorkSpaceName={setNewWorkSpaceName}
+          handleAddWorkspace={handleAddWorkspace}
+          isNewWorkspaceNameModified={isNewWorkspaceNameModified}
+          setIsNewWorkspaceNameModified={setIsNewWorkspaceNameModified}
+          handleModalClose={handleModalClose}
+        />
+      )}
+      {showPleaseWaitModal && <PleaseWaitModal modalMessage={modalMessage} />}
     </>
   );
 }
 
 type ModalProps = {
-  showModal: boolean;
   setShowModal(args: boolean): void;
+  newWorkSpaceName: string;
+  setNewWorkSpaceName(args: string): void;
+  handleAddWorkspace(): void;
+  isNewWorkspaceNameModified: boolean;
+  setIsNewWorkspaceNameModified(args: boolean): void;
+  handleModalClose(): void;
 };
 
-function Modal({ showModal, setShowModal }: ModalProps) {
-  const [newWorkSpaceName, setNewWorkSpaceName] = useState<string>("");
+function Modal({
+  newWorkSpaceName,
+  setNewWorkSpaceName,
+  handleAddWorkspace,
+  isNewWorkspaceNameModified,
+  setIsNewWorkspaceNameModified,
+  handleModalClose,
+}: ModalProps) {
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const [isModified, setIsModified] = useState<boolean>(false);
-  const { isFetching: fetchingWorkspaces, isLoading: loadingWorkspaces } =
-    useTerraformWorkspace();
-  const { isFetching: fetchingDeployments, isLoading: loadingDeployments } =
-    useGetMyDeployments();
-  const { mutateAsync: addDeployment } = useAddDeployment();
   const { actionStatus } = useContext(WebSocketContext);
-  const { data: lab } = useLab();
 
   function handleWorkspaceNameTextField(
     event: React.ChangeEvent<HTMLInputElement>
   ) {
     const value = event.target.value;
+    setNewWorkSpaceName(value);
+    setIsNewWorkspaceNameModified(true);
 
-    setNewWorkSpaceName(value); // Always update the input
-    setIsModified(true); // Set isModified to true when the user modifies the input
-
-    // Validate the input
     const result = deploymentNameSchema.safeParse(value);
 
     if (result.success) {
-      setErrorMessage(""); // Clear the error message
+      setErrorMessage("");
     } else {
-      // Join all error messages into a single string
       const errorMessages = result.error.errors
         .map((err) => err.message)
         .join(" ");
@@ -81,40 +175,9 @@ function Modal({ showModal, setShowModal }: ModalProps) {
     }
   }
 
-  function handleAddWorkspace() {
-    if (lab === undefined) {
-      console.error("Lab is undefined");
-      handleModalClose();
-      return;
-    }
-    addDeployment({
-      deploymentId: "",
-      deploymentUserId: "",
-      deploymentWorkspace: newWorkSpaceName,
-      deploymentSubscriptionId: "",
-      deploymentAutoDelete: false,
-      deploymentAutoDeleteUnixTime: 0,
-      deploymentLifespan: 28800,
-      deploymentStatus: "Deployment Not Started",
-      deploymentLab: lab,
-    }).finally(() => {
-      setTimeout(() => {
-        handleModalClose();
-      }, 3000);
-    });
-  }
-
-  // Close the modal and reset the state
-  const handleModalClose = () => {
-    setIsModified(false);
-    setShowModal(false);
-  };
-
-  if (!showModal) return null;
   return (
-    <div
-      className="fixed inset-0 z-20 flex max-h-full max-w-full justify-center bg-slate-800 bg-opacity-80 dark:bg-slate-100 dark:bg-opacity-80"
-      onClick={(e) => {
+    <ModalBackdrop
+      onClick={(e: React.MouseEvent<HTMLDivElement>) => {
         handleModalClose();
         e.stopPropagation();
       }}
@@ -135,56 +198,40 @@ function Modal({ showModal, setShowModal }: ModalProps) {
           </button>
         </div>
         <div className="flex flex-col gap-y-2 pt-4">
-          <div className="flex w-full justify-between gap-x-4">
-            {actionStatus.inProgress !== false ||
-            fetchingDeployments ||
-            fetchingWorkspaces ||
-            loadingDeployments ||
-            loadingWorkspaces ? (
-              <div className={`flex w-96 items-center justify-between`}>
-                Action is in progress, please wait...
-              </div>
-            ) : (
-              <>
-                <input
-                  type="text"
-                  aria-label="New Deployment Name"
-                  className={`${
-                    isModified && errorMessage
-                      ? "border-rose-500 focus:ring-rose-500"
-                      : "focus:ring-slate-500"
-                  } block h-10 w-full rounded border border-slate-500 bg-inherit px-2 text-inherit focus:outline-none focus:ring-1`}
-                  placeholder="Name your new deployment."
-                  value={newWorkSpaceName}
-                  onChange={handleWorkspaceNameTextField}
-                />
-                <Button
-                  variant="primary"
-                  onClick={() => handleAddWorkspace()}
-                  disabled={
-                    !deploymentNameSchema.safeParse(newWorkSpaceName).success ||
-                    actionStatus.inProgress ||
-                    fetchingDeployments ||
-                    fetchingWorkspaces ||
-                    loadingDeployments ||
-                    loadingWorkspaces
-                  }
-                >
-                  Create
-                </Button>
-                <Button variant="secondary" onClick={() => handleModalClose()}>
-                  Cancel
-                </Button>
-              </>
-            )}
+          <div className="flex gap-x-2">
+            <input
+              type="text"
+              aria-label="New Deployment Name"
+              className={`${
+                isNewWorkspaceNameModified && errorMessage
+                  ? "border-rose-500 focus:ring-rose-500"
+                  : "focus:ring-slate-500"
+              } block h-10 w-full rounded border border-slate-500 bg-inherit px-2 text-inherit focus:outline-none focus:ring-1`}
+              placeholder="Name your new deployment."
+              value={newWorkSpaceName}
+              onChange={handleWorkspaceNameTextField}
+            />
+            <Button
+              variant="primary"
+              onClick={() => handleAddWorkspace()}
+              disabled={
+                !deploymentNameSchema.safeParse(newWorkSpaceName).success ||
+                actionStatus.inProgress
+              }
+            >
+              Create
+            </Button>
+            <Button variant="secondary" onClick={() => handleModalClose()}>
+              Cancel
+            </Button>
           </div>
-          {isModified && errorMessage && (
+          {isNewWorkspaceNameModified && errorMessage && (
             <div className="rounded border border-rose-500 bg-rose-500 bg-opacity-20 p-2">
               <p className="error-message">{errorMessage}</p>
             </div>
           )}
         </div>
       </div>
-    </div>
+    </ModalBackdrop>
   );
 }

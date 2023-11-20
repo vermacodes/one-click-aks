@@ -3,7 +3,7 @@ import { useLab, useSetLab } from "../../../../hooks/useLab";
 import { useSetLogs } from "../../../../hooks/useLogs";
 import { useGetOrchestrators } from "../../../../hooks/useOrchestrators";
 import { useContext } from "react";
-import { WebSocketContext } from "../../../../WebSocketContext";
+import { WebSocketContext } from "../../../Context/WebSocketContext";
 import { PatchVersions, Value } from "../../../../dataStructures";
 import Tooltip from "../../../UserInterfaceComponents/Tooltip";
 
@@ -23,6 +23,10 @@ export default function Version({ versionMenu, setVersionMenu, index }: Props) {
     isFetching: labIsFetching,
   } = useLab();
   const { mutate: setLab } = useSetLab();
+
+  if (!lab?.template?.kubernetesClusters[index]) {
+    return null;
+  }
 
   // Select a version
   const handleOnSelect = (patchVersion: string) => {
@@ -47,8 +51,7 @@ export default function Version({ versionMenu, setVersionMenu, index }: Props) {
     isLoading ||
     isFetching ||
     labIsLoading ||
-    labIsFetching ||
-    !lab?.template?.kubernetesClusters[index];
+    labIsFetching;
 
   // Determine the current version
   const currentVersion =

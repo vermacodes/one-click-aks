@@ -4,74 +4,163 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/vermacodes/one-click-aks/app/server/entity"
+
+	"github.com/vermacodes/one-click-aks/app/server/helper"
+	"golang.org/x/exp/slog"
 )
 
 type terraformHandler struct {
-	terraformService entity.TerraformService
+	terraformService    entity.TerraformService
+	actionStatusService entity.ActionStatusService
+	deploymentService   entity.DeploymentService
 }
 
-func NewTerraformWithActionStatusHandler(r *gin.RouterGroup, service entity.TerraformService) {
+func NewTerraformWithActionStatusHandler(r *gin.RouterGroup,
+	service entity.TerraformService,
+	actionStatusService entity.ActionStatusService,
+	deploymentService entity.DeploymentService) {
 	handler := &terraformHandler{
-		terraformService: service,
+		terraformService:    service,
+		actionStatusService: actionStatusService,
+		deploymentService:   deploymentService,
 	}
 
-	r.POST("/terraform/init", handler.Init)
-	r.POST("/terraform/plan", handler.Plan)
-	r.POST("/terraform/apply", handler.Apply)
-	r.POST("/terraform/destroy", handler.Destroy)
-	r.POST("/terraform/extend/:mode", handler.Extend)
+	r.POST("/terraform/init/:operationId", handler.Init)
+	r.POST("/terraform/plan/:operationId", handler.Plan)
+	r.POST("/terraform/apply/:operationId", handler.Apply)
+	r.POST("/terraform/destroy/:operationId", handler.Destroy)
+	r.POST("/terraform/extend/:mode/:operationId", handler.Extend)
 }
 
 func (t *terraformHandler) Init(c *gin.Context) {
+	notification := entity.ServerNotification{
+		Id:               uuid.New().String(),
+		NotificationType: entity.Info,
+		Message:          string(entity.InitInProgress),
+		AutoClose:        2000,
+	}
 
-	w := c.Writer
-	header := w.Header()
-	header.Set("Transfer-Encoding", "chunked")
-	header.Set("Content-type", "text/html")
-	w.WriteHeader(http.StatusOK)
-	w.(http.Flusher).Flush()
+	if err := t.actionStatusService.SetServerNotification(notification); err != nil {
+		c.Status(http.StatusInternalServerError)
+	}
 
-	t.terraformService.Init()
+	// Start the long-running operation in a goroutine
+	go func() {
+		t.actionStatusService.SetActionStart()
+		if err := t.terraformService.Init(); err != nil {
+			notification.NotificationType = entity.Error
+			notification.Message = string(entity.InitFailed)
+		} else {
+			notification.NotificationType = entity.Success
+			notification.Message = string(entity.InitCompleted)
+		}
+		if err := t.actionStatusService.SetServerNotification(notification); err != nil {
+			slog.Error("Error setting server notification", err)
+		}
+		if err := t.actionStatusService.SetActionEnd(); err != nil {
+			slog.Error("Error setting action end", err)
+		}
+	}()
+
+	// Respond back to the request with the operation ID
+	c.IndentedJSON(http.StatusOK, notification)
 }
 
 func (t *terraformHandler) Plan(c *gin.Context) {
-	lab := entity.LabType{}
-	if err := c.Bind(&lab); err != nil {
+	deployment := entity.Deployment{}
+	if err := c.Bind(&deployment); err != nil {
 		c.Status(http.StatusBadRequest)
 		return
 	}
 
-	w := c.Writer
-	header := w.Header()
-	header.Set("Transfer-Encoding", "chunked")
-	header.Set("Content-type", "text/html")
-	w.WriteHeader(http.StatusOK)
-	w.(http.Flusher).Flush()
+	lab := deployment.DeploymentLab
 
-	t.terraformService.Plan(lab)
+	notification := entity.ServerNotification{
+		Id:               uuid.New().String(),
+		NotificationType: entity.Info,
+		Message:          string(entity.PlanInProgress),
+		AutoClose:        2000,
+	}
+
+	if err := t.actionStatusService.SetServerNotification(notification); err != nil {
+		slog.Error("Error setting server notification", err)
+	}
+
+	// Start the long-running operation in a goroutine
+	go func() {
+		t.actionStatusService.SetActionStart()
+		if err := t.terraformService.Plan(lab); err != nil {
+			notification.NotificationType = entity.Error
+			notification.Message = string(entity.PlanFailed)
+		} else {
+			notification.NotificationType = entity.Success
+			notification.Message = string(entity.PlanCompleted)
+		}
+		if err := t.actionStatusService.SetServerNotification(notification); err != nil {
+			slog.Error("Error setting server notification", err)
+		}
+		if err := t.actionStatusService.SetActionEnd(); err != nil {
+			slog.Error("Error setting action end", err)
+		}
+	}()
+
+	// Respond back to the request with the operation ID
+	c.Status(http.StatusAccepted)
 }
 
 func (t *terraformHandler) Apply(c *gin.Context) {
-	lab := entity.LabType{}
-	if err := c.Bind(&lab); err != nil {
+
+	deployment := entity.Deployment{}
+	if err := c.Bind(&deployment); err != nil {
 		c.Status(http.StatusBadRequest)
 		return
 	}
 
-	w := c.Writer
-	header := w.Header()
-	header.Set("Transfer-Encoding", "chunked")
-	header.Set("Content-type", "text/html")
-	// w.WriteHeader(http.StatusOK)
+	lab := deployment.DeploymentLab
 
-	if err := t.terraformService.Apply(lab); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-	} else {
-		w.WriteHeader(http.StatusOK)
+	notification := entity.ServerNotification{
+		Id:               uuid.New().String(),
+		NotificationType: entity.Info,
+		Message:          string(entity.DeploymentInProgress),
+		AutoClose:        2000,
 	}
 
-	w.(http.Flusher).Flush()
+	// Start the long-running operation in a goroutine
+	go func() {
+		deployment.DeploymentStatus = entity.DeploymentInProgress
+		helper.CalculateNewEpochTimeForDeployment(&deployment)
+		if err := t.deploymentService.UpsertDeployment(deployment); err != nil {
+			slog.Error("Error updating deployment", err)
+		}
+		t.actionStatusService.SetActionStart()
+		if err := t.actionStatusService.SetServerNotification(notification); err != nil {
+			slog.Error("Error setting server notification", err)
+		}
+		if err := t.terraformService.Apply(lab); err != nil {
+			notification.NotificationType = entity.Error
+			notification.Message = string(entity.DeploymentFailed)
+			deployment.DeploymentStatus = entity.DeploymentFailed
+		} else {
+			notification.NotificationType = entity.Success
+			notification.Message = string(entity.DeploymentCompleted)
+			deployment.DeploymentStatus = entity.DeploymentCompleted
+		}
+		if err := t.actionStatusService.SetServerNotification(notification); err != nil {
+			slog.Error("Error setting server notification", err)
+		}
+		helper.CalculateNewEpochTimeForDeployment(&deployment)
+		if err := t.deploymentService.UpsertDeployment(deployment); err != nil {
+			slog.Error("Error updating deployment", err)
+		}
+		if err := t.actionStatusService.SetActionEnd(); err != nil {
+			slog.Error("Error setting action end", err)
+		}
+	}()
+
+	// Respond back to the request with the operation ID
+	c.Status(http.StatusAccepted)
 }
 
 func (t *terraformHandler) Extend(c *gin.Context) {
@@ -97,22 +186,51 @@ func (t *terraformHandler) Extend(c *gin.Context) {
 }
 
 func (t *terraformHandler) Destroy(c *gin.Context) {
-	lab := entity.LabType{}
-	if err := c.Bind(&lab); err != nil {
+	deployment := entity.Deployment{}
+	if err := c.Bind(&deployment); err != nil {
 		c.Status(http.StatusBadRequest)
 		return
 	}
 
-	w := c.Writer
-	header := w.Header()
-	header.Set("Transfer-Encoding", "chunked")
-	header.Set("Content-type", "text/html")
+	lab := deployment.DeploymentLab
 
-	if err := t.terraformService.Destroy(lab); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-	} else {
-		w.WriteHeader(http.StatusOK)
+	notification := entity.ServerNotification{
+		Id:               uuid.New().String(),
+		NotificationType: entity.Info,
+		Message:          string(entity.DestroyInProgress),
+		AutoClose:        2000,
 	}
 
-	w.(http.Flusher).Flush()
+	// Start the long-running operation in a goroutine
+	go func() {
+		deployment.DeploymentStatus = entity.DestroyInProgress
+		if err := t.deploymentService.UpsertDeployment(deployment); err != nil {
+			slog.Error("Error updating deployment", err)
+		}
+		t.actionStatusService.SetActionStart()
+		if err := t.actionStatusService.SetServerNotification(notification); err != nil {
+			slog.Error("Error setting server notification", err)
+		}
+		if err := t.terraformService.Destroy(lab); err != nil {
+			notification.NotificationType = entity.Error
+			notification.Message = string(entity.DestroyFailed)
+			deployment.DeploymentStatus = entity.DestroyFailed
+		} else {
+			notification.NotificationType = entity.Success
+			notification.Message = string(entity.DestroyCompleted)
+			deployment.DeploymentStatus = entity.DestroyCompleted
+		}
+		if err := t.actionStatusService.SetServerNotification(notification); err != nil {
+			slog.Error("Error setting server notification", err)
+		}
+		if err := t.deploymentService.UpsertDeployment(deployment); err != nil {
+			slog.Error("Error updating deployment", err)
+		}
+		if err := t.actionStatusService.SetActionEnd(); err != nil {
+			slog.Error("Error setting action end", err)
+		}
+	}()
+
+	// Respond back to the request with the operation ID
+	c.Status(http.StatusAccepted)
 }

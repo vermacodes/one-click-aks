@@ -14,7 +14,7 @@ import { ButtonVariant, Lab } from "../../dataStructures";
 import { useLab, useSetLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
 import { useExtend } from "../../hooks/useTerraform";
-import { WebSocketContext } from "../../WebSocketContext";
+import { WebSocketContext } from "../../components/Context/WebSocketContext";
 
 type Props = {
   children?: React.ReactNode;

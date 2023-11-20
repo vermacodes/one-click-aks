@@ -105,7 +105,7 @@ func (d *deploymentRepository) UpsertDeployment(deployment entity.Deployment) er
 	deploymentEntry := entity.DeploymentEntry{
 		Entity: aztables.Entity{
 			PartitionKey: deployment.DeploymentUserId,
-			RowKey:       deployment.DeploymentUserId + "-" + deployment.DeploymentWorkspace + "-" + deployment.DeploymentSubscriptionId,
+			RowKey:       deployment.DeploymentId,
 		},
 		Deployment: string(marshalledDeployment),
 	}

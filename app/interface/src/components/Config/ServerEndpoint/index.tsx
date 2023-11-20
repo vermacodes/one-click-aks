@@ -1,12 +1,11 @@
-import { useMsal } from "@azure/msal-react";
 import { useEffect, useState } from "react";
 import { FaCheck, FaEdit, FaTimes } from "react-icons/fa";
-import { loginRequest } from "../../../authConfig";
-import { GraphData } from "../../../dataStructures";
 import SettingsItemLayout from "../../../layouts/SettingsItemLayout";
 import Checkbox from "../../UserInterfaceComponents/Checkbox";
 import { useQueryClient } from "react-query";
 import { useResetServerCache } from "../../../hooks/useServerCache";
+import Button from "../../UserInterfaceComponents/Button";
+import { useAuth } from "../../Context/AuthContext";
 
 type Props = {};
 
@@ -14,54 +13,8 @@ export default function ServerEndpoint({}: Props) {
   const [baseUrl, setBaseUrl] = useState<string>("http://localhost:8880/");
   const [showEditButton, setShowEditButton] = useState<boolean>(false);
   const [edit, setEdit] = useState<boolean>(false);
-  const { instance, accounts, inProgress } = useMsal();
-  const [graphResponse, setGraphResponse] = useState<GraphData | undefined>();
-  const [accessToken, setAccessToken] = useState<string>("");
-  const [tokenAcquired, setTokenAcquired] = useState<boolean>(false);
   const { mutateAsync: resetServerCache } = useResetServerCache();
-
-  // call RequestAccessToken after the component has mounted
-  useEffect(() => {
-    RequestAccessToken();
-  }, []);
-
-  useEffect(() => {
-    if (tokenAcquired || accessToken !== "") {
-      getGraphData();
-    }
-  }, [tokenAcquired, accessToken]);
-
-  async function getGraphData() {
-    fetch("https://graph.microsoft.com/v1.0/me", {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }).then((response) => {
-      if (response.ok) {
-        response.json().then((data) => {
-          setGraphResponse(data);
-        });
-      }
-    });
-  }
-
-  async function RequestAccessToken() {
-    const request = {
-      ...loginRequest,
-      account: accounts[0],
-    };
-
-    // Silently acquires an access token which is then attached to a request for Microsoft Graph data
-    instance
-      .acquireTokenSilent(request)
-      .then((response) => {
-        setAccessToken(response.accessToken);
-        setTokenAcquired(true);
-      })
-      .catch((e) => {
-        instance.acquireTokenRedirect(request);
-      });
-  }
+  const { graphResponse } = useAuth();
 
   useEffect(() => {
     const baseUrlFromLocalStorage = localStorage.getItem("baseUrl");
@@ -97,6 +50,9 @@ export default function ServerEndpoint({}: Props) {
           <p className="text-xs">
             Server Endpoint. You probably don't want to edit this unless you
             know what you are doing. But, if you know, you know. Go ahead.
+          </p>
+          <p className="w-fit rounded border border-yellow-600 bg-yellow-600 bg-opacity-10 py-1 px-3 text-xs">
+            Note: ARO labs only work with the Docker option.
           </p>
         </div>
 
@@ -204,7 +160,7 @@ export default function ServerEndpoint({}: Props) {
             </div>
           )}
           <div
-            className={`flex h-10 w-full items-center justify-between rounded border border-slate-500`}
+            className={`flex h-fit w-full items-center justify-between rounded border border-slate-500 py-1 px-2`}
             onMouseEnter={() => setShowEditButton(true)}
             onMouseLeave={() => setShowEditButton(false)}
             onDoubleClick={() => setEdit(true)}
@@ -225,34 +181,35 @@ export default function ServerEndpoint({}: Props) {
                 onChange={(event) => setBaseUrl(event.target.value)}
               />
             </form>
-            <button
-              className={`${!showEditButton && "hidden"} ${
-                edit && "hidden"
-              } px-1`}
-              onClick={() => setEdit(true)}
-            >
-              <FaEdit />
-            </button>
-            <button
-              className={`${!edit && "hidden"} px-1 text-green-500`}
-              onClick={() => {
-                localStorage.setItem("baseUrl", baseUrl);
-                setEdit(false);
-                window.location.reload();
-              }}
-            >
-              <FaCheck />
-            </button>
-            <button
-              className={`${
-                !edit && "hidden"
-              } px-1 text-slate-900 dark:text-slate-100`}
-              onClick={() => {
-                setEdit(false);
-              }}
-            >
-              <FaTimes />
-            </button>
+            {!edit && showEditButton && (
+              <div className="flex space-x-1 py-1 px-2">
+                <Button variant="primary-icon" onClick={() => setEdit(true)}>
+                  <FaEdit />
+                </Button>
+              </div>
+            )}
+            {edit && (
+              <div className="flex space-x-1 py-1 px-2">
+                <Button
+                  variant="primary-icon"
+                  onClick={() => {
+                    localStorage.setItem("baseUrl", baseUrl);
+                    setEdit(false);
+                    window.location.reload();
+                  }}
+                >
+                  <FaCheck />
+                </Button>
+                <Button
+                  variant="secondary-icon"
+                  onClick={() => {
+                    setEdit(false);
+                  }}
+                >
+                  <FaTimes />
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </div>

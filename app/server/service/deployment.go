@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/vermacodes/one-click-aks/app/server/entity"
-	"github.com/vermacodes/one-click-aks/app/server/helper"
 	"golang.org/x/exp/slog"
 )
 
@@ -20,7 +19,13 @@ type DeploymentService struct {
 	authService          entity.AuthService
 }
 
-func NewDeploymentService(deploymentRepo entity.DeploymentRepository, labService entity.LabService, terraformService entity.TerraformService, actionStatusService entity.ActionStatusService, logstreamService entity.LogStreamService, authService entity.AuthService, workspaceService entity.WorkspaceService) entity.DeploymentService {
+func NewDeploymentService(deploymentRepo entity.DeploymentRepository,
+	labService entity.LabService,
+	terraformService entity.TerraformService,
+	actionStatusService entity.ActionStatusService,
+	logstreamService entity.LogStreamService,
+	authService entity.AuthService,
+	workspaceService entity.WorkspaceService) entity.DeploymentService {
 	return &DeploymentService{
 		deploymentRepository: deploymentRepo,
 		labService:           labService,
@@ -71,7 +76,7 @@ func (d *DeploymentService) GetMyDeployments(userId string) ([]entity.Deployment
 			DeploymentUserId:             userId,
 			DeploymentWorkspace:          "default",
 			DeploymentSubscriptionId:     activeAccount.Id,
-			DeploymentId:                 helper.Generate(5),
+			DeploymentId:                 userId + "-default-" + activeAccount.Id,
 			DeploymentLab:                defaultLab,
 			DeploymentAutoDelete:         false,
 			DeploymentLifespan:           28800,
@@ -230,7 +235,7 @@ func (d *DeploymentService) PollAndDeleteDeployments(interval time.Duration) err
 			}
 
 			// Update deployment status to deleting.
-			deployment.DeploymentStatus = entity.DestroyingResources
+			deployment.DeploymentStatus = entity.DestroyInProgress
 			if err := d.UpsertDeployment(deployment); err != nil {
 				slog.Error("not able to update deployment", err)
 				continue
@@ -268,7 +273,7 @@ func (d *DeploymentService) PollAndDeleteDeployments(interval time.Duration) err
 			}
 
 			// Update deployment status to destroyed.
-			deployment.DeploymentStatus = entity.ResourcesDestroyed
+			deployment.DeploymentStatus = entity.DestroyCompleted
 			if err := d.UpsertDeployment(deployment); err != nil {
 				slog.Error("not able to update deployment", err)
 				d.actionStatusService.SetActionEnd()
@@ -303,7 +308,11 @@ func (d *DeploymentService) FetchDeploymentsToBeDeleted() []entity.Deployment {
 	for _, deployment := range deployments {
 		currentEpochTime := time.Now().Unix()
 		slog.Debug("currentEpochTime: " + strconv.FormatInt(currentEpochTime, 10))
-		if deployment.DeploymentAutoDelete && deployment.DeploymentAutoDeleteUnixTime < currentEpochTime && deployment.DeploymentAutoDeleteUnixTime != 0 && deployment.DeploymentStatus != entity.DestroyingResources && deployment.DeploymentStatus != entity.DestroyFailed && deployment.DeploymentStatus != entity.ResourcesDestroyed {
+		if deployment.DeploymentAutoDelete &&
+			deployment.DeploymentAutoDeleteUnixTime < currentEpochTime &&
+			deployment.DeploymentAutoDeleteUnixTime != 0 &&
+			(deployment.DeploymentStatus == entity.DeploymentCompleted ||
+				deployment.DeploymentStatus == entity.DeploymentFailed) {
 			deploymentsToBeDeleted = append(deploymentsToBeDeleted, deployment)
 		}
 	}

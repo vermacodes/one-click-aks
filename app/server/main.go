@@ -82,8 +82,13 @@ func main() {
 
 	authRouter.Use(middleware.AuthRequired(authService, logStreamService))
 
+	handler.NewAuthActionStatusHandler(authRouter, actionStatusService)
+
 	authWithActionRouter := authRouter.Group("/")
 	authWithActionRouter.Use(middleware.ActionStatusMiddleware(actionStatusService))
+
+	authWithTerraformActionRouter := authRouter.Group("/")
+	authWithTerraformActionRouter.Use(middleware.TerraformActionMiddleware(actionStatusService))
 
 	handler.NewAuthHandler(authRouter, authService)
 	handler.NewAuthWithActionStatusHandler(authWithActionRouter, authService)
@@ -111,12 +116,13 @@ func main() {
 
 	terraformRepository := repository.NewTerraformRepository()
 	terraformService := service.NewTerraformService(terraformRepository, labService, workspaceService, logStreamService, actionStatusService, kVersionService, storageAccountService, loggingService, authService)
-	handler.NewTerraformWithActionStatusHandler(authWithActionRouter, terraformService)
 
 	deploymentRepository := repository.NewDeploymentRepository()
 	deploymentService := service.NewDeploymentService(deploymentRepository, labService, terraformService, actionStatusService, logStreamService, authService, workspaceService)
-	handler.NewDeploymentHandler(authRouter, deploymentService)
-	handler.NewDeploymentWithActionStatusHandler(authWithActionRouter, deploymentService)
+	handler.NewDeploymentHandler(authRouter, deploymentService, terraformService, actionStatusService)
+	handler.NewDeploymentWithActionStatusHandler(authWithActionRouter, deploymentService, terraformService, actionStatusService)
+
+	handler.NewTerraformWithActionStatusHandler(authWithTerraformActionRouter, terraformService, actionStatusService, deploymentService)
 
 	// take seconds and multiply with 1000000000 and pass it to the function.
 	go deploymentService.PollAndDeleteDeployments(60000000000)

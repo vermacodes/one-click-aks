@@ -1,3 +1,5 @@
+import { TypeOptions } from "react-toastify";
+
 interface User {
   name: string;
   type: string;
@@ -282,13 +284,13 @@ export type ButtonVariant =
   | "secondary-outline"
   | "danger-outline"
   | "success-outline"
-  | "primary-outline-animate"
   | "primary-text"
   | "secondary-text"
   | "danger-text"
   | "success-text"
   | "primary-icon"
-  | "secondary-icon";
+  | "secondary-icon"
+  | "text";
 
 export type ButtonContainerObj = {
   id: string;
@@ -320,21 +322,42 @@ export type GraphData = {
   id: string;
 };
 
+export type DeploymentStatus =
+  | "Init In Progress"
+  | "Init Failed"
+  | "Init Completed"
+  | "Plan In Progress"
+  | "Plan Failed"
+  | "Plan Completed"
+  | "Deployment In Progress"
+  | "Deployment Failed"
+  | "Deployment Completed"
+  | "Deployment Not Started"
+  | "Destroy In Progress"
+  | "Destroy Completed"
+  | "Destroy Failed";
+
 export type DeploymentType = {
   deploymentId: string;
   deploymentUserId: string;
   deploymentWorkspace: string;
   deploymentSubscriptionId: string;
-  deploymentStatus:
-    | "Deployment In Progress"
-    | "Deployment Failed"
-    | "Deployment Completed"
-    | "Deployment Not Started"
-    | "Destroying Resources"
-    | "Resources Destroyed"
-    | "Destroy Failed";
+  deploymentStatus: DeploymentStatus;
   deploymentLab: Lab;
   deploymentAutoDelete: boolean;
   deploymentLifespan: number;
   deploymentAutoDeleteUnixTime: number;
+};
+
+export type TerraformOperation = {
+  operationId: string;
+  inProgress: boolean;
+  status: DeploymentStatus;
+};
+
+export type ServerNotification = {
+  id: string;
+  type: TypeOptions;
+  message: string;
+  autoClose: number;
 };
