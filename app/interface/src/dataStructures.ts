@@ -284,7 +284,6 @@ export type ButtonVariant =
   | "secondary-outline"
   | "danger-outline"
   | "success-outline"
-  | "primary-outline-animate"
   | "primary-text"
   | "secondary-text"
   | "danger-text"
