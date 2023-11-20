@@ -24,6 +24,10 @@ export default function Version({ versionMenu, setVersionMenu, index }: Props) {
   } = useLab();
   const { mutate: setLab } = useSetLab();
 
+  if (!lab?.template?.kubernetesClusters[index]) {
+    return null;
+  }
+
   // Select a version
   const handleOnSelect = (patchVersion: string) => {
     if (lab?.template) {
@@ -47,8 +51,7 @@ export default function Version({ versionMenu, setVersionMenu, index }: Props) {
     isLoading ||
     isFetching ||
     labIsLoading ||
-    labIsFetching ||
-    !lab?.template?.kubernetesClusters[index];
+    labIsFetching;
 
   // Determine the current version
   const currentVersion =
