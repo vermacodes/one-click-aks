@@ -1,4 +1,4 @@
-import { FaShare } from "react-icons/fa";
+import { FaHistory, FaShare } from "react-icons/fa";
 import { ButtonContainerObj, Lab } from "../../../../dataStructures";
 import ExportLabButton from "../../Export/ExportLabButton";
 import LoadToBuilderButton from "../../LoadToBuilderButton";
@@ -7,6 +7,7 @@ import DeleteLabButton from "../../DeleteLabButton";
 import { useGetMyRoles } from "../../../../hooks/useAuth";
 import ButtonContainer from "../ButtonContainer";
 import CopyLinkToLabButton from "../../CopyLinkToLabButton";
+import Versions from "../../LabVersions";
 
 type Props = {
   lab: Lab;

@@ -204,6 +204,8 @@ export type Lab = {
   createdOn: string;
   updatedBy: string;
   updatedOn: string;
+  versionId: string;
+  isCurrentVersion: boolean;
 };
 
 export type Assignment = {

@@ -122,3 +122,24 @@ export function useDeleteMyLab() {
     },
   });
 }
+
+export function useGetVersionsById(
+  id: string | undefined,
+  typeOfLab: string | undefined,
+  secure: string = "public"
+) {
+  return useQuery(
+    `versions-${typeOfLab}-${id}-${secure}`,
+    () => {
+      return authAxiosInstance.get(
+        `/lab/${secure}/versions/${typeOfLab}s/${id}`
+      );
+    },
+    {
+      enabled: !!id && !!typeOfLab,
+      select: (data): Lab[] => {
+        return data.data;
+      },
+    }
+  );
+}
