@@ -58,7 +58,7 @@ export default function LabPage() {
 
   return (
     <PageLayout heading={lab.name}>
-      <LabCard lab={lab} fullPage={true} />
+      <LabCard lab={lab} fullPage={true} showVersions={true} />
       <Terminal />
     </PageLayout>
   );

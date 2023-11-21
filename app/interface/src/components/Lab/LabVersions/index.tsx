@@ -204,7 +204,7 @@ function Modal({
               ))}
           </tbody>
         </table>
-        <LabCard lab={selectedLab} fullPage={true} inVersions={true} />
+        <LabCard lab={selectedLab} fullPage={true} />
       </div>
     </ModalBackdrop>
   );
