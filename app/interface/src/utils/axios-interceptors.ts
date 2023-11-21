@@ -23,22 +23,35 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-axiosInstance.interceptors.request.use(
-  async (config: AxiosRequestConfig) => {
-    const authToken = await getAuthToken().catch((e) =>
-      myInteractionInProgressHandler()
-    );
-    if (config.headers) {
-      config.headers.Authorization = `Bearer ${authToken}`;
-    } else {
-      config.headers = { Authorization: `Bearer ${authToken}` };
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
+// axiosInstance.interceptors.request.use(
+//   async (config: AxiosRequestConfig) => {
+//     const authToken = await getAuthToken().catch((e) =>
+//       myInteractionInProgressHandler()
+//     );
+//     if (config.headers) {
+//       config.headers.Authorization = `Bearer ${authToken}`;
+//     } else {
+//       config.headers = { Authorization: `Bearer ${authToken}` };
+//     }
+//     return config;
+//   },
+//   (error) => {
+//     return Promise.reject(error);
+//   }
+// );
+
+axiosInstance.interceptors.request.use(async function (config) {
+  const token = await getAuthToken().catch((e) =>
+    myInteractionInProgressHandler()
+  );
+
+  if (config.headers) {
+    config.headers.Authorization = `Bearer ${token}`;
+  } else {
+    Promise.reject("No headers");
   }
-);
+  return config;
+});
 
 function getBaseUrl(): string {
   const baseUrlFromLocalStorage = localStorage.getItem("baseUrl");
@@ -91,23 +104,36 @@ async function myInteractionInProgressHandler() {
   return await getAuthToken();
 }
 
-// Axios interceptor to add the auth token to outgoing requests
-authAxiosInstance.interceptors.request.use(
-  async (config: AxiosRequestConfig) => {
-    const authToken = await getAuthToken().catch((e) =>
-      myInteractionInProgressHandler()
-    );
-    if (config.headers) {
-      config.headers.Authorization = `Bearer ${authToken}`;
-    } else {
-      config.headers = { Authorization: `Bearer ${authToken}` };
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
+// // Axios interceptor to add the auth token to outgoing requests
+// authAxiosInstance.interceptors.request.use(
+//   async (config: AxiosRequestConfig) => {
+//     const authToken = await getAuthToken().catch((e) =>
+//       myInteractionInProgressHandler()
+//     );
+//     if (config.headers) {
+//       config.headers.Authorization = `Bearer ${authToken}`;
+//     } else {
+//       config.headers = { Authorization: `Bearer ${authToken}` };
+//     }
+//     return config;
+//   },
+//   (error) => {
+//     return Promise.reject(error);
+//   }
+// );
+
+authAxiosInstance.interceptors.request.use(async function (config) {
+  const token = await getAuthToken().catch((e) =>
+    myInteractionInProgressHandler()
+  );
+
+  if (config.headers) {
+    config.headers.Authorization = `Bearer ${token}`;
+  } else {
+    Promise.reject("No headers");
   }
-);
+  return config;
+});
 
 function getAuthServiceBaseUrl(): string {
   const baseUrlFromLocalStorage = localStorage.getItem("authServiceBaseUrl");

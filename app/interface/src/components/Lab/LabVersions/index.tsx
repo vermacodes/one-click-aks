@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { diffJson, diffLines, Change } from "diff";
+import { diffLines, Change } from "diff";
 import { html as beautifyHtml } from "js-beautify";
 import { ButtonVariant, Lab } from "../../../dataStructures";
 import { useCreateLab, useGetVersionsById } from "../../../hooks/useBlobs";
@@ -11,7 +11,6 @@ import { toast } from "react-toastify";
 import ConfirmationModal from "../../UserInterfaceComponents/Modal/ConfirmationModal";
 import { useQueryClient } from "react-query";
 import LabCard from "../LabCard";
-import { version } from "os";
 import Checkbox from "../../UserInterfaceComponents/Checkbox";
 
 function formatDate(dateString: string) {
@@ -129,6 +128,9 @@ function Modal({
   }, []);
 
   function handleCompareSelection(lab: Lab) {
+    // if (lab.versionId === versionB.versionId) {
+    //   return;
+    // }
     setVersionA(versionB);
     setVersionB(lab);
   }
@@ -189,7 +191,13 @@ function Modal({
                 >
                   <td className="py-2 px-4">
                     <Checkbox
-                      label=""
+                      label={
+                        versionA.versionId === lab.versionId
+                          ? "A"
+                          : versionB.versionId === lab.versionId
+                          ? "B"
+                          : ""
+                      }
                       id={lab.versionId}
                       handleOnChange={() => handleCompareSelection(lab)}
                       checked={
@@ -230,21 +238,25 @@ function Modal({
           </tbody>
         </table>
         <LabCard lab={selectedLab} fullPage={true} />
-        <VersionDiff
-          versionA={JSON.stringify(versionA.template, null, 4)}
-          versionB={JSON.stringify(versionB.template, null, 4)}
-          heading="Template"
-        />
-        <VersionDiff
-          versionA={atob(versionA.extendScript)}
-          versionB={atob(versionB.extendScript)}
-          heading="Extend Script"
-        />
-        <VersionDiff
-          versionA={beautifyHtml(atob(versionA.description))}
-          versionB={beautifyHtml(atob(versionB.description))}
-          heading="Description"
-        />
+        {versionA.versionId === versionB.versionId ? null : (
+          <>
+            <VersionDiff
+              versionA={JSON.stringify(versionA.template, null, 4)}
+              versionB={JSON.stringify(versionB.template, null, 4)}
+              heading="Template"
+            />
+            <VersionDiff
+              versionA={atob(versionA.extendScript)}
+              versionB={atob(versionB.extendScript)}
+              heading="Extend Script"
+            />
+            <VersionDiff
+              versionA={beautifyHtml(atob(versionA.description))}
+              versionB={beautifyHtml(atob(versionB.description))}
+              heading="Description"
+            />
+          </>
+        )}
       </div>
     </ModalBackdrop>
   );
