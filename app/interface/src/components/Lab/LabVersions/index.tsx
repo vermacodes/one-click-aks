@@ -143,7 +143,7 @@ function Modal({
       }}
     >
       <div
-        className="my-10 h-[90%] w-2/3 space-y-4 overflow-y-auto rounded bg-slate-100 p-5 overflow-x-hidden scrollbar-thin  scrollbar-thumb-slate-400 dark:divide-slate-700 dark:bg-slate-900 dark:scrollbar-thumb-slate-600"
+        className="my-10 h-[90%] w-2/3 space-y-4 overflow-y-auto rounded bg-slate-100 p-5 overflow-x-hidden scrollbar-thin  scrollbar-thumb-slate-400 dark:divide-slate-700 dark:bg-slate-800 dark:scrollbar-thumb-slate-600"
         onClick={(e) => {
           e.stopPropagation();
         }}
@@ -157,7 +157,7 @@ function Modal({
             <MdClose className="text-3xl" />
           </button>
         </div>
-        <table className="w-full table-auto border-separate rounded border text-lg shadow-md hover:border-sky-500">
+        <table className="h-fit w-full max-w-full table-auto border-separate justify-between gap-y-6 rounded bg-slate-50 p-4 shadow-md outline-1 outline-slate-400 hover:shadow-lg hover:outline hover:outline-sky-500 dark:bg-slate-900 dark:outline-slate-600 dark:hover:outline-sky-500">
           <thead>
             <tr>
               <th className="py-2 px-4">Compare</th>
@@ -276,9 +276,9 @@ function VersionDiff({ versionA, versionB, heading }: VersionDiffProps) {
   }, [versionA, versionB]);
 
   return (
-    <div className="flex w-full flex-col gap-y-4 rounded border p-2 shadow-sm hover:border-sky-500">
+    <div className="flex h-fit max-w-full flex-col justify-between gap-y-6 rounded bg-slate-50 p-4 shadow-md outline-1 outline-slate-400 hover:shadow-lg hover:outline hover:outline-sky-500 dark:bg-slate-900 dark:outline-slate-600 dark:hover:outline-sky-500">
       <h2 className="text-2xl">{heading}</h2>
-      <div className="w-full bg-slate-50 dark:bg-slate-800">
+      <div className="w-full">
         {differences.map((part, index) => (
           <pre
             key={index}
@@ -287,7 +287,7 @@ function VersionDiff({ versionA, versionB, heading }: VersionDiffProps) {
                 ? "bg-green-500 bg-opacity-20 dark:bg-green-500 dark:bg-opacity-20"
                 : part.removed &&
                   "bg-rose-500 bg-opacity-20 dark:bg-rose-500 dark:bg-opacity-20"
-            } bg-slate-50 dark:bg-slate-800`}
+            }`}
           >
             {part.value}
           </pre>

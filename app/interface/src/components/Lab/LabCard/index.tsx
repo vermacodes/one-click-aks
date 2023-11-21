@@ -11,7 +11,6 @@ import {
 import { decodeIfEncoded } from "../../../utils/helpers";
 import LabActionButtons from "../LabActionButtons/LabActionButtons";
 import LabVersions from "../LabVersions";
-import Tooltip from "../../UserInterfaceComponents/Tooltip";
 
 type Props = {
   lab: Lab | undefined;
@@ -53,15 +52,9 @@ function LabHeader({ lab, showVersions }: LabHeaderProps) {
         </h1>
       </Link>
       {showVersions && (
-        <Tooltip
-          key={"versionButtonInLabCardFullPage"}
-          message="Version History"
-          delay={500}
-        >
-          <LabVersions lab={lab} variant="text">
-            <FaHistory /> Versions
-          </LabVersions>
-        </Tooltip>
+        <LabVersions lab={lab} variant="text">
+          <FaHistory /> Versions
+        </LabVersions>
       )}
     </div>
   );
