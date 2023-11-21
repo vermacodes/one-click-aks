@@ -9,6 +9,7 @@ import Deployments from "../../pages/Deployments";
 import LabsGridPage from "../../pages/LabsGridPage";
 import LabPage from "../../pages/LabPage";
 import Feedback from "../../pages/Feedback";
+import LabVersionsPage from "../../pages/LabVersionsPage";
 
 type Props = {
   darkMode: boolean;
@@ -39,6 +40,7 @@ export default function MainLayout({ darkMode, setDarkMode }: Props) {
           <Route path="/builder" element={<LabBuilder />} />
           <Route path="/deployments" element={<Deployments />} />
           <Route path="/lab/:type/:id" element={<LabPage />} />
+          <Route path="/lab/versions/:type/:id" element={<LabVersionsPage />} />
           <Route path="/labs/:type" element={<LabsGridPage />} />
           <Route path="/assignments" element={<Assignments />} />
           <Route path="/settings" element={<Settings />} />

@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { Lab } from "../../../dataStructures";
 import ReactHtmlParser from "html-react-parser";
 import {
-  FaHistory,
   FaRegCalendarAlt,
   FaRegEdit,
   FaUser,
@@ -10,7 +9,7 @@ import {
 } from "react-icons/fa";
 import { decodeIfEncoded } from "../../../utils/helpers";
 import LabActionButtons from "../LabActionButtons/LabActionButtons";
-import LabVersions from "../LabVersions";
+import LabVersionsButton from "../LabVersions/LabVersionsButton";
 
 type Props = {
   lab: Lab | undefined;
@@ -51,11 +50,7 @@ function LabHeader({ lab, showVersions }: LabHeaderProps) {
           {lab.name}
         </h1>
       </Link>
-      {showVersions && (
-        <LabVersions lab={lab} variant="text">
-          <FaHistory /> Versions
-        </LabVersions>
-      )}
+      {showVersions && <LabVersionsButton lab={lab} />}
     </div>
   );
 }

@@ -80,6 +80,10 @@ export function setDefaultValuesInLocalStorage() {
 // If the string is not base64 encoded, it returns the original string.
 // It also replaces empty paragraphs with paragraphs with margin.
 export function decodeIfEncoded(value: string) {
+  if (value === undefined) {
+    return "";
+  }
+
   try {
     // Decode base64 string
     value = atob(value);
