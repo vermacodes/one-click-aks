@@ -52,5 +52,7 @@ export function useGetUserAssignedLabs() {
     select: (data): Lab[] => {
       return data.data;
     },
+    cacheTime: Infinity,
+    staleTime: Infinity,
   });
 }

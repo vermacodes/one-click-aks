@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { diffJson, diffLines, Change } from "diff";
+import { html as beautifyHtml } from "js-beautify";
 import { ButtonVariant, Lab } from "../../../dataStructures";
 import { useCreateLab, useGetVersionsById } from "../../../hooks/useBlobs";
 import ModalBackdrop from "../../UserInterfaceComponents/Modal/ModalBackdrop";
@@ -9,6 +11,8 @@ import { toast } from "react-toastify";
 import ConfirmationModal from "../../UserInterfaceComponents/Modal/ConfirmationModal";
 import { useQueryClient } from "react-query";
 import LabCard from "../LabCard";
+import { version } from "os";
+import Checkbox from "../../UserInterfaceComponents/Checkbox";
 
 function formatDate(dateString: string) {
   const date = new Date(dateString);
@@ -113,6 +117,8 @@ function Modal({
   setShowConfirmationModal,
 }: ModalProps) {
   const [selectedLab, setSelectedLab] = useState<Lab>(parentLab);
+  const [versionA, setVersionA] = useState<Lab>(parentLab);
+  const [versionB, setVersionB] = useState<Lab>(parentLab);
 
   useEffect(() => {
     labs?.forEach((lab) => {
@@ -121,6 +127,11 @@ function Modal({
       }
     });
   }, []);
+
+  function handleCompareSelection(lab: Lab) {
+    setVersionA(versionB);
+    setVersionB(lab);
+  }
 
   return (
     <ModalBackdrop
@@ -147,6 +158,7 @@ function Modal({
         <table className="w-full table-auto border-separate rounded border text-lg shadow-md hover:border-sky-500">
           <thead>
             <tr>
+              <th className="py-2 px-4">Compare</th>
               <th className="py-2 px-4"></th>
               <th className="py-2 px-4">Updated On</th>
               <th className="py-2 px-4">Updated By</th>
@@ -175,9 +187,22 @@ function Modal({
                   `}
                   onClick={() => setSelectedLab(lab)}
                 >
+                  <td className="py-2 px-4">
+                    <Checkbox
+                      label=""
+                      id={lab.versionId}
+                      handleOnChange={() => handleCompareSelection(lab)}
+                      checked={
+                        versionA.versionId === lab.versionId ||
+                        versionB.versionId === lab.versionId
+                      }
+                    />
+                  </td>
                   <td className="py-2 px-4">{index + 1}</td>
                   <td className="py-2 px-4">{formatDate(lab.versionId)}</td>
-                  <td className="py-2 px-4">{lab.updatedBy}</td>
+                  <td className="py-2 px-4">
+                    {lab.updatedBy !== "" ? lab.updatedBy : lab.createdBy}
+                  </td>
                   <td>
                     {!lab.isCurrentVersion && (
                       <Button
@@ -205,7 +230,57 @@ function Modal({
           </tbody>
         </table>
         <LabCard lab={selectedLab} fullPage={true} />
+        <VersionDiff
+          versionA={JSON.stringify(versionA.template, null, 4)}
+          versionB={JSON.stringify(versionB.template, null, 4)}
+          heading="Template"
+        />
+        <VersionDiff
+          versionA={atob(versionA.extendScript)}
+          versionB={atob(versionB.extendScript)}
+          heading="Extend Script"
+        />
+        <VersionDiff
+          versionA={beautifyHtml(atob(versionA.description))}
+          versionB={beautifyHtml(atob(versionB.description))}
+          heading="Description"
+        />
       </div>
     </ModalBackdrop>
+  );
+}
+
+type VersionDiffProps = {
+  versionA: string;
+  versionB: string;
+  heading: string;
+};
+
+function VersionDiff({ versionA, versionB, heading }: VersionDiffProps) {
+  const [differences, setDifferences] = useState<Change[]>([]);
+
+  useEffect(() => {
+    setDifferences(diffLines(versionA, versionB));
+  }, [versionA, versionB]);
+
+  return (
+    <div className="flex w-full flex-col gap-y-4 rounded border p-2 shadow-sm hover:border-sky-500">
+      <h2 className="text-2xl">{heading}</h2>
+      <div className="w-full bg-slate-50 dark:bg-slate-800">
+        {differences.map((part, index) => (
+          <pre
+            key={index}
+            className={`${
+              part.added
+                ? "bg-green-500 bg-opacity-20 dark:bg-green-500 dark:bg-opacity-20"
+                : part.removed &&
+                  "bg-rose-500 bg-opacity-20 dark:bg-rose-500 dark:bg-opacity-20"
+            } bg-slate-50 dark:bg-slate-800`}
+          >
+            {part.value}
+          </pre>
+        ))}
+      </div>
+    </div>
   );
 }
