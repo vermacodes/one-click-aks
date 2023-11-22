@@ -27,6 +27,7 @@ export function useSetLab() {
   const queryClient = useQueryClient();
   return useMutation(setLab, {
     onSuccess: () => {
+      queryClient.cancelQueries("get-lab");
       queryClient.invalidateQueries("get-lab");
     },
   });
@@ -36,6 +37,7 @@ export function useDeleteLab() {
   var queryClient = useQueryClient();
   return useMutation(deleteLab, {
     onSuccess: () => {
+      queryClient.cancelQueries("get-lab");
       queryClient.invalidateQueries("get-lab");
     },
   });
