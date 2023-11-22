@@ -9,20 +9,26 @@ import {
 } from "react-icons/fa";
 import { decodeIfEncoded } from "../../../utils/helpers";
 import LabActionButtons from "../LabActionButtons/LabActionButtons";
+import LabVersionsButton from "../LabVersions/LabVersionsButton";
 
 type Props = {
   lab: Lab | undefined;
   fullPage?: boolean;
+  showVersions?: boolean;
 };
 
-export default function LabCard({ lab, fullPage = false }: Props) {
+export default function LabCard({
+  lab,
+  fullPage = false,
+  showVersions = false,
+}: Props) {
   if (lab === undefined) {
     return <></>;
   }
 
   return (
-    <div className="flex h-fit max-w-full flex-col justify-between gap-y-6 rounded bg-slate-50 p-4 shadow-md outline-1 outline-slate-400 hover:shadow-lg hover:outline hover:outline-sky-500 dark:bg-slate-900 dark:outline-slate-600 dark:hover:outline-sky-500">
-      <LabHeader lab={lab} />
+    <div className="flex h-fit w-full flex-col justify-between gap-y-6 rounded bg-slate-50 p-4 shadow-md outline-1 outline-slate-400 hover:shadow-lg hover:outline hover:outline-sky-500 dark:bg-slate-900 dark:outline-slate-600 dark:hover:outline-sky-500">
+      <LabHeader lab={lab} showVersions={showVersions} />
       <LabDescription lab={lab} fullPage={fullPage} />
       <LabTags tags={lab.tags} />
       <LabActionButtons lab={lab} />
@@ -33,15 +39,19 @@ export default function LabCard({ lab, fullPage = false }: Props) {
 
 type LabHeaderProps = {
   lab: Lab;
+  showVersions: boolean;
 };
 
-function LabHeader({ lab }: LabHeaderProps) {
+function LabHeader({ lab, showVersions }: LabHeaderProps) {
   return (
-    <Link to={"/lab/" + lab.type + "/" + lab.id}>
-      <h1 className="whitespace-pre-line py-2 text-3xl hover:text-sky-500 hover:underline dark:border-slate-700">
-        {lab.name}
-      </h1>
-    </Link>
+    <div className="flex items-center justify-between">
+      <Link to={"/lab/" + lab.type + "/" + lab.id}>
+        <h1 className="whitespace-pre-line py-2 text-3xl hover:text-sky-500 hover:underline dark:border-slate-700">
+          {lab.name}
+        </h1>
+      </Link>
+      {showVersions && <LabVersionsButton lab={lab} />}
+    </div>
   );
 }
 

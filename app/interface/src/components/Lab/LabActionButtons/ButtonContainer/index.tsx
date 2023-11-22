@@ -98,7 +98,7 @@ export default function ButtonContainer({
   return (
     <div className="flex w-full" ref={containerRef}>
       <div className="flex w-full justify-between">
-        <div className="flex w-full space-x-4">
+        <div className="flex w-full gap-x-4">
           {Object.values(buttons).map((button) => button.button)}
         </div>
         {Object.values(overflowButtons).length > 0 && (
@@ -108,7 +108,7 @@ export default function ButtonContainer({
             </Button>
             {showDropdown && (
               <div
-                className="space-2 absolute right-0 mx-4 mt-2 flex w-fit flex-col gap-2 whitespace-nowrap rounded border border-slate-500 bg-slate-50 py-2 px-8 shadow-lg dark:bg-slate-900"
+                className="space-2 absolute right-0 mt-2 flex w-fit flex-col gap-2 whitespace-nowrap rounded border border-slate-500 bg-slate-50 py-2 px-8 shadow-lg dark:bg-slate-900"
                 onMouseLeave={() => setShowDropdown(false)}
                 onMouseEnter={handleMouseEnterDropdown}
               >

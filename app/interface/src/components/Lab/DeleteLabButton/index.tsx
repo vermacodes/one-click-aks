@@ -69,7 +69,7 @@ export default function DeleteLabButton({ variant, children, lab }: Props) {
           onConfirm={onConfirmDelete}
         >
           <p className="text-2xl">
-            Are you sure you want to delete this lab? This is not reversible.
+            <strong>Are you sure?</strong> This will delete all versions.
           </p>
         </ConfirmationModal>
       )}

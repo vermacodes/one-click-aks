@@ -161,13 +161,6 @@ export type BlobType = {
   url: string;
 };
 
-export type LabType = {
-  name: string;
-  tfvar: TfvarConfigType;
-  extendScript: string;
-  validateScript: string;
-};
-
 export type ActionStatusType = {
   inProgress: boolean;
 };
@@ -186,6 +179,14 @@ export type Preference = {
   terminalAutoScroll: boolean;
 };
 
+export type LabType =
+  | "template"
+  | "publiclab"
+  | "readinesslab"
+  | "assignment"
+  | "mockcase"
+  | "challengelab";
+
 export type Lab = {
   id: string;
   name: string;
@@ -194,16 +195,13 @@ export type Lab = {
   template: TfvarConfigType | undefined;
   extendScript: string;
   message: string;
-  type:
-    | "template"
-    | "sharedtemplate"
-    | "labexercise"
-    | "assignment"
-    | "mockcase";
+  type: LabType;
   createdBy: string;
   createdOn: string;
   updatedBy: string;
   updatedOn: string;
+  versionId: string;
+  isCurrentVersion: boolean;
 };
 
 export type Assignment = {
@@ -361,3 +359,13 @@ export type ServerNotification = {
   message: string;
   autoClose: number;
 };
+
+export type TerraformOperationType =
+  | "init"
+  | "plan"
+  | "apply"
+  | "destroy"
+  | "delete"
+  | "extend-validate"
+  | "extend-apply"
+  | "extend-destroy";

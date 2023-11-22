@@ -32,7 +32,7 @@ export default function SaveLabType({ lab, setLab }: Props) {
           }}
         />
         <Checkbox
-          checked={lab.type === "sharedtemplate"}
+          checked={lab.type === "publiclab"}
           disabled={
             !(
               roles.roles.includes("admin") ||
@@ -49,25 +49,25 @@ export default function SaveLabType({ lab, setLab }: Props) {
               ? "You must be an admin, mentor, or contributor to create a public lab."
               : "Public labs are visible to all users."
           }
-          id="sharedtemplate"
-          key={"sharedtemplate"}
+          id="publiclab"
+          key={"publiclab"}
           label="Public Lab"
-          handleOnChange={() => setLab({ ...lab, type: "sharedtemplate" })}
+          handleOnChange={() => setLab({ ...lab, type: "publiclab" })}
         />
         <Checkbox
-          checked={lab.type === "labexercise"}
+          checked={lab.type === "readinesslab"}
           disabled={
             !(roles.roles.includes("admin") || roles.roles.includes("mentor"))
           }
           tooltipMessage={
             !(roles.roles.includes("admin") || roles.roles.includes("mentor"))
-              ? "You must be an admin or mentor to create a learning lab."
-              : "Use this to save lab as learning lab."
+              ? "You must be an admin or mentor to create a readiness lab."
+              : "Use this to save lab as readiness lab."
           }
-          id="labexercise"
-          key={"labexercise"}
-          label="Learning Lab"
-          handleOnChange={() => setLab({ ...lab, type: "labexercise" })}
+          id="readinesslabs"
+          key={"readinesslabs"}
+          label="Readiness Lab"
+          handleOnChange={() => setLab({ ...lab, type: "readinesslab" })}
         />
         <Checkbox
           checked={lab.type === "mockcase"}

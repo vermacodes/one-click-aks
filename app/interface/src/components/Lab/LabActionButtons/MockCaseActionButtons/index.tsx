@@ -1,4 +1,4 @@
-import { FaArrowRight } from "react-icons/fa";
+import { FaArrowRight, FaHistory } from "react-icons/fa";
 import { Lab } from "../../../../dataStructures";
 import ApplyButton from "../../../Terraform/ActionButtons/ApplyButton";
 import DestroyButton from "../../../Terraform/ActionButtons/DestroyButton";
@@ -9,6 +9,7 @@ import SaveLabButton from "../../SaveLab/SaveLabButton";
 import LoadToBuilderButton from "../../LoadToBuilderButton";
 import DeleteLabButton from "../../DeleteLabButton";
 import { useState } from "react";
+import Versions from "../../LabVersions";
 
 type Props = {
   lab: Lab;

@@ -1,7 +1,18 @@
-import { DeploymentType, Lab, TerraformOperation } from "../dataStructures";
+import {
+  DeploymentType,
+  Lab,
+  TerraformOperation,
+  TerraformOperationType,
+} from "../dataStructures";
 import { useDeleteDeployment, useGetMyDeployments } from "./useDeployments";
 import { useSetLogs } from "./useLogs";
-import { useApply, useDestroy, useInit, usePlan } from "./useTerraform";
+import {
+  useApply,
+  useDestroy,
+  useExtend,
+  useInit,
+  usePlan,
+} from "./useTerraform";
 import { usePreference } from "./usePreference";
 import { useTerraformWorkspace } from "./useWorkspace";
 import { toast } from "react-toastify";
@@ -13,6 +24,7 @@ export function useTerraformOperation() {
   const { mutateAsync: planAsync } = usePlan();
   const { mutateAsync: applyAsync } = useApply();
   const { mutateAsync: destroyAsync } = useDestroy();
+  const { mutateAsync: extendAsync } = useExtend();
   const { data: preference } = usePreference();
   const { data: deployments } = useGetMyDeployments();
   const { data: terraformWorkspaces } = useTerraformWorkspace();
@@ -40,7 +52,7 @@ export function useTerraformOperation() {
   }
 
   type SubmitOperationProps = {
-    operationType: "init" | "plan" | "apply" | "destroy";
+    operationType: TerraformOperationType;
     operationId: string;
     lab: Lab;
     deployment: DeploymentType;
@@ -69,12 +81,21 @@ export function useTerraformOperation() {
     if (operationType === "destroy" && !deleteDeploymentFlag) {
       return destroyAsync([deployment, operationId]);
     }
+    if (operationType === "extend-validate") {
+      return extendAsync([deployment, "validate", operationId]);
+    }
+    if (operationType === "extend-apply") {
+      return extendAsync([deployment, "apply", operationId]);
+    }
+    if (operationType === "extend-destroy") {
+      return extendAsync([deployment, "destroy", operationId]);
+    }
 
     return initAsync([deployment, operationId]);
   }
 
   type OnClickHandlerProps = {
-    operationType: "init" | "plan" | "apply" | "destroy";
+    operationType: TerraformOperationType;
     operationId: string;
     lab: Lab | undefined;
     deployment?: DeploymentType | undefined;

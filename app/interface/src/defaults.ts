@@ -139,6 +139,8 @@ export const defaultLab: Lab = {
   updatedBy: "",
   createdOn: "",
   updatedOn: "",
+  versionId: "",
+  isCurrentVersion: true,
 };
 
 export const defaultTerraformOperation: TerraformOperation = {
