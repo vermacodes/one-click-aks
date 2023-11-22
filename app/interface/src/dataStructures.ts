@@ -359,3 +359,13 @@ export type ServerNotification = {
   message: string;
   autoClose: number;
 };
+
+export type TerraformOperationType =
+  | "init"
+  | "plan"
+  | "apply"
+  | "destroy"
+  | "delete"
+  | "extend-validate"
+  | "extend-apply"
+  | "extend-destroy";
