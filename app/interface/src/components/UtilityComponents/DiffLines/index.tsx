@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { diffLines, Change } from "diff";
+import { Change, diffTrimmedLines } from "diff";
 
 type Props = {
   versionA: string;
@@ -11,7 +11,7 @@ export default function DiffLines({ versionA, versionB, heading }: Props) {
   const [differences, setDifferences] = useState<Change[]>([]);
 
   useEffect(() => {
-    setDifferences(diffLines(versionA, versionB));
+    setDifferences(diffTrimmedLines(versionA, versionB));
   }, [versionA, versionB]);
 
   // If there are no differences, don't render the component
@@ -33,10 +33,10 @@ export default function DiffLines({ versionA, versionB, heading }: Props) {
             key={index}
             className={`${
               part.added
-                ? "bg-green-500 bg-opacity-20 dark:bg-green-500 dark:bg-opacity-20"
+                ? "bg-green-500 bg-opacity-20 dark:bg-green-500 dark:bg-opacity-20 "
                 : part.removed &&
-                  "bg-rose-500 bg-opacity-20 dark:bg-rose-500 dark:bg-opacity-20"
-            }`}
+                  "bg-rose-500 bg-opacity-20 dark:bg-rose-500 dark:bg-opacity-20 "
+            } whitespace-pre-wrap text-sm`}
           >
             {part.value}
           </pre>
