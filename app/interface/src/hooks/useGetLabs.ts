@@ -1,7 +1,7 @@
 import { UseQueryResult } from "react-query";
 import { Lab } from "../dataStructures";
 import {
-  useSharedLabs,
+  useReadinessLabs,
   useSharedMockCases,
   useSharedTemplates,
   useTemplates,
@@ -17,12 +17,11 @@ export function useGetLabs() {
 
   const dataSources: DataSourcesType = {
     publiclabs: useSharedTemplates(),
-    sharedtemplates: useSharedTemplates(),
     mockcases: useSharedMockCases(),
     mylabs: useTemplates(),
     templates: useTemplates(),
-    readinesslabs: useSharedLabs(),
-    labexercises: useSharedLabs(),
+    readinesslabs: useReadinessLabs(),
+    //readinesslabs: useSharedLabs(),
     assignments: useGetUserAssignedLabs(),
   };
 

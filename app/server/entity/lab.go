@@ -119,7 +119,7 @@ type LabService interface {
 	DeleteLabFromRedis() error
 
 	// Public Labs
-	// Includes = sharedlabs, labexercises, mockcases.
+	// Includes = sharedlabs, readinesslabs, mockcases.
 	GetPublicLabs(typeOfLab string) ([]LabType, error)
 
 	// Private Labs

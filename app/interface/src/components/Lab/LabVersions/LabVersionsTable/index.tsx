@@ -38,7 +38,7 @@ export default function LabVersionsTable({
 
   useEffect(() => {
     if (parentLab) {
-      if (parentLab.type === "sharedtemplate") {
+      if (parentLab.type === "publiclab") {
         setClassification("public");
       } else {
         setClassification("protected");

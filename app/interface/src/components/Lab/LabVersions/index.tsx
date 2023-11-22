@@ -44,7 +44,7 @@ export default function LabVersions({
     if (parentLab) {
       setId(parentLab.id);
       setTypeOfLab(parentLab.type);
-      if (parentLab.type === "sharedtemplate") {
+      if (parentLab.type === "publiclab") {
         setSecure("public");
       } else {
         setSecure("protected");

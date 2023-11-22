@@ -14,11 +14,11 @@ export default function LabActionButtons({ lab }: Props) {
     return <MockCaseActionButtons lab={lab} />;
   }
 
-  if (lab.type === "sharedtemplate") {
+  if (lab.type === "publiclab") {
     return <PublicLabActionButtons lab={lab} />;
   }
 
-  if (lab.type === "labexercise") {
+  if (lab.type === "readinesslab") {
     return <ReadinessLabActionButtons lab={lab} />;
   }
 

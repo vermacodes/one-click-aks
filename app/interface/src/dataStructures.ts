@@ -180,12 +180,12 @@ export type Preference = {
 };
 
 export type LabType =
-  | "private"
-  | "public"
-  | "mockcase"
-  | "readiness"
+  | "template"
+  | "publiclab"
+  | "readinesslab"
   | "assignment"
-  | "challenge";
+  | "mockcase"
+  | "challengelab";
 
 export type Lab = {
   id: string;
@@ -195,12 +195,7 @@ export type Lab = {
   template: TfvarConfigType | undefined;
   extendScript: string;
   message: string;
-  type:
-    | "template"
-    | "sharedtemplate"
-    | "labexercise"
-    | "assignment"
-    | "mockcase";
+  type: LabType;
   createdBy: string;
   createdOn: string;
   updatedBy: string;

@@ -20,7 +20,7 @@ export default function LabVersions({ lab }: Props) {
   } = useGetVersionsById(
     lab.id,
     lab.type,
-    lab.type === "sharedtemplate" ? "public" : "protected"
+    lab.type === "publiclab" ? "public" : "protected"
   );
 
   useEffect(() => {
