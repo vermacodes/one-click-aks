@@ -155,8 +155,8 @@ export default function LabVersionsTable({
                   onConfirm={() => onConfirmCreateLab(lab)}
                 >
                   <p className="text-xl">
-                    Are you sure you want to update this lab? This will
-                    irreversibly overwrite existing lab for all users.
+                    Are you sure? This will create a new version for all users
+                    to see.
                   </p>
                 </ConfirmationModal>
               )}
