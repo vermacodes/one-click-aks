@@ -24,7 +24,7 @@ export default function DeleteAssignment({ assignment }: Props) {
   }
   return (
     <Button
-      variant="danger-outline"
+      variant="danger-text"
       onClick={() => handleDeleteAssignment(assignment)}
     >
       <FaTrash /> Delete
