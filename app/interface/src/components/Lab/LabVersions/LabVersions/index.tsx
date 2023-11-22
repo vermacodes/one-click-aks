@@ -53,7 +53,13 @@ export default function LabVersions({ lab }: Props) {
         setVersionA={setVersionA}
         setVersionB={setVersionB}
       />
-      <div className="flex w-full gap-4">
+      <div
+        className={`${
+          versionA?.versionId !== versionB.versionId
+            ? "grid-cols-2 "
+            : "grid-cols-1 "
+        } grid gap-4`}
+      >
         <LabCard lab={versionA} fullPage={true} />
         {versionA?.versionId !== versionB.versionId && (
           <LabCard lab={versionB} fullPage={true} />

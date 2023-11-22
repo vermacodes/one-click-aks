@@ -52,6 +52,11 @@ export default function LabVersionsTable({
   }
 
   function handleCompareSelection(lab: Lab) {
+    if (versionB.versionId === "") {
+      setVersionA(lab);
+      setVersionB(lab);
+      return;
+    }
     setVersionA(versionB);
     setVersionB(lab);
   }
@@ -134,15 +139,14 @@ export default function LabVersionsTable({
                 {lab.updatedBy !== "" ? lab.updatedBy : lab.createdBy}
               </td>
               <td>
-                {!lab.isCurrentVersion ||
-                  (labs.length === 1 && (
-                    <Button
-                      variant="text"
-                      onClick={() => setShowConfirmationModal(true)}
-                    >
-                      <FaCheck /> Set Current
-                    </Button>
-                  ))}
+                {(!lab.isCurrentVersion || labs.length === 1) && (
+                  <Button
+                    variant="text"
+                    onClick={() => setShowConfirmationModal(true)}
+                  >
+                    <FaCheck /> Set Current
+                  </Button>
+                )}
               </td>
               {showConfirmationModal && (
                 <ConfirmationModal
