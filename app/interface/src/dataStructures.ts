@@ -161,13 +161,6 @@ export type BlobType = {
   url: string;
 };
 
-export type LabType = {
-  name: string;
-  tfvar: TfvarConfigType;
-  extendScript: string;
-  validateScript: string;
-};
-
 export type ActionStatusType = {
   inProgress: boolean;
 };
@@ -185,6 +178,14 @@ export type Preference = {
   azureRegion: string;
   terminalAutoScroll: boolean;
 };
+
+export type LabType =
+  | "private"
+  | "public"
+  | "mockcase"
+  | "readiness"
+  | "assignment"
+  | "challenge";
 
 export type Lab = {
   id: string;

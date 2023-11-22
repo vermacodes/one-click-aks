@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Lab } from "../dataStructures";
 import { authAxiosInstance, axiosInstance } from "../utils/axios-interceptors";
@@ -123,20 +123,30 @@ export function useDeleteMyLab() {
   });
 }
 
+function getVersionsByTypeAndId({
+  id,
+  typeOfLab,
+  classification,
+}: {
+  id: string | undefined;
+  typeOfLab: string | undefined;
+  classification: string;
+}): Promise<AxiosResponse<Lab[]>> {
+  return authAxiosInstance.get(
+    `lab/${classification}/versions/${typeOfLab}s/${id}`
+  );
+}
+
 export function useGetVersionsById(
   id: string | undefined,
   typeOfLab: string | undefined,
-  secure: string = "public"
+  classification: string = "public"
 ) {
+  const queryKey = ["lab-versions", id, typeOfLab, classification];
   return useQuery(
-    `versions-${typeOfLab}-${id}-${secure}`,
-    () => {
-      return authAxiosInstance.get(
-        `/lab/${secure}/versions/${typeOfLab}s/${id}`
-      );
-    },
+    queryKey,
+    () => getVersionsByTypeAndId({ id, typeOfLab, classification }),
     {
-      enabled: !!id && !!typeOfLab,
       select: (data): Lab[] => {
         return data.data;
       },

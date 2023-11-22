@@ -3,44 +3,21 @@ import { useParams } from "react-router-dom";
 import PageLayout from "../../layouts/PageLayout";
 import LabCard from "../../components/Lab/LabCard";
 import LabGridLayout from "../../layouts/LabGridLayout";
-import { useGetUserAssignedLabs } from "../../hooks/useAssignment";
-import {
-  useSharedLabs,
-  useSharedMockCases,
-  useSharedTemplates,
-  useTemplates,
-} from "../../hooks/useBlobs";
-import { Lab } from "../../dataStructures";
-import { UseQueryResult } from "react-query";
 import SelectedDeployment from "../../components/Deployments/SelectedDeployment";
 import Terminal from "../../components/Terminal";
-
-type DataSourceType = UseQueryResult<Lab[], unknown>;
-
-type DataSourcesType = {
-  [key: string]: DataSourceType;
-};
+import { useGetLabs } from "../../hooks/useGetLabs";
 
 export default function LabsGridPage() {
   const { type } = useParams<{ type: string }>();
   const [searchTerm, setSearchTerm] = useState("");
   const [pageHeading, setPageHeading] = useState("Labs");
+  const { getLabsByType } = useGetLabs();
 
   if (!type) {
     return null;
   }
 
-  const dataSources: DataSourcesType = {
-    publiclabs: useSharedTemplates(),
-    mockcases: useSharedMockCases(),
-    mylabs: useTemplates(),
-    readinesslabs: useSharedLabs(),
-    assignments: useGetUserAssignedLabs(),
-  };
-
-  const dataSource = dataSources[type];
-  const labs = dataSource?.data || [];
-  const isLoading = dataSource?.isLoading || dataSource?.isFetching;
+  const { labs, isLoading } = getLabsByType({ labType: type });
 
   useEffect(() => {
     if (type.endsWith("labs")) {
@@ -62,7 +39,7 @@ export default function LabsGridPage() {
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setSearchTerm(event.target.value);
 
-  const filteredLabs = labs.filter((lab) =>
+  const filteredLabs = labs?.filter((lab) =>
     Object.values(lab).some((value) =>
       value?.toString().toLowerCase().includes(searchTerm.toLowerCase())
     )
@@ -75,7 +52,7 @@ export default function LabsGridPage() {
       </PageLayout>
     );
 
-  if (!labs.length) {
+  if (!labs?.length) {
     return (
       <PageLayout heading={pageHeading}>
         <p className="text-4xl">No labs found!</p>
@@ -95,7 +72,7 @@ export default function LabsGridPage() {
         className="mb-4 w-full rounded border bg-slate-50 p-4 text-lg shadow focus:outline-none focus:ring-2 focus:ring-sky-500 hover:border-sky-500 dark:border-slate-700 dark:bg-slate-900 dark:hover:border-sky-500"
       />
       <LabGridLayout>
-        {filteredLabs.map((lab) => (
+        {filteredLabs?.map((lab) => (
           <LabCard lab={lab} key={lab.id} />
         ))}
       </LabGridLayout>

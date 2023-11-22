@@ -1,6 +1,7 @@
 import { html as beautifyHtml } from "js-beautify";
 import DiffLines from "../../../UtilityComponents/DiffLines";
 import { Lab } from "../../../../dataStructures";
+import { decodeIfEncoded } from "../../../../utils/helpers";
 
 type Props = {
   versionA: Lab | undefined;
@@ -23,13 +24,13 @@ export default function LabVersionDiff({ versionA, versionB }: Props) {
         heading="Template"
       />
       <DiffLines
-        versionA={atob(versionA.extendScript)}
-        versionB={atob(versionB.extendScript)}
+        versionA={decodeIfEncoded(versionA.extendScript)}
+        versionB={decodeIfEncoded(versionB.extendScript)}
         heading="Extend Script"
       />
       <DiffLines
-        versionA={beautifyHtml(atob(versionA.description))}
-        versionB={beautifyHtml(atob(versionB.description))}
+        versionA={beautifyHtml(decodeIfEncoded(versionA.description))}
+        versionB={beautifyHtml(decodeIfEncoded(versionB.description))}
         heading="Description"
       />
     </>

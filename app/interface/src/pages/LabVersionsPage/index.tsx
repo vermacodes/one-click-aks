@@ -1,30 +1,32 @@
 import { useParams } from "react-router-dom";
-import Terminal from "../../components/Terminal";
 import PageLayout from "../../layouts/PageLayout";
 import { useEffect, useState } from "react";
-import { useGetVersionsById } from "../../hooks/useBlobs";
 import LabVersions from "../../components/Lab/LabVersions/LabVersions";
+import { useGetLabs } from "../../hooks/useGetLabs";
 
 export default function LabVersionsPage() {
   const [pageHeading, setPageHeading] = useState("Version History");
   const { type, id } = useParams();
-  const {
-    data: labs,
-    isLoading,
-    isFetching,
-  } = useGetVersionsById(
-    id,
-    type,
-    type === "sharedtemplate" ? "public" : "private"
-  );
+  const { getLabByTypeAndId } = useGetLabs();
+
+  if (!type || !id) {
+    return (
+      <PageLayout heading={pageHeading}>
+        <p className="text-3xl">Lab not found.</p>
+      </PageLayout>
+    );
+  }
+
+  const { lab, isLoading, isFetching } = getLabByTypeAndId({
+    labType: type,
+    labId: id,
+  });
 
   useEffect(() => {
-    var currentVersion = labs?.find((lab) => lab.isCurrentVersion === true);
-    if (currentVersion) {
-      setPageHeading("Version History - " + currentVersion.name);
+    if (lab) {
+      setPageHeading(`Version History - ${lab.name}`);
     }
-    document.title = "ACT Labs | " + pageHeading;
-  }, [labs, pageHeading]);
+  }, [lab]);
 
   if (isLoading || isFetching) {
     return (
@@ -34,18 +36,17 @@ export default function LabVersionsPage() {
     );
   }
 
-  if (!labs) {
+  if (!lab) {
     return (
       <PageLayout heading={pageHeading}>
-        <p className="text-3xl">No versions found.</p>
+        <p className="text-3xl">Lab not found.</p>
       </PageLayout>
     );
   }
 
   return (
     <PageLayout heading={pageHeading}>
-      <LabVersions labs={labs} />
-      <Terminal />
+      <LabVersions lab={lab} />
     </PageLayout>
   );
 }

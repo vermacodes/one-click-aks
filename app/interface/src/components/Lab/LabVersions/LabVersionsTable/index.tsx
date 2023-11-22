@@ -29,7 +29,7 @@ export default function LabVersionsTable({
   setVersionA,
   setVersionB,
 }: Props) {
-  const [secure, setSecure] = useState<string | undefined>(undefined);
+  const [classification, setClassification] = useState<string>("public");
   const [showConfirmationModal, setShowConfirmationModal] =
     useState<boolean>(false);
 
@@ -39,9 +39,9 @@ export default function LabVersionsTable({
   useEffect(() => {
     if (parentLab) {
       if (parentLab.type === "sharedtemplate") {
-        setSecure("public");
+        setClassification("public");
       } else {
-        setSecure("protected");
+        setClassification("protected");
       }
     }
   }, [parentLab]);
@@ -74,7 +74,7 @@ export default function LabVersionsTable({
       queryClient.invalidateQueries("sharedLabs");
       queryClient.invalidateQueries("publicLabs");
       queryClient.invalidateQueries(
-        `versions-${parentLab.type}-${parentLab.id}-${secure}`
+        `versions-${parentLab.type}-${parentLab.id}-${classification}`
       );
     });
   }
@@ -134,14 +134,15 @@ export default function LabVersionsTable({
                 {lab.updatedBy !== "" ? lab.updatedBy : lab.createdBy}
               </td>
               <td>
-                {!lab.isCurrentVersion && (
-                  <Button
-                    variant="text"
-                    onClick={() => setShowConfirmationModal(true)}
-                  >
-                    <FaCheck /> Set Current
-                  </Button>
-                )}
+                {!lab.isCurrentVersion ||
+                  (labs.length === 1 && (
+                    <Button
+                      variant="text"
+                      onClick={() => setShowConfirmationModal(true)}
+                    >
+                      <FaCheck /> Set Current
+                    </Button>
+                  ))}
               </td>
               {showConfirmationModal && (
                 <ConfirmationModal

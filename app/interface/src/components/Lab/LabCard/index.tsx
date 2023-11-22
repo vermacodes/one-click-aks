@@ -27,7 +27,7 @@ export default function LabCard({
   }
 
   return (
-    <div className="flex h-fit max-w-full flex-col justify-between gap-y-6 rounded bg-slate-50 p-4 shadow-md outline-1 outline-slate-400 hover:shadow-lg hover:outline hover:outline-sky-500 dark:bg-slate-900 dark:outline-slate-600 dark:hover:outline-sky-500">
+    <div className="flex h-fit w-full flex-col justify-between gap-y-6 rounded bg-slate-50 p-4 shadow-md outline-1 outline-slate-400 hover:shadow-lg hover:outline hover:outline-sky-500 dark:bg-slate-900 dark:outline-slate-600 dark:hover:outline-sky-500">
       <LabHeader lab={lab} showVersions={showVersions} />
       <LabDescription lab={lab} fullPage={fullPage} />
       <LabTags tags={lab.tags} />
