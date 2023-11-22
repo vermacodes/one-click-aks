@@ -164,26 +164,75 @@ func (t *terraformHandler) Apply(c *gin.Context) {
 }
 
 func (t *terraformHandler) Extend(c *gin.Context) {
-	lab := entity.LabType{}
 	mode := c.Param("mode")
-	if err := c.Bind(&lab); err != nil {
+
+	deployment := entity.Deployment{}
+	if err := c.Bind(&deployment); err != nil {
 		c.Status(http.StatusBadRequest)
 		return
 	}
 
-	w := c.Writer
-	header := w.Header()
-	header.Set("Transfer-Encoding", "chunked")
-	header.Set("Content-type", "text/html")
+	lab := deployment.DeploymentLab
 
-	if err := t.terraformService.Extend(lab, mode); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-	} else {
-		w.WriteHeader(http.StatusOK)
+	notification := entity.ServerNotification{
+		Id:               uuid.New().String(),
+		NotificationType: entity.Info,
+		Message:          mode + " in progress",
+		AutoClose:        2000,
 	}
 
-	w.(http.Flusher).Flush()
+	if err := t.actionStatusService.SetServerNotification(notification); err != nil {
+		slog.Error("Error setting server notification", err)
+	}
+
+	// Start the long-running operation in a goroutine
+	go func() {
+		if err := t.actionStatusService.SetActionStart(); err != nil {
+			slog.Error("Error setting action start", err)
+			notification.NotificationType = entity.Error
+			notification.Message = mode + " failed : Not able to update action status."
+			return
+		}
+		if err := t.terraformService.Extend(lab, mode); err != nil {
+			notification.NotificationType = entity.Error
+			notification.Message = mode + " failed."
+		} else {
+			notification.NotificationType = entity.Success
+			notification.Message = mode + " completed."
+		}
+		if err := t.actionStatusService.SetServerNotification(notification); err != nil {
+			slog.Error("Error setting server notification", err)
+		}
+		if err := t.actionStatusService.SetActionEnd(); err != nil {
+			slog.Error("Error setting action end", err)
+		}
+	}()
+
+	// Respond back to the request with the operation ID
+	c.Status(http.StatusAccepted)
 }
+
+// func (t *terraformHandler) Extend(c *gin.Context) {
+// 	lab := entity.LabType{}
+// 	mode := c.Param("mode")
+// 	if err := c.Bind(&lab); err != nil {
+// 		c.Status(http.StatusBadRequest)
+// 		return
+// 	}
+
+// 	w := c.Writer
+// 	header := w.Header()
+// 	header.Set("Transfer-Encoding", "chunked")
+// 	header.Set("Content-type", "text/html")
+
+// 	if err := t.terraformService.Extend(lab, mode); err != nil {
+// 		w.WriteHeader(http.StatusInternalServerError)
+// 	} else {
+// 		w.WriteHeader(http.StatusOK)
+// 	}
+
+// 	w.(http.Flusher).Flush()
+// }
 
 func (t *terraformHandler) Destroy(c *gin.Context) {
 	deployment := entity.Deployment{}

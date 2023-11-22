@@ -7,6 +7,7 @@ import {
   FaRocket,
   FaSave,
   FaTimes,
+  FaTrash,
 } from "react-icons/fa";
 
 import Button from "../../components/UserInterfaceComponents/Button";
@@ -15,6 +16,8 @@ import { useLab, useSetLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
 import { useExtend } from "../../hooks/useTerraform";
 import { WebSocketContext } from "../../components/Context/WebSocketContext";
+import ExtendButton from "../../components/Terraform/ActionButtons/ExtendButton";
+import Terminal from "../../components/Terminal";
 
 type Props = {
   children?: React.ReactNode;
@@ -75,7 +78,7 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
         <div className="w-100 flex justify-between border-b border-slate-500 pb-1">
           <h1 className="flex items-center text-xl">Extension Script</h1>
           <div className="flex gap-x-2">
-            <Button
+            {/* <Button
               variant="secondary-text"
               disabled={actionStatus.inProgress}
               onClick={() => {
@@ -97,7 +100,28 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
                 <FaRocket />
               </span>
               Run
-            </Button>
+            </Button> */}
+            <ExtendButton
+              variant="secondary-text"
+              lab={lab}
+              mode="extend-apply"
+            >
+              <FaPlus /> Extend
+            </ExtendButton>
+            <ExtendButton
+              variant="secondary-text"
+              lab={lab}
+              mode="extend-validate"
+            >
+              <FaCheck /> Validate
+            </ExtendButton>
+            <ExtendButton
+              variant="secondary-text"
+              lab={lab}
+              mode="extend-destroy"
+            >
+              <FaTrash /> Destroy
+            </ExtendButton>
             <Button
               variant="secondary-text"
               onClick={() => {
@@ -160,6 +184,7 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
             }}
           />
         </div>
+        <Terminal />
       </div>
     </div>
   );

@@ -29,8 +29,11 @@ function destroyAndDelete(deployment: DeploymentType, operationId: string) {
   );
 }
 
-function extend(lab: Lab, mode: string) {
-  return axiosInstance.post(`/terraform/extend/${mode}`, lab);
+function extend(deployment: DeploymentType, mode: string, operationId: string) {
+  return axiosInstance.post(
+    `/terraform/extend/${mode}/${operationId}`,
+    deployment
+  );
 }
 
 export function useInit() {
@@ -130,13 +133,17 @@ export function useDestroyAndDelete() {
 
 export function useExtend() {
   const queryClient = useQueryClient();
-  return useMutation((params: [Lab, string]) => extend(params[0], params[1]), {
-    onSuccess: () => {
-      queryClient.invalidateQueries("list-terraform-workspaces");
-      queryClient.invalidateQueries("get-selected-terraform-workspace");
-      queryClient.invalidateQueries("get-resources");
-    },
-  });
+  return useMutation(
+    (params: [DeploymentType, string, string]) =>
+      extend(params[0], params[1], params[2]),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("list-terraform-workspaces");
+        queryClient.invalidateQueries("get-selected-terraform-workspace");
+        queryClient.invalidateQueries("get-resources");
+      },
+    }
+  );
 }
 
 export function useTerraformOperationStatus(id: string) {

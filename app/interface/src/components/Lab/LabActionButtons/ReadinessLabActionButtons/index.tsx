@@ -1,4 +1,4 @@
-import { FaArrowRight } from "react-icons/fa";
+import { FaArrowRight, FaEdit } from "react-icons/fa";
 import { Lab } from "../../../../dataStructures";
 import ApplyButton from "../../../Terraform/ActionButtons/ApplyButton";
 import DestroyButton from "../../../Terraform/ActionButtons/DestroyButton";
@@ -8,7 +8,7 @@ import SaveLabButton from "../../SaveLab/SaveLabButton";
 import LoadToBuilderButton from "../../LoadToBuilderButton";
 import DeleteLabButton from "../../DeleteLabButton";
 import { useState } from "react";
-import ValidateLabButton from "../../ValidateLabButton";
+import ExtendButton from "../../../Terraform/ActionButtons/ExtendButton";
 import CreateAssignment from "../../Assignment/CreateAssignment";
 
 type Props = {
@@ -51,14 +51,18 @@ export default function ReadinessLabActionButtons({ lab }: Props) {
           <ApplyButton variant="primary-text" lab={lab}>
             Deploy
           </ApplyButton>
-          <ValidateLabButton lab={lab} variant="secondary-text">
+          <ExtendButton
+            lab={lab}
+            variant="secondary-text"
+            mode="extend-validate"
+          >
             Validate
-          </ValidateLabButton>
+          </ExtendButton>
           <DestroyButton variant="danger-text" lab={lab}>
             Destroy
           </DestroyButton>
           <SaveLabButton lab={lab} variant="secondary-text">
-            Edit
+            <FaEdit /> Edit
           </SaveLabButton>
           <LoadToBuilderButton variant="secondary-text" lab={lab}>
             Open
