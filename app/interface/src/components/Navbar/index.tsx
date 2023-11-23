@@ -7,11 +7,9 @@ import {
   FaFlask,
   FaKey,
   FaList,
-  FaMoon,
   FaPeopleCarry,
   FaRocket,
   FaShieldAlt,
-  FaSun,
   FaTools,
   FaUserGraduate,
 } from "react-icons/fa";
@@ -19,6 +17,7 @@ import { Link } from "react-router-dom";
 import { useGetMyRoles } from "../../hooks/useAuth";
 import LoginButton from "../Authentication/LoginButton";
 import { useDefaultAccount } from "../../hooks/useDefaultAccount";
+import Tooltip from "../UserInterfaceComponents/Tooltip";
 
 export default function Navbar() {
   return (
@@ -170,12 +169,14 @@ function FixedPages() {
       <ul className="md:text-l flex w-full flex-col justify-start gap-y-1 text-sm lg:text-xl">
         {defaultAccount && (
           <li>
-            <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
-              <span className="-rotate-45">
-                <FaKey />
-              </span>{" "}
-              {defaultAccount.name}
-            </button>
+            <Tooltip message="Azure Subscription" delay={1000} direction="top">
+              <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
+                <span className="-rotate-45">
+                  <FaKey />
+                </span>{" "}
+                {defaultAccount.name}
+              </button>
+            </Tooltip>
           </li>
         )}
         <li>
@@ -192,11 +193,11 @@ function FixedPages() {
         </li>
         <li>
           <Link to={"/feedback"}>
-            <button className="flex h-full w-full items-center justify-start gap-2 rounded bg-sky-500 bg-opacity-10 py-3 px-4 text-left text-lg hover:bg-slate-200 dark:hover:bg-slate-800">
+            <button className="flex h-full w-full items-center justify-start gap-2 rounded bg-green-500 bg-opacity-20 py-3 px-4 text-left text-base hover:bg-slate-200 dark:bg-inherit dark:hover:bg-slate-800">
               <span>
                 <FaComments />
               </span>
-              <span className="font-bold text-green-500">Help & Feedback</span>
+              <span className="dark:text-green-500">Help & Feedback</span>
             </button>
           </Link>
         </li>
