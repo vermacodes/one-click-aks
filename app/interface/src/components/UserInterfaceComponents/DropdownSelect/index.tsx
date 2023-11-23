@@ -1,41 +1,49 @@
-import React, { useState } from "react";
-import { FaChevronDown, FaTimes } from "react-icons/fa";
+import React, { useEffect, useState } from "react";
+import { FaChevronDown } from "react-icons/fa";
 
 type ItemProps<T> = {
   items: T[];
   renderItem: (item: T) => React.ReactNode;
   heading: React.ReactNode;
   onItemClick(args: T): void;
+  search?: React.ReactNode;
 };
 
-type Props = {
+type DropdownSelectProps = {
+  disabled?: boolean;
   searchEnabled?: boolean;
   width?: number | string;
   minWidth?: number | string;
-  height?: number | string;
+  height?: string; // Height of the dropdown menu
 };
 
-export default function DropdownSelect<T extends { toString(): string }>({
+export default function DropdownSelect<T>({
+  disabled = false,
   heading,
-  searchEnabled = false,
+  search,
   items,
   renderItem,
   onItemClick,
   height = "h-32",
-}: ItemProps<T> & Props) {
-  const [menu, setMenu] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const filteredItems = items.filter((item) =>
-    item.toString().toLowerCase().includes(searchTerm.toLowerCase())
-  );
+}: ItemProps<T> & DropdownSelectProps) {
+  // State to track whether the dropdown menu is open
+  const [isMenuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div className={`${menu ? "relative" : ""} inline-block w-full text-left`}>
+    <div
+      className={`${
+        isMenuOpen ? "relative" : ""
+      } inline-block w-full text-left`}
+    >
       <div
-        className={`flex w-full items-center justify-between rounded border border-slate-500 px-2 py-1`}
+        className={`${
+          disabled && "cursor-not-allowed text-slate-500 "
+        } flex w-full cursor-pointer items-center justify-between rounded border border-slate-500 px-2 py-1`}
         onClick={(e) => {
-          setMenu(!menu);
+          if (disabled) {
+            return;
+          }
+          setMenuOpen(!isMenuOpen);
           e.stopPropagation();
         }}
       >
@@ -44,39 +52,62 @@ export default function DropdownSelect<T extends { toString(): string }>({
           <FaChevronDown />
         </p>
       </div>
-      <div
-        className={`absolute right-0 z-10 mt-1 ${height} w-full origin-top-right overflow-y-auto overflow-x-hidden scrollbar-thin  scrollbar-thumb-slate-400 dark:scrollbar-thumb-slate-600 ${
-          !menu && "hidden"
-        } items-center gap-y-2 rounded border border-slate-500 bg-slate-100 p-2 dark:bg-slate-800`}
-        onMouseLeave={() => setMenu(false)}
-      >
-        {menu && searchEnabled && (
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full rounded px-2 py-1 dark:bg-slate-700 dark:text-slate-100"
-            />
-            {searchTerm && (
-              <FaTimes
-                className="absolute right-2 top-1/2 -translate-y-1/2 transform cursor-pointer"
-                onClick={() => setSearchTerm("")}
-              />
-            )}
-          </div>
-        )}
-        {filteredItems.map((item, index) => (
-          <div
-            key={index}
-            className="rounded py-2 px-1 hover:bg-slate-500 hover:bg-opacity-20"
-            onClick={() => onItemClick(item)}
-          >
-            {renderItem(item)}
-          </div>
-        ))}
-      </div>
+      {isMenuOpen && (
+        <DropdownMenu
+          heading={heading}
+          setMenuOpen={setMenuOpen}
+          renderItem={renderItem}
+          items={items}
+          onItemClick={onItemClick}
+          search={search}
+          height={height}
+        />
+      )}
     </div>
   );
 }
+
+type DropdownMenuProps = {
+  height: string;
+  setMenuOpen: (isOpen: boolean) => void;
+};
+
+// Dropdown menu component
+const DropdownMenu = <T,>({
+  items,
+  renderItem,
+  onItemClick,
+  search,
+  height,
+  setMenuOpen,
+}: ItemProps<T> & DropdownMenuProps) => {
+  const [didMouseEnter, setDidMouseEnter] = useState(false);
+
+  //if no mouse enter in 5 seconds, close the menu
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (!didMouseEnter) {
+        setMenuOpen(false);
+      }
+    }, 5000);
+    if (didMouseEnter) {
+      clearTimeout(timeoutId);
+    }
+    return () => clearTimeout(timeoutId);
+  }, [didMouseEnter]);
+
+  return (
+    <div
+      className={`absolute right-0 z-10 mt-1 ${height} w-full origin-top-right items-center gap-y-2 overflow-y-auto  rounded border border-slate-500 bg-slate-100 p-2 overflow-x-hidden scrollbar-thin scrollbar-thumb-slate-400 dark:bg-slate-800 dark:scrollbar-thumb-slate-600`}
+      onMouseLeave={() => setMenuOpen(false)}
+      onMouseEnter={() => setDidMouseEnter(true)}
+    >
+      {search && search}
+      {items.map((item, index) => (
+        <div key={index} onClick={() => onItemClick(item)}>
+          {renderItem(item)}
+        </div>
+      ))}
+    </div>
+  );
+};

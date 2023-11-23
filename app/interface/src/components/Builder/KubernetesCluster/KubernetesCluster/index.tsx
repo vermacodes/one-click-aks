@@ -16,7 +16,6 @@ import BuilderContainer from "../../../UserInterfaceComponents/BuilderContainer"
 import ServiceMesh from "../Addons/ServiceMesh";
 
 export default function KubernetesCluster() {
-  const [versionMenu, setVersionMenu] = useState<boolean>(false);
   const { data: lab } = useLab();
 
   // If lab or its template or kubernetesClusters is undefined or empty, return null
@@ -30,11 +29,7 @@ export default function KubernetesCluster() {
         <BuilderContainer key={index} title={`Kubernetes Cluster ${index + 1}`}>
           <BuilderContainer key={index} title="Features">
             <div className={`mt-4 flex flex-wrap items-center gap-x-2 gap-y-2`}>
-              <Version
-                versionMenu={versionMenu}
-                setVersionMenu={setVersionMenu}
-                index={index}
-              />
+              <Version index={index} />
               <PrivateCluster index={index} />
               <VirtualMachine />
               <AzureCNI index={index} />
