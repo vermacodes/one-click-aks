@@ -11,28 +11,14 @@ import LabPage from "../../pages/LabPage";
 import Feedback from "../../pages/Feedback";
 import LabVersionsPage from "../../pages/LabVersionsPage";
 
-type Props = {
-  darkMode: boolean;
-  setDarkMode: (updatedDarkMode: boolean) => void;
-};
-
-export default function MainLayout({ darkMode, setDarkMode }: Props) {
-  function handleSetDarkMode(updatedDarkMode: boolean) {
-    if (updatedDarkMode) {
-      localStorage.setItem("darkMode", "true");
-    } else {
-      localStorage.setItem("darkMode", "false");
-    }
-    setDarkMode(updatedDarkMode);
-  }
-
+export default function MainLayout() {
   return (
     <div className="flex h-screen overflow-hidden">
       <div
         className="top-0 left-0 h-screen w-1/6 min-w-fit overflow-y-auto overflow-x-hidden 
       scrollbar-thin  scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full dark:scrollbar-thumb-slate-600"
       >
-        <Navbar darkMode={darkMode} setDarkMode={handleSetDarkMode} />
+        <Navbar />
       </div>
       <div className="flex-1 overflow-auto bg-slate-200 px-4 scrollbar-thin  scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full dark:bg-slate-800 dark:scrollbar-thumb-slate-600">
         <Routes>

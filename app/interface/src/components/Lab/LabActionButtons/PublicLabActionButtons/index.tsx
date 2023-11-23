@@ -33,13 +33,25 @@ export default function PublicLabActionButtons({ lab }: Props) {
             lab={lab}
             variant="primary"
           >
-            Open
+            Open in Builder
           </LoadToBuilderButton>
+        ),
+      },
+      shareLabButton: {
+        id: "shareLabButton",
+        order: 2,
+        button: (
+          <CopyLinkToLabButton key={"shareLabButton"} lab={lab}>
+            <span>
+              <FaShare />
+            </span>
+            Share
+          </CopyLinkToLabButton>
         ),
       },
       exportLabButton: {
         id: "exportLabButton",
-        order: 2,
+        order: 3,
         button: (
           <ExportLabButton
             key={"exportLabButton"}
@@ -48,18 +60,6 @@ export default function PublicLabActionButtons({ lab }: Props) {
           >
             Export
           </ExportLabButton>
-        ),
-      },
-      shareLabButton: {
-        id: "shareLabButton",
-        order: 3,
-        button: (
-          <CopyLinkToLabButton key={"shareLabButton"} lab={lab}>
-            <span>
-              <FaShare />
-            </span>
-            Share
-          </CopyLinkToLabButton>
         ),
       },
     };

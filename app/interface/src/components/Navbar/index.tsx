@@ -5,6 +5,7 @@ import {
   FaExternalLinkAlt,
   FaFileCode,
   FaFlask,
+  FaKey,
   FaList,
   FaMoon,
   FaPeopleCarry,
@@ -16,20 +17,15 @@ import {
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useGetMyRoles } from "../../hooks/useAuth";
-import { useLab } from "../../hooks/useLab";
 import LoginButton from "../Authentication/LoginButton";
+import { useDefaultAccount } from "../../hooks/useDefaultAccount";
 
-type NavbarProps = {
-  darkMode: boolean;
-  setDarkMode(args: boolean): void;
-};
-
-export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
+export default function Navbar() {
   return (
     <nav className="flex h-screen w-full min-w-max flex-col  text-slate-900 dark:text-slate-100">
       <Title />
       <Pages />
-      <FixedPages darkMode={darkMode} setDarkMode={setDarkMode} />
+      <FixedPages />
     </nav>
   );
 }
@@ -166,26 +162,22 @@ function Pages() {
   );
 }
 
-type FixedPagesProps = {
-  darkMode: boolean;
-  setDarkMode(args: boolean): void;
-};
-
-function FixedPages({ darkMode, setDarkMode }: FixedPagesProps) {
-  const { data: lab } = useLab();
+function FixedPages() {
+  const { defaultAccount } = useDefaultAccount();
 
   return (
     <div className="h-fit w-full flex-col p-4">
       <ul className="md:text-l flex w-full flex-col justify-start gap-y-1 text-sm lg:text-xl">
-        <li>
-          <button
-            className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800"
-            onClick={() => setDarkMode(!darkMode)}
-          >
-            {darkMode ? <FaSun /> : <FaMoon />}
-            {darkMode ? "Light Mode" : "Dark Mode"}
-          </button>
-        </li>
+        {defaultAccount && (
+          <li>
+            <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
+              <span className="-rotate-45">
+                <FaKey />
+              </span>{" "}
+              {defaultAccount.name}
+            </button>
+          </li>
+        )}
         <li>
           <Link to={"/settings"}>
             <button

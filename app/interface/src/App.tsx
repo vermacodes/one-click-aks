@@ -1,28 +1,14 @@
-import { useEffect, useState } from "react";
 import MainLayout from "./layouts/MainLayout";
-import { setDefaultValuesInLocalStorage } from "./utils/helpers";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import WebSocketContextProvider from "./components/Context/WebSocketContextProvider";
 import { AuthProvider } from "./components/Context/AuthContext";
 import ServerNotification from "./components/ServerNotification";
 import RootErrorBoundary from "./components/ErrorBoundaries/RootErrorBoundary";
+import { useGlobalStateContext } from "./components/Context/GlobalStateContext";
 
 function App() {
-  const [darkMode, setDarkMode] = useState<boolean>(true);
-  useEffect(() => {
-    setDefaultValuesInLocalStorage();
-
-    var darkModeFromLocalStorage = localStorage.getItem("darkMode");
-    if (darkModeFromLocalStorage === null) {
-      localStorage.setItem("darkMode", "true");
-    } else {
-      if (darkModeFromLocalStorage === "false") {
-        setDarkMode(false);
-      }
-    }
-  }, []);
-
+  const { darkMode } = useGlobalStateContext();
   return (
     <div
       className={`${
@@ -34,7 +20,7 @@ function App() {
       <AuthProvider>
         <WebSocketContextProvider>
           <RootErrorBoundary>
-            <MainLayout darkMode={darkMode} setDarkMode={setDarkMode} />
+            <MainLayout />
             <ToastContainer
               toastClassName={`${
                 darkMode ? "bg-slate-100" : "bg-slate-800"

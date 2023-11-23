@@ -8,6 +8,7 @@ import { ReactQueryDevtools } from "react-query/devtools";
 import { PublicClientApplication } from "@azure/msal-browser";
 import { MsalProvider } from "@azure/msal-react";
 import { msalConfig } from "./authConfig";
+import { GlobalStateContextProvider } from "./components/Context/GlobalStateContext";
 
 const queryClient = new QueryClient();
 const msalInstance = new PublicClientApplication(msalConfig);
@@ -17,7 +18,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <MsalProvider instance={msalInstance}>
       <BrowserRouter>
         <QueryClientProvider client={queryClient}>
-          <App />
+          <GlobalStateContextProvider>
+            <App />
+          </GlobalStateContextProvider>
           <ReactQueryDevtools initialIsOpen={false} position={"bottom-right"} />
         </QueryClientProvider>
       </BrowserRouter>
