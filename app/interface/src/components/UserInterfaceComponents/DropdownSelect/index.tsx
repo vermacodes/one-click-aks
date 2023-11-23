@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
+import Tooltip from "../Tooltip";
 
 type ItemProps<T> = {
   items: T[];
@@ -7,15 +8,27 @@ type ItemProps<T> = {
   heading: React.ReactNode;
   onItemClick(args: T): void;
   search?: React.ReactNode;
-};
-
-type DropdownSelectProps = {
   disabled?: boolean;
   searchEnabled?: boolean;
   width?: number | string;
   minWidth?: number | string;
   height?: string; // Height of the dropdown menu
+  tooltipMessage?: string;
+  tooltipDirection?: "top" | "bottom" | "left" | "right" | undefined;
+  tooltipDelay?: number;
+  closeMenuOnSelect?: boolean;
 };
+
+// type DropdownSelectProps = {
+//   disabled?: boolean;
+//   searchEnabled?: boolean;
+//   width?: number | string;
+//   minWidth?: number | string;
+//   height?: string; // Height of the dropdown menu
+//   tooltipMessage?: string;
+//   tooltipDirection?: "top" | "bottom" | "left" | "right" | undefined;
+//   tooltipDelay?: number;
+// };
 
 export default function DropdownSelect<T>({
   disabled = false,
@@ -25,7 +38,11 @@ export default function DropdownSelect<T>({
   renderItem,
   onItemClick,
   height = "h-32",
-}: ItemProps<T> & DropdownSelectProps) {
+  tooltipMessage,
+  tooltipDirection = "top",
+  tooltipDelay,
+  closeMenuOnSelect = true,
+}: ItemProps<T>) {
   // State to track whether the dropdown menu is open
   const [isMenuOpen, setMenuOpen] = useState(false);
 
@@ -35,23 +52,29 @@ export default function DropdownSelect<T>({
         isMenuOpen ? "relative" : ""
       } inline-block w-full text-left`}
     >
-      <div
-        className={`${
-          disabled && "cursor-not-allowed text-slate-500 "
-        } flex w-full cursor-pointer items-center justify-between rounded border border-slate-500 px-2 py-1`}
-        onClick={(e) => {
-          if (disabled) {
-            return;
-          }
-          setMenuOpen(!isMenuOpen);
-          e.stopPropagation();
-        }}
+      <Tooltip
+        message={tooltipMessage}
+        direction={tooltipDirection}
+        delay={tooltipDelay}
       >
-        <p>{heading}</p>
-        <p>
-          <FaChevronDown />
-        </p>
-      </div>
+        <div
+          className={`${
+            disabled && "cursor-not-allowed text-slate-500 "
+          } flex w-full cursor-pointer items-center justify-between rounded border border-slate-500 px-2 py-1`}
+          onClick={(e) => {
+            if (disabled) {
+              return;
+            }
+            setMenuOpen(!isMenuOpen);
+            e.stopPropagation();
+          }}
+        >
+          <p>{heading}</p>
+          <p>
+            <FaChevronDown />
+          </p>
+        </div>
+      </Tooltip>
       {isMenuOpen && (
         <DropdownMenu
           heading={heading}
@@ -80,6 +103,7 @@ const DropdownMenu = <T,>({
   search,
   height,
   setMenuOpen,
+  closeMenuOnSelect = true,
 }: ItemProps<T> & DropdownMenuProps) => {
   const [didMouseEnter, setDidMouseEnter] = useState(false);
 
@@ -104,7 +128,13 @@ const DropdownMenu = <T,>({
     >
       {search && search}
       {items.map((item, index) => (
-        <div key={index} onClick={() => onItemClick(item)}>
+        <div
+          key={index}
+          onClick={() => {
+            closeMenuOnSelect && setMenuOpen(false);
+            onItemClick(item);
+          }}
+        >
           {renderItem(item)}
         </div>
       ))}
