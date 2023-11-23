@@ -23,7 +23,7 @@ export default function DarkModeSwitch({
       <div className="flex items-center gap-x-2">
         <label
           htmlFor={id}
-          className={`flex h-6 w-12 items-center rounded-full outline outline-1 outline-slate-500 transition-all duration-100 hover:cursor-pointer ${
+          className={`flex h-5 w-10 items-center rounded-full outline outline-1 outline-slate-500 transition-all duration-100 hover:cursor-pointer ${
             rest.checked ? "bg-slate-700" : "bg-slate-300"
           } ${
             rest.disabled &&
@@ -39,8 +39,8 @@ export default function DarkModeSwitch({
             {...rest}
           />
           <div
-            className={`flex h-6 w-6 items-center justify-center rounded-full bg-white text-slate-700 transition-all duration-100 dark:text-slate-300 ${
-              rest.checked && "ml-6 dark:bg-slate-900"
+            className={`flex h-5 w-5 items-center justify-center rounded-full bg-white text-slate-700 transition-all duration-100 dark:text-slate-300 ${
+              rest.checked && "ml-5 dark:bg-slate-900"
             } ${rest.disabled && "dark:bg-slate-600"}`}
           >
             {rest.checked ? <FaMoon /> : <FaSun />}
