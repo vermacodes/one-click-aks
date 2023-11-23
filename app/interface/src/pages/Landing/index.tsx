@@ -10,7 +10,7 @@ export default function Landing() {
   }, []);
 
   return (
-    <PageLayout>
+    <PageLayout heading="">
       {/* <div className="fixed inset-0 min-h-screen bg-slate-100 dark:bg-slate-900 ">
         <div className="h-full items-center justify-center overflow-auto p-10"> */}
       <div className="flex flex-col gap-20 py-4">
