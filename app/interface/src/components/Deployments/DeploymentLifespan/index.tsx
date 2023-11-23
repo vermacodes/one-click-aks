@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { DeploymentType } from "../../../dataStructures";
 import { usePatchDeployment } from "../../../hooks/useDeployments";
 import { calculateNewEpochTimeForDeployment } from "../../../utils/helpers";
@@ -11,8 +10,6 @@ type DeploymentLifespanProps = {
 export default function DeploymentLifespan({
   deployment,
 }: DeploymentLifespanProps) {
-  const [menu, setMenu] = useState<boolean>(false);
-
   // array allowed lifespans in seconds.
   const lifespans = [
     120, 300, 600, 900, 1800, 3600, 7200, 14400, 28800, 43200, 86400, 172800,
@@ -37,7 +34,6 @@ export default function DeploymentLifespan({
   }
 
   function handleDeploymentLifespanChange(lifespan: number) {
-    setMenu(false);
     toast.promise(
       patchDeployment({
         ...deployment,
