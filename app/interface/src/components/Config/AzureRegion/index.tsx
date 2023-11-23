@@ -1,14 +1,101 @@
 import { useState } from "react";
-import { FaCheck } from "react-icons/fa";
+import { FaTimes } from "react-icons/fa";
 import { useLab } from "../../../hooks/useLab";
 import { useSetLogs } from "../../../hooks/useLogs";
 import { usePreference, useSetPreference } from "../../../hooks/usePreference";
 import { useGetStorageAccount } from "../../../hooks/useStorageAccount";
 import SettingsItemLayout from "../../../layouts/SettingsItemLayout";
-type Props = { regionEdit: boolean; setRegionEdit(args: boolean): void };
+import DropdownSelect from "../../UserInterfaceComponents/DropdownSelect";
 
-export default function AzureRegion({ regionEdit, setRegionEdit }: Props) {
-  const [azureRegion, setAzureRegion] = useState<string>("");
+export default function AzureRegion() {
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const azureRegions: string[] = [
+    "East US",
+    "East US 2",
+    "South Central US",
+    "West US 2",
+    "West US 3",
+    "Australia East",
+    "Southeast Asia",
+    "North Europe",
+    "Sweden Central",
+    "UK South",
+    "West Europe",
+    "Central US",
+    "South Africa North",
+    "Central India",
+    "East Asia",
+    "Japan East",
+    "Korea Central",
+    "Canada Central",
+    "France Central",
+    "Germany West Central",
+    "Italy North",
+    "Norway East",
+    "Poland Central",
+    "Switzerland North",
+    "UAE North",
+    "Brazil South",
+    "Central US EUAP",
+    "Israel Central",
+    "Qatar Central",
+    "Central US (Stage)",
+    "East US (Stage)",
+    "East US 2 (Stage)",
+    "North Central US (Stage)",
+    "South Central US (Stage)",
+    "West US (Stage)",
+    "West US 2 (Stage)",
+    "Asia",
+    "Asia Pacific",
+    "Australia",
+    "Brazil",
+    "Canada",
+    "Europe",
+    "France",
+    "Germany",
+    "Global",
+    "India",
+    "Japan",
+    "Korea",
+    "Norway",
+    "Singapore",
+    "South Africa",
+    "Sweden",
+    "Switzerland",
+    "United Arab Emirates",
+    "United Kingdom",
+    "United States",
+    "United States EUAP",
+    "East Asia (Stage)",
+    "Southeast Asia (Stage)",
+    "Brazil US",
+    "East US STG",
+    "North Central US",
+    "West US",
+    "Jio India West",
+    "East US 2 EUAP",
+    "South Central US STG",
+    "West Central US",
+    "South Africa West",
+    "Australia Central",
+    "Australia Central 2",
+    "Australia Southeast",
+    "Japan West",
+    "Jio India Central",
+    "Korea South",
+    "South India",
+    "West India",
+    "Canada East",
+    "France South",
+    "Germany North",
+    "Norway West",
+    "Switzerland West",
+    "UK West",
+    "UAE Central",
+    "Brazil Southeast",
+    "Eva",
+  ];
 
   const {
     data: preference,
@@ -28,17 +115,16 @@ export default function AzureRegion({ regionEdit, setRegionEdit }: Props) {
     isError: getStorageAccountError,
   } = useGetStorageAccount();
 
-  function handleAzureRegion(event: React.ChangeEvent<HTMLInputElement>) {
-    setAzureRegion(event.target.value);
-  }
+  // function handleAzureRegion(event: React.ChangeEvent<HTMLInputElement>) {
+  //   setAzureRegion(event.target.value);
+  // }
 
-  function handleOnSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    handleOnClick();
-  }
+  // function handleOnSubmit(event: React.FormEvent<HTMLFormElement>) {
+  //   event.preventDefault();
+  //   handleOnClick();
+  // }
 
-  function handleOnClick() {
-    setRegionEdit(false);
+  function handleOnClick(azureRegion: string) {
     if (preference !== undefined) {
       setPreference({
         ...preference,
@@ -53,6 +139,62 @@ export default function AzureRegion({ regionEdit, setRegionEdit }: Props) {
     }
   }
 
+  /**
+   * Function to render a search input field.
+   *
+   * @returns JSX.Element - The rendered search input field.
+   */
+  const renderSearchInput = () => {
+    return (
+      <div className="relative">
+        <input
+          type="text"
+          placeholder="Search..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full rounded px-2 py-1 dark:bg-slate-700 dark:text-slate-100"
+        />
+        {searchTerm && (
+          <FaTimes
+            className="absolute right-2 top-1/2 -translate-y-1/2 transform cursor-pointer"
+            onClick={() => setSearchTerm("")}
+          />
+        )}
+      </div>
+    );
+  };
+
+  const heading = () => {
+    if (loadingPreference || fetchingPreference || settingPreference) {
+      return <p>Please wait...</p>;
+    }
+    return <p>{preference ? preference.azureRegion : "Add a region."}</p>;
+  };
+
+  /**
+   * Function to render an item.
+   *
+   * @param {PatchVersions} patchVersion - The patch version to render.
+   * @returns JSX.Element - The rendered item.
+   */
+  const renderItem = (item: string) => {
+    // Determine the classes to apply based on whether the current version matches the key
+    const classes =
+      item === preference?.azureRegion
+        ? "bg-green-300 hover:text-slate-900 dark:text-slate-900"
+        : "";
+
+    return (
+      <div
+        className={`${classes} mt-1 w-full cursor-pointer items-center justify-between rounded p-1 hover:bg-sky-500 hover:text-slate-100`}
+      >
+        {item}
+      </div>
+    );
+  };
+
+  //const renderItem = (item: string) => <p>{item}</p>;
+
   return (
     <SettingsItemLayout>
       <div
@@ -64,63 +206,20 @@ export default function AzureRegion({ regionEdit, setRegionEdit }: Props) {
         }`}
       >
         <h2 className="text-lg">Azure Region</h2>
-        <div
-          className={`${
-            regionEdit && "hidden"
-          } flex w-96 items-center justify-between rounded border border-slate-500 p-2`}
-          onDoubleClick={(e) => {
-            !(
-              fetchingStorageAccount ||
-              storageAccount === undefined ||
-              storageAccount.storageAccount.name === ""
-            ) && setRegionEdit(true);
-            preference && setAzureRegion(preference?.azureRegion);
-          }}
-        >
-          {loadingPreference || fetchingPreference || settingPreference ? (
-            <p>Please wait...</p>
-          ) : (
-            <>
-              <p>{preference ? preference.azureRegion : "Add a region."}</p>
-              <p className="text-xs">Double click to edit.</p>
-            </>
-          )}
-        </div>
-        <div
-          className={`${
-            !regionEdit && "hidden"
-          } flex w-96 items-center justify-between gap-x-2 rounded border border-slate-500`}
-          onClick={(e) => e.stopPropagation()}
-        >
-          <form
-            className="block h-10 w-full bg-inherit px-2 text-inherit"
-            onSubmit={(e) => handleOnSubmit(e)}
-          >
-            <input
-              type="text"
-              className="h-10 w-full bg-inherit text-inherit outline-none"
-              placeholder="Azure Region"
-              value={azureRegion}
-              disabled={
-                fetchingStorageAccount ||
-                storageAccount === undefined ||
-                storageAccount.storageAccount.name === ""
-              }
-              onChange={handleAzureRegion}
-            />
-          </form>
-          {/* <button
-          className="p-2 text-2xl hover:text-red-500"
-          onClick={() => setRegionEdit(false)}
-        >
-          <FaTimes />
-        </button> */}
-          <button
-            className="p-2 text-2xl hover:text-sky-500"
-            onClick={() => handleOnClick()}
-          >
-            <FaCheck />
-          </button>
+        <div className="w-96">
+          <DropdownSelect
+            heading={heading()}
+            disabled={
+              loadingPreference || fetchingPreference || settingPreference
+            }
+            search={renderSearchInput()}
+            renderItem={renderItem}
+            items={azureRegions.filter((item) =>
+              item.toLowerCase().includes(searchTerm.toLowerCase())
+            )}
+            onItemClick={handleOnClick}
+            height="h-60"
+          />
         </div>
       </div>
     </SettingsItemLayout>

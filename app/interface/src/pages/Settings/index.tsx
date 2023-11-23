@@ -13,8 +13,6 @@ import AzureSubscriptionSetting from "../../components/Config/AzureSubscriptionS
 import ServerStatus from "../../components/Config/ServerStatus";
 
 export default function Settings() {
-  const [regionEdit, setRegionEdit] = useState<boolean>(false);
-
   useEffect(() => {
     document.title = "ACT Labs | Settings";
   }, []);
@@ -28,7 +26,7 @@ export default function Settings() {
         <AuthServiceEndpoint />
         <StorageAccount />
         <AzureSubscriptionSetting />
-        <AzureRegion regionEdit={regionEdit} setRegionEdit={setRegionEdit} />
+        <AzureRegion />
 
         <TerraformInit />
         <TerraformWorkspaces />
