@@ -10,7 +10,7 @@ export default function TerraformWorkspaces({}: WorkspaceProps) {
       <div className="flex flex-col gap-y-2">
         <div className="flex justify-between py-2">
           <div>
-            <h2 className="text-lg">Terraform Workspaces</h2>
+            <h2 className="text-lg">Terraform Workspace</h2>
           </div>
           <div className="flex flex-col gap-y-2">
             <div className="flex w-full justify-between gap-x-4">
@@ -28,7 +28,7 @@ export default function TerraformWorkspaces({}: WorkspaceProps) {
             initialized.
           </p>
           <p className="text-xs text-slate-700 dark:text-slate-300">
-            - Deleting a workspace also destroys all resources in the workspace.
+            - Workspaces are managed via deployments.
           </p>
         </div>
       </div>
