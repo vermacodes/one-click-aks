@@ -9,6 +9,7 @@ import DropdownSelect from "../../UserInterfaceComponents/DropdownSelect";
 
 export default function AzureRegion() {
   const [searchTerm, setSearchTerm] = useState<string>("");
+  // az account list-locations --query "[].displayName" -o tsv | sed -e 's/^/"/' -e 's/$/"/' | paste -sd, -
   const azureRegions: string[] = [
     "East US",
     "East US 2",
