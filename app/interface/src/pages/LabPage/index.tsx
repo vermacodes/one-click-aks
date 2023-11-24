@@ -4,6 +4,7 @@ import PageLayout from "../../layouts/PageLayout";
 import LabCard from "../../components/Lab/LabCard";
 import Terminal from "../../components/Terminal";
 import { useGetLabs } from "../../hooks/useGetLabs";
+import { Lab, LabType } from "../../dataStructures";
 
 export default function LabPage() {
   const { type, id } = useParams();
@@ -14,7 +15,7 @@ export default function LabPage() {
   }
 
   const { lab, isLoading, isFetching } = getLabByTypeAndId({
-    labType: type,
+    labType: type as LabType,
     labId: id,
   });
 

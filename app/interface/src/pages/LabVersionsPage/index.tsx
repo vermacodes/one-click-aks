@@ -3,6 +3,7 @@ import PageLayout from "../../layouts/PageLayout";
 import { useEffect, useState } from "react";
 import LabVersions from "../../components/Lab/LabVersions/LabVersions";
 import { useGetLabs } from "../../hooks/useGetLabs";
+import { LabType } from "../../dataStructures";
 
 export default function LabVersionsPage() {
   const [pageHeading, setPageHeading] = useState("Version History");
@@ -18,7 +19,7 @@ export default function LabVersionsPage() {
   }
 
   const { lab, isLoading, isFetching } = getLabByTypeAndId({
-    labType: type,
+    labType: type as LabType,
     labId: id,
   });
 

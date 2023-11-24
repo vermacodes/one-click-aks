@@ -47,9 +47,9 @@ export default function Role({ roleRecord }: Props) {
   }
 
   return (
-    <div className="flex items-center justify-between rounded bg-slate-50 p-4 shadow-md outline-1 outline-slate-400 hover:shadow-lg hover:outline  hover:outline-sky-500 dark:bg-slate-900 dark:outline-slate-600 dark:hover:outline-sky-500">
+    <div className="flex items-center justify-between gap-2 rounded bg-slate-50 p-4 shadow-md outline-1 outline-slate-400 hover:shadow-lg hover:outline  hover:outline-sky-500 dark:bg-slate-900 dark:outline-slate-600 dark:hover:outline-sky-500">
       <div className="text-xl">{roleRecord.userPrincipal}</div>
-      <div className="flex gap-x-2">
+      <div className="flex flex-wrap justify-end gap-2">
         {roleRecord.roles.map((role) => (
           <div
             key={role}
