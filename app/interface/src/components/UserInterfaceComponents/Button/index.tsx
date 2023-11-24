@@ -47,7 +47,7 @@ function getClassName(variant: ButtonVariant, hidden?: boolean) {
 }
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant: ButtonVariant;
+  variant?: ButtonVariant;
   hidden?: boolean;
   tooltipMessage?: string;
   tooltipDelay?: number;
@@ -55,7 +55,7 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 export default function Button({
-  variant,
+  variant = "text",
   hidden,
   tooltipMessage,
   tooltipDelay,

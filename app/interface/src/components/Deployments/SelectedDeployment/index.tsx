@@ -47,12 +47,12 @@ export default function SelectedDeployment({ sticky = true }: Props) {
       } mb-3 rounded bg-slate-50 p-3 shadow outline-1 outline-sky-500 hover:outline dark:bg-slate-900`}
     >
       <div
-        className="flex justify-between gap-2"
+        className="flex justify-between gap-2 text-sm"
         key={selectedDeploymentState.deploymentId}
       >
-        <div className="flex items-center gap-x-2">
+        <div className="flex items-center gap-x-2 ">
           <SiTerraform className="text-xl" />
-          <h1 className="text-2xl text-sky-500">
+          <h1 className="text-xl text-sky-500">
             {selectedDeploymentState.deploymentWorkspace}
           </h1>
         </div>
