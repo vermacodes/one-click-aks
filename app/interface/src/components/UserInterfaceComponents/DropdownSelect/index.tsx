@@ -60,7 +60,7 @@ export default function DropdownSelect<T>({
         <div
           className={`${
             disabled && "cursor-not-allowed text-slate-500 "
-          } flex w-full cursor-pointer items-center justify-between rounded border border-slate-500 px-2 py-1`}
+          } flex w-full cursor-pointer items-center justify-between gap-4 rounded border border-slate-500 px-2 py-1`}
           onClick={(e) => {
             if (disabled) {
               return;

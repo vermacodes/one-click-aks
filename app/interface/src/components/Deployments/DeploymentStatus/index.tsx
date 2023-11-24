@@ -7,7 +7,7 @@ type Props = {
 
 export default function DeploymentStatus({ deployment }: Props) {
   return (
-    <div className={`mr-2 flex items-center gap-2`}>
+    <div className={`flex items-center gap-2`}>
       {deployment.deploymentStatus === "Deployment Failed" ||
       deployment.deploymentStatus === "Destroy Failed" ? (
         <p className="text-rose-500">

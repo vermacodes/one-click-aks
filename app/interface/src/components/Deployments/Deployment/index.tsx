@@ -22,7 +22,7 @@ export default function Deployment({ deployment, selectedDeployment }: Props) {
           : ""
       } mb-3 rounded bg-slate-50 p-3 outline-1 outline-sky-500 hover:outline dark:bg-slate-900`}
     >
-      <div className="flex justify-between text-sm">
+      <div className="flex justify-between gap-2 text-sm">
         <div className="flex flex-wrap items-center gap-y-2 gap-x-2">
           <h1 className="text-xl text-sky-500">
             {deployment.deploymentWorkspace}
