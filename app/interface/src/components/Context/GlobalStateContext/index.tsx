@@ -4,6 +4,8 @@ import { setDefaultValuesInLocalStorage } from "../../../utils/helpers";
 interface GlobalStateContextContextData {
   darkMode: boolean;
   setDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
+  navbarOpen: boolean;
+  setNavbarOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const GlobalStateContextContext = createContext<
@@ -16,6 +18,7 @@ type Props = {
 
 export function GlobalStateContextProvider({ children }: Props) {
   const [darkMode, setDarkMode] = useState<boolean>(false);
+  const [navbarOpen, setNavbarOpen] = useState<boolean>(true);
 
   useEffect(() => {
     setDefaultValuesInLocalStorage();
@@ -28,6 +31,15 @@ export function GlobalStateContextProvider({ children }: Props) {
         setDarkMode(false);
       }
     }
+
+    var navbarOpenFromLocalStorage = localStorage.getItem("navbarOpen");
+    if (navbarOpenFromLocalStorage === null) {
+      localStorage.setItem("navbarOpen", "true");
+    } else {
+      if (navbarOpenFromLocalStorage === "false") {
+        setNavbarOpen(false);
+      }
+    }
   }, []);
 
   return (
@@ -35,6 +47,8 @@ export function GlobalStateContextProvider({ children }: Props) {
       value={{
         darkMode,
         setDarkMode,
+        navbarOpen,
+        setNavbarOpen,
       }}
     >
       {children}

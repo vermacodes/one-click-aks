@@ -3,6 +3,7 @@ import Detectors from "../../components/Detectors/Detectors";
 import DarkModeSwitch from "../../components/UserInterfaceComponents/DarkModeSwitch";
 import { useDefaultAccount } from "../../hooks/useDefaultAccount";
 import { useGlobalStateContext } from "../../components/Context/GlobalStateContext";
+import { FaBars } from "react-icons/fa";
 
 type Props = {
   heading?: string;
@@ -10,7 +11,8 @@ type Props = {
 };
 
 export default function PageLayout({ heading, children }: Props) {
-  const { darkMode, setDarkMode } = useGlobalStateContext();
+  const { darkMode, setDarkMode, navbarOpen, setNavbarOpen } =
+    useGlobalStateContext();
   // const { defaultAccount } = useDefaultAccount();
   return (
     <div>
@@ -21,7 +23,15 @@ export default function PageLayout({ heading, children }: Props) {
             heading !== "" ? "mb-4 border-b-2 border-slate-500 py-4 " : "mt-6 "
           } flex items-center justify-between `}
         >
-          <h1 className="text-4xl">{heading}</h1>
+          <div className="flex items-center gap-2">
+            <button
+              className="text-2xl text-sky-500"
+              onClick={() => setNavbarOpen(!navbarOpen)}
+            >
+              <FaBars />
+            </button>
+            <h1 className="text-4xl">{heading}</h1>
+          </div>
           {/* <div className="text-sm text-slate-500">
             {defaultAccount ? defaultAccount.name : ""}
           </div> */}
