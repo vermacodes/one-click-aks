@@ -56,7 +56,7 @@ export default function SelectedDeployment({ sticky = true }: Props) {
             {selectedDeploymentState.deploymentWorkspace}
           </h1>
         </div>
-        <div className="flex items-center gap-x-2">
+        <div className="flex flex-wrap items-center justify-end gap-2">
           <DeploymentStatus deployment={selectedDeploymentState} />
           <div className="mx-2 h-6 border-r border-gray-300"></div>
           <AutoDestroySwitch

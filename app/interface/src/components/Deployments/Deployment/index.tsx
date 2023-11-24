@@ -28,7 +28,7 @@ export default function Deployment({ deployment, selectedDeployment }: Props) {
             {deployment.deploymentWorkspace}
           </h1>
         </div>
-        <div className="flex flex-wrap items-center gap-y-2 gap-x-2">
+        <div className="flex flex-wrap items-center justify-end gap-y-2 gap-x-2">
           <DeploymentStatus deployment={deployment} />
           <AutoDestroySwitch
             deployment={deployment}
