@@ -109,7 +109,6 @@ export default function Version({ index }: Props) {
         items={patchVersions}
         onItemClick={handleOnSelect}
         renderItem={renderItem}
-        searchEnabled={false}
         width={"full"}
         height={"h-60"}
       />

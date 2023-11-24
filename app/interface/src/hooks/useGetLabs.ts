@@ -1,5 +1,5 @@
 import { UseQueryResult } from "react-query";
-import { Lab } from "../dataStructures";
+import { Lab, LabType } from "../dataStructures";
 import {
   useReadinessLabs,
   useSharedMockCases,
@@ -26,10 +26,12 @@ export function useGetLabs() {
   };
 
   type GetLabsByTypeProps = {
-    labType: string;
+    labType: LabType;
   };
   const getLabsByType = ({ labType }: GetLabsByTypeProps) => {
-    const dataSource = dataSources[labType];
+    // this is to tackle the mockcase and mockcases issue
+    const dataSource =
+      dataSources[labType.endsWith("s") ? labType : labType + "s"];
     const { data: labs, isLoading, isFetching } = dataSource;
     return {
       labs,
@@ -39,12 +41,10 @@ export function useGetLabs() {
   };
 
   type GetLabByTypeAndIdProps = {
-    labType: string;
+    labType: LabType;
     labId: string;
   };
   const getLabByTypeAndId = ({ labType, labId }: GetLabByTypeAndIdProps) => {
-    // appending 's' to the labType
-    labType = labType + "s";
     const { labs, isLoading, isFetching } = getLabsByType({ labType });
     const lab = labs?.find((lab) => lab.id === labId);
     return {

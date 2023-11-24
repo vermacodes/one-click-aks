@@ -22,7 +22,7 @@ const RootErrorBoundary: React.FC<RootErrorBoundaryProps> = ({ children }) => {
   }, []);
 
   const handleRefresh = () => {
-    window.location.reload();
+    window.location.pathname = "/";
   };
 
   if (hasError) {

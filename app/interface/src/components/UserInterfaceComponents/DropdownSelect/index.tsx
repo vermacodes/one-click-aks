@@ -9,26 +9,13 @@ type ItemProps<T> = {
   onItemClick(args: T): void;
   search?: React.ReactNode;
   disabled?: boolean;
-  searchEnabled?: boolean;
   width?: number | string;
-  minWidth?: number | string;
   height?: string; // Height of the dropdown menu
   tooltipMessage?: string;
   tooltipDirection?: "top" | "bottom" | "left" | "right" | undefined;
   tooltipDelay?: number;
   closeMenuOnSelect?: boolean;
 };
-
-// type DropdownSelectProps = {
-//   disabled?: boolean;
-//   searchEnabled?: boolean;
-//   width?: number | string;
-//   minWidth?: number | string;
-//   height?: string; // Height of the dropdown menu
-//   tooltipMessage?: string;
-//   tooltipDirection?: "top" | "bottom" | "left" | "right" | undefined;
-//   tooltipDelay?: number;
-// };
 
 export default function DropdownSelect<T>({
   disabled = false,
@@ -84,6 +71,7 @@ export default function DropdownSelect<T>({
           onItemClick={onItemClick}
           search={search}
           height={height}
+          closeMenuOnSelect={closeMenuOnSelect}
         />
       )}
     </div>
@@ -103,7 +91,7 @@ const DropdownMenu = <T,>({
   search,
   height,
   setMenuOpen,
-  closeMenuOnSelect = true,
+  closeMenuOnSelect,
 }: ItemProps<T> & DropdownMenuProps) => {
   const [didMouseEnter, setDidMouseEnter] = useState(false);
 
@@ -130,9 +118,13 @@ const DropdownMenu = <T,>({
       {items.map((item, index) => (
         <div
           key={index}
-          onClick={() => {
-            closeMenuOnSelect && setMenuOpen(false);
+          onClick={(e) => {
+            console.log("closeMenuOnSelect", closeMenuOnSelect);
+            if (closeMenuOnSelect) {
+              setMenuOpen(false);
+            }
             onItemClick(item);
+            e.stopPropagation();
           }}
         >
           {renderItem(item)}

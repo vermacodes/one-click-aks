@@ -6,9 +6,10 @@ import LabGridLayout from "../../layouts/LabGridLayout";
 import SelectedDeployment from "../../components/Deployments/SelectedDeployment";
 import Terminal from "../../components/Terminal";
 import { useGetLabs } from "../../hooks/useGetLabs";
+import { LabType } from "../../dataStructures";
 
 export default function LabsGridPage() {
-  const { type } = useParams<{ type: string }>();
+  const { type } = useParams<{ type: LabType }>();
   const [searchTerm, setSearchTerm] = useState("");
   const [pageHeading, setPageHeading] = useState("Labs");
   const { getLabsByType } = useGetLabs();
