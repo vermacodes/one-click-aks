@@ -109,22 +109,17 @@ export default function AzureRegion() {
   const { data: lab } = useLab();
   const { mutate: setLogs } = useSetLogs();
 
-  const {
-    data: storageAccount,
-    isLoading: getStorageAccountLoading,
-    isFetching: fetchingStorageAccount,
-    isError: getStorageAccountError,
-  } = useGetStorageAccount();
+  const { data: storageAccount, isFetching: fetchingStorageAccount } =
+    useGetStorageAccount();
 
-  // function handleAzureRegion(event: React.ChangeEvent<HTMLInputElement>) {
-  //   setAzureRegion(event.target.value);
-  // }
-
-  // function handleOnSubmit(event: React.FormEvent<HTMLFormElement>) {
-  //   event.preventDefault();
-  //   handleOnClick();
-  // }
-
+  /**
+   * Handles the click event.
+   *
+   * If a preference is set, it updates the preference's azureRegion and the lab template's location with the provided azureRegion.
+   * It also updates the logs with the stringified lab template.
+   *
+   * @param {string} azureRegion - The azureRegion to set.
+   */
   function handleOnClick(azureRegion: string) {
     if (preference !== undefined) {
       setPreference({
@@ -165,6 +160,14 @@ export default function AzureRegion() {
     );
   };
 
+  /**
+   * Function to render a heading.
+   *
+   * If preferences are loading, fetching, or being set, it renders a loading message.
+   * Otherwise, it renders the current preference's azureRegion, or a prompt to add a region if no preference is set.
+   *
+   * @returns JSX.Element - The rendered heading.
+   */
   const heading = () => {
     if (loadingPreference || fetchingPreference || settingPreference) {
       return <p>Please wait...</p>;
