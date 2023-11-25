@@ -32,7 +32,7 @@ export default function Navbar() {
 function Title() {
   return (
     <Link to={"/"}>
-      <h1 className="flex flex-row items-center px-8 pt-8 text-2xl font-bold hover:text-sky-500">
+      <h1 className="flex flex-row items-center px-8 pt-6 pb-2 text-2xl font-bold hover:text-sky-500">
         <img src="/actlabs_logo.svg" className="mr-2 h-8 w-8"></img>
         ACT Labs
       </h1>
