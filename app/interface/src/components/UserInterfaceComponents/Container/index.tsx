@@ -47,6 +47,7 @@ export default function Container({
         )}
       </div>
       <div
+        key={title}
         className={`${
           !open ? "max-h-0 overflow-hidden" : "max-h-96"
         } transition-all duration-300`}

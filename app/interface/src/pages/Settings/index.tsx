@@ -31,7 +31,7 @@ export default function Settings() {
 
         <TerraformInit />
         <TerraformWorkspaces />
-        <Container>
+        <Container collapsible={true}>
           <div className="flex flex-col md:flex-row">
             <ResetActionStatus />
             <ResetServerCache />

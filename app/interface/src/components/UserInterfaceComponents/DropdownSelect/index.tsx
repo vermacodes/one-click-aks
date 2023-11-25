@@ -56,7 +56,7 @@ export default function DropdownSelect<T>({
             e.stopPropagation();
           }}
         >
-          <p>{heading}</p>
+          <div>{heading}</div>
           <p>
             <FaChevronDown />
           </p>
