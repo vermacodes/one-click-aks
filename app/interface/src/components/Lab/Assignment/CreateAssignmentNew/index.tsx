@@ -4,6 +4,7 @@ import Button from "../../../UserInterfaceComponents/Button";
 import { useGetAllRoles } from "../../../../hooks/useAuth";
 import { useGetLabs } from "../../../../hooks/useGetLabs";
 import { FaTimes } from "react-icons/fa";
+import Container from "../../../UserInterfaceComponents/Container";
 
 export default function CreateAssignmentNew() {
   const { getLabsByType } = useGetLabs();
@@ -148,56 +149,58 @@ export default function CreateAssignmentNew() {
   };
 
   return (
-    <div className="mb-4 flex w-full justify-between gap-4 rounded bg-slate-50 p-2 shadow dark:bg-slate-900">
-      <div className="flex w-full">
-        <DropdownSelect
-          heading={
-            selectedLabs.length > 0
-              ? selectedLabs.length + " labs selected."
-              : "Select Labs"
-          }
-          disabled={labsLoading || labsFetching}
-          items={[
-            ...selectedLabs,
-            ...uniqueLabNames
-              .filter((lab) => !selectedLabs.includes(lab))
-              .filter((lab) =>
-                lab.toLowerCase().includes(labsSearchTerm.toLowerCase())
-              ),
-          ]}
-          renderItem={renderLab}
-          onItemClick={onLabClick}
-          search={labSearchInput()}
-          height={"h-96"}
-          closeMenuOnSelect={false}
-        />
+    <Container title="Create Assignment" hoverEffect={false} collapsible={true}>
+      <div className="mb-4 flex w-full flex-col justify-between gap-4 bg-slate-50 dark:bg-slate-900 md:flex-row">
+        <div className="flex w-full">
+          <DropdownSelect
+            heading={
+              selectedLabs.length > 0
+                ? selectedLabs.length + " labs selected."
+                : "Select Labs"
+            }
+            disabled={labsLoading || labsFetching}
+            items={[
+              ...selectedLabs,
+              ...uniqueLabNames
+                .filter((lab) => !selectedLabs.includes(lab))
+                .filter((lab) =>
+                  lab.toLowerCase().includes(labsSearchTerm.toLowerCase())
+                ),
+            ]}
+            renderItem={renderLab}
+            onItemClick={onLabClick}
+            search={labSearchInput()}
+            height={"h-96"}
+            closeMenuOnSelect={false}
+          />
+        </div>
+        <div className="flex w-full">
+          <DropdownSelect
+            heading={
+              selectedUsers.length > 0
+                ? selectedUsers.length + " users selected."
+                : "Select Users"
+            }
+            disabled={rolesLoading || rolesFetching}
+            items={[
+              ...selectedUsers,
+              ...uniqueUsers
+                .filter((user) => !selectedUsers.includes(user))
+                .filter((user) =>
+                  user.toLowerCase().includes(usersSearchTerm.toLowerCase())
+                ),
+            ]}
+            renderItem={renderUser}
+            onItemClick={onUserClick}
+            search={userSearchInput()}
+            height={"h-96"}
+            closeMenuOnSelect={false}
+          />
+        </div>
+        <div className="flex">
+          <Button variant="primary-outline">Assign</Button>
+        </div>
       </div>
-      <div className="flex w-full">
-        <DropdownSelect
-          heading={
-            selectedUsers.length > 0
-              ? selectedUsers.length + " users selected."
-              : "Select Users"
-          }
-          disabled={rolesLoading || rolesFetching}
-          items={[
-            ...selectedUsers,
-            ...uniqueUsers
-              .filter((user) => !selectedUsers.includes(user))
-              .filter((user) =>
-                user.toLowerCase().includes(usersSearchTerm.toLowerCase())
-              ),
-          ]}
-          renderItem={renderUser}
-          onItemClick={onUserClick}
-          search={userSearchInput()}
-          height={"h-96"}
-          closeMenuOnSelect={false}
-        />
-      </div>
-      <div className="flex">
-        <Button variant="primary-outline">Assign</Button>
-      </div>
-    </div>
+    </Container>
   );
 }
