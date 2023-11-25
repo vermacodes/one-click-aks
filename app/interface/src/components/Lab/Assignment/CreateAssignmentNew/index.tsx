@@ -149,7 +149,7 @@ export default function CreateAssignmentNew() {
   };
 
   return (
-    <Container title="Create Assignment" hoverEffect={false} collapsible={true}>
+    <Container title="Create Assignment">
       <div className="mb-4 flex w-full flex-col justify-between gap-4 bg-slate-50 dark:bg-slate-900 md:flex-row">
         <div className="flex w-full">
           <DropdownSelect
