@@ -1,7 +1,5 @@
-import { useState } from "react";
 import Detectors from "../../components/Detectors/Detectors";
 import DarkModeSwitch from "../../components/UserInterfaceComponents/DarkModeSwitch";
-import { useDefaultAccount } from "../../hooks/useDefaultAccount";
 import { useGlobalStateContext } from "../../components/Context/GlobalStateContext";
 import { FaBars } from "react-icons/fa";
 import Button from "../../components/UserInterfaceComponents/Button";
