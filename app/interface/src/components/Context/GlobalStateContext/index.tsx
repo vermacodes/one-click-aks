@@ -25,10 +25,10 @@ export function GlobalStateContextProvider({ children }: Props) {
 
     var darkModeFromLocalStorage = localStorage.getItem("darkMode");
     if (darkModeFromLocalStorage === null) {
-      localStorage.setItem("darkMode", "true");
+      localStorage.setItem("darkMode", "false");
     } else {
-      if (darkModeFromLocalStorage === "false") {
-        setDarkMode(false);
+      if (darkModeFromLocalStorage === "true") {
+        setDarkMode(true);
       }
     }
 
@@ -41,6 +41,14 @@ export function GlobalStateContextProvider({ children }: Props) {
       }
     }
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("darkMode", darkMode.toString());
+  }, [darkMode]);
+
+  useEffect(() => {
+    localStorage.setItem("navbarOpen", navbarOpen.toString());
+  }, [navbarOpen]);
 
   return (
     <GlobalStateContextContext.Provider
