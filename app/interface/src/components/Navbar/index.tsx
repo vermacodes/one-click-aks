@@ -10,6 +10,7 @@ import {
   FaPeopleCarry,
   FaRocket,
   FaShieldAlt,
+  FaTimes,
   FaTools,
   FaUserGraduate,
 } from "react-icons/fa";
@@ -18,6 +19,8 @@ import { useGetMyRoles } from "../../hooks/useAuth";
 import LoginButton from "../Authentication/LoginButton";
 import { useDefaultAccount } from "../../hooks/useDefaultAccount";
 import Tooltip from "../UserInterfaceComponents/Tooltip";
+import Button from "../UserInterfaceComponents/Button";
+import { useGlobalStateContext } from "../Context/GlobalStateContext";
 
 export default function Navbar() {
   return (
@@ -30,13 +33,22 @@ export default function Navbar() {
 }
 
 function Title() {
+  const { navbarOpen, setNavbarOpen } = useGlobalStateContext();
   return (
-    <Link to={"/"}>
-      <h1 className="flex flex-row items-center px-8 pt-6 pb-2 text-2xl font-bold hover:text-sky-500">
-        <img src="/actlabs_logo.svg" className="mr-2 h-8 w-8"></img>
-        ACT Labs
-      </h1>
-    </Link>
+    <div className="flex items-center justify-between pt-6 pb-2">
+      <Link to={"/"}>
+        <h1 className="flex flex-row items-center pl-8 text-2xl font-bold hover:text-sky-500">
+          <img src="/actlabs_logo.svg" className="mr-2 h-8 w-8"></img>
+          ACT Labs
+        </h1>
+      </Link>
+      <Button
+        className="md pr-4 text-2xl md:invisible"
+        onClick={() => setNavbarOpen(false)}
+      >
+        <FaTimes />
+      </Button>
+    </div>
   );
 }
 

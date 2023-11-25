@@ -22,14 +22,15 @@ export default function PageLayout({ heading, children }: Props) {
             heading !== "" ? "mb-4 border-b-2 border-slate-500 py-4 " : "mt-6 "
           } flex items-center justify-between `}
         >
-          <div className="flex items-end gap-2">
+          <div className="flex items-center gap-2">
             <Button
               variant="secondary-icon"
+              className="md p-4 text-2xl md:hidden"
               onClick={() => setNavbarOpen(!navbarOpen)}
             >
-              <FaBars />
+              <FaBars className="text-slate-500" />
             </Button>
-            <h1 className="text-4xl">{heading}</h1>
+            <h1 className="text-xl md:text-4xl">{heading}</h1>
           </div>
           {/* <div className="text-sm text-slate-500">
             {defaultAccount ? defaultAccount.name : ""}
