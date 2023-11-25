@@ -4,8 +4,8 @@ import { useLab } from "../../../hooks/useLab";
 import { useSetLogs } from "../../../hooks/useLogs";
 import { usePreference, useSetPreference } from "../../../hooks/usePreference";
 import { useGetStorageAccount } from "../../../hooks/useStorageAccount";
-import SettingsItemLayout from "../../../layouts/SettingsItemLayout";
 import DropdownSelect from "../../UserInterfaceComponents/DropdownSelect";
+import Container from "../../UserInterfaceComponents/Container";
 
 export default function AzureRegion() {
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -200,32 +200,29 @@ export default function AzureRegion() {
   //const renderItem = (item: string) => <p>{item}</p>;
 
   return (
-    <SettingsItemLayout>
+    <Container title="Azure Region" collapsible={true}>
       <div
-        className={`gap-x-reverse flex items-center justify-between gap-x-2 py-2 ${
+        className={`gap-x-reverse flex items-center justify-end gap-x-2 py-2 ${
           (fetchingStorageAccount ||
             storageAccount === undefined ||
             storageAccount.storageAccount.name === "") &&
           " text-slate-400"
         }`}
       >
-        <h2 className="text-lg">Azure Region</h2>
-        <div className="w-96">
-          <DropdownSelect
-            heading={heading()}
-            disabled={
-              loadingPreference || fetchingPreference || settingPreference
-            }
-            search={renderSearchInput()}
-            renderItem={renderItem}
-            items={azureRegions.filter((item) =>
-              item.toLowerCase().includes(searchTerm.toLowerCase())
-            )}
-            onItemClick={handleOnClick}
-            height="h-60"
-          />
-        </div>
+        <DropdownSelect
+          heading={heading()}
+          disabled={
+            loadingPreference || fetchingPreference || settingPreference
+          }
+          search={renderSearchInput()}
+          renderItem={renderItem}
+          items={azureRegions.filter((item) =>
+            item.toLowerCase().includes(searchTerm.toLowerCase())
+          )}
+          onItemClick={handleOnClick}
+          height="h-60"
+        />
       </div>
-    </SettingsItemLayout>
+    </Container>
   );
 }

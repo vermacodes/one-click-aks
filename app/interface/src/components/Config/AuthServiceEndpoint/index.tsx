@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { FaCheck, FaEdit, FaTimes } from "react-icons/fa";
-import SettingsItemLayout from "../../../layouts/SettingsItemLayout";
+import Container from "../../UserInterfaceComponents/Container";
 
 type Props = {};
 
@@ -29,15 +29,8 @@ export default function AuthServiceEndpoint({}: Props) {
   }
 
   return (
-    <SettingsItemLayout>
-      <div className="flex w-full justify-between gap-4 py-2">
-        <div className="flex w-full flex-col gap-2">
-          <h3 className="text-xl">Auth Service Endpoint</h3>
-          <p className="text-xs">
-            Auth Service Endpoint. You probably don't want to edit this unless
-            you know what you are doing. But, if you know, you know. Go ahead.
-          </p>
-        </div>
+    <Container title="Auth Service Endpoint" collapsible={true}>
+      <div className="flex w-full flex-col gap-4 py-2">
         <div
           className={`flex h-10 w-full items-center justify-between rounded border border-slate-500`}
           onMouseEnter={() => setShowEditButton(true)}
@@ -89,7 +82,13 @@ export default function AuthServiceEndpoint({}: Props) {
             <FaTimes />
           </button>
         </div>
+        <div className="flex w-full flex-col gap-2">
+          <p className="text-xs">
+            Auth Service Endpoint. You probably don't want to edit this unless
+            you know what you are doing. But, if you know, you know. Go ahead.
+          </p>
+        </div>
       </div>
-    </SettingsItemLayout>
+    </Container>
   );
 }

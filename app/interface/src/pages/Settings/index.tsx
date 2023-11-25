@@ -11,6 +11,7 @@ import PageLayout from "../../layouts/PageLayout";
 import SettingsItemLayout from "../../layouts/SettingsItemLayout";
 import AzureSubscriptionSetting from "../../components/Config/AzureSubscriptionSetting";
 import ServerStatus from "../../components/Config/ServerStatus";
+import Container from "../../components/UserInterfaceComponents/Container";
 
 export default function Settings() {
   useEffect(() => {
@@ -30,12 +31,12 @@ export default function Settings() {
 
         <TerraformInit />
         <TerraformWorkspaces />
-        <SettingsItemLayout>
-          <div className="flex">
+        <Container>
+          <div className="flex flex-col md:flex-row">
             <ResetActionStatus />
             <ResetServerCache />
           </div>
-        </SettingsItemLayout>
+        </Container>
       </div>
     </PageLayout>
   );

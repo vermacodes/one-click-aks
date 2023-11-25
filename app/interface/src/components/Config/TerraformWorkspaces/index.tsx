@@ -1,37 +1,32 @@
-import SettingsItemLayout from "../../../layouts/SettingsItemLayout";
 import SelectedWorkspaceResources from "../../Terraform/SelectedWorkspaceResources";
 import Workspaces from "../../Terraform/Workspaces";
+import Container from "../../UserInterfaceComponents/Container";
 
 type WorkspaceProps = {};
 
 export default function TerraformWorkspaces({}: WorkspaceProps) {
   return (
-    <SettingsItemLayout>
-      <div className="flex flex-col gap-y-2">
-        <div className="flex justify-between py-2">
-          <div>
-            <h2 className="text-lg">Terraform Workspace</h2>
+    <Container title="Terraform Workspace" collapsible={true}>
+      <div className="flex w-full flex-col gap-2">
+        <div className="flex w-full flex-col gap-2">
+          <div className="flex w-full justify-between gap-x-4">
+            <Workspaces />
           </div>
-          <div className="flex flex-col gap-y-2">
-            <div className="flex w-full justify-between gap-x-4">
-              <Workspaces />
-            </div>
-            <div className="flex justify-end">
-              <SelectedWorkspaceResources />
-            </div>
+          <div className="flex justify-end">
+            <SelectedWorkspaceResources />
           </div>
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-2">
           <p className="text-xs text-slate-700 dark:text-slate-300">
-            - If you see no workspaces listed. Thats probably because terraform
+            1. If you see no workspaces listed. Thats probably because terraform
             is not yet initialized. This will populate once terraform is
             initialized.
           </p>
-          <p className="text-xs text-slate-700 dark:text-slate-300">
-            - Workspaces are managed via deployments.
+          <p className="w-full rounded border border-yellow-600 bg-yellow-600 bg-opacity-10 py-1 px-3 text-xs md:w-fit">
+            Terraform workspaces are managed by deployments.
           </p>
         </div>
       </div>
-    </SettingsItemLayout>
+    </Container>
   );
 }
