@@ -1,9 +1,9 @@
 import { useContext } from "react";
+import { defaultContainerRegistry } from "../../../defaults";
 import { useLab, useSetLab } from "../../../hooks/useLab";
 import { useSetLogs } from "../../../hooks/useLogs";
-import Checkbox from "../../UserInterfaceComponents/Checkbox";
-import { defaultContainerRegistry } from "../../../defaults";
 import { WebSocketContext } from "../../Context/WebSocketContext";
+import Checkbox from "../../UserInterfaceComponents/Checkbox";
 
 export default function ContainerRegistry() {
   const { actionStatus } = useContext(WebSocketContext);
@@ -36,17 +36,17 @@ export default function ContainerRegistry() {
     return <></>;
   }
 
-  if (labIsLoading || labIsFetching) {
-    return (
-      <Checkbox
-        id="toggle-acr"
-        label="ACR"
-        disabled={true}
-        checked={false}
-        handleOnChange={handleOnChange}
-      />
-    );
-  }
+  // if (labIsLoading || labIsFetching) {
+  //   return (
+  //     <Checkbox
+  //       id="toggle-acr"
+  //       label="ACR"
+  //       disabled={true}
+  //       checked={false}
+  //       handleOnChange={handleOnChange}
+  //     />
+  //   );
+  // }
 
   var checked: boolean = true;
   if (

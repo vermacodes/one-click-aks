@@ -1,9 +1,9 @@
 import { useContext, useState } from "react";
+import { defaultFirewall } from "../../../defaults";
 import { useLab, useSetLab } from "../../../hooks/useLab";
 import { useSetLogs } from "../../../hooks/useLogs";
-import Checkbox from "../../UserInterfaceComponents/Checkbox";
-import { defaultFirewall } from "../../../defaults";
 import { WebSocketContext } from "../../Context/WebSocketContext";
+import Checkbox from "../../UserInterfaceComponents/Checkbox";
 
 export default function AzureFirewall() {
   const [tooltipMessage, setTooltipMessage] = useState<string>("");
@@ -39,17 +39,17 @@ export default function AzureFirewall() {
     return <></>;
   }
 
-  if (labIsLoading || labIsFetching) {
-    return (
-      <Checkbox
-        id="toggle-azure-firewall"
-        label="Firewall"
-        disabled={true}
-        checked={false}
-        handleOnChange={handleOnChange}
-      />
-    );
-  }
+  // if (labIsLoading || labIsFetching) {
+  //   return (
+  //     <Checkbox
+  //       id="toggle-azure-firewall"
+  //       label="Firewall"
+  //       disabled={true}
+  //       checked={false}
+  //       handleOnChange={handleOnChange}
+  //     />
+  //   );
+  // }
 
   var checked: boolean = true;
   if (lab && lab.template && lab.template.firewalls.length === 0) {
