@@ -46,14 +46,6 @@ export default function Assignments({}: Props) {
     }
   }, [allAssignments]);
 
-  useEffect(() => {
-    console.log("assignments", assignments);
-  }, [assignments]);
-
-  useEffect(() => {
-    console.log("selectedAssignments", selectedAssignments);
-  }, [selectedAssignments]);
-
   function handleDeleteSelected() {
     setConfirmationModalOpen(false);
     let assignmentIds = selectedAssignments.map(
