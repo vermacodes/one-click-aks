@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { FaArrowRight, FaCheck, FaTimes } from "react-icons/fa";
 import { Assignment, Lab } from "../../../../dataStructures";
-import { useCreateAssignment } from "../../../../hooks/useAssignment";
+import { useCreateAssignments } from "../../../../hooks/useAssignment";
 import Button from "../../../UserInterfaceComponents/Button";
 import { toast } from "react-toastify";
 
@@ -14,7 +14,7 @@ export default function CreateAssignment({ lab }: Props) {
   const [createdColor, setCreatedColor] = useState<boolean>(false);
   const [failedColor, setFailedColor] = useState<boolean>(false);
   const { mutateAsync: createAssignment, isLoading: creating } =
-    useCreateAssignment();
+    useCreateAssignments();
 
   function handleAssignment(lab: Lab) {
     if (userAlias.length < 4) {
@@ -25,43 +25,43 @@ export default function CreateAssignment({ lab }: Props) {
       return;
     }
 
-    var assignment: Assignment = {
-      id: "",
-      user: userAlias,
-      labId: lab.id,
-      labName: lab.name,
-      status: "Assigned",
-    };
-    setUserAlias("");
+    // var assignment: Assignment = {
+    //   id: "",
+    //   user: userAlias,
+    //   labId: lab.id,
+    //   labName: lab.name,
+    //   status: "Assigned",
+    // };
+    // setUserAlias("");
 
-    const createAssignmentPromise = toast.promise(
-      createAssignment(assignment),
-      {
-        pending: "Creating Assignment...",
-        success: "Assignment Created.",
-        error: {
-          render(data: any) {
-            return `Failed to create assignment. ${data.data.data}`;
-          },
-        },
-      }
-    );
+    // const createAssignmentPromise = toast.promise(
+    //   createAssignment(assignment),
+    //   {
+    //     pending: "Creating Assignment...",
+    //     success: "Assignment Created.",
+    //     error: {
+    //       render(data: any) {
+    //         return `Failed to create assignment. ${data.data.data}`;
+    //       },
+    //     },
+    //   }
+    // );
 
-    createAssignmentPromise.then((response) => {
-      if (response.status === 201) {
-        setCreatedColor(true);
-        setTimeout(() => {
-          setCreatedColor(false);
-        }, 3000);
-      }
+    // createAssignmentPromise.then((response) => {
+    //   if (response.status === 201) {
+    //     setCreatedColor(true);
+    //     setTimeout(() => {
+    //       setCreatedColor(false);
+    //     }, 3000);
+    //   }
 
-      if (response.status === undefined) {
-        setFailedColor(true);
-        setTimeout(() => {
-          setFailedColor(false);
-        }, 3000);
-      }
-    });
+    //   if (response.status === undefined) {
+    //     setFailedColor(true);
+    //     setTimeout(() => {
+    //       setFailedColor(false);
+    //     }, 3000);
+    //   }
+    // });
   }
   return (
     <div className="flex justify-start gap-y-2">

@@ -87,6 +87,7 @@ export function useCreateLab() {
       queryClient.invalidateQueries("get-publiclabs");
       queryClient.invalidateQueries("get-mockcases");
       queryClient.invalidateQueries("get-readinesslabs");
+      queryClient.invalidateQueries("get-all-readiness-labs-redacted");
     },
   });
 }
@@ -104,6 +105,7 @@ export function useDeleteLab() {
       queryClient.invalidateQueries("get-publiclabs");
       queryClient.invalidateQueries("get-mockcases");
       queryClient.invalidateQueries("get-readinesslabs");
+      queryClient.invalidateQueries("get-all-readiness-labs-redacted");
     },
   });
 }
