@@ -1,10 +1,10 @@
-import axios, { AxiosError, AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { Assignment, Lab } from "../dataStructures";
-import { authAxiosInstance, axiosInstance } from "../utils/axios-interceptors";
+import { Assignment, BulkAssignment, Lab } from "../dataStructures";
+import { authAxiosInstance } from "../utils/axios-interceptors";
 
 function getAssignments(): Promise<AxiosResponse<Assignment[]>> {
-  return authAxiosInstance("assignment");
+  return authAxiosInstance("assignments");
 }
 
 export function useGetAssignments() {
@@ -15,22 +15,50 @@ export function useGetAssignments() {
   });
 }
 
-function createAssignment(assignment: Assignment) {
-  return authAxiosInstance.post("assignment", assignment);
+function getMyAssignments(): Promise<AxiosResponse<Assignment[]>> {
+  return authAxiosInstance("assignments/my");
 }
 
-export function useCreateAssignment() {
-  const queryClient = useQueryClient();
-  return useMutation(createAssignment, {
-    onSuccess: () => {
-      queryClient.invalidateQueries("get-assignments");
-      queryClient.invalidateQueries("get-userassignedlabs");
+export function useGetMyAssignments() {
+  return useQuery("get-my-assignments", getMyAssignments, {
+    select: (data): Assignment[] => {
+      return data.data;
     },
   });
 }
 
-function deleteAssignment(assignment: Assignment) {
-  return authAxiosInstance.delete(`assignment`, { data: assignment });
+function createAssignments(bulkAssignment: BulkAssignment) {
+  return authAxiosInstance.post("assignments", bulkAssignment);
+}
+
+export function useCreateAssignments() {
+  const queryClient = useQueryClient();
+  return useMutation(createAssignments, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("get-assignments");
+      queryClient.invalidateQueries("get-userassignedlabs");
+      queryClient.invalidateQueries("get-my-assignments");
+    },
+  });
+}
+
+function createMyAssignments(bulkAssignment: BulkAssignment) {
+  return authAxiosInstance.post("assignments/my", bulkAssignment);
+}
+
+export function useCreateMyAssignments() {
+  const queryClient = useQueryClient();
+  return useMutation(createMyAssignments, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("get-assignments");
+      queryClient.invalidateQueries("get-userassignedlabs");
+      queryClient.invalidateQueries("get-my-assignments");
+    },
+  });
+}
+
+function deleteAssignment(bulkAssignment: string[]) {
+  return authAxiosInstance.delete(`assignments`, { data: bulkAssignment });
 }
 
 export function useDeleteAssignment() {
@@ -39,12 +67,28 @@ export function useDeleteAssignment() {
     onSuccess: () => {
       queryClient.invalidateQueries("get-assignments");
       queryClient.invalidateQueries("get-userassignedlabs");
+      queryClient.invalidateQueries("get-my-assignments");
+    },
+  });
+}
+
+function deleteMyAssignment(bulkAssignment: string[]) {
+  return authAxiosInstance.delete(`assignments/my`, { data: bulkAssignment });
+}
+
+export function useDeleteMyAssignment() {
+  const queryClient = useQueryClient();
+  return useMutation(deleteMyAssignment, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("get-assignments");
+      queryClient.invalidateQueries("get-userassignedlabs");
+      queryClient.invalidateQueries("get-my-assignments");
     },
   });
 }
 
 function getUserAssignedLabs(): Promise<AxiosResponse<Lab[]>> {
-  return authAxiosInstance.get("assignment/my");
+  return authAxiosInstance.get("assignments/labs/my");
 }
 
 export function useGetUserAssignedLabs() {
@@ -55,4 +99,82 @@ export function useGetUserAssignedLabs() {
     cacheTime: Infinity,
     staleTime: Infinity,
   });
+}
+
+function getAssignmentsByUserId(
+  userId: string
+): Promise<AxiosResponse<Assignment[]>> {
+  return authAxiosInstance.get(`assignments/user/${userId}`);
+}
+
+export function useGetAssignmentsByUserId(userId: string) {
+  return useQuery(
+    ["get-assignments-by-user-id", userId],
+    () => getAssignmentsByUserId(userId),
+    {
+      select: (data): Assignment[] => {
+        return data.data;
+      },
+      cacheTime: Infinity,
+      staleTime: Infinity,
+    }
+  );
+}
+
+function getAssignmentsByLabId(
+  labId: string
+): Promise<AxiosResponse<Assignment[]>> {
+  return authAxiosInstance.get(`assignments/lab/${labId}`);
+}
+
+export function useGetAssignmentsByLabId(labId: string) {
+  return useQuery(
+    ["get-assignments-by-lab-id", labId],
+    () => getAssignmentsByLabId(labId),
+    {
+      select: (data): Assignment[] => {
+        return data.data;
+      },
+      cacheTime: Infinity,
+      staleTime: Infinity,
+    }
+  );
+}
+
+function getAllReadinessLabsRedacted(): Promise<AxiosResponse<Lab[]>> {
+  return authAxiosInstance.get("assignments/labs");
+}
+
+export function useGetAllReadinessLabsRedacted() {
+  return useQuery(
+    "get-all-readiness-labs-redacted",
+    getAllReadinessLabsRedacted,
+    {
+      select: (data): Lab[] => {
+        return data.data;
+      },
+      cacheTime: Infinity,
+      staleTime: Infinity,
+    }
+  );
+}
+
+function getReadinessLabsRedactedByUserId(
+  userId: string
+): Promise<AxiosResponse<Lab[]>> {
+  return authAxiosInstance.get(`assignments/labs/${userId}`);
+}
+
+export function useGetReadinessLabsRedactedByUserId(userId: string) {
+  return useQuery(
+    ["get-readiness-labs-redacted-by-user-id", userId],
+    () => getReadinessLabsRedactedByUserId(userId),
+    {
+      select: (data): Lab[] => {
+        return data.data;
+      },
+      cacheTime: Infinity,
+      staleTime: Infinity,
+    }
+  );
 }

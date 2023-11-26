@@ -119,7 +119,6 @@ const DropdownMenu = <T,>({
         <div
           key={index}
           onClick={(e) => {
-            console.log("closeMenuOnSelect", closeMenuOnSelect);
             if (closeMenuOnSelect) {
               setMenuOpen(false);
             }

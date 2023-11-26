@@ -6,9 +6,11 @@ import {
   useSharedTemplates,
   useTemplates,
 } from "./useBlobs";
-import { useGetUserAssignedLabs } from "./useAssignment";
+import { useGetReadinessLabsRedactedByUserId } from "./useAssignment";
+import { useState } from "react";
 
 export function useGetLabs() {
+  const [userId, setUserId] = useState<string>("my");
   type DataSourceType = UseQueryResult<Lab[], unknown>;
 
   type DataSourcesType = {
@@ -22,14 +24,19 @@ export function useGetLabs() {
     templates: useTemplates(),
     readinesslabs: useReadinessLabs(),
     //readinesslabs: useSharedLabs(),
-    assignments: useGetUserAssignedLabs(),
+    assignments: useGetReadinessLabsRedactedByUserId(userId),
   };
 
   type GetLabsByTypeProps = {
     labType: LabType;
+    userId?: string;
   };
-  const getLabsByType = ({ labType }: GetLabsByTypeProps) => {
+  const getLabsByType = ({ labType, userId = "my" }: GetLabsByTypeProps) => {
     // this is to tackle the mockcase and mockcases issue
+    if (userId !== "my") {
+      setUserId(userId);
+    }
+
     const dataSource =
       dataSources[labType.endsWith("s") ? labType : labType + "s"];
     const { data: labs, isLoading, isFetching } = dataSource;
