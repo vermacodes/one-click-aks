@@ -30,7 +30,7 @@ export default function PublicLabActionButtons({ lab }: Props) {
           <LoadToBuilderButton
             key={"loadToBuilderButton"}
             lab={lab}
-            variant="primary"
+            variant="primary-outline"
           >
             Open in Builder
           </LoadToBuilderButton>
