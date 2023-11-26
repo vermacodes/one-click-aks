@@ -8,6 +8,7 @@ type Props = {
   collapsed?: boolean;
   hoverEffect?: boolean;
   additionalClasses?: string;
+  additionalContainerBodyClasses?: string;
   children: React.ReactNode;
 };
 
@@ -18,6 +19,7 @@ export default function Container({
   collapsed = false,
   hoverEffect = true,
   additionalClasses,
+  additionalContainerBodyClasses,
 }: Props) {
   const [open, setOpen] = useState<boolean>(!collapsed);
   return (
@@ -49,6 +51,8 @@ export default function Container({
       <div
         key={title}
         className={`${
+          additionalContainerBodyClasses && additionalContainerBodyClasses
+        } ${
           !open ? "max-h-0 overflow-hidden" : "max-h-96"
         } transition-all duration-300`}
       >
