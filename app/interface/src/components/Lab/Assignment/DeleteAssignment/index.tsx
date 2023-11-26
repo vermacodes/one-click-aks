@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import { Assignment } from "../../../../dataStructures";
+import { Assignment, BulkAssignment } from "../../../../dataStructures";
 import { useDeleteAssignment } from "../../../../hooks/useAssignment";
 import Button from "../../../UserInterfaceComponents/Button";
 import { FaTrash } from "react-icons/fa";
@@ -12,7 +12,10 @@ export default function DeleteAssignment({ assignment }: Props) {
   const { mutateAsync: deleteAssignment } = useDeleteAssignment();
 
   function handleDeleteAssignment(assignment: Assignment) {
-    toast.promise(deleteAssignment(assignment), {
+    let assignmentIds: string[] = [];
+    assignmentIds.push(assignment.assignmentId);
+
+    toast.promise(deleteAssignment(assignmentIds), {
       pending: "Deleting Assignment...",
       success: "Assignment Deleted.",
       error: {
