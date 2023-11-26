@@ -7,7 +7,6 @@ import {
 } from "../../hooks/useAssignment";
 import PageLayout from "../../layouts/PageLayout";
 import Terminal from "../../components/Terminal";
-import CreateAssignmentNew from "../../components/Lab/Assignment/CreateAssignmentNew";
 import Container from "../../components/UserInterfaceComponents/Container";
 import { Assignment } from "../../dataStructures";
 import Checkbox from "../../components/UserInterfaceComponents/Checkbox";
