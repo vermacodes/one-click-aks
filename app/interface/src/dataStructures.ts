@@ -205,11 +205,17 @@ export type Lab = {
 };
 
 export type Assignment = {
-  id: string;
-  user: string;
+  assignmentId: string;
+  userId: string;
   labId: string;
-  labName: string;
+  createdOn: string;
+  createdBy: string;
   status: string;
+};
+
+export type BulkAssignment = {
+  userIds: string[];
+  labIds: string[];
 };
 
 export type Privilege = {
