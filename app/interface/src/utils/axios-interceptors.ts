@@ -2,7 +2,7 @@ import {
   InteractionRequiredAuthError,
   PublicClientApplication,
 } from "@azure/msal-browser";
-import axios, { AxiosError, AxiosRequestConfig } from "axios";
+import axios, { AxiosError } from "axios";
 import { loginRequest, msalConfig } from "../authConfig";
 
 const pca = new PublicClientApplication(msalConfig);

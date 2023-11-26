@@ -1,5 +1,4 @@
-
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { LogsStreamType } from "../dataStructures";
 import { axiosInstance } from "../utils/axios-interceptors";
 
@@ -41,4 +40,3 @@ export function useClearLogs() {
     },
   });
 }
-

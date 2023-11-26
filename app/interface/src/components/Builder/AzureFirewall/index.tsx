@@ -4,7 +4,6 @@ import { useSetLogs } from "../../../hooks/useLogs";
 import Checkbox from "../../UserInterfaceComponents/Checkbox";
 import { defaultFirewall } from "../../../defaults";
 import { WebSocketContext } from "../../Context/WebSocketContext";
-import Tooltip from "../../UserInterfaceComponents/Tooltip";
 
 export default function AzureFirewall() {
   const [tooltipMessage, setTooltipMessage] = useState<string>("");

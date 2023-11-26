@@ -1,10 +1,9 @@
+import { useState } from "react";
+import { toast } from "react-toastify";
 import { DeploymentType } from "../../../dataStructures";
-import Checkbox from "../../UserInterfaceComponents/Checkbox";
 import { usePatchDeployment } from "../../../hooks/useDeployments";
 import { calculateNewEpochTimeForDeployment } from "../../../utils/helpers";
-import { toast } from "react-toastify";
-import { useState } from "react";
-import { set } from "zod";
+import Checkbox from "../../UserInterfaceComponents/Checkbox";
 
 type AutoDestroySwitchProps = {
   disabled: boolean;

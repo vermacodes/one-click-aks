@@ -1,19 +1,18 @@
-import { useState } from "react";
 import { useLab } from "../../../../hooks/useLab";
-import Version from "../Version";
-import PrivateCluster from "../PrivateCluster";
+import BuilderContainer from "../../../UserInterfaceComponents/BuilderContainer";
 import VirtualMachine from "../../VirtualMachine";
+import AppGateway from "../Addons/AppGateway";
+import HttpApplicationRouting from "../Addons/HttpApplicationRouting";
+import MicrosoftDefender from "../Addons/MicrosoftDefender";
+import ServiceMesh from "../Addons/ServiceMesh";
+import VirtualNode from "../Addons/VirtualNode";
+import AutoScaling from "../AutoScaling";
 import AzureCNI from "../AzureCNI";
 import Calico from "../Calico";
 import NetworkPluginMode from "../NetworkProfile/NetworkPluginMode";
-import AutoScaling from "../AutoScaling";
+import PrivateCluster from "../PrivateCluster";
 import UserDefinedRouting from "../UserDefinedRouting";
-import AppGateway from "../Addons/AppGateway";
-import MicrosoftDefender from "../Addons/MicrosoftDefender";
-import VirtualNode from "../Addons/VirtualNode";
-import HttpApplicationRouting from "../Addons/HttpApplicationRouting";
-import BuilderContainer from "../../../UserInterfaceComponents/BuilderContainer";
-import ServiceMesh from "../Addons/ServiceMesh";
+import Version from "../Version";
 
 export default function KubernetesCluster() {
   const { data: lab } = useLab();

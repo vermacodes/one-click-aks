@@ -1,4 +1,4 @@
-import { FaCheck, FaTrash } from "react-icons/fa";
+import { FaCheck } from "react-icons/fa";
 import { Lab } from "../../../../dataStructures";
 import ApplyButton from "../../../Terraform/ActionButtons/ApplyButton";
 import DestroyButton from "../../../Terraform/ActionButtons/DestroyButton";

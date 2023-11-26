@@ -1,9 +1,8 @@
 import { useContext, useState } from "react";
 import { useLab, useSetLab } from "../../../../hooks/useLab";
 import { useSetLogs } from "../../../../hooks/useLogs";
-import Checkbox from "../../../UserInterfaceComponents/Checkbox";
 import { WebSocketContext } from "../../../Context/WebSocketContext";
-import Tooltip from "../../../UserInterfaceComponents/Tooltip";
+import Checkbox from "../../../UserInterfaceComponents/Checkbox";
 
 type Props = {
   index: number;

@@ -1,15 +1,14 @@
-import { FaArrowRight, FaHistory } from "react-icons/fa";
+import { useState } from "react";
+import { FaArrowRight } from "react-icons/fa";
 import { Lab } from "../../../../dataStructures";
 import ApplyButton from "../../../Terraform/ActionButtons/ApplyButton";
 import DestroyButton from "../../../Terraform/ActionButtons/DestroyButton";
 import PlanButton from "../../../Terraform/ActionButtons/PlanButton";
 import Button from "../../../UserInterfaceComponents/Button";
-import ExportLabButton from "../../Export/ExportLabButton";
-import SaveLabButton from "../../SaveLab/SaveLabButton";
-import LoadToBuilderButton from "../../LoadToBuilderButton";
 import DeleteLabButton from "../../DeleteLabButton";
-import { useState } from "react";
-import Versions from "../../LabVersions";
+import ExportLabButton from "../../Export/ExportLabButton";
+import LoadToBuilderButton from "../../LoadToBuilderButton";
+import SaveLabButton from "../../SaveLab/SaveLabButton";
 
 type Props = {
   lab: Lab;

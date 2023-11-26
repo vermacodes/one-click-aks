@@ -4,20 +4,19 @@ import {
   FaCheck,
   FaPlus,
   FaRedo,
-  FaRocket,
   FaSave,
   FaTimes,
   FaTrash,
 } from "react-icons/fa";
 
+import { WebSocketContext } from "../../components/Context/WebSocketContext";
+import Terminal from "../../components/Terminal";
+import ExtendButton from "../../components/Terraform/ActionButtons/ExtendButton";
 import Button from "../../components/UserInterfaceComponents/Button";
 import { ButtonVariant, Lab } from "../../dataStructures";
 import { useLab, useSetLab } from "../../hooks/useLab";
 import { useSetLogs } from "../../hooks/useLogs";
 import { useExtend } from "../../hooks/useTerraform";
-import { WebSocketContext } from "../../components/Context/WebSocketContext";
-import ExtendButton from "../../components/Terraform/ActionButtons/ExtendButton";
-import Terminal from "../../components/Terminal";
 
 type Props = {
   children?: React.ReactNode;

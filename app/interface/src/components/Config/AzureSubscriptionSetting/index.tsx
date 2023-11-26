@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAccount } from "../../../hooks/useAccount";
-import SettingsItemLayout from "../../../layouts/SettingsItemLayout";
 import Container from "../../UserInterfaceComponents/Container";
-import AzureSubscription from "../AzureSubscription";
 
 export default function AzureSubscriptionSetting() {
   const [defaultAccount, setDefaultAccount] = useState<string>("Loading...");
