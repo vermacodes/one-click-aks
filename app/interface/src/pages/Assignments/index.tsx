@@ -17,6 +17,7 @@ import { toast } from "react-toastify";
 import ConfirmationModal from "../../components/UserInterfaceComponents/Modal/ConfirmationModal";
 import { useQueryClient } from "react-query";
 import { useGetMyRoles } from "../../hooks/useAuth";
+import CreateAssignmentContainer from "../../components/Lab/Assignment/CreateAssignment/CreateAssignmentContainer";
 
 type Props = {};
 
@@ -125,7 +126,7 @@ export default function Assignments({}: Props) {
   return (
     <PageLayout heading="Lab Assignments">
       <div className="flex flex-col gap-4">
-        <CreateAssignmentNew />
+        <CreateAssignmentContainer />
         <Container
           title="All Assignments"
           collapsible={true}
