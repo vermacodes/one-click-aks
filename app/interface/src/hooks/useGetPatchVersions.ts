@@ -44,7 +44,7 @@ export function useGetPatchVersions(index: number) {
    */
   const handleOnSelect = (patchVersion: PatchVersions) => {
     const patchVersionKey = Object.keys(patchVersion)[0];
-    if (lab?.template) {
+    if (lab?.template && lab.template.kubernetesClusters[index]) {
       lab.template.kubernetesClusters[index].kubernetesVersion =
         patchVersionKey;
       !actionStatus.inProgress &&
