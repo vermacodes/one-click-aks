@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
-import { useLab, useSetLab } from "../../../../hooks/useLab";
 import { useSetLogs } from "../../../../hooks/useLogs";
+import { useGlobalStateContext } from "../../../Context/GlobalStateContext";
 import { WebSocketContext } from "../../../Context/WebSocketContext";
 import Checkbox from "../../../UserInterfaceComponents/Checkbox";
 
@@ -15,28 +15,24 @@ export default function PrivateCluster({ index }: Props) {
   const [tooltipMessage, setTooltipMessage] = useState<string>("");
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
-  const {
-    data: lab,
-    isLoading: labIsLoading,
-    isFetching: labIsFetching,
-  } = useLab();
-  const { mutate: setLab } = useSetLab();
+  const { lab, setLab } = useGlobalStateContext();
 
   const virtualNetworkRequiredMessage =
     "You must create a virtual network first.";
 
   const handleOnChange = () => {
-    if (lab && lab.template && !actionStatus.inProgress) {
-      const cluster = lab.template.kubernetesClusters[index];
+    const newLab = { ...lab };
+    if (newLab && newLab.template && !actionStatus.inProgress) {
+      const cluster = newLab.template.kubernetesClusters[index];
       if (cluster && cluster.privateClusterEnabled !== undefined) {
         cluster.privateClusterEnabled =
           cluster.privateClusterEnabled === TRUE ? FALSE : TRUE;
-        lab.template.jumpservers =
+        newLab.template.jumpservers =
           cluster.privateClusterEnabled === TRUE
             ? []
-            : lab.template.jumpservers;
-        setLogs({ logs: JSON.stringify(lab.template, null, 4) });
-        setLab(lab);
+            : newLab.template.jumpservers;
+        setLogs({ logs: JSON.stringify(newLab.template, null, 4) });
+        setLab(newLab);
       }
     }
   };
@@ -46,8 +42,7 @@ export default function PrivateCluster({ index }: Props) {
   const hasCluster = Boolean(lab?.template?.kubernetesClusters[index]);
   const checked =
     lab?.template?.kubernetesClusters[index]?.privateClusterEnabled === TRUE;
-  const disabled =
-    labIsLoading || labIsFetching || !hasCluster || !hasVirtualNetworks;
+  const disabled = !hasCluster || !hasVirtualNetworks;
 
   // Tooltip message
   if (!hasVirtualNetworks && tooltipMessage !== virtualNetworkRequiredMessage) {
