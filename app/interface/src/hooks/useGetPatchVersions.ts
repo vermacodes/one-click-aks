@@ -1,18 +1,17 @@
 import { useEffect, useState } from "react";
-import { PatchVersions, Value } from "../dataStructures";
-import { useGetOrchestrators } from "./useOrchestrators";
-import { useLab, useSetLab } from "./useLab";
+import { useGlobalStateContext } from "../components/Context/GlobalStateContext";
 import { useWebSocketContext } from "../components/Context/WebSocketContext";
+import { PatchVersions, Value } from "../dataStructures";
 import { useSetLogs } from "./useLogs";
+import { useGetOrchestrators } from "./useOrchestrators";
 
 export function useGetPatchVersions(index: number) {
   const [patchVersions, setPatchVersions] = useState<PatchVersions[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const { actionStatus } = useWebSocketContext();
   const { data, isLoading, isFetching } = useGetOrchestrators();
-  const { data: lab } = useLab();
   const { mutate: setLogs } = useSetLogs();
-  const { mutate: setLab } = useSetLab();
+  const { lab, setLab } = useGlobalStateContext();
 
   /**
    * Effect hook to filter and set patch versions.
@@ -44,12 +43,13 @@ export function useGetPatchVersions(index: number) {
    */
   const handleOnSelect = (patchVersion: PatchVersions) => {
     const patchVersionKey = Object.keys(patchVersion)[0];
-    if (lab?.template && lab.template.kubernetesClusters[index]) {
-      lab.template.kubernetesClusters[index].kubernetesVersion =
+    const newLab = { ...lab };
+    if (newLab?.template && newLab.template.kubernetesClusters[index]) {
+      newLab.template.kubernetesClusters[index].kubernetesVersion =
         patchVersionKey;
       !actionStatus.inProgress &&
-        setLogs({ logs: JSON.stringify(lab.template, null, 4) });
-      setLab(lab);
+        setLogs({ logs: JSON.stringify(newLab.template, null, 4) });
+      setLab(newLab);
     }
   };
 

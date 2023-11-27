@@ -1,10 +1,10 @@
-import { FaTimes } from "react-icons/fa";
-import { useLab } from "../../../../hooks/useLab";
 import { useContext } from "react";
-import { WebSocketContext } from "../../../Context/WebSocketContext";
+import { FaTimes } from "react-icons/fa";
 import { PatchVersions } from "../../../../dataStructures";
-import DropdownSelect from "../../../UserInterfaceComponents/DropdownSelect";
 import { useGetPatchVersions } from "../../../../hooks/useGetPatchVersions";
+import { useGlobalStateContext } from "../../../Context/GlobalStateContext";
+import { WebSocketContext } from "../../../Context/WebSocketContext";
+import DropdownSelect from "../../../UserInterfaceComponents/DropdownSelect";
 
 type Props = {
   index: number;
@@ -21,23 +21,14 @@ export default function Version({ index }: Props) {
     handleOnSelect,
   } = useGetPatchVersions(index);
 
-  const {
-    data: lab,
-    isLoading: labIsLoading,
-    isFetching: labIsFetching,
-  } = useLab();
+  const { lab } = useGlobalStateContext();
 
   if (!lab?.template?.kubernetesClusters[index]) {
     return null;
   }
 
   // Determine if the version menu should be disabled
-  const disabled =
-    actionStatus.inProgress ||
-    isLoading ||
-    isFetching ||
-    labIsLoading ||
-    labIsFetching;
+  const disabled = actionStatus.inProgress || isLoading || isFetching;
 
   // Determine the current version
   const currentVersion =
@@ -104,7 +95,7 @@ export default function Version({ index }: Props) {
     <div className="w-64">
       <DropdownSelect
         disabled={disabled}
-        heading={currentVersion}
+        heading={isLoading || isFetching ? "Please wait..." : currentVersion}
         search={renderSearchInput()}
         items={patchVersions}
         onItemClick={handleOnSelect}
