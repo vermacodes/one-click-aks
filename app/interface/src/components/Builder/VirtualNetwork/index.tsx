@@ -1,9 +1,9 @@
 import { useContext } from "react";
+import { defaultTfvarConfig } from "../../../defaults";
 import { useLab, useSetLab } from "../../../hooks/useLab";
 import { useSetLogs } from "../../../hooks/useLogs";
-import Checkbox from "../../UserInterfaceComponents/Checkbox";
-import { defaultTfvarConfig } from "../../../defaults";
 import { WebSocketContext } from "../../Context/WebSocketContext";
+import Checkbox from "../../UserInterfaceComponents/Checkbox";
 
 export default function VirtualNetwork() {
   const { actionStatus } = useContext(WebSocketContext);
