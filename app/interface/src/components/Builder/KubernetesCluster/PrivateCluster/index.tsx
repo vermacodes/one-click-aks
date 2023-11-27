@@ -27,10 +27,6 @@ export default function PrivateCluster({ index }: Props) {
       if (cluster && cluster.privateClusterEnabled !== undefined) {
         cluster.privateClusterEnabled =
           cluster.privateClusterEnabled === TRUE ? FALSE : TRUE;
-        newLab.template.jumpservers =
-          cluster.privateClusterEnabled === TRUE
-            ? []
-            : newLab.template.jumpservers;
         setLogs({ logs: JSON.stringify(newLab.template, null, 4) });
         setLab(newLab);
       }
