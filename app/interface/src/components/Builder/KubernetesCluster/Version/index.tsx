@@ -1,7 +1,8 @@
-import { FaTimes } from "react-icons/fa";
 import { PatchVersions } from "../../../../dataStructures";
-import { useGetPatchVersions } from "../../../../hooks/useGetPatchVersions";
+import { useKubernetesVersions } from "../../../../hooks/useKubernetesVersions";
+import { useSetLogs } from "../../../../hooks/useLogs";
 import { useGlobalStateContext } from "../../../Context/GlobalStateContext";
+import { useWebSocketContext } from "../../../Context/WebSocketContext";
 import DropdownSelect from "../../../UserInterfaceComponents/DropdownSelect";
 
 type Props = {
@@ -9,20 +10,11 @@ type Props = {
 };
 
 export default function Version({ index }: Props) {
-  const {
-    patchVersions,
-    searchTerm,
-    setSearchTerm,
-    isLoading,
-    isFetching,
-    handleOnSelect,
-  } = useGetPatchVersions(index);
+  const { patchVersions, isLoading, isFetching } = useKubernetesVersions();
 
-  const { lab } = useGlobalStateContext();
-
-  if (!lab?.template?.kubernetesClusters[index]) {
-    return null;
-  }
+  const { lab, setLab } = useGlobalStateContext();
+  const { actionStatus } = useWebSocketContext();
+  const { mutate: setLogs } = useSetLogs();
 
   // Determine if the version menu should be disabled
   const disabled = isLoading || isFetching;
@@ -32,28 +24,20 @@ export default function Version({ index }: Props) {
     lab?.template?.kubernetesClusters[index]?.kubernetesVersion;
 
   /**
-   * Function to render a search input field.
+   * Handles the selection of a patch version.
    *
-   * @returns JSX.Element - The rendered search input field.
+   * @param {PatchVersions} patchVersion - The selected patch version.
    */
-  const renderSearchInput = () => {
-    return (
-      <div className="relative">
-        <input
-          type="text"
-          placeholder="Search..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full rounded px-2 py-1 dark:bg-slate-700 dark:text-slate-100"
-        />
-        {searchTerm && (
-          <FaTimes
-            className="absolute right-2 top-1/2 -translate-y-1/2 transform cursor-pointer"
-            onClick={() => setSearchTerm("")}
-          />
-        )}
-      </div>
-    );
+  const handleOnSelect = (patchVersion: PatchVersions) => {
+    const patchVersionKey = Object.keys(patchVersion)[0];
+    const newLab = structuredClone(lab);
+    if (newLab?.template && newLab.template.kubernetesClusters[index]) {
+      newLab.template.kubernetesClusters[index].kubernetesVersion =
+        patchVersionKey;
+      !actionStatus.inProgress &&
+        setLogs({ logs: JSON.stringify(newLab.template, null, 4) });
+      setLab(newLab);
+    }
   };
 
   /**
@@ -93,7 +77,6 @@ export default function Version({ index }: Props) {
       <DropdownSelect
         disabled={disabled}
         heading={isLoading || isFetching ? "Please wait..." : currentVersion}
-        search={renderSearchInput()}
         items={patchVersions}
         onItemClick={handleOnSelect}
         renderItem={renderItem}
