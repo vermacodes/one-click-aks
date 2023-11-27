@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
-import { useLab, useSetLab } from "../../../../../hooks/useLab";
 import { useSetLogs } from "../../../../../hooks/useLogs";
+import { useGlobalStateContext } from "../../../../Context/GlobalStateContext";
 import { WebSocketContext } from "../../../../Context/WebSocketContext";
 import Checkbox from "../../../../UserInterfaceComponents/Checkbox";
 
@@ -12,12 +12,7 @@ export default function AppGateway({ index }: Props) {
   const [tooltipMessage, setTooltipMessage] = useState<string>("");
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
-  const {
-    data: lab,
-    isLoading: labIsLoading,
-    isFetching: labIsFetching,
-  } = useLab();
-  const { mutate: setLab } = useSetLab();
+  const { lab, setLab } = useGlobalStateContext();
 
   const noKubernetesClustersMessage = "Kubernetes Cluster Required.";
   const noVirtualNetworksMessage = "Virtual Network Required.";
@@ -57,16 +52,18 @@ export default function AppGateway({ index }: Props) {
 
   // Handle checkbox change
   function handleOnChange() {
+    const newLab = { ...lab };
     if (
-      lab?.template?.kubernetesClusters[index]?.addons?.appGateway === undefined
+      newLab?.template?.kubernetesClusters[index]?.addons?.appGateway ===
+      undefined
     ) {
       return;
     }
-    lab.template.kubernetesClusters[index].addons.appGateway =
-      !lab.template.kubernetesClusters[index].addons.appGateway;
+    newLab.template.kubernetesClusters[index].addons.appGateway =
+      !newLab.template.kubernetesClusters[index].addons.appGateway;
     !actionStatus.inProgress &&
-      setLogs({ logs: JSON.stringify(lab.template, null, 4) });
-    setLab(lab);
+      setLogs({ logs: JSON.stringify(newLab.template, null, 4) });
+    setLab(newLab);
   }
 
   // If lab or template is undefined, return nothing
@@ -78,8 +75,6 @@ export default function AppGateway({ index }: Props) {
   const checked =
     lab.template.kubernetesClusters[index]?.addons?.appGateway ?? false;
   const disabled =
-    labIsLoading ||
-    labIsFetching ||
     lab.template.kubernetesClusters.length === 0 ||
     lab.template.virtualNetworks.length === 0 ||
     lab.template.kubernetesClusters[index].networkPluginMode === "Overlay";
