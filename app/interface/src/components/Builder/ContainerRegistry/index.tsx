@@ -1,33 +1,29 @@
 import { useContext } from "react";
 import { defaultContainerRegistry } from "../../../defaults";
-import { useLab, useSetLab } from "../../../hooks/useLab";
 import { useSetLogs } from "../../../hooks/useLogs";
+import { useGlobalStateContext } from "../../Context/GlobalStateContext";
 import { WebSocketContext } from "../../Context/WebSocketContext";
 import Checkbox from "../../UserInterfaceComponents/Checkbox";
 
 export default function ContainerRegistry() {
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
-  const {
-    data: lab,
-    isLoading: labIsLoading,
-    isFetching: labIsFetching,
-  } = useLab();
-  const { mutate: setLab } = useSetLab();
+  const { lab, setLab } = useGlobalStateContext();
 
   function handleOnChange() {
-    if (lab !== undefined) {
-      if (lab.template !== undefined) {
-        if (lab.template.containerRegistries.length > 0) {
-          lab.template.containerRegistries = [];
+    const newLab = { ...lab };
+    if (newLab !== undefined) {
+      if (newLab.template !== undefined) {
+        if (newLab.template.containerRegistries.length > 0) {
+          newLab.template.containerRegistries = [];
         } else {
-          lab.template.containerRegistries = [defaultContainerRegistry];
+          newLab.template.containerRegistries = [defaultContainerRegistry];
         }
         !actionStatus.inProgress &&
           setLogs({
-            logs: JSON.stringify(lab.template, null, 4),
+            logs: JSON.stringify(newLab.template, null, 4),
           });
-        setLab(lab);
+        setLab(newLab);
       }
     }
   }
@@ -35,18 +31,6 @@ export default function ContainerRegistry() {
   if (lab === undefined || lab.template === undefined) {
     return <></>;
   }
-
-  // if (labIsLoading || labIsFetching) {
-  //   return (
-  //     <Checkbox
-  //       id="toggle-acr"
-  //       label="ACR"
-  //       disabled={true}
-  //       checked={false}
-  //       handleOnChange={handleOnChange}
-  //     />
-  //   );
-  // }
 
   var checked: boolean = true;
   if (
@@ -65,7 +49,7 @@ export default function ContainerRegistry() {
           id="toggle-acr"
           label="ACR"
           checked={checked}
-          disabled={labIsLoading || labIsFetching}
+          disabled={false}
           handleOnChange={handleOnChange}
         />
       )}
