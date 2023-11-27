@@ -16,8 +16,9 @@ export default function AddKubernetesCluster() {
 
   // The default value that kubernetes cluster will carry.
   function defaultValue(): TfvarKubernetesClusterType {
+    const deepCopy = JSON.parse(JSON.stringify(defaultKubernetesCluster));
     return {
-      ...defaultKubernetesCluster,
+      ...deepCopy,
       kubernetesVersion: defaultVersion,
     };
   }

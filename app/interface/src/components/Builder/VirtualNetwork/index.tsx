@@ -15,16 +15,11 @@ export default function VirtualNetwork() {
     const newLab = { ...lab };
     if (newLab?.template) {
       // Toggle the virtual networks
+      const deepCopy = JSON.parse(JSON.stringify(defaultTfvarConfig));
       if (newLab.template.virtualNetworks.length === 0) {
-        newLab.template.virtualNetworks = [
-          { ...defaultTfvarConfig.virtualNetworks[0] },
-        ];
-        newLab.template.subnets = [{ ...defaultTfvarConfig.subnets[0] }];
-        newLab.template.networkSecurityGroups = [
-          {
-            ...defaultTfvarConfig.networkSecurityGroups[0],
-          },
-        ];
+        newLab.template.virtualNetworks = deepCopy.virtualNetworks;
+        newLab.template.subnets = deepCopy.subnets;
+        newLab.template.networkSecurityGroups = deepCopy.networkSecurityGroups;
       } else {
         newLab.template.virtualNetworks = [];
         newLab.template.subnets = [];
