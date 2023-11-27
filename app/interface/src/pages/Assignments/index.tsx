@@ -1,22 +1,22 @@
 import { useEffect, useState } from "react";
+import { FaTrash } from "react-icons/fa";
+import { useQueryClient } from "react-query";
+import { toast } from "react-toastify";
+import CreateAssignmentContainer from "../../components/Lab/Assignment/CreateAssignment/CreateAssignmentContainer";
 import DeleteAssignment from "../../components/Lab/Assignment/DeleteAssignment";
+import Terminal from "../../components/Terminal";
+import Button from "../../components/UserInterfaceComponents/Button";
+import Checkbox from "../../components/UserInterfaceComponents/Checkbox";
+import Container from "../../components/UserInterfaceComponents/Container";
+import ConfirmationModal from "../../components/UserInterfaceComponents/Modal/ConfirmationModal";
+import { Assignment } from "../../dataStructures";
 import {
   useDeleteAssignment,
   useGetAllReadinessLabsRedacted,
   useGetAssignments,
 } from "../../hooks/useAssignment";
-import PageLayout from "../../layouts/PageLayout";
-import Terminal from "../../components/Terminal";
-import Container from "../../components/UserInterfaceComponents/Container";
-import { Assignment } from "../../dataStructures";
-import Checkbox from "../../components/UserInterfaceComponents/Checkbox";
-import { FaTrash } from "react-icons/fa";
-import Button from "../../components/UserInterfaceComponents/Button";
-import { toast } from "react-toastify";
-import ConfirmationModal from "../../components/UserInterfaceComponents/Modal/ConfirmationModal";
-import { useQueryClient } from "react-query";
 import { useGetMyRoles } from "../../hooks/useAuth";
-import CreateAssignmentContainer from "../../components/Lab/Assignment/CreateAssignment/CreateAssignmentContainer";
+import PageLayout from "../../layouts/PageLayout";
 
 type Props = {};
 
@@ -158,7 +158,7 @@ export default function Assignments({}: Props) {
                 <th>
                   <Checkbox
                     id={"selectAll"}
-                    label="Select All"
+                    label=""
                     handleOnChange={
                       selectedAssignments.length === assignments?.length
                         ? () => setSelectedAssignments([])
@@ -187,7 +187,7 @@ export default function Assignments({}: Props) {
                     <td>
                       <Checkbox
                         id={assignment.assignmentId}
-                        label="Select"
+                        label=""
                         handleOnChange={
                           selectedAssignments.includes(assignment)
                             ? () =>
