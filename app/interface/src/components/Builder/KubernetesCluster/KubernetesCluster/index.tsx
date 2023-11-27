@@ -1,5 +1,5 @@
 import { useGlobalStateContext } from "../../../Context/GlobalStateContext";
-import BuilderContainer from "../../../UserInterfaceComponents/BuilderContainer";
+import Container from "../../../UserInterfaceComponents/Container";
 import AppGateway from "../Addons/AppGateway";
 import HttpApplicationRouting from "../Addons/HttpApplicationRouting";
 import MicrosoftDefender from "../Addons/MicrosoftDefender";
@@ -24,8 +24,22 @@ export default function KubernetesCluster() {
   return (
     <>
       {lab.template.kubernetesClusters.map((cluster, index) => (
-        <BuilderContainer key={index} title={`Kubernetes Cluster ${index + 1}`}>
-          <BuilderContainer key={index} title="Features">
+        <Container
+          key={index + "cluster"}
+          title={`Kubernetes Cluster ${index + 1}`}
+          additionalClasses="outline outline-slate-500 flex"
+          additionalContainerBodyClasses="flex flex-col gap-4"
+          hoverEffect={false}
+          collapsible={true}
+        >
+          <Container
+            key={index + "features"}
+            title="Features"
+            additionalClasses="outline outline-slate-500 flex"
+            additionalContainerBodyClasses="flex flex-col gap-4"
+            hoverEffect={false}
+            collapsible={true}
+          >
             <div className={`mt-4 flex flex-wrap items-center gap-x-2 gap-y-2`}>
               <Version index={index} />
               <PrivateCluster index={index} />
@@ -35,8 +49,15 @@ export default function KubernetesCluster() {
               <AutoScaling index={index} />
               <UserDefinedRouting index={index} />
             </div>
-          </BuilderContainer>
-          <BuilderContainer title="Addons">
+          </Container>
+          <Container
+            key={index + "addons"}
+            title="Addons"
+            additionalClasses="outline outline-slate-500 flex"
+            additionalContainerBodyClasses="flex flex-col gap-4"
+            hoverEffect={false}
+            collapsible={true}
+          >
             <div className={`mt-4 flex flex-wrap items-center gap-x-2 gap-y-2`}>
               <AppGateway index={index} />
               <ServiceMesh index={index} />
@@ -44,8 +65,8 @@ export default function KubernetesCluster() {
               <VirtualNode index={index} />
               <HttpApplicationRouting index={index} />
             </div>
-          </BuilderContainer>
-        </BuilderContainer>
+          </Container>
+        </Container>
       ))}
     </>
   );

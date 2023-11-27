@@ -1,6 +1,6 @@
+import { useState } from "react";
 import { FaChevronUp } from "react-icons/fa";
 import Button from "../Button";
-import { useState } from "react";
 
 type Props = {
   title?: string;
@@ -53,7 +53,7 @@ export default function Container({
         className={`${
           additionalContainerBodyClasses && additionalContainerBodyClasses
         } ${
-          !open ? "max-h-0 overflow-hidden" : "max-h-96"
+          !open ? "max-h-0 overflow-hidden" : "max-h-fit"
         } transition-all duration-300`}
       >
         {children}

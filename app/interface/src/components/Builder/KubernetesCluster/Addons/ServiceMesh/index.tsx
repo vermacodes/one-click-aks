@@ -4,8 +4,8 @@ import { getDefaultServiceMesh } from "../../../../../defaults";
 import { useSetLogs } from "../../../../../hooks/useLogs";
 import { useGlobalStateContext } from "../../../../Context/GlobalStateContext";
 import { WebSocketContext } from "../../../../Context/WebSocketContext";
-import BuilderContainer from "../../../../UserInterfaceComponents/BuilderContainer";
 import Checkbox from "../../../../UserInterfaceComponents/Checkbox";
+import Container from "../../../../UserInterfaceComponents/Container";
 
 type Props = {
   index: number;
@@ -89,7 +89,14 @@ export default function ServiceMesh({ index }: Props) {
         key={"serviceMesh"}
       />
       {serviceMesh.enabled && (
-        <BuilderContainer title="Service Mesh (Istio)">
+        <Container
+          key="service-mesh"
+          title="Service Mesh (Istio)"
+          additionalClasses="outline outline-slate-500 flex"
+          additionalContainerBodyClasses="flex flex-col gap-4"
+          hoverEffect={false}
+          collapsible={true}
+        >
           <div className={`mt-4 flex flex-wrap gap-x-2 gap-y-2`}>
             <Checkbox
               checked={serviceMesh.internalIngressGatewayEnabled}
@@ -108,7 +115,7 @@ export default function ServiceMesh({ index }: Props) {
               key={"serviceMeshExternalGateway"}
             />
           </div>
-        </BuilderContainer>
+        </Container>
       )}
     </>
   );

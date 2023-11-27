@@ -27,7 +27,7 @@ export default function Builder() {
     <div
       className={`rounded bg-slate-50 p-3 outline-1 outline-sky-500 hover:outline dark:bg-slate-900`}
     >
-      <div className="flex flex-wrap gap-y-2 gap-x-2">
+      <div className="flex flex-wrap gap-4">
         <ResourceGroup />
         <VirtualNetwork />
         <ContainerRegistry />
