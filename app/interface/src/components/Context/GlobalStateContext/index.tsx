@@ -1,4 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { Lab } from "../../../dataStructures";
+import { defaultLab } from "../../../defaults";
+import { useSetLab } from "../../../hooks/useLab";
 import { setDefaultValuesInLocalStorage } from "../../../utils/helpers";
 
 interface GlobalStateContextContextData {
@@ -6,6 +9,8 @@ interface GlobalStateContextContextData {
   setDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
   navbarOpen: boolean;
   setNavbarOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  lab: Lab;
+  setLab: React.Dispatch<React.SetStateAction<Lab>>;
 }
 
 const GlobalStateContextContext = createContext<
@@ -19,6 +24,8 @@ type Props = {
 export function GlobalStateContextProvider({ children }: Props) {
   const [darkMode, setDarkMode] = useState<boolean>(false);
   const [navbarOpen, setNavbarOpen] = useState<boolean>(true);
+  const [lab, setLab] = useState<Lab>(JSON.parse(JSON.stringify(defaultLab)));
+  const { mutate: setLabServerState } = useSetLab();
 
   useEffect(() => {
     setDefaultValuesInLocalStorage();
@@ -50,6 +57,10 @@ export function GlobalStateContextProvider({ children }: Props) {
     localStorage.setItem("navbarOpen", navbarOpen.toString());
   }, [navbarOpen]);
 
+  useEffect(() => {
+    setLabServerState(lab);
+  }, [lab]);
+
   return (
     <GlobalStateContextContext.Provider
       value={{
@@ -57,6 +68,8 @@ export function GlobalStateContextProvider({ children }: Props) {
         setDarkMode,
         navbarOpen,
         setNavbarOpen,
+        lab,
+        setLab,
       }}
     >
       {children}
