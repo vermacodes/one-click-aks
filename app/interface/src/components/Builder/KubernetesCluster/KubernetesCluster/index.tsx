@@ -1,4 +1,4 @@
-import { useLab } from "../../../../hooks/useLab";
+import { useGlobalStateContext } from "../../../Context/GlobalStateContext";
 import BuilderContainer from "../../../UserInterfaceComponents/BuilderContainer";
 import VirtualMachine from "../../VirtualMachine";
 import AppGateway from "../Addons/AppGateway";
@@ -15,7 +15,7 @@ import UserDefinedRouting from "../UserDefinedRouting";
 import Version from "../Version";
 
 export default function KubernetesCluster() {
-  const { data: lab } = useLab();
+  const { lab } = useGlobalStateContext();
 
   // If lab or its template or kubernetesClusters is undefined or empty, return null
   if (!lab?.template?.kubernetesClusters?.length) {
