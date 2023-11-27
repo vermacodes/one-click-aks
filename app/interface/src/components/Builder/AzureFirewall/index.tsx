@@ -20,7 +20,7 @@ export default function AzureFirewall() {
         if (newLab.template.firewalls.length > 0) {
           newLab.template.firewalls = [];
         } else {
-          newLab.template.firewalls = [defaultFirewall];
+          newLab.template.firewalls = [{ ...defaultFirewall }];
         }
         !actionStatus.inProgress &&
           setLogs({

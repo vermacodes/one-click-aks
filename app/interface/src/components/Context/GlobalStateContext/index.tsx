@@ -26,7 +26,7 @@ type Props = {
 export function GlobalStateContextProvider({ children }: Props) {
   const [darkMode, setDarkMode] = useState<boolean>(false);
   const [navbarOpen, setNavbarOpen] = useState<boolean>(true);
-  const [lab, setLab] = useState<Lab>(defaultLab);
+  const [lab, setLab] = useState<Lab>({ ...defaultLab });
   const [syncLab, setSyncLab] = useState<boolean>(true);
   const { mutate: setLabServerState } = useSetLab();
   const { data: labFromServer } = useLab();

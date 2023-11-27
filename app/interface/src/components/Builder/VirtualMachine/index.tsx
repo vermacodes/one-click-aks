@@ -17,7 +17,7 @@ export default function VirtualMachine() {
       // Toggle the jump servers
       newLab.template.jumpservers =
         newLab.template.jumpservers.length === 0
-          ? defaultTfvarConfig.jumpservers
+          ? [{ ...defaultTfvarConfig.jumpservers[0] }]
           : [];
 
       // Log the changes if not in progress

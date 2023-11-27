@@ -16,10 +16,15 @@ export default function VirtualNetwork() {
     if (newLab?.template) {
       // Toggle the virtual networks
       if (newLab.template.virtualNetworks.length === 0) {
-        newLab.template.virtualNetworks = defaultTfvarConfig.virtualNetworks;
-        newLab.template.subnets = defaultTfvarConfig.subnets;
-        newLab.template.networkSecurityGroups =
-          defaultTfvarConfig.networkSecurityGroups;
+        newLab.template.virtualNetworks = [
+          { ...defaultTfvarConfig.virtualNetworks[0] },
+        ];
+        newLab.template.subnets = [{ ...defaultTfvarConfig.subnets[0] }];
+        newLab.template.networkSecurityGroups = [
+          {
+            ...defaultTfvarConfig.networkSecurityGroups[0],
+          },
+        ];
       } else {
         newLab.template.virtualNetworks = [];
         newLab.template.subnets = [];

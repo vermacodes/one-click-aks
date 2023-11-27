@@ -17,7 +17,9 @@ export default function ContainerRegistry() {
         if (newLab.template.containerRegistries.length > 0) {
           newLab.template.containerRegistries = [];
         } else {
-          newLab.template.containerRegistries = [defaultContainerRegistry];
+          newLab.template.containerRegistries = [
+            { ...defaultContainerRegistry },
+          ];
         }
         !actionStatus.inProgress &&
           setLogs({

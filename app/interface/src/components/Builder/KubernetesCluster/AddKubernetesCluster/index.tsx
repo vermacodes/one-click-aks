@@ -1,8 +1,8 @@
 import { useContext } from "react";
 import { TfvarKubernetesClusterType } from "../../../../dataStructures";
 import { defaultKubernetesCluster } from "../../../../defaults";
+import { useKubernetesVersions } from "../../../../hooks/useKubernetesVersions";
 import { useSetLogs } from "../../../../hooks/useLogs";
-import { useGetOrchestrators } from "../../../../hooks/useOrchestrators";
 import { useGlobalStateContext } from "../../../Context/GlobalStateContext";
 import { WebSocketContext } from "../../../Context/WebSocketContext";
 import Checkbox from "../../../UserInterfaceComponents/Checkbox";
@@ -11,14 +11,15 @@ export default function AddKubernetesCluster() {
   const { lab, setLab } = useGlobalStateContext();
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
-  const { data: kubernetesVersion } = useGetOrchestrators();
+
+  const { defaultVersion } = useKubernetesVersions();
 
   // The default value that kubernetes cluster will carry.
   function defaultValue(): TfvarKubernetesClusterType {
-    const defaultVersion = kubernetesVersion?.values
-      ? Object.keys(kubernetesVersion.values[0].patchVersions)[0]
-      : "";
-    return { ...defaultKubernetesCluster, kubernetesVersion: defaultVersion };
+    return {
+      ...defaultKubernetesCluster,
+      kubernetesVersion: defaultVersion,
+    };
   }
 
   function handleOnChange() {

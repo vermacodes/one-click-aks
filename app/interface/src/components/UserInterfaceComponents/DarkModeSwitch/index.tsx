@@ -1,6 +1,6 @@
 import { InputHTMLAttributes } from "react";
+import { MdDarkMode, MdLightMode } from "react-icons/md";
 import Tooltip from "../Tooltip";
-import { FaMoon, FaSun } from "react-icons/fa";
 
 type CheckboxProps = InputHTMLAttributes<HTMLInputElement> & {
   id: string;
@@ -43,7 +43,7 @@ export default function DarkModeSwitch({
               rest.checked && "ml-5 dark:bg-slate-900"
             } ${rest.disabled && "dark:bg-slate-600"}`}
           >
-            {rest.checked ? <FaMoon /> : <FaSun />}
+            {rest.checked ? <MdDarkMode /> : <MdLightMode />}
           </div>
         </label>
         <span

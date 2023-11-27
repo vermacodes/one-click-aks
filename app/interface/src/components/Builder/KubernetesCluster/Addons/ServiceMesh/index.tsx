@@ -32,9 +32,8 @@ export default function ServiceMesh({ index }: Props) {
   }
 
   // Set serviceMesh to defaultServiceMesh if it's undefined or null
-  const serviceMesh =
-    newLab.template.kubernetesClusters[index].addons.serviceMesh ??
-    defaultServiceMesh;
+  const serviceMesh = newLab.template.kubernetesClusters[index].addons
+    .serviceMesh ?? { ...defaultServiceMesh };
 
   // Function to update the lab and logs state
   function setLabAndLogs(newLab: Lab | undefined): void {
