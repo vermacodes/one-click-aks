@@ -1,19 +1,14 @@
 import { useContext } from "react";
 import { TfvarKubernetesClusterType } from "../../../../dataStructures";
-import { useLab, useSetLab } from "../../../../hooks/useLab";
+import { defaultKubernetesCluster } from "../../../../defaults";
 import { useSetLogs } from "../../../../hooks/useLogs";
 import { useGetOrchestrators } from "../../../../hooks/useOrchestrators";
-import Checkbox from "../../../UserInterfaceComponents/Checkbox";
-import { defaultKubernetesCluster } from "../../../../defaults";
+import { useGlobalStateContext } from "../../../Context/GlobalStateContext";
 import { WebSocketContext } from "../../../Context/WebSocketContext";
+import Checkbox from "../../../UserInterfaceComponents/Checkbox";
 
 export default function AddKubernetesCluster() {
-  const {
-    data: lab,
-    isLoading: labIsLoading,
-    isFetching: labIsFetching,
-  } = useLab();
-  const { mutate: setLab } = useSetLab();
+  const { lab, setLab } = useGlobalStateContext();
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const { data: kubernetesVersion } = useGetOrchestrators();
@@ -27,16 +22,19 @@ export default function AddKubernetesCluster() {
   }
 
   function handleOnChange() {
-    if (lab?.template) {
-      lab.template.kubernetesClusters =
-        lab.template.kubernetesClusters?.length === 0 ? [defaultValue()] : [];
+    const newLab = { ...lab };
+    if (newLab?.template) {
+      newLab.template.kubernetesClusters =
+        newLab.template.kubernetesClusters?.length === 0
+          ? [defaultValue()]
+          : [];
       !actionStatus.inProgress &&
-        setLogs({ logs: JSON.stringify(lab.template, null, 4) });
-      setLab(lab);
+        setLogs({ logs: JSON.stringify(newLab.template, null, 4) });
+      setLab(newLab);
     }
   }
 
-  const disabled = labIsLoading || labIsFetching;
+  const disabled = false;
   const checked = (lab?.template?.kubernetesClusters?.length ?? 0) > 0;
 
   return (
