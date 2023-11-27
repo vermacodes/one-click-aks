@@ -19,7 +19,7 @@ export default function PrivateCluster({ index }: Props) {
     "You must create a virtual network first.";
 
   const handleOnChange = () => {
-    const newLab = { ...lab };
+    const newLab = structuredClone(lab);
     if (newLab && newLab.template) {
       const cluster = newLab.template.kubernetesClusters[index];
       if (cluster && cluster.privateClusterEnabled !== undefined) {

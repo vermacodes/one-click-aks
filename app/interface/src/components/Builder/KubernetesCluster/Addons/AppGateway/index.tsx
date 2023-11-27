@@ -52,7 +52,7 @@ export default function AppGateway({ index }: Props) {
 
   // Handle checkbox change
   function handleOnChange() {
-    const newLab = { ...lab };
+    const newLab = structuredClone(lab);
     if (
       newLab?.template?.kubernetesClusters[index]?.addons?.appGateway ===
       undefined

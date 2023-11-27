@@ -16,7 +16,7 @@ export default function ServiceMesh({ index }: Props) {
   const { mutate: setLogs } = useSetLogs();
   const { actionStatus } = useContext(WebSocketContext);
 
-  const newLab = { ...lab };
+  const newLab = structuredClone(lab);
   // If there are no kubernetesClusters, return a disabled Checkbox
   if (!newLab?.template?.kubernetesClusters?.length) {
     return (

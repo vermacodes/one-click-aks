@@ -43,7 +43,7 @@ export default function Calico({ index }: Props) {
 
   // Toggle the Calico network policy
   const handleOnChange = () => {
-    const newLab = { ...lab };
+    const newLab = structuredClone(lab);
     const cluster = newLab?.template?.kubernetesClusters[index];
     if (cluster?.networkPolicy !== undefined && newLab !== undefined) {
       cluster.networkPolicy =

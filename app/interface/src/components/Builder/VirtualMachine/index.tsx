@@ -12,7 +12,7 @@ export default function VirtualMachine() {
 
   // Function to handle changes in the checkbox
   const handleOnChange = () => {
-    const newLab = { ...lab };
+    const newLab = structuredClone(lab);
     if (newLab?.template) {
       // Toggle the jump servers
       newLab.template.jumpservers =

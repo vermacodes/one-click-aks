@@ -15,7 +15,7 @@ export default function UserDefinedRouting({ index }: Props) {
   const { lab, setLab } = useGlobalStateContext();
 
   const handleOnChange = () => {
-    const newLab = { ...lab };
+    const newLab = structuredClone(lab);
     const cluster = newLab?.template?.kubernetesClusters[index];
     if (cluster?.outboundType !== undefined && newLab !== undefined) {
       cluster.outboundType =

@@ -11,7 +11,7 @@ export default function MicrosoftDefender({ index }: Props) {
   const { mutate: setLogs } = useSetLogs();
   const { lab, setLab } = useGlobalStateContext();
 
-  const newLab = { ...lab }; //shallow copy of lab
+  const newLab = structuredClone(lab); //shallow copy of lab
   const cluster = newLab?.template?.kubernetesClusters[index];
 
   useEffect(() => {

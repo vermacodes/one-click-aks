@@ -24,7 +24,7 @@ export default function AddKubernetesCluster() {
   }
 
   function handleOnChange() {
-    const newLab = { ...lab };
+    const newLab = structuredClone(lab);
     if (newLab?.template) {
       newLab.template.kubernetesClusters =
         newLab.template.kubernetesClusters?.length === 0

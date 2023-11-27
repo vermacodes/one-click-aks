@@ -15,7 +15,7 @@ export default function AzureCNI({ index }: Props) {
 
   // Toggle the Azure CNI
   const handleOnChange = () => {
-    const newLab = { ...lab };
+    const newLab = structuredClone(lab);
     const cluster = newLab?.template?.kubernetesClusters[index];
     if (cluster?.networkPlugin !== undefined && newLab !== undefined) {
       cluster.networkPlugin =

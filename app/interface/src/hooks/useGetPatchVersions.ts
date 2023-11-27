@@ -43,7 +43,7 @@ export function useGetPatchVersions(index: number) {
    */
   const handleOnSelect = (patchVersion: PatchVersions) => {
     const patchVersionKey = Object.keys(patchVersion)[0];
-    const newLab = { ...lab };
+    const newLab = structuredClone(lab);
     if (newLab?.template && newLab.template.kubernetesClusters[index]) {
       newLab.template.kubernetesClusters[index].kubernetesVersion =
         patchVersionKey;

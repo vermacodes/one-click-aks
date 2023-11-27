@@ -11,7 +11,7 @@ export default function HttpApplicationRouting({ index }: Props) {
   const { mutate: setLogs } = useSetLogs();
   const { lab, setLab } = useGlobalStateContext();
 
-  const newLab = { ...lab };
+  const newLab = structuredClone(lab);
   const cluster = newLab?.template?.kubernetesClusters[index];
 
   // Handle checkbox change

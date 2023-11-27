@@ -43,7 +43,7 @@ export default function VirtualNode({ index }: Props) {
 
   // Toggle the virtual node addon
   const handleOnChange = () => {
-    const newLab = { ...lab };
+    const newLab = structuredClone(lab);
     const cluster = newLab?.template?.kubernetesClusters[index];
     if (cluster?.addons?.virtualNode !== undefined && newLab !== undefined) {
       cluster.addons.virtualNode = !cluster.addons.virtualNode;

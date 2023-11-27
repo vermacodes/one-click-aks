@@ -14,7 +14,7 @@ export default function AzureFirewall() {
   const noVirtualNetworksMessage = "Virtual Network Required.";
 
   function handleOnChange() {
-    const newLab = { ...lab };
+    const newLab = structuredClone(lab);
     if (newLab !== undefined) {
       if (newLab.template !== undefined) {
         if (newLab.template.firewalls.length > 0) {

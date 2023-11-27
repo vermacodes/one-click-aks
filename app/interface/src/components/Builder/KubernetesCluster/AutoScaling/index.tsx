@@ -15,7 +15,7 @@ export default function AutoScaling({ index }: Props) {
 
   // Toggle the auto scaling feature
   const handleOnChange = () => {
-    const newLab = { ...lab };
+    const newLab = structuredClone(lab);
     const cluster = newLab?.template?.kubernetesClusters[index];
     if (
       cluster?.defaultNodePool?.enableAutoScaling !== undefined &&

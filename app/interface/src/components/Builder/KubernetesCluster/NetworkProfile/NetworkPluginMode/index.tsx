@@ -14,7 +14,7 @@ export default function NetworkPluginMode({ index }: Props) {
   const { mutate: setLogs } = useSetLogs();
   const { lab, setLab } = useGlobalStateContext();
 
-  const newLab = { ...lab };
+  const newLab = structuredClone(lab);
 
   const cluster = lab?.template?.kubernetesClusters[index];
 

@@ -11,7 +11,7 @@ export default function ContainerRegistry() {
   const { lab, setLab } = useGlobalStateContext();
 
   function handleOnChange() {
-    const newLab = { ...lab };
+    const newLab = structuredClone(lab);
     if (newLab !== undefined) {
       if (newLab.template !== undefined) {
         if (newLab.template.containerRegistries.length > 0) {
