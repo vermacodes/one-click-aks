@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
-import { useLab, useSetLab } from "../../../../../hooks/useLab";
 import { useSetLogs } from "../../../../../hooks/useLogs";
+import { useGlobalStateContext } from "../../../../Context/GlobalStateContext";
 import { WebSocketContext } from "../../../../Context/WebSocketContext";
 import Checkbox from "../../../../UserInterfaceComponents/Checkbox";
 
@@ -12,12 +12,9 @@ export default function NetworkPluginMode({ index }: Props) {
   const [tooltipMessage, setTooltipMessage] = useState<string>("");
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
-  const {
-    data: lab,
-    isLoading: labIsLoading,
-    isFetching: labIsFetching,
-  } = useLab();
-  const { mutate: setLab } = useSetLab();
+  const { lab, setLab } = useGlobalStateContext();
+
+  const newLab = { ...lab };
 
   const cluster = lab?.template?.kubernetesClusters[index];
 
@@ -58,16 +55,14 @@ export default function NetworkPluginMode({ index }: Props) {
       cluster.networkPluginMode =
         cluster.networkPluginMode === "null" ? "Overlay" : "null";
       !actionStatus.inProgress &&
-        setLogs({ logs: JSON.stringify(lab?.template, null, 4) });
-      setLab(lab);
+        setLogs({ logs: JSON.stringify(newLab?.template, null, 4) });
+      setLab(newLab);
     }
   };
 
   // Determine checked and disabled states
   const checked = cluster?.networkPluginMode === "Overlay";
   const disabled =
-    labIsLoading ||
-    labIsFetching ||
     !cluster ||
     cluster.networkPlugin !== "azure" ||
     cluster.networkPolicy !== "azure";
