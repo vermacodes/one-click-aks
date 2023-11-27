@@ -1,10 +1,11 @@
-import { toast } from "react-toastify";
-import Button from "../../UserInterfaceComponents/Button";
-import { FaRedo } from "react-icons/fa";
-import { useSetLogs } from "../../../hooks/useLogs";
-import { useDeleteLab } from "../../../hooks/useLab";
-import { ButtonVariant } from "../../../dataStructures";
 import { useState } from "react";
+import { FaRedo } from "react-icons/fa";
+import { toast } from "react-toastify";
+import { ButtonVariant } from "../../../dataStructures";
+import { useDeleteLab, useLab } from "../../../hooks/useLab";
+import { useSetLogs } from "../../../hooks/useLogs";
+import { useGlobalStateContext } from "../../Context/GlobalStateContext";
+import Button from "../../UserInterfaceComponents/Button";
 import ConfirmationModal from "../../UserInterfaceComponents/Modal/ConfirmationModal";
 
 type Props = {
@@ -15,34 +16,40 @@ type Props = {
 export default function ResetLabState({ buttonVariant, children }: Props) {
   const { mutate: setLogs } = useSetLogs();
   const { mutateAsync: deleteLab } = useDeleteLab();
+  const { refetch } = useLab();
+  const { setSyncLab } = useGlobalStateContext();
   const [showModal, setShowModal] = useState(false);
 
   function onClickHandler() {
     setShowModal(true);
   }
 
-  function handleResetLabState() {
+  async function handleResetLabState() {
     setShowModal(false);
     setLogs({
       logs: "",
     });
-    toast.promise(
-      deleteLab(),
-      {
-        pending: "Resetting lab state...",
-        success: "Lab state reset completed.",
-        error: {
-          //TODO: any ain't good. Fix this.
-          render(data: any) {
-            return `Lab state reset failed: ${data.data.data}`;
-          },
 
-          autoClose: false,
-        },
+    const labResetPromise = async () => {
+      // Await the deleteLab function
+      await deleteLab();
+
+      // Set syncLab to true
+      setSyncLab(true);
+
+      // Refetch data
+      await refetch();
+    };
+
+    toast.promise(
+      labResetPromise(),
+      {
+        pending: "Resetting lab...",
+        success: "Lab reset completed.",
+        error: "Lab reset failed.",
       },
       {
         toastId: "reset-lab",
-        autoClose: 1500,
       }
     );
   }

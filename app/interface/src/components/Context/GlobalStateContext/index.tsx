@@ -11,6 +11,8 @@ interface GlobalStateContextContextData {
   setNavbarOpen: React.Dispatch<React.SetStateAction<boolean>>;
   lab: Lab;
   setLab: React.Dispatch<React.SetStateAction<Lab>>;
+  syncLab: boolean;
+  setSyncLab: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const GlobalStateContextContext = createContext<
@@ -104,6 +106,8 @@ export function GlobalStateContextProvider({ children }: Props) {
         setNavbarOpen,
         lab,
         setLab,
+        syncLab,
+        setSyncLab,
       }}
     >
       {children}
