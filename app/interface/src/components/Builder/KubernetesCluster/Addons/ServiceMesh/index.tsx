@@ -37,20 +37,20 @@ export default function ServiceMesh({ index }: Props) {
     defaultServiceMesh;
 
   // Function to update the lab and logs state
-  function setLabAndLogs(lab: Lab | undefined): void {
-    if (lab === undefined) {
+  function setLabAndLogs(newLab: Lab | undefined): void {
+    if (newLab === undefined) {
       return;
     }
 
     // Only update the logs if no action is in progress
     if (!actionStatus.inProgress) {
       setLogs({
-        logs: JSON.stringify(lab.template, null, 4),
+        logs: JSON.stringify(newLab.template, null, 4),
       });
     }
 
-    // Update the lab state
-    setLab(lab);
+    // Update the newLab state
+    setLab(newLab);
   }
 
   // Function to handle changes to the serviceMesh enabled state

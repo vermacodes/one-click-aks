@@ -1,5 +1,5 @@
 import Editor from "@monaco-editor/react";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FaCheck,
   FaPlus,
@@ -9,14 +9,11 @@ import {
   FaTrash,
 } from "react-icons/fa";
 
-import { WebSocketContext } from "../../components/Context/WebSocketContext";
+import { useGlobalStateContext } from "../../components/Context/GlobalStateContext";
 import Terminal from "../../components/Terminal";
 import ExtendButton from "../../components/Terraform/ActionButtons/ExtendButton";
 import Button from "../../components/UserInterfaceComponents/Button";
 import { ButtonVariant, Lab } from "../../dataStructures";
-import { useLab, useSetLab } from "../../hooks/useLab";
-import { useSetLogs } from "../../hooks/useLogs";
-import { useExtend } from "../../hooks/useTerraform";
 
 type Props = {
   children?: React.ReactNode;
@@ -35,24 +32,19 @@ export default function CodeEditorModal({ children, variant, lab }: Props) {
         </span>
         {children}
       </Button>
-      <Modal _lab={lab} showModal={showModal} setShowModal={setShowModal} />
+      <Modal showModal={showModal} setShowModal={setShowModal} />
     </>
   );
 }
 
 type ModalProps = {
-  _lab?: Lab;
   showModal: boolean;
   setShowModal(args: boolean): void;
 };
 
-function Modal({ _lab, showModal, setShowModal }: ModalProps) {
+function Modal({ showModal, setShowModal }: ModalProps) {
   const [_extendScript, setExtendScript] = useState<string>();
-  const { data: lab } = useLab();
-  const { mutate: setLab } = useSetLab();
-  const { mutateAsync: extendAsync } = useExtend();
-  const { actionStatus: actionStatus } = useContext(WebSocketContext);
-  const { mutate: setLogs } = useSetLogs();
+  const { lab, setLab } = useGlobalStateContext();
 
   useEffect(() => {
     if (lab !== undefined) {
@@ -77,29 +69,6 @@ function Modal({ _lab, showModal, setShowModal }: ModalProps) {
         <div className="w-100 flex justify-between border-b border-slate-500 pb-1">
           <h1 className="flex items-center text-xl">Extension Script</h1>
           <div className="flex gap-x-2">
-            {/* <Button
-              variant="secondary-text"
-              disabled={actionStatus.inProgress}
-              onClick={() => {
-                // Save
-                _extendScript &&
-                  setLab({ ...lab, extendScript: _extendScript });
-
-                // Close Modal.
-                setShowModal(false);
-
-                // Run
-                if (lab !== undefined && !actionStatus.inProgress) {
-                  setLogs({ logs: "" });
-                  extendAsync([lab, "apply"]);
-                }
-              }}
-            >
-              <span>
-                <FaRocket />
-              </span>
-              Run
-            </Button> */}
             <ExtendButton
               variant="secondary-text"
               lab={lab}
