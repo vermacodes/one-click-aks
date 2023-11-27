@@ -1,5 +1,4 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { useQueryClient } from "react-query";
 import { Lab } from "../../../dataStructures";
 import { defaultLab } from "../../../defaults";
 import { useLab, useSetLab } from "../../../hooks/useLab";
@@ -29,8 +28,12 @@ export function GlobalStateContextProvider({ children }: Props) {
   const [syncLab, setSyncLab] = useState<boolean>(true);
   const { mutate: setLabServerState } = useSetLab();
   const { data: labFromServer } = useLab();
-  const queryClient = useQueryClient();
 
+  /**
+   * This useEffect hook is triggered once when the component mounts.
+   * It sets default values in local storage for `darkMode` and `navbarOpen`.
+   * If these values are already set in local storage, it updates the local state accordingly.
+   */
   useEffect(() => {
     setDefaultValuesInLocalStorage();
 
@@ -53,25 +56,41 @@ export function GlobalStateContextProvider({ children }: Props) {
     }
   }, []);
 
+  /**
+   * This useEffect hook is triggered when `darkMode` changes.
+   * It updates the `darkMode` value in local storage to reflect the new state.
+   */
   useEffect(() => {
     localStorage.setItem("darkMode", darkMode.toString());
   }, [darkMode]);
 
+  /**
+   * This useEffect hook is triggered when `navbarOpen` changes.
+   * It updates the `navbarOpen` value in local storage to reflect the new state.
+   */
   useEffect(() => {
     localStorage.setItem("navbarOpen", navbarOpen.toString());
   }, [navbarOpen]);
 
+  /**
+   * This useEffect hook is triggered when `labFromServer` changes.
+   * If `labFromServer` is defined and `syncLab` is true, it updates the local `lab` state with the server state
+   * and sets `syncLab` to false to prevent unnecessary updates in the future.
+   */
   useEffect(() => {
     if (labFromServer !== undefined && syncLab) {
-      console.log("State from server", labFromServer);
       setLab(labFromServer);
       setSyncLab(false);
     }
   }, [labFromServer]);
 
+  /**
+   * This useEffect hook is triggered when `lab` changes.
+   * If `lab` is defined and `syncLab` is false, it updates the server state with the local `lab` state.
+   * This ensures that any changes to the local `lab` state are persisted to the server state.
+   */
   useEffect(() => {
     if (lab !== undefined && !syncLab) {
-      console.log("Setting lab state on server", lab);
       setLabServerState(lab);
     }
   }, [lab]);

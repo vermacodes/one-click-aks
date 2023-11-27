@@ -1,9 +1,7 @@
-import { useContext } from "react";
 import { FaTimes } from "react-icons/fa";
 import { PatchVersions } from "../../../../dataStructures";
 import { useGetPatchVersions } from "../../../../hooks/useGetPatchVersions";
 import { useGlobalStateContext } from "../../../Context/GlobalStateContext";
-import { WebSocketContext } from "../../../Context/WebSocketContext";
 import DropdownSelect from "../../../UserInterfaceComponents/DropdownSelect";
 
 type Props = {
@@ -11,7 +9,6 @@ type Props = {
 };
 
 export default function Version({ index }: Props) {
-  const { actionStatus } = useContext(WebSocketContext);
   const {
     patchVersions,
     searchTerm,
@@ -28,7 +25,7 @@ export default function Version({ index }: Props) {
   }
 
   // Determine if the version menu should be disabled
-  const disabled = actionStatus.inProgress || isLoading || isFetching;
+  const disabled = isLoading || isFetching;
 
   // Determine the current version
   const currentVersion =

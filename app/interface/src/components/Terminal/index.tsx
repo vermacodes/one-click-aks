@@ -2,13 +2,13 @@ import ansiHTML from "ansi-to-html";
 import DOMPurify from "dompurify";
 import ReactHtmlParser from "html-react-parser";
 import { useContext, useEffect, useRef, useState } from "react";
-import { useSetLogs } from "../../hooks/useLogs";
-import Checkbox from "../UserInterfaceComponents/Checkbox";
-import { WebSocketContext } from "../Context/WebSocketContext";
-import Button from "../UserInterfaceComponents/Button";
 import { FaCompress, FaExpand, FaTrashAlt } from "react-icons/fa";
+import { useSetLogs } from "../../hooks/useLogs";
 import { useSelectedDeployment } from "../../hooks/useSelectedDeployment";
+import { WebSocketContext } from "../Context/WebSocketContext";
 import DeploymentStatus from "../Deployments/DeploymentStatus";
+import Button from "../UserInterfaceComponents/Button";
+import Checkbox from "../UserInterfaceComponents/Checkbox";
 
 export default function Terminal() {
   const [autoScroll, setAutoScroll] = useState(false);
@@ -108,11 +108,7 @@ export default function Terminal() {
       >
         <div
           ref={logContentRef}
-          style={{
-            padding: "10px",
-            whiteSpace: "pre-wrap",
-            fontFamily: "monospace",
-          }}
+          className="w-full overflow-x-clip whitespace-pre-wrap break-words font-mono"
         >
           {ReactHtmlParser(updateLogs())}
         </div>
@@ -240,11 +236,7 @@ function Modal({ showModal, setShowModal }: ModalProps) {
         >
           <div
             ref={logContentRef}
-            style={{
-              padding: "10px",
-              whiteSpace: "pre-wrap",
-              fontFamily: "monospace",
-            }}
+            className="w-full overflow-x-clip whitespace-pre-wrap break-words font-mono"
           >
             {ReactHtmlParser(updateLogs())}
           </div>
