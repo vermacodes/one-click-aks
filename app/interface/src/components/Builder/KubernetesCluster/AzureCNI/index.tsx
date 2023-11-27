@@ -1,8 +1,8 @@
 import { useContext } from "react";
-import { useLab, useSetLab } from "../../../../hooks/useLab";
 import { useSetLogs } from "../../../../hooks/useLogs";
-import Checkbox from "../../../UserInterfaceComponents/Checkbox";
+import { useGlobalStateContext } from "../../../Context/GlobalStateContext";
 import { WebSocketContext } from "../../../Context/WebSocketContext";
+import Checkbox from "../../../UserInterfaceComponents/Checkbox";
 
 type Props = {
   index: number;
@@ -11,17 +11,13 @@ type Props = {
 export default function AzureCNI({ index }: Props) {
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
-  const {
-    data: lab,
-    isLoading: labIsLoading,
-    isFetching: labIsFetching,
-  } = useLab();
-  const { mutate: setLab } = useSetLab();
+  const { lab, setLab } = useGlobalStateContext();
 
   // Toggle the Azure CNI
   const handleOnChange = () => {
-    const cluster = lab?.template?.kubernetesClusters[index];
-    if (cluster?.networkPlugin !== undefined && lab !== undefined) {
+    const newLab = { ...lab };
+    const cluster = newLab?.template?.kubernetesClusters[index];
+    if (cluster?.networkPlugin !== undefined && newLab !== undefined) {
       cluster.networkPlugin =
         cluster.networkPlugin === "azure" ? "kubenet" : "azure";
       cluster.networkPolicy =
@@ -31,16 +27,15 @@ export default function AzureCNI({ index }: Props) {
       cluster.addons.virtualNode =
         cluster.networkPlugin === "azure" ? false : cluster.addons.virtualNode;
       !actionStatus.inProgress &&
-        setLogs({ logs: JSON.stringify(lab?.template, null, 4) });
-      setLab(lab);
+        setLogs({ logs: JSON.stringify(newLab?.template, null, 4) });
+      setLab(newLab);
     }
   };
 
   // Determine checked and disabled states
   const checked =
     lab?.template?.kubernetesClusters[index]?.networkPlugin === "azure";
-  const disabled =
-    labIsLoading || labIsFetching || !lab?.template?.kubernetesClusters[index];
+  const disabled = !lab?.template?.kubernetesClusters[index];
 
   // Render the Checkbox component if the lab template exists
   return lab?.template ? (
