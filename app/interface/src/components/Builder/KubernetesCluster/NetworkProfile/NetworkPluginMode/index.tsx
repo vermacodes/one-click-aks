@@ -52,8 +52,12 @@ export default function NetworkPluginMode({ index }: Props) {
   // Handle checkbox change
   const handleOnChange = () => {
     if (cluster) {
-      cluster.networkPluginMode =
-        cluster.networkPluginMode === "null" ? "Overlay" : "null";
+      if (cluster.networkPluginMode === "Overlay") {
+        cluster.networkPluginMode = "null";
+      } else {
+        cluster.networkPluginMode = "Overlay";
+        cluster.addons.appGateway = false;
+      }
       !actionStatus.inProgress &&
         setLogs({ logs: JSON.stringify(newLab?.template, null, 4) });
       setLab(newLab);

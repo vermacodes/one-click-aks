@@ -1,7 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { useQueryClient } from "react-query";
 import { Lab } from "../../../dataStructures";
 import { defaultLab } from "../../../defaults";
-import { useSetLab } from "../../../hooks/useLab";
+import { useLab, useSetLab } from "../../../hooks/useLab";
 import { setDefaultValuesInLocalStorage } from "../../../utils/helpers";
 
 interface GlobalStateContextContextData {
@@ -26,6 +27,8 @@ export function GlobalStateContextProvider({ children }: Props) {
   const [navbarOpen, setNavbarOpen] = useState<boolean>(true);
   const [lab, setLab] = useState<Lab>(JSON.parse(JSON.stringify(defaultLab)));
   const { mutate: setLabServerState } = useSetLab();
+  const { data: labFromServer } = useLab();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     setDefaultValuesInLocalStorage();
@@ -58,8 +61,18 @@ export function GlobalStateContextProvider({ children }: Props) {
   }, [navbarOpen]);
 
   useEffect(() => {
+    queryClient.cancelQueries("get-lab");
     setLabServerState(lab);
   }, [lab]);
+
+  useEffect(() => {
+    if (
+      labFromServer !== undefined &&
+      JSON.stringify(lab) !== JSON.stringify(labFromServer)
+    ) {
+      setLab(labFromServer);
+    }
+  }, [labFromServer]);
 
   return (
     <GlobalStateContextContext.Provider
