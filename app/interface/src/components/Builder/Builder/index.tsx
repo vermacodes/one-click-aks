@@ -4,17 +4,19 @@ import { useLab } from "../../../hooks/useLab";
 import CodeEditor from "../../../modals/CodeEditorModal";
 import ExportLabInBuilder from "../../Lab/Export/ExportLabInBuilder";
 import ImportLabToBuilder from "../../Lab/Import/ImportLabToBuilder";
+import ResetLabState from "../../Lab/ResetLabState";
+import SaveLabButton from "../../Lab/SaveLab/SaveLabButton";
 import ApplyButton from "../../Terraform/ActionButtons/ApplyButton";
 import DestroyButton from "../../Terraform/ActionButtons/DestroyButton";
 import PlanButton from "../../Terraform/ActionButtons/PlanButton";
+import Tooltip from "../../UserInterfaceComponents/Tooltip";
 import AzureFirewall from "../AzureFirewall";
 import ContainerRegistry from "../ContainerRegistry";
-import VirtualNetwork from "../VirtualNetwork";
-import KubernetesCluster from "../KubernetesCluster/KubernetesCluster";
 import AddKubernetesCluster from "../KubernetesCluster/AddKubernetesCluster";
-import Tooltip from "../../UserInterfaceComponents/Tooltip";
-import ResetLabState from "../../Lab/ResetLabState";
-import SaveLabButton from "../../Lab/SaveLab/SaveLabButton";
+import KubernetesCluster from "../KubernetesCluster/KubernetesCluster";
+import ResourceGroup from "../ResourceGroup";
+import VirtualMachine from "../VirtualMachine";
+import VirtualNetwork from "../VirtualNetwork";
 
 export default function Builder() {
   const { data: lab } = useLab();
@@ -26,11 +28,13 @@ export default function Builder() {
       className={`rounded bg-slate-50 p-3 outline-1 outline-sky-500 hover:outline dark:bg-slate-900`}
     >
       <div className="flex flex-wrap gap-y-2 gap-x-2">
+        <ResourceGroup />
         <VirtualNetwork />
         <ContainerRegistry />
         <AzureFirewall />
         <AddKubernetesCluster />
         <KubernetesCluster />
+        <VirtualMachine />
       </div>
       <div className={`mt-12 flex flex-wrap gap-2`}>
         <PlanButton variant="success-text" lab={lab}>

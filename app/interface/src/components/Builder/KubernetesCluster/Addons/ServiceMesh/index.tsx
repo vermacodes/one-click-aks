@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { Lab } from "../../../../../dataStructures";
-import { defaultServiceMesh } from "../../../../../defaults";
+import { getDefaultServiceMesh } from "../../../../../defaults";
 import { useSetLogs } from "../../../../../hooks/useLogs";
 import { useGlobalStateContext } from "../../../../Context/GlobalStateContext";
 import { WebSocketContext } from "../../../../Context/WebSocketContext";
@@ -32,8 +32,9 @@ export default function ServiceMesh({ index }: Props) {
   }
 
   // Set serviceMesh to defaultServiceMesh if it's undefined or null
-  const serviceMesh = newLab.template.kubernetesClusters[index].addons
-    .serviceMesh ?? { ...defaultServiceMesh };
+  const serviceMesh =
+    newLab.template.kubernetesClusters[index].addons.serviceMesh ??
+    getDefaultServiceMesh();
 
   // Function to update the lab and logs state
   function setLabAndLogs(newLab: Lab | undefined): void {

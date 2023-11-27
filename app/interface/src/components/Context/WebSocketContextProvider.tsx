@@ -8,8 +8,8 @@ import {
   TerraformOperation,
 } from "../../dataStructures";
 import {
-  defaultServerNotification,
-  defaultTerraformOperation,
+  getDefaultServerNotification,
+  getDefaultTerraformOperation,
 } from "../../defaults";
 import { WebSocketContext } from "./WebSocketContext";
 
@@ -32,13 +32,13 @@ export default function WebSocketContextProvider({
 
   // terraform operation
   const [terraformOperation, setTerraformOperation] =
-    useState<TerraformOperation>({ ...defaultTerraformOperation });
+    useState<TerraformOperation>(getDefaultTerraformOperation());
   const [terraformOperationConnected, setTerraformOperationConnected] =
     useState(false);
 
   // server notification
   const [serverNotification, setServerNotification] =
-    useState<ServerNotification>({ ...defaultServerNotification });
+    useState<ServerNotification>(getDefaultServerNotification());
   const [serverNotificationConnected, setServerNotificationConnected] =
     useState<boolean>(false);
 

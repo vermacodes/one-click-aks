@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { TfvarKubernetesClusterType } from "../../../../dataStructures";
-import { defaultKubernetesCluster } from "../../../../defaults";
+import { getDefaultKubernetesCluster } from "../../../../defaults";
 import { useKubernetesVersions } from "../../../../hooks/useKubernetesVersions";
 import { useSetLogs } from "../../../../hooks/useLogs";
 import { useGlobalStateContext } from "../../../Context/GlobalStateContext";
@@ -16,7 +16,7 @@ export default function AddKubernetesCluster() {
 
   // The default value that kubernetes cluster will carry.
   function defaultValue(): TfvarKubernetesClusterType {
-    const deepCopy = JSON.parse(JSON.stringify(defaultKubernetesCluster));
+    const deepCopy = getDefaultKubernetesCluster();
     return {
       ...deepCopy,
       kubernetesVersion: defaultVersion,
@@ -42,7 +42,7 @@ export default function AddKubernetesCluster() {
   return (
     <Checkbox
       id="toggle-aks"
-      label="AKS"
+      label="Kubernetes Cluster"
       checked={checked || false}
       disabled={disabled}
       handleOnChange={handleOnChange}

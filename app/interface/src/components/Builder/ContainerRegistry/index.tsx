@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { defaultContainerRegistry } from "../../../defaults";
+import { getDefaultContainerRegistry } from "../../../defaults";
 import { useSetLogs } from "../../../hooks/useLogs";
 import { useGlobalStateContext } from "../../Context/GlobalStateContext";
 import { WebSocketContext } from "../../Context/WebSocketContext";
@@ -17,9 +17,7 @@ export default function ContainerRegistry() {
         if (newLab.template.containerRegistries.length > 0) {
           newLab.template.containerRegistries = [];
         } else {
-          newLab.template.containerRegistries = [
-            { ...defaultContainerRegistry },
-          ];
+          newLab.template.containerRegistries = [getDefaultContainerRegistry()];
         }
         !actionStatus.inProgress &&
           setLogs({
@@ -49,7 +47,7 @@ export default function ContainerRegistry() {
       {lab && lab.template && (
         <Checkbox
           id="toggle-acr"
-          label="ACR"
+          label="Container Registry"
           checked={checked}
           disabled={false}
           handleOnChange={handleOnChange}

@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { defaultTfvarConfig } from "../../../defaults";
+import { getDefaultTfvarConfig } from "../../../defaults";
 import { useSetLogs } from "../../../hooks/useLogs";
 import { useGlobalStateContext } from "../../Context/GlobalStateContext";
 import { WebSocketContext } from "../../Context/WebSocketContext";
@@ -15,7 +15,7 @@ export default function VirtualNetwork() {
     const newLab = { ...lab };
     if (newLab?.template) {
       // Toggle the virtual networks
-      const deepCopy = JSON.parse(JSON.stringify(defaultTfvarConfig));
+      const deepCopy = getDefaultTfvarConfig();
       if (newLab.template.virtualNetworks.length === 0) {
         newLab.template.virtualNetworks = deepCopy.virtualNetworks;
         newLab.template.subnets = deepCopy.subnets;
@@ -52,7 +52,7 @@ export default function VirtualNetwork() {
   return lab?.template ? (
     <Checkbox
       id="toggle-custom-vnet"
-      label="VNET"
+      label="Virtual Network"
       checked={checked}
       disabled={disabled}
       handleOnChange={handleOnChange}

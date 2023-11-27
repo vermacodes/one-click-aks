@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { defaultFirewall } from "../../../defaults";
+import { getDefaultFirewall } from "../../../defaults";
 import { useSetLogs } from "../../../hooks/useLogs";
 import { useGlobalStateContext } from "../../Context/GlobalStateContext";
 import { WebSocketContext } from "../../Context/WebSocketContext";
@@ -20,7 +20,7 @@ export default function AzureFirewall() {
         if (newLab.template.firewalls.length > 0) {
           newLab.template.firewalls = [];
         } else {
-          newLab.template.firewalls = [{ ...defaultFirewall }];
+          newLab.template.firewalls = [getDefaultFirewall()];
         }
         !actionStatus.inProgress &&
           setLogs({

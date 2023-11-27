@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { Lab } from "../../../dataStructures";
-import { defaultLab } from "../../../defaults";
+import { getDefaultLab } from "../../../defaults";
 import { useLab, useSetLab } from "../../../hooks/useLab";
 import { setDefaultValuesInLocalStorage } from "../../../utils/helpers";
 
@@ -26,7 +26,7 @@ type Props = {
 export function GlobalStateContextProvider({ children }: Props) {
   const [darkMode, setDarkMode] = useState<boolean>(false);
   const [navbarOpen, setNavbarOpen] = useState<boolean>(true);
-  const [lab, setLab] = useState<Lab>({ ...defaultLab });
+  const [lab, setLab] = useState<Lab>(getDefaultLab());
   const [syncLab, setSyncLab] = useState<boolean>(true);
   const { mutate: setLabServerState } = useSetLab();
   const { data: labFromServer } = useLab();

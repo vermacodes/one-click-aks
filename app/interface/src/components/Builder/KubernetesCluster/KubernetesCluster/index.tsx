@@ -1,6 +1,5 @@
 import { useGlobalStateContext } from "../../../Context/GlobalStateContext";
 import BuilderContainer from "../../../UserInterfaceComponents/BuilderContainer";
-import VirtualMachine from "../../VirtualMachine";
 import AppGateway from "../Addons/AppGateway";
 import HttpApplicationRouting from "../Addons/HttpApplicationRouting";
 import MicrosoftDefender from "../Addons/MicrosoftDefender";
@@ -30,7 +29,6 @@ export default function KubernetesCluster() {
             <div className={`mt-4 flex flex-wrap items-center gap-x-2 gap-y-2`}>
               <Version index={index} />
               <PrivateCluster index={index} />
-              <VirtualMachine />
               <AzureCNI index={index} />
               <Calico index={index} />
               <NetworkPluginMode index={index} />

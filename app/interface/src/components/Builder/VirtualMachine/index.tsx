@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { defaultTfvarConfig } from "../../../defaults";
+import { getDefaultTfvarConfig } from "../../../defaults";
 import { useSetLogs } from "../../../hooks/useLogs";
 import { useGlobalStateContext } from "../../Context/GlobalStateContext";
 import { WebSocketContext } from "../../Context/WebSocketContext";
@@ -17,7 +17,7 @@ export default function VirtualMachine() {
       // Toggle the jump servers
       newLab.template.jumpservers =
         newLab.template.jumpservers.length === 0
-          ? [{ ...defaultTfvarConfig.jumpservers[0] }]
+          ? getDefaultTfvarConfig().jumpservers
           : [];
 
       // Log the changes if not in progress
@@ -30,7 +30,7 @@ export default function VirtualMachine() {
   };
 
   // Define the disabled state
-  const disabled = lab?.template?.kubernetesClusters.length === 0;
+  const disabled = false;
 
   // Define the checked state
   const checked = (lab?.template?.jumpservers?.length ?? 0) > 0;

@@ -1,7 +1,6 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { useSetLogs } from "../../../../hooks/useLogs";
 import { useGlobalStateContext } from "../../../Context/GlobalStateContext";
-import { WebSocketContext } from "../../../Context/WebSocketContext";
 import Checkbox from "../../../UserInterfaceComponents/Checkbox";
 
 type Props = {
@@ -13,7 +12,6 @@ const FALSE = "false";
 
 export default function PrivateCluster({ index }: Props) {
   const [tooltipMessage, setTooltipMessage] = useState<string>("");
-  const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
   const { lab, setLab } = useGlobalStateContext();
 
@@ -22,7 +20,7 @@ export default function PrivateCluster({ index }: Props) {
 
   const handleOnChange = () => {
     const newLab = { ...lab };
-    if (newLab && newLab.template && !actionStatus.inProgress) {
+    if (newLab && newLab.template) {
       const cluster = newLab.template.kubernetesClusters[index];
       if (cluster && cluster.privateClusterEnabled !== undefined) {
         cluster.privateClusterEnabled =
