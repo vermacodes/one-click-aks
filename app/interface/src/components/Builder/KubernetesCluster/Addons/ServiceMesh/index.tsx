@@ -1,28 +1,24 @@
 import { useContext } from "react";
-import { WebSocketContext } from "../../../../Context/WebSocketContext";
+import { Lab } from "../../../../../dataStructures";
 import { defaultServiceMesh } from "../../../../../defaults";
-import { useLab, useSetLab } from "../../../../../hooks/useLab";
+import { useSetLogs } from "../../../../../hooks/useLogs";
+import { useGlobalStateContext } from "../../../../Context/GlobalStateContext";
+import { WebSocketContext } from "../../../../Context/WebSocketContext";
 import BuilderContainer from "../../../../UserInterfaceComponents/BuilderContainer";
 import Checkbox from "../../../../UserInterfaceComponents/Checkbox";
-import { useSetLogs } from "../../../../../hooks/useLogs";
-import { Lab } from "../../../../../dataStructures";
 
 type Props = {
   index: number;
 };
 
 export default function ServiceMesh({ index }: Props) {
-  const {
-    data: lab,
-    isLoading: labIsLoading,
-    isFetching: labIsFetching,
-  } = useLab();
+  const { lab, setLab } = useGlobalStateContext();
   const { mutate: setLogs } = useSetLogs();
-  const { mutate: setLab } = useSetLab();
   const { actionStatus } = useContext(WebSocketContext);
 
+  const newLab = { ...lab };
   // If there are no kubernetesClusters, return a disabled Checkbox
-  if (!lab?.template?.kubernetesClusters?.length) {
+  if (!newLab?.template?.kubernetesClusters?.length) {
     return (
       <Checkbox
         checked={false}
@@ -37,7 +33,7 @@ export default function ServiceMesh({ index }: Props) {
 
   // Set serviceMesh to defaultServiceMesh if it's undefined or null
   const serviceMesh =
-    lab.template.kubernetesClusters[index].addons.serviceMesh ??
+    newLab.template.kubernetesClusters[index].addons.serviceMesh ??
     defaultServiceMesh;
 
   // Function to update the lab and logs state
@@ -64,7 +60,7 @@ export default function ServiceMesh({ index }: Props) {
       if (serviceMesh.enabled) {
         serviceMesh.mode = "Istio";
       }
-      setLabAndLogs(lab);
+      setLabAndLogs(newLab);
     }
   }
 
@@ -78,7 +74,7 @@ export default function ServiceMesh({ index }: Props) {
         serviceMesh.externalIngressGatewayEnabled =
           !serviceMesh.externalIngressGatewayEnabled;
       }
-      setLabAndLogs(lab);
+      setLabAndLogs(newLab);
     }
   }
 
@@ -86,7 +82,7 @@ export default function ServiceMesh({ index }: Props) {
     <>
       <Checkbox
         checked={serviceMesh.enabled}
-        disabled={labIsLoading || labIsFetching}
+        disabled={false}
         handleOnChange={handleServiceMeshChange}
         id="serviceMesh"
         label="Service Mesh (Istio)"
@@ -97,7 +93,7 @@ export default function ServiceMesh({ index }: Props) {
           <div className={`mt-4 flex flex-wrap gap-x-2 gap-y-2`}>
             <Checkbox
               checked={serviceMesh.internalIngressGatewayEnabled}
-              disabled={!serviceMesh.enabled || labIsLoading || labIsFetching}
+              disabled={!serviceMesh.enabled}
               handleOnChange={() => handleIngressGatewayChange("internal")}
               id="serviceMeshInternalGateway"
               label="Internal Ingress Gateway"
@@ -105,7 +101,7 @@ export default function ServiceMesh({ index }: Props) {
             />
             <Checkbox
               checked={serviceMesh.externalIngressGatewayEnabled}
-              disabled={!serviceMesh.enabled || labIsLoading || labIsFetching}
+              disabled={!serviceMesh.enabled}
               handleOnChange={() => handleIngressGatewayChange("external")}
               id="serviceMeshExternalGateway"
               label="External Ingress Gateway"
