@@ -9,6 +9,7 @@ import SaveLabButton from "../../Lab/SaveLab/SaveLabButton";
 import ApplyButton from "../../Terraform/ActionButtons/ApplyButton";
 import DestroyButton from "../../Terraform/ActionButtons/DestroyButton";
 import PlanButton from "../../Terraform/ActionButtons/PlanButton";
+import Container from "../../UserInterfaceComponents/Container";
 import Tooltip from "../../UserInterfaceComponents/Tooltip";
 import AzureFirewall from "../AzureFirewall";
 import ContainerRegistry from "../ContainerRegistry";
@@ -24,8 +25,11 @@ export default function Builder() {
   const [_lab, _setLab] = useState<Lab | undefined>(lab);
 
   return (
-    <div
-      className={`rounded bg-slate-50 p-3 outline-1 outline-sky-500 hover:outline dark:bg-slate-900`}
+    <Container
+      title="Builder"
+      additionalClasses="flex flex-col gap-4"
+      collapsible={true}
+      //className={`rounded bg-slate-50 p-3 outline-1 outline-sky-500 hover:outline dark:bg-slate-900`}
     >
       <div className="flex flex-wrap gap-4">
         <ResourceGroup />
@@ -57,6 +61,6 @@ export default function Builder() {
         </ExportLabInBuilder>
         <ImportLabToBuilder />
       </div>
-    </div>
+    </Container>
   );
 }
