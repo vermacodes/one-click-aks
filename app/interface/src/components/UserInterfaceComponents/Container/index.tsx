@@ -30,7 +30,7 @@ export default function Container({
       } flex w-full flex-col justify-between gap-4 rounded bg-slate-50 p-4 shadow-md outline-1 outline-slate-400 dark:bg-slate-900 dark:outline-slate-600`}
     >
       <div
-        className="flex items-center justify-between"
+        className="flex items-center justify-between "
         onClick={() => {
           collapsible && setOpen(!open);
         }}
@@ -52,9 +52,7 @@ export default function Container({
         key={title}
         className={`${
           additionalContainerBodyClasses && additionalContainerBodyClasses
-        } ${
-          !open ? "max-h-0 overflow-hidden" : "max-h-fit"
-        } transition-all duration-300`}
+        } ${!open ? "max-h-0 overflow-hidden" : "max-h-fit"} `}
       >
         {children}
       </div>

@@ -27,7 +27,7 @@ export default function KubernetesCluster() {
         <Container
           key={index + "cluster"}
           title={`Kubernetes Cluster ${index + 1}`}
-          additionalClasses="outline outline-slate-500 flex"
+          additionalClasses="outline outline-slate-300 dark:outline-slate-700 flex"
           additionalContainerBodyClasses="flex flex-col gap-4"
           hoverEffect={false}
           collapsible={true}
@@ -35,7 +35,7 @@ export default function KubernetesCluster() {
           <Container
             key={index + "features"}
             title="Features"
-            additionalClasses="outline outline-slate-500 flex"
+            additionalClasses="outline outline-slate-300 dark:outline-slate-700 flex"
             additionalContainerBodyClasses="flex flex-col gap-4"
             hoverEffect={false}
             collapsible={true}
@@ -53,7 +53,7 @@ export default function KubernetesCluster() {
           <Container
             key={index + "addons"}
             title="Addons"
-            additionalClasses="outline outline-slate-500 flex"
+            additionalClasses="outline outline-slate-300 dark:outline-slate-700 flex"
             additionalContainerBodyClasses="flex flex-col gap-4"
             hoverEffect={false}
             collapsible={true}
