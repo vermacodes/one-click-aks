@@ -4,12 +4,12 @@ import { useLab } from "../../../hooks/useLab";
 import { useSetLogs } from "../../../hooks/useLogs";
 import { usePreference, useSetPreference } from "../../../hooks/usePreference";
 import { useGetStorageAccount } from "../../../hooks/useStorageAccount";
-import DropdownSelect from "../../UserInterfaceComponents/DropdownSelect";
 import Container from "../../UserInterfaceComponents/Container";
+import DropdownSelect from "../../UserInterfaceComponents/DropdownSelect";
 
 export default function AzureRegion() {
   const [searchTerm, setSearchTerm] = useState<string>("");
-  // az account list-locations --query "[].displayName" -o tsv | sed -e 's/^/"/' -e 's/$/"/' | paste -sd, -
+  // az account list-locations --query "[?metadata.regionType!='Logical' && metadata.physicalLocation!=null].displayName" -o tsv | sed -e 's/^/"/' -e 's/$/"/' | paste -sd, -
   const azureRegions: string[] = [
     "East US",
     "East US 2",
@@ -40,36 +40,6 @@ export default function AzureRegion() {
     "Central US EUAP",
     "Israel Central",
     "Qatar Central",
-    "Central US (Stage)",
-    "East US (Stage)",
-    "East US 2 (Stage)",
-    "North Central US (Stage)",
-    "South Central US (Stage)",
-    "West US (Stage)",
-    "West US 2 (Stage)",
-    "Asia",
-    "Asia Pacific",
-    "Australia",
-    "Brazil",
-    "Canada",
-    "Europe",
-    "France",
-    "Germany",
-    "Global",
-    "India",
-    "Japan",
-    "Korea",
-    "Norway",
-    "Singapore",
-    "South Africa",
-    "Sweden",
-    "Switzerland",
-    "United Arab Emirates",
-    "United Kingdom",
-    "United States",
-    "United States EUAP",
-    "East Asia (Stage)",
-    "Southeast Asia (Stage)",
     "Brazil US",
     "East US STG",
     "North Central US",
@@ -95,7 +65,6 @@ export default function AzureRegion() {
     "UK West",
     "UAE Central",
     "Brazil Southeast",
-    "Eva",
   ];
 
   const {
