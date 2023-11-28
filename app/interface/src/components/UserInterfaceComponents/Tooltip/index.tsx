@@ -10,7 +10,7 @@ type Props = {
 export default function Tooltip({
   message,
   children,
-  delay = 0,
+  delay = 100,
   direction = "bottom",
 }: Props) {
   const [visible, setVisible] = useState(false);
