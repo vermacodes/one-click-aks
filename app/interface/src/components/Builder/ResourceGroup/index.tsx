@@ -8,7 +8,7 @@ export default function ResourceGroup() {
       disabled={false}
       checked={true}
       handleOnChange={() => {}}
-      tooltipMessage="Resource Group is required."
+      tooltipMessage="Resource Group is required and cannot be disabled."
       tooltipDelay={1000}
     />
   );
