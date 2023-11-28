@@ -181,7 +181,11 @@ function FixedPages() {
       <ul className="md:text-l flex w-full flex-col justify-start gap-y-1 text-sm lg:text-xl">
         {defaultAccount && (
           <li>
-            <Tooltip message="Azure Subscription" delay={1000} direction="left">
+            <Tooltip
+              message="This is the selected Azure subscription. To change redeploy server in correct subscription."
+              delay={1000}
+              direction="top"
+            >
               <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
                 <span className="-rotate-45">
                   <FaKey />

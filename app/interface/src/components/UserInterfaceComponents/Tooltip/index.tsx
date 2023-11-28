@@ -41,10 +41,10 @@ export default function Tooltip({
           className={`
           absolute z-10 transform rounded bg-slate-800 p-2 text-xs text-slate-100 transition-all
           dark:bg-slate-100 dark:text-slate-900 
-          ${direction === "top" ? "bottom-10" : ""}
-          ${direction === "bottom" ? "top-10" : ""}
-          ${direction === "left" ? "right-10" : ""}
-          ${direction === "right" ? "left-10" : ""}
+          ${direction === "top" ? "bottom-12" : ""}
+          ${direction === "bottom" ? "top-12" : ""}
+          ${direction === "left" ? "right-12" : ""}
+          ${direction === "right" ? "left-12" : ""}
         `}
         >
           {message}
