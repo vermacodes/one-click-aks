@@ -1,32 +1,32 @@
 import { useContext } from "react";
-import { useLab, useSetLab } from "../../../hooks/useLab";
+import { getDefaultTfvarConfig } from "../../../defaults";
 import { useSetLogs } from "../../../hooks/useLogs";
-import Checkbox from "../../UserInterfaceComponents/Checkbox";
-import { defaultTfvarConfig } from "../../../defaults";
+import { useGlobalStateContext } from "../../Context/GlobalStateContext";
 import { WebSocketContext } from "../../Context/WebSocketContext";
+import Checkbox from "../../UserInterfaceComponents/Checkbox";
 
 export default function VirtualNetwork() {
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
-  const { data: lab, isLoading, isFetching } = useLab();
-  const { mutate: setLab } = useSetLab();
+  const { lab, setLab } = useGlobalStateContext();
 
   // Function to handle changes in the checkbox
   const handleOnChange = () => {
-    if (lab?.template) {
+    const newLab = structuredClone(lab);
+    if (newLab?.template) {
       // Toggle the virtual networks
-      if (lab.template.virtualNetworks.length === 0) {
-        lab.template.virtualNetworks = defaultTfvarConfig.virtualNetworks;
-        lab.template.subnets = defaultTfvarConfig.subnets;
-        lab.template.networkSecurityGroups =
-          defaultTfvarConfig.networkSecurityGroups;
+      const deepCopy = getDefaultTfvarConfig();
+      if (newLab.template.virtualNetworks.length === 0) {
+        newLab.template.virtualNetworks = deepCopy.virtualNetworks;
+        newLab.template.subnets = deepCopy.subnets;
+        newLab.template.networkSecurityGroups = deepCopy.networkSecurityGroups;
       } else {
-        lab.template.virtualNetworks = [];
-        lab.template.subnets = [];
-        lab.template.networkSecurityGroups = [];
-        lab.template.jumpservers = [];
-        lab.template.firewalls = [];
-        lab.template.kubernetesClusters.forEach((cluster) => {
+        newLab.template.virtualNetworks = [];
+        newLab.template.subnets = [];
+        newLab.template.networkSecurityGroups = [];
+        newLab.template.jumpservers = [];
+        newLab.template.firewalls = [];
+        newLab.template.kubernetesClusters.forEach((cluster) => {
           cluster.addons.appGateway = false;
           cluster.addons.virtualNode = false;
           cluster.privateClusterEnabled = "false";
@@ -36,15 +36,15 @@ export default function VirtualNetwork() {
 
       // Log the changes if not in progress
       !actionStatus.inProgress &&
-        setLogs({ logs: JSON.stringify(lab.template, null, 4) });
+        setLogs({ logs: JSON.stringify(newLab.template, null, 4) });
 
-      // Update the lab
-      setLab(lab);
+      // Update the newLab
+      setLab(newLab);
     }
   };
 
   // Define the disabled state
-  const disabled = isLoading || isFetching;
+  const disabled = false;
 
   // Define the checked state
   const checked = (lab?.template?.virtualNetworks?.length ?? 0) > 0;
@@ -52,7 +52,7 @@ export default function VirtualNetwork() {
   return lab?.template ? (
     <Checkbox
       id="toggle-custom-vnet"
-      label="VNET"
+      label="Virtual Network"
       checked={checked}
       disabled={disabled}
       handleOnChange={handleOnChange}

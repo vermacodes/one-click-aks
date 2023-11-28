@@ -1,17 +1,16 @@
-import { useEffect, useState } from "react";
-import AzureRegion from "../../components/Config/AzureRegion";
+import { useEffect } from "react";
 import AuthServiceEndpoint from "../../components/Config/AuthServiceEndpoint";
-import ServerEndpoint from "../../components/Config/ServerEndpoint";
+import AzureRegion from "../../components/Config/AzureRegion";
+import AzureSubscriptionSetting from "../../components/Config/AzureSubscriptionSetting";
 import ResetActionStatus from "../../components/Config/ResetActionStatus";
 import ResetServerCache from "../../components/Config/ResetServerCache";
+import ServerEndpoint from "../../components/Config/ServerEndpoint";
+import ServerStatus from "../../components/Config/ServerStatus";
 import StorageAccount from "../../components/Config/StorageAccount";
 import TerraformInit from "../../components/Config/TerraformInit";
 import TerraformWorkspaces from "../../components/Config/TerraformWorkspaces";
-import PageLayout from "../../layouts/PageLayout";
-import SettingsItemLayout from "../../layouts/SettingsItemLayout";
-import AzureSubscriptionSetting from "../../components/Config/AzureSubscriptionSetting";
-import ServerStatus from "../../components/Config/ServerStatus";
 import Container from "../../components/UserInterfaceComponents/Container";
+import PageLayout from "../../layouts/PageLayout";
 
 export default function Settings() {
   useEffect(() => {

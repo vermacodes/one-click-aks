@@ -1,17 +1,17 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { FaUpload } from "react-icons/fa";
-import { Lab } from "../../../../dataStructures";
-import { useSetLab } from "../../../../hooks/useLab";
-import { useSetLogs } from "../../../../hooks/useLogs";
-import Button from "../../../UserInterfaceComponents/Button";
-import { WebSocketContext } from "../../../Context/WebSocketContext";
 import { toast } from "react-toastify";
+import { Lab } from "../../../../dataStructures";
+import { useSetLogs } from "../../../../hooks/useLogs";
+import { useGlobalStateContext } from "../../../Context/GlobalStateContext";
+import { WebSocketContext } from "../../../Context/WebSocketContext";
+import Button from "../../../UserInterfaceComponents/Button";
 
 type Props = {};
 
 export default function ImportLabToBuilder({}: Props) {
-  const [lab, _setLab] = useState<Lab | undefined>();
-  const { mutate: setLab } = useSetLab();
+  const [newLab, setNewLab] = useState<Lab | undefined>();
+  const { setLab } = useGlobalStateContext();
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
 
@@ -22,14 +22,14 @@ export default function ImportLabToBuilder({}: Props) {
   };
 
   useEffect(() => {
-    if (lab != undefined) {
+    if (newLab != undefined) {
       !actionStatus.inProgress &&
         setLogs({
-          logs: JSON.stringify(lab.template, null, 4),
+          logs: JSON.stringify(newLab.template, null, 4),
         });
-      setLab(lab);
+      setLab(newLab);
     }
-  }, [lab]);
+  }, [newLab]);
 
   function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -42,7 +42,7 @@ export default function ImportLabToBuilder({}: Props) {
     reader.onload = (e) => {
       const contents = e.target?.result;
       if (typeof contents === "string") {
-        _setLab(JSON.parse(contents));
+        setNewLab(JSON.parse(contents));
       }
     };
     reader.readAsText(file);

@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { MdClose } from "react-icons/md";
-import { Lab } from "../../../../dataStructures";
-import SaveLabName from "../SaveLabName";
-import SaveLabDescription from "../SaveLabDescription";
-import SaveLabType from "../SaveLabType";
-import Button from "../../../UserInterfaceComponents/Button";
-import { useSetLab } from "../../../../hooks/useLab";
-import { useCreateLab, useCreateMyLab } from "../../../../hooks/useBlobs";
 import { toast } from "react-toastify";
+import { Lab } from "../../../../dataStructures";
+import { useCreateLab, useCreateMyLab } from "../../../../hooks/useBlobs";
 import { labDescriptionSchema, labNameSchema } from "../../../../zodSchemas";
-import SaveLabTags from "../SaveLabTags";
+import { useGlobalStateContext } from "../../../Context/GlobalStateContext";
+import Button from "../../../UserInterfaceComponents/Button";
 import ConfirmationModal from "../../../UserInterfaceComponents/Modal/ConfirmationModal";
+import SaveLabDescription from "../SaveLabDescription";
+import SaveLabName from "../SaveLabName";
+import SaveLabTags from "../SaveLabTags";
+import SaveLabType from "../SaveLabType";
 
 type Props = {
   lab: Lab;
@@ -21,7 +21,7 @@ type Props = {
 export default function SaveLabModal({ lab, showModal, setShowModal }: Props) {
   const [labState, setLabState] = useState<Lab>({ ...lab });
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-  const { mutate: setLab } = useSetLab();
+  const { setLab } = useGlobalStateContext();
   const { mutateAsync: createMyLab } = useCreateMyLab();
   const { mutateAsync: createLab } = useCreateLab();
 

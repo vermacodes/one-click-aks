@@ -1,9 +1,8 @@
 import { useContext, useState } from "react";
-import { useLab, useSetLab } from "../../../../../hooks/useLab";
 import { useSetLogs } from "../../../../../hooks/useLogs";
-import Checkbox from "../../../../UserInterfaceComponents/Checkbox";
+import { useGlobalStateContext } from "../../../../Context/GlobalStateContext";
 import { WebSocketContext } from "../../../../Context/WebSocketContext";
-import Tooltip from "../../../../UserInterfaceComponents/Tooltip";
+import Checkbox from "../../../../UserInterfaceComponents/Checkbox";
 
 type Props = {
   index: number;
@@ -13,12 +12,9 @@ export default function NetworkPluginMode({ index }: Props) {
   const [tooltipMessage, setTooltipMessage] = useState<string>("");
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
-  const {
-    data: lab,
-    isLoading: labIsLoading,
-    isFetching: labIsFetching,
-  } = useLab();
-  const { mutate: setLab } = useSetLab();
+  const { lab, setLab } = useGlobalStateContext();
+
+  const newLab = structuredClone(lab);
 
   const cluster = lab?.template?.kubernetesClusters[index];
 
@@ -56,19 +52,21 @@ export default function NetworkPluginMode({ index }: Props) {
   // Handle checkbox change
   const handleOnChange = () => {
     if (cluster) {
-      cluster.networkPluginMode =
-        cluster.networkPluginMode === "null" ? "Overlay" : "null";
+      if (cluster.networkPluginMode === "Overlay") {
+        cluster.networkPluginMode = "null";
+      } else {
+        cluster.networkPluginMode = "Overlay";
+        cluster.addons.appGateway = false;
+      }
       !actionStatus.inProgress &&
-        setLogs({ logs: JSON.stringify(lab?.template, null, 4) });
-      setLab(lab);
+        setLogs({ logs: JSON.stringify(newLab?.template, null, 4) });
+      setLab(newLab);
     }
   };
 
   // Determine checked and disabled states
   const checked = cluster?.networkPluginMode === "Overlay";
   const disabled =
-    labIsLoading ||
-    labIsFetching ||
     !cluster ||
     cluster.networkPlugin !== "azure" ||
     cluster.networkPolicy !== "azure";

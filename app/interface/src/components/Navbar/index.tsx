@@ -16,11 +16,11 @@ import {
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useGetMyRoles } from "../../hooks/useAuth";
-import LoginButton from "../Authentication/LoginButton";
 import { useDefaultAccount } from "../../hooks/useDefaultAccount";
-import Tooltip from "../UserInterfaceComponents/Tooltip";
-import Button from "../UserInterfaceComponents/Button";
+import LoginButton from "../Authentication/LoginButton";
 import { useGlobalStateContext } from "../Context/GlobalStateContext";
+import Button from "../UserInterfaceComponents/Button";
+import Tooltip from "../UserInterfaceComponents/Tooltip";
 
 export default function Navbar() {
   return (
@@ -181,7 +181,11 @@ function FixedPages() {
       <ul className="md:text-l flex w-full flex-col justify-start gap-y-1 text-sm lg:text-xl">
         {defaultAccount && (
           <li>
-            <Tooltip message="Azure Subscription" delay={1000} direction="top">
+            <Tooltip
+              message="This is the selected Azure subscription. To change redeploy server in correct subscription."
+              delay={1000}
+              direction="top"
+            >
               <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
                 <span className="-rotate-45">
                   <FaKey />

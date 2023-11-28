@@ -1,8 +1,7 @@
 import { AxiosResponse } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { AccountType, LoginStatus, Privilege } from "../dataStructures";
+import { AccountType } from "../dataStructures";
 import { axiosInstance } from "../utils/axios-interceptors";
-
 
 function getAccounts(): Promise<AxiosResponse<AccountType[]>> {
   return axiosInstance.get("accounts");

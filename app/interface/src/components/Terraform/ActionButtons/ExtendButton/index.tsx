@@ -1,11 +1,10 @@
 import React, { useContext } from "react";
 import { v4 as uuid } from "uuid";
-import { FaCheck } from "react-icons/fa";
 import { ButtonVariant, Lab } from "../../../../dataStructures";
-import Button from "../../../UserInterfaceComponents/Button";
-import { WebSocketContext } from "../../../Context/WebSocketContext";
 import { useSelectedDeployment } from "../../../../hooks/useSelectedDeployment";
 import { useTerraformOperation } from "../../../../hooks/useTerraformOperation";
+import { WebSocketContext } from "../../../Context/WebSocketContext";
+import Button from "../../../UserInterfaceComponents/Button";
 
 type Props = {
   variant: ButtonVariant;

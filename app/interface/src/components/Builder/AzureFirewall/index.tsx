@@ -1,37 +1,32 @@
 import { useContext, useState } from "react";
-import { useLab, useSetLab } from "../../../hooks/useLab";
+import { getDefaultFirewall } from "../../../defaults";
 import { useSetLogs } from "../../../hooks/useLogs";
-import Checkbox from "../../UserInterfaceComponents/Checkbox";
-import { defaultFirewall } from "../../../defaults";
+import { useGlobalStateContext } from "../../Context/GlobalStateContext";
 import { WebSocketContext } from "../../Context/WebSocketContext";
-import Tooltip from "../../UserInterfaceComponents/Tooltip";
+import Checkbox from "../../UserInterfaceComponents/Checkbox";
 
 export default function AzureFirewall() {
   const [tooltipMessage, setTooltipMessage] = useState<string>("");
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
-  const {
-    data: lab,
-    isLoading: labIsLoading,
-    isFetching: labIsFetching,
-  } = useLab();
-  const { mutate: setLab } = useSetLab();
+  const { lab, setLab } = useGlobalStateContext();
 
   const noVirtualNetworksMessage = "Virtual Network Required.";
 
   function handleOnChange() {
-    if (lab !== undefined) {
-      if (lab.template !== undefined) {
-        if (lab.template.firewalls.length > 0) {
-          lab.template.firewalls = [];
+    const newLab = structuredClone(lab);
+    if (newLab !== undefined) {
+      if (newLab.template !== undefined) {
+        if (newLab.template.firewalls.length > 0) {
+          newLab.template.firewalls = [];
         } else {
-          lab.template.firewalls = [defaultFirewall];
+          newLab.template.firewalls = [getDefaultFirewall()];
         }
         !actionStatus.inProgress &&
           setLogs({
-            logs: JSON.stringify(lab.template, null, 4),
+            logs: JSON.stringify(newLab.template, null, 4),
           });
-        setLab(lab);
+        setLab(newLab);
       }
     }
   }
@@ -40,29 +35,13 @@ export default function AzureFirewall() {
     return <></>;
   }
 
-  if (labIsLoading || labIsFetching) {
-    return (
-      <Checkbox
-        id="toggle-azure-firewall"
-        label="Firewall"
-        disabled={true}
-        checked={false}
-        handleOnChange={handleOnChange}
-      />
-    );
-  }
-
   var checked: boolean = true;
   if (lab && lab.template && lab.template.firewalls.length === 0) {
     checked = false;
   }
 
   var disabled: boolean = false;
-  if (
-    (lab && lab.template && lab.template.virtualNetworks.length === 0) ||
-    labIsLoading ||
-    labIsFetching
-  ) {
+  if (lab && lab.template && lab.template.virtualNetworks.length === 0) {
     disabled = true;
   }
 

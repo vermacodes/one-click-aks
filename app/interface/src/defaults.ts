@@ -12,37 +12,55 @@ import {
   TfvarServiceMeshType,
 } from "./dataStructures";
 
-export const defaultFirewall: TfvarFirewallType = {
+const defaultFirewall: TfvarFirewallType = {
   skuName: "AZFW_VNet",
   skuTier: "Standard",
 };
+export function getDefaultFirewall(): TfvarFirewallType {
+  return structuredClone(defaultFirewall);
+}
 
-export const defaultContainerRegistry: TfvarContainerRegistryType = {};
+const defaultContainerRegistry: TfvarContainerRegistryType = {};
+export function getDefaultContainerRegistry(): TfvarContainerRegistryType {
+  return structuredClone(defaultContainerRegistry);
+}
 
-export const defaultAppGateways: TfvarAppGatewayType = {};
+const defaultAppGateways: TfvarAppGatewayType = {};
+export function getDefaultAppGateways(): TfvarAppGatewayType {
+  return structuredClone(defaultAppGateways);
+}
 
-export const defaultServiceMesh: TfvarServiceMeshType = {
+const defaultServiceMesh: TfvarServiceMeshType = {
   enabled: false,
   mode: "Istio",
   internalIngressGatewayEnabled: false,
   externalIngressGatewayEnabled: false,
 };
+export function getDefaultServiceMesh(): TfvarServiceMeshType {
+  return structuredClone(defaultServiceMesh);
+}
 
-export const defaultAKSAddons: TfvarAddonsType = {
+const defaultAKSAddons: TfvarAddonsType = {
   appGateway: false,
   microsoftDefender: false,
   virtualNode: false,
   httpApplicationRouting: false,
   serviceMesh: defaultServiceMesh,
 };
+export function getDefaultAKSAddons(): TfvarAddonsType {
+  return structuredClone(defaultAKSAddons);
+}
 
-export const defaultNodePool: TfvarDefaultNodepoolType = {
+const defaultNodePool: TfvarDefaultNodepoolType = {
   enableAutoScaling: true,
   minCount: 1,
   maxCount: 1,
 };
+export function getDefaultNodePool(): TfvarDefaultNodepoolType {
+  return structuredClone(defaultNodePool);
+}
 
-export const defaultKubernetesCluster: TfvarKubernetesClusterType = {
+const defaultKubernetesCluster: TfvarKubernetesClusterType = {
   kubernetesVersion: "",
   networkPlugin: "azure",
   networkPolicy: "azure",
@@ -53,7 +71,11 @@ export const defaultKubernetesCluster: TfvarKubernetesClusterType = {
   defaultNodePool: defaultNodePool,
 };
 
-export const defaultTfvarConfig: TfvarConfigType = {
+export function getDefaultKubernetesCluster(): TfvarKubernetesClusterType {
+  return structuredClone(defaultKubernetesCluster);
+}
+
+const defaultTfvarConfig: TfvarConfigType = {
   resourceGroup: {
     location: "East US",
   },
@@ -125,8 +147,11 @@ export const defaultTfvarConfig: TfvarConfigType = {
   containerRegistries: [],
   appGateways: [],
 };
+export function getDefaultTfvarConfig(): TfvarConfigType {
+  return structuredClone(defaultTfvarConfig);
+}
 
-export const defaultLab: Lab = {
+const defaultLab: Lab = {
   id: "",
   name: "",
   description: "",
@@ -142,16 +167,25 @@ export const defaultLab: Lab = {
   versionId: "",
   isCurrentVersion: true,
 };
+export function getDefaultLab(): Lab {
+  return structuredClone(defaultLab);
+}
 
-export const defaultTerraformOperation: TerraformOperation = {
+const defaultTerraformOperation: TerraformOperation = {
   inProgress: false,
   operationId: "",
   status: "Deployment Not Started",
 };
+export function getDefaultTerraformOperation(): TerraformOperation {
+  return structuredClone(defaultTerraformOperation);
+}
 
-export const defaultServerNotification: ServerNotification = {
+const defaultServerNotification: ServerNotification = {
   id: "",
   message: "",
   type: "info",
   autoClose: 0,
 };
+export function getDefaultServerNotification(): ServerNotification {
+  return structuredClone(defaultServerNotification);
+}

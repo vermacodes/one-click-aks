@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import PageLayout from "../../layouts/PageLayout";
 import LabCard from "../../components/Lab/LabCard";
 import Terminal from "../../components/Terminal";
+import { LabType } from "../../dataStructures";
 import { useGetLabs } from "../../hooks/useGetLabs";
-import { Lab, LabType } from "../../dataStructures";
+import PageLayout from "../../layouts/PageLayout";
 
 export default function LabPage() {
   const { type, id } = useParams();

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { WebSocketContext } from "./WebSocketContext";
+import { useQueryClient } from "react-query";
+import ReconnectingWebSocket from "reconnecting-websocket";
 import {
   ActionStatusType,
   LogsStreamType,
@@ -7,11 +8,10 @@ import {
   TerraformOperation,
 } from "../../dataStructures";
 import {
-  defaultServerNotification,
-  defaultTerraformOperation,
+  getDefaultServerNotification,
+  getDefaultTerraformOperation,
 } from "../../defaults";
-import { useQueryClient } from "react-query";
-import ReconnectingWebSocket from "reconnecting-websocket";
+import { WebSocketContext } from "./WebSocketContext";
 
 export default function WebSocketContextProvider({
   children,
@@ -32,13 +32,13 @@ export default function WebSocketContextProvider({
 
   // terraform operation
   const [terraformOperation, setTerraformOperation] =
-    useState<TerraformOperation>(defaultTerraformOperation);
+    useState<TerraformOperation>(getDefaultTerraformOperation());
   const [terraformOperationConnected, setTerraformOperationConnected] =
     useState(false);
 
   // server notification
   const [serverNotification, setServerNotification] =
-    useState<ServerNotification>(defaultServerNotification);
+    useState<ServerNotification>(getDefaultServerNotification());
   const [serverNotificationConnected, setServerNotificationConnected] =
     useState<boolean>(false);
 

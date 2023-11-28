@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { TerraformWorkspace } from "../dataStructures";
 import { axiosInstance } from "../utils/axios-interceptors";
 
@@ -20,7 +20,7 @@ export function useTerraformWorkspace() {
       return data.data;
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries("get-resources")
+      queryClient.invalidateQueries("get-resources");
     },
     staleTime: 6000000,
     cacheTime: 6000000,

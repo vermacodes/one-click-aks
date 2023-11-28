@@ -1,7 +1,7 @@
+import { AxiosResponse } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { axiosInstance } from "../utils/axios-interceptors";
 import { Lab } from "../dataStructures";
-import { AxiosError, AxiosResponse } from "axios";
+import { axiosInstance } from "../utils/axios-interceptors";
 
 function getLab(): Promise<AxiosResponse<Lab>> {
   return axiosInstance.get("lab");

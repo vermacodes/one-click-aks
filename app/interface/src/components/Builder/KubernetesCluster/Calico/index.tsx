@@ -1,9 +1,8 @@
 import { useContext, useState } from "react";
-import { useLab, useSetLab } from "../../../../hooks/useLab";
 import { useSetLogs } from "../../../../hooks/useLogs";
-import Checkbox from "../../../UserInterfaceComponents/Checkbox";
+import { useGlobalStateContext } from "../../../Context/GlobalStateContext";
 import { WebSocketContext } from "../../../Context/WebSocketContext";
-import Tooltip from "../../../UserInterfaceComponents/Tooltip";
+import Checkbox from "../../../UserInterfaceComponents/Checkbox";
 
 type Props = {
   index: number;
@@ -13,12 +12,7 @@ export default function Calico({ index }: Props) {
   const [tooltipMessage, setTooltipMessage] = useState<string>("");
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
-  const {
-    data: lab,
-    isLoading: labIsLoading,
-    isFetching: labIsFetching,
-  } = useLab();
-  const { mutate: setLab } = useSetLab();
+  const { lab, setLab } = useGlobalStateContext();
 
   const noKubernetesClustersMessage =
     "You must create a Kubernetes cluster first.";
@@ -49,15 +43,16 @@ export default function Calico({ index }: Props) {
 
   // Toggle the Calico network policy
   const handleOnChange = () => {
-    const cluster = lab?.template?.kubernetesClusters[index];
-    if (cluster?.networkPolicy !== undefined && lab !== undefined) {
+    const newLab = structuredClone(lab);
+    const cluster = newLab?.template?.kubernetesClusters[index];
+    if (cluster?.networkPolicy !== undefined && newLab !== undefined) {
       cluster.networkPolicy =
         cluster.networkPolicy === "calico" ? "azure" : "calico";
       cluster.networkPluginMode =
         cluster.networkPolicy === "calico" ? "null" : cluster.networkPluginMode;
       !actionStatus.inProgress &&
-        setLogs({ logs: JSON.stringify(lab?.template, null, 4) });
-      setLab(lab);
+        setLogs({ logs: JSON.stringify(newLab?.template, null, 4) });
+      setLab(newLab);
     }
   };
 
@@ -65,8 +60,6 @@ export default function Calico({ index }: Props) {
   const checked =
     lab?.template?.kubernetesClusters[index]?.networkPolicy === "calico";
   const disabled =
-    labIsLoading ||
-    labIsFetching ||
     !lab?.template?.kubernetesClusters[index] ||
     lab?.template?.kubernetesClusters[index]?.networkPlugin === "kubenet";
 

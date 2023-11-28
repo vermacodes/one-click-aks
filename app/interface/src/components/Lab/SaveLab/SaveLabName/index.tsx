@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import { Lab } from "../../../../dataStructures";
-import { z } from "zod";
 import { labNameSchema } from "../../../../zodSchemas";
 
 type Props = {

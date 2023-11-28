@@ -1,48 +1,48 @@
 import { useContext } from "react";
 import { TfvarKubernetesClusterType } from "../../../../dataStructures";
-import { useLab, useSetLab } from "../../../../hooks/useLab";
+import { getDefaultKubernetesCluster } from "../../../../defaults";
+import { useKubernetesVersions } from "../../../../hooks/useKubernetesVersions";
 import { useSetLogs } from "../../../../hooks/useLogs";
-import { useGetOrchestrators } from "../../../../hooks/useOrchestrators";
-import Checkbox from "../../../UserInterfaceComponents/Checkbox";
-import { defaultKubernetesCluster } from "../../../../defaults";
+import { useGlobalStateContext } from "../../../Context/GlobalStateContext";
 import { WebSocketContext } from "../../../Context/WebSocketContext";
+import Checkbox from "../../../UserInterfaceComponents/Checkbox";
 
 export default function AddKubernetesCluster() {
-  const {
-    data: lab,
-    isLoading: labIsLoading,
-    isFetching: labIsFetching,
-  } = useLab();
-  const { mutate: setLab } = useSetLab();
+  const { lab, setLab } = useGlobalStateContext();
   const { actionStatus } = useContext(WebSocketContext);
   const { mutate: setLogs } = useSetLogs();
-  const { data: kubernetesVersion } = useGetOrchestrators();
+
+  const { defaultVersion } = useKubernetesVersions();
 
   // The default value that kubernetes cluster will carry.
   function defaultValue(): TfvarKubernetesClusterType {
-    const defaultVersion = kubernetesVersion?.values
-      ? Object.keys(kubernetesVersion.values[0].patchVersions)[0]
-      : "";
-    return { ...defaultKubernetesCluster, kubernetesVersion: defaultVersion };
+    const deepCopy = getDefaultKubernetesCluster();
+    return {
+      ...deepCopy,
+      kubernetesVersion: defaultVersion,
+    };
   }
 
   function handleOnChange() {
-    if (lab?.template) {
-      lab.template.kubernetesClusters =
-        lab.template.kubernetesClusters?.length === 0 ? [defaultValue()] : [];
+    const newLab = structuredClone(lab);
+    if (newLab?.template) {
+      newLab.template.kubernetesClusters =
+        newLab.template.kubernetesClusters?.length === 0
+          ? [defaultValue()]
+          : [];
       !actionStatus.inProgress &&
-        setLogs({ logs: JSON.stringify(lab.template, null, 4) });
-      setLab(lab);
+        setLogs({ logs: JSON.stringify(newLab.template, null, 4) });
+      setLab(newLab);
     }
   }
 
-  const disabled = labIsLoading || labIsFetching;
+  const disabled = false;
   const checked = (lab?.template?.kubernetesClusters?.length ?? 0) > 0;
 
   return (
     <Checkbox
       id="toggle-aks"
-      label="AKS"
+      label="Kubernetes Cluster"
       checked={checked || false}
       disabled={disabled}
       handleOnChange={handleOnChange}

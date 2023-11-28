@@ -1,7 +1,7 @@
+import { AxiosResponse } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { DeploymentType, Lab, TerraformOperation } from "../dataStructures";
+import { DeploymentType, TerraformOperation } from "../dataStructures";
 import { axiosInstance } from "../utils/axios-interceptors";
-import { Axios, AxiosResponse } from "axios";
 
 function init(deployment: DeploymentType, operationId: string) {
   return axiosInstance.post(`/terraform/init/${operationId}`, deployment);

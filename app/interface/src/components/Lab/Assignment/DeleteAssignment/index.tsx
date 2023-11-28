@@ -1,8 +1,8 @@
+import { FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
-import { Assignment, BulkAssignment } from "../../../../dataStructures";
+import { Assignment } from "../../../../dataStructures";
 import { useDeleteAssignment } from "../../../../hooks/useAssignment";
 import Button from "../../../UserInterfaceComponents/Button";
-import { FaTrash } from "react-icons/fa";
 
 type Props = {
   assignment: Assignment;

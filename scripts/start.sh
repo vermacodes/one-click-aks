@@ -49,7 +49,7 @@ function create_resource_group() {
         # Ask the user for a location if one wasn't provided
         if [[ -z "${LOCATION}" ]]; then
             log "No location provided, asking user for location"
-            LOCATION=$(az account list-locations --query "[].name" -o tsv)
+            LOCATION=$(az account list-locations --query "[?metadata.regionType!='Logical' && metadata.physicalLocation!=null].name" -o tsv)
             echo "Please select a location from the list below:"
             select LOCATION in ${LOCATION}; do
                 if [[ -n "${LOCATION}" ]]; then
