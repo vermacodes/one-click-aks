@@ -17,15 +17,6 @@ export default function Tooltip({
   const [mouseOn, setMouseOn] = useState(false);
   let timer: NodeJS.Timeout;
 
-  const handleMouseEnter = () => {
-    timer = setTimeout(() => setVisible(true), delay);
-  };
-
-  const handleMouseLeave = () => {
-    clearTimeout(timer);
-    setVisible(false);
-  };
-
   useEffect(() => {
     console.log("Mouse On : ", message, mouseOn);
     if (mouseOn) {
