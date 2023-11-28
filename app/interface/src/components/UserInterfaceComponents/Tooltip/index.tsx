@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Props = {
   message?: string;
@@ -14,6 +14,7 @@ export default function Tooltip({
   direction = "bottom",
 }: Props) {
   const [visible, setVisible] = useState(false);
+  const [mouseOn, setMouseOn] = useState(false);
   let timer: NodeJS.Timeout;
 
   const handleMouseEnter = () => {
@@ -25,11 +26,23 @@ export default function Tooltip({
     setVisible(false);
   };
 
+  useEffect(() => {
+    console.log("Mouse On : ", message, mouseOn);
+    if (mouseOn) {
+      timer = setTimeout(() => setVisible(true), delay);
+    }
+
+    return () => {
+      clearTimeout(timer);
+      setVisible(false);
+    };
+  }, [mouseOn]);
+
   return (
     <div
       className="relative flex"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onMouseEnter={() => setMouseOn(true)}
+      onMouseLeave={() => setMouseOn(false)}
     >
       {children}
       {message && visible && (
