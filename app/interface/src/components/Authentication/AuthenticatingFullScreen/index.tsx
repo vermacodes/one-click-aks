@@ -6,15 +6,15 @@ import { GraphData } from "../../../dataStructures";
 type Props = {
   graphResponse: GraphData | undefined;
   setGraphResponse: (updatedGraphData: GraphData | undefined) => void;
-  profilePhotoUrl: string | undefined;
-  setProfilePhotoUrl: (profilePhotoUrl: string | undefined) => void;
+  profilePhoto: string | undefined;
+  setProfilePhoto: (profilePhoto: string | undefined) => void;
 };
 
 export default function AuthenticatingFullScreen({
   graphResponse,
   setGraphResponse,
-  profilePhotoUrl,
-  setProfilePhotoUrl,
+  profilePhoto,
+  setProfilePhoto,
 }: Props) {
   const { instance, accounts } = useMsal();
   const [accessToken, setAccessToken] = useState<string>("");
@@ -57,8 +57,18 @@ export default function AuthenticatingFullScreen({
       if (response.ok) {
         console.log("Profile Photo", response);
         response.blob().then((data) => {
-          console.log("Profile Photo", data);
-          setProfilePhotoUrl(URL.createObjectURL(data));
+          const url = URL.createObjectURL(data);
+          const img = new Image();
+          img.onload = function () {
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+            canvas.width = 64;
+            canvas.height = 64;
+            ctx?.drawImage(img, 0, 0, 64, 64);
+            const base64String = canvas.toDataURL("image/jpeg");
+            setProfilePhoto(base64String);
+          };
+          img.src = url;
         });
       }
     });
