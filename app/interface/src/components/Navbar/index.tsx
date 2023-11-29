@@ -1,8 +1,9 @@
+import { BsArrowUpRight } from "react-icons/bs";
 import {
+  FaBook,
   FaClipboard,
   FaCog,
   FaComments,
-  FaExternalLinkAlt,
   FaFileCode,
   FaFlask,
   FaKey,
@@ -162,9 +163,12 @@ function Pages() {
           >
             <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
               <span>
-                <FaExternalLinkAlt />
+                <FaBook />
               </span>
               <span>ACT Labs Docs</span>
+              <span>
+                <BsArrowUpRight />
+              </span>
             </button>
           </a>
         </li>
