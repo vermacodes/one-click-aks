@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { FaUserNinja } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { Profile, ProfileMutation } from "../../../../dataStructures";
 import { useAddRole, useRemoveRole } from "../../../../hooks/useProfile";
@@ -48,7 +49,25 @@ export default function ProfileComponent({ profile }: Props) {
 
   return (
     <div className="flex flex-col justify-between gap-2 rounded bg-slate-50 p-4 shadow-md outline-1 outline-slate-400 hover:shadow-lg hover:outline hover:outline-sky-500 dark:bg-slate-900  dark:outline-slate-600 dark:hover:outline-sky-500 md:flex-row md:items-center">
-      <div className="text-xl">{profile.userPrincipal}</div>
+      <div className="flex h-fit items-center gap-2">
+        <span>
+          {profile.profilePhoto === "" ? (
+            <FaUserNinja />
+          ) : (
+            <img
+              className="h-full max-h-12 rounded-full"
+              src={profile.profilePhoto}
+              alt="Profile Picture"
+            />
+          )}
+        </span>
+        <div className="flex flex-col">
+          <span>{profile.displayName}</span>
+          <span className="text-sm text-slate-600 dark:text-slate-400">
+            {profile.userPrincipal}
+          </span>
+        </div>
+      </div>
       <div className="flex flex-wrap justify-end gap-2">
         {profile.roles.map((role) => (
           <div
