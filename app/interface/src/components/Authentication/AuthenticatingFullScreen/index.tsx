@@ -55,7 +55,9 @@ export default function AuthenticatingFullScreen({
       },
     }).then((response) => {
       if (response.ok) {
+        console.log("Profile Photo", response);
         response.blob().then((data) => {
+          console.log("Profile Photo", data);
           setProfilePhotoUrl(URL.createObjectURL(data));
         });
       }

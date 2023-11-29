@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import DropdownSelect from "../../../../UserInterfaceComponents/DropdownSelect";
-import { useGetAllRoles } from "../../../../../hooks/useAuth";
 import { FaTimes } from "react-icons/fa";
+import { useGetAllProfiles } from "../../../../../hooks/useProfile";
+import DropdownSelect from "../../../../UserInterfaceComponents/DropdownSelect";
 
 type Props = {
   selectedUsers: string[];
@@ -15,30 +15,30 @@ export default function SelectUsersDropdown({
   const [uniqueUsers, setUniqueUsers] = useState<string[]>([]);
   const [usersSearchTerm, setUsersSearchTerm] = useState<string>("");
   const {
-    data: roles,
-    isLoading: rolesLoading,
-    isFetching: rolesFetching,
-  } = useGetAllRoles();
+    data: profiles,
+    isLoading: profilesLoading,
+    isFetching: profilesFetching,
+  } = useGetAllProfiles();
 
   /**
    * Effect hook to update the list of unique users.
    *
-   * This hook runs whenever the `roles` prop changes. It creates a new Set from the
-   * current list of unique users, then iterates over the `roles` array and adds each
+   * This hook runs whenever the `profiles` prop changes. It creates a new Set from the
+   * current list of unique users, then iterates over the `profiles` array and adds each
    * userPrincipal to the Set. If the size of the Set has changed (indicating that new
    * unique users were added), it updates the `uniqueUsers` state with the new Set.
    */
   useEffect(() => {
-    if (roles) {
+    if (profiles) {
       const uniqueUserSet = new Set(uniqueUsers);
-      roles.forEach((role) => {
-        uniqueUserSet.add(role.userPrincipal);
+      profiles.forEach((profile) => {
+        uniqueUserSet.add(profile.userPrincipal);
       });
       if (uniqueUsers.length !== uniqueUserSet.size) {
         setUniqueUsers([...uniqueUserSet]);
       }
     }
-  }, [roles]);
+  }, [profiles]);
 
   /**
    * Function to render a search input field.
@@ -112,7 +112,7 @@ export default function SelectUsersDropdown({
             ? selectedUsers.length + " users selected."
             : "Select Users"
         }
-        disabled={rolesLoading || rolesFetching}
+        disabled={profilesLoading || profilesFetching}
         items={[
           ...selectedUsers,
           ...uniqueUsers

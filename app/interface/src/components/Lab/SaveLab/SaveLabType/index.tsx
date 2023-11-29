@@ -1,5 +1,5 @@
 import { Lab } from "../../../../dataStructures";
-import { useGetMyRoles } from "../../../../hooks/useAuth";
+import { useGetMyProfile } from "../../../../hooks/useProfile";
 import Checkbox from "../../../UserInterfaceComponents/Checkbox";
 
 type Props = {
@@ -8,9 +8,9 @@ type Props = {
 };
 
 export default function SaveLabType({ lab, setLab }: Props) {
-  const { data: roles } = useGetMyRoles();
+  const { data: profile } = useGetMyProfile();
 
-  if (roles === undefined) {
+  if (profile === undefined) {
     return null;
   }
 
@@ -35,16 +35,16 @@ export default function SaveLabType({ lab, setLab }: Props) {
           checked={lab.type === "publiclab"}
           disabled={
             !(
-              roles.roles.includes("admin") ||
-              roles.roles.includes("mentor") ||
-              roles.roles.includes("contributor")
+              profile.roles.includes("admin") ||
+              profile.roles.includes("mentor") ||
+              profile.roles.includes("contributor")
             )
           }
           tooltipMessage={
             !(
-              roles.roles.includes("admin") ||
-              roles.roles.includes("mentor") ||
-              roles.roles.includes("contributor")
+              profile.roles.includes("admin") ||
+              profile.roles.includes("mentor") ||
+              profile.roles.includes("contributor")
             )
               ? "You must be an admin, mentor, or contributor to create a public lab."
               : "Public labs are visible to all users."
@@ -57,10 +57,16 @@ export default function SaveLabType({ lab, setLab }: Props) {
         <Checkbox
           checked={lab.type === "readinesslab"}
           disabled={
-            !(roles.roles.includes("admin") || roles.roles.includes("mentor"))
+            !(
+              profile.roles.includes("admin") ||
+              profile.roles.includes("mentor")
+            )
           }
           tooltipMessage={
-            !(roles.roles.includes("admin") || roles.roles.includes("mentor"))
+            !(
+              profile.roles.includes("admin") ||
+              profile.roles.includes("mentor")
+            )
               ? "You must be an admin or mentor to create a readiness lab."
               : "Use this to save lab as readiness lab."
           }
@@ -72,10 +78,16 @@ export default function SaveLabType({ lab, setLab }: Props) {
         <Checkbox
           checked={lab.type === "mockcase"}
           disabled={
-            !(roles.roles.includes("admin") || roles.roles.includes("mentor"))
+            !(
+              profile.roles.includes("admin") ||
+              profile.roles.includes("mentor")
+            )
           }
           tooltipMessage={
-            !(roles.roles.includes("admin") || roles.roles.includes("mentor"))
+            !(
+              profile.roles.includes("admin") ||
+              profile.roles.includes("mentor")
+            )
               ? "You must be an admin or mentor to create a mock case."
               : "Use this to save the lab as a mock case."
           }

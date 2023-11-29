@@ -15,8 +15,8 @@ import {
   FaUserGraduate,
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { useGetMyRoles } from "../../hooks/useAuth";
 import { useDefaultAccount } from "../../hooks/useDefaultAccount";
+import { useGetMyProfile } from "../../hooks/useProfile";
 import LoginButton from "../Authentication/LoginButton";
 import { useGlobalStateContext } from "../Context/GlobalStateContext";
 import Button from "../UserInterfaceComponents/Button";
@@ -53,7 +53,7 @@ function Title() {
 }
 
 function Pages() {
-  const { data: roles } = useGetMyRoles();
+  const { data: profile } = useGetMyProfile();
   return (
     <div className="h-9/10 mt-2 flex w-full flex-col overflow-y-scroll border-b border-slate-300 px-4 scrollbar-thin scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full dark:border-slate-700 dark:scrollbar-thumb-slate-600">
       <ul className="md:text-l flex w-full flex-col justify-start gap-y-1 py-2 text-sm lg:text-xl">
@@ -107,7 +107,7 @@ function Pages() {
             </button>
           </Link>
         </li>
-        {roles && roles.roles.includes("mentor") && (
+        {profile && profile.roles.includes("mentor") && (
           <>
             <li>
               <Link to={"/labs/readinesslabs"}>
@@ -141,7 +141,7 @@ function Pages() {
             </li>
           </>
         )}
-        {roles && roles.roles.includes("admin") && (
+        {profile && profile.roles.includes("admin") && (
           <>
             <li>
               <Link to={"/rbac"}>

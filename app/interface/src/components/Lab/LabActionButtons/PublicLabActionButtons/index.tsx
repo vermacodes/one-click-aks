@@ -1,19 +1,19 @@
+import { useEffect, useState } from "react";
 import { FaShare } from "react-icons/fa";
 import { ButtonContainerObj, Lab } from "../../../../dataStructures";
+import { useGetMyProfile } from "../../../../hooks/useProfile";
+import CopyLinkToLabButton from "../../CopyLinkToLabButton";
+import DeleteLabButton from "../../DeleteLabButton";
 import ExportLabButton from "../../Export/ExportLabButton";
 import LoadToBuilderButton from "../../LoadToBuilderButton";
-import { useEffect, useState } from "react";
-import DeleteLabButton from "../../DeleteLabButton";
-import { useGetMyRoles } from "../../../../hooks/useAuth";
 import ButtonContainer from "../ButtonContainer";
-import CopyLinkToLabButton from "../../CopyLinkToLabButton";
 
 type Props = {
   lab: Lab;
 };
 
 export default function PublicLabActionButtons({ lab }: Props) {
-  const { data: roles } = useGetMyRoles();
+  const { data: profile } = useGetMyProfile();
   const [buttons, setButtons] = useState<Record<string, ButtonContainerObj>>(
     {}
   );
@@ -89,7 +89,7 @@ export default function PublicLabActionButtons({ lab }: Props) {
   }
 
   useEffect(() => {
-    if (roles?.roles.includes("admin")) {
+    if (profile?.roles.includes("admin")) {
       const deleteButton: ButtonContainerObj = {
         id: "deleteLabButton",
         order: 4,
@@ -108,7 +108,7 @@ export default function PublicLabActionButtons({ lab }: Props) {
     } else {
       deleteButton("deleteLabButton");
     }
-  }, [roles, lab]);
+  }, [profile, lab]);
 
   return (
     <div className="flex flex-wrap justify-start gap-2">

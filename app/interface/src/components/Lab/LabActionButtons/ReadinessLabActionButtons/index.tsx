@@ -1,13 +1,13 @@
+import { useEffect, useState } from "react";
 import { FaCheck, FaShare } from "react-icons/fa";
 import { ButtonContainerObj, Lab } from "../../../../dataStructures";
+import { useGetMyProfile } from "../../../../hooks/useProfile";
 import ApplyButton from "../../../Terraform/ActionButtons/ApplyButton";
 import DestroyButton from "../../../Terraform/ActionButtons/DestroyButton";
-import LoadToBuilderButton from "../../LoadToBuilderButton";
-import DeleteLabButton from "../../DeleteLabButton";
-import { useEffect, useState } from "react";
 import ExtendButton from "../../../Terraform/ActionButtons/ExtendButton";
-import { useGetMyRoles } from "../../../../hooks/useAuth";
 import CopyLinkToLabButton from "../../CopyLinkToLabButton";
+import DeleteLabButton from "../../DeleteLabButton";
+import LoadToBuilderButton from "../../LoadToBuilderButton";
 import ButtonContainer from "../ButtonContainer";
 
 type Props = {
@@ -15,7 +15,7 @@ type Props = {
 };
 
 export default function ReadinessLabActionButtons({ lab }: Props) {
-  const { data: roles } = useGetMyRoles();
+  const { data: profile } = useGetMyProfile();
   const [buttons, setButtons] = useState<Record<string, ButtonContainerObj>>(
     {}
   );
@@ -114,7 +114,7 @@ export default function ReadinessLabActionButtons({ lab }: Props) {
   }
 
   useEffect(() => {
-    if (roles?.roles.includes("mentor") || roles?.roles.includes("admin")) {
+    if (profile?.roles.includes("mentor") || profile?.roles.includes("admin")) {
       const deleteButton: ButtonContainerObj = {
         id: "deleteLabButton",
         order: 6,
@@ -133,7 +133,7 @@ export default function ReadinessLabActionButtons({ lab }: Props) {
     } else {
       deleteButton("deleteLabButton");
     }
-  }, [roles, lab]);
+  }, [profile, lab]);
 
   return (
     <div className="flex flex-wrap justify-start gap-2">

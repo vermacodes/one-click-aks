@@ -15,7 +15,7 @@ import {
   useGetAllReadinessLabsRedacted,
   useGetAssignments,
 } from "../../hooks/useAssignment";
-import { useGetMyRoles } from "../../hooks/useAuth";
+import { useGetMyProfile } from "../../hooks/useProfile";
 import PageLayout from "../../layouts/PageLayout";
 
 type Props = {};
@@ -28,7 +28,7 @@ export default function Assignments({}: Props) {
   const [confirmationModalOpen, setConfirmationModalOpen] =
     useState<boolean>(false);
 
-  const { data: myRoles } = useGetMyRoles();
+  const { data: profile } = useGetMyProfile();
   const { data: allAssignments } = useGetAssignments();
   const { data: labs } = useGetAllReadinessLabsRedacted();
   const { mutateAsync: deleteAssignments } = useDeleteAssignment();
@@ -112,7 +112,7 @@ export default function Assignments({}: Props) {
     document.title = "ACT Labs | Assignments";
   }, []);
 
-  if (!myRoles?.roles.includes("mentor")) {
+  if (!profile?.roles.includes("mentor")) {
     return (
       <PageLayout heading="Lab Assignments">
         <p className="text-xl">

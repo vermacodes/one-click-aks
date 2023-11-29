@@ -1,6 +1,7 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { GraphData, Profile } from "../../../dataStructures";
+import { useCreateProfile } from "../../../hooks/useProfile";
 import AuthenticatingFullScreen from "../../Authentication/AuthenticatingFullScreen";
-import { GraphData } from "../../../dataStructures";
 
 interface AuthContextData {
   graphResponse: GraphData | undefined;
@@ -18,6 +19,22 @@ type Props = {
 export function AuthProvider({ children }: Props) {
   const [graphResponse, setGraphResponse] = useState<GraphData | undefined>();
   const [profilePhotoUrl, setProfilePhotoUrl] = useState<string | undefined>();
+
+  const { mutate: createProfile } = useCreateProfile();
+
+  useEffect(() => {
+    if (graphResponse && profilePhotoUrl) {
+      let profile: Profile = {
+        displayName: graphResponse.displayName,
+        objectId: graphResponse.id,
+        userPrincipal: graphResponse.userPrincipalName,
+        profilePhotoUrl: profilePhotoUrl,
+        roles: [],
+      };
+
+      createProfile(profile);
+    }
+  }, [graphResponse, profilePhotoUrl]);
 
   return (
     <AuthContext.Provider

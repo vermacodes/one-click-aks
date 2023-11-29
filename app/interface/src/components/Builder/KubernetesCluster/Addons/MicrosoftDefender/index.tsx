@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { useSetLogs } from "../../../../../hooks/useLogs";
 import { useGlobalStateContext } from "../../../../Context/GlobalStateContext";
 import { WebSocketContext } from "../../../../Context/WebSocketContext";
@@ -13,13 +13,6 @@ export default function MicrosoftDefender({ index }: Props) {
 
   const newLab = structuredClone(lab); //shallow copy of lab
   const cluster = newLab?.template?.kubernetesClusters[index];
-
-  useEffect(() => {
-    console.log("MicrosoftDefender: useEffect");
-    return () => {
-      console.log("MicrosoftDefender: useEffect cleanup");
-    };
-  }, []);
 
   // Handle checkbox change
   const handleOnChange = () => {

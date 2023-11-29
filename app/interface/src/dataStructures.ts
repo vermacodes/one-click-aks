@@ -302,12 +302,15 @@ export type ButtonContainerObj = {
   button: React.ReactNode;
 };
 
-export type Roles = {
+export type Profile = {
+  objectId: string;
+  displayName: string;
+  profilePhotoUrl: string;
   userPrincipal: string;
   roles: string[];
 };
 
-export type RoleMutation = {
+export type ProfileMutation = {
   userPrincipal: string;
   role: string;
 };
