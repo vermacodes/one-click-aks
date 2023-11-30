@@ -27,9 +27,6 @@ export default function LabsGridPage() {
         type.charAt(0).toUpperCase() + type.slice(1).replace(/lab$/, " Labs")
       );
     }
-    if (type === "template") {
-      setPageHeading("My Labs (Deprecated)");
-    }
     if (type.endsWith("case")) {
       setPageHeading(
         type.charAt(0).toUpperCase() + type.slice(1).replace(/case$/, " Cases")
