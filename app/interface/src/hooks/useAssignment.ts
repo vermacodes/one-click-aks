@@ -12,6 +12,8 @@ export function useGetAssignments() {
     select: (data): Assignment[] => {
       return data.data;
     },
+    cacheTime: Infinity,
+    staleTime: Infinity,
   });
 }
 
@@ -24,6 +26,8 @@ export function useGetMyAssignments() {
     select: (data): Assignment[] => {
       return data.data;
     },
+    cacheTime: Infinity,
+    staleTime: Infinity,
   });
 }
 

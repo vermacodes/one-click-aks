@@ -23,9 +23,9 @@ function getMyProfile(): Promise<Profile> {
 }
 
 export function useGetMyProfile() {
-  return useQuery({
-    queryKey: "myProfile",
-    queryFn: () => getMyProfile(),
+  return useQuery("myProfile", getMyProfile, {
+    staleTime: Infinity,
+    cacheTime: Infinity,
   });
 }
 
@@ -34,9 +34,9 @@ function getAllProfiles(): Promise<Profile[]> {
 }
 
 export function useGetAllProfiles() {
-  return useQuery({
-    queryKey: "allProfiles",
-    queryFn: () => getAllProfiles(),
+  return useQuery("allProfiles", getAllProfiles, {
+    staleTime: Infinity,
+    cacheTime: Infinity,
   });
 }
 
