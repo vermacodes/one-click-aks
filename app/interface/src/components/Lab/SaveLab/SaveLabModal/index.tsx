@@ -52,6 +52,7 @@ export default function SaveLabModal({ lab, showModal, setShowModal }: Props) {
   }
 
   function onConfirmCreateLab() {
+    setShowConfirmationModal(false);
     const response = toast.promise(createLab(labState), {
       pending: "Saving lab...",
       success: "Lab saved.",
