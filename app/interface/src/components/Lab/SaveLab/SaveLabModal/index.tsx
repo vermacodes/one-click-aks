@@ -160,7 +160,7 @@ export default function SaveLabModal({ lab, showModal, setShowModal }: Props) {
           onConfirm={onConfirmCreateLab}
         >
           <p className="text-xl">
-            Are you sure? This will create a new version for all users to see.
+            Are you sure? This will create a new version.
           </p>
         </ConfirmationModal>
       )}
