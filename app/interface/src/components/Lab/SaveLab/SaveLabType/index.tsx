@@ -21,14 +21,25 @@ export default function SaveLabType({ lab, setLab }: Props) {
       </label>
       <div className="flex items-center space-x-4">
         <Checkbox
-          checked={lab.type === "template"}
+          checked={lab.type === "privatelab"}
           disabled={false}
           tooltipMessage="This will be saved privately in your storage account."
-          id="template"
-          key={"template"}
-          label="My Lab"
+          id="privatelab"
+          key={"privatelab"}
+          label="Private Lab"
           handleOnChange={() => {
-            setLab({ ...lab, type: "template" });
+            setLab({ ...lab, type: "privatelab", category: "private" });
+          }}
+        />
+        <Checkbox
+          checked={lab.type === "challengelab"}
+          disabled={false}
+          tooltipMessage="This will be visible to you and other owners."
+          id="challengelab"
+          key={"challengelab"}
+          label="Challenge Lab"
+          handleOnChange={() => {
+            setLab({ ...lab, type: "challengelab", category: "private" });
           }}
         />
         <Checkbox
@@ -52,7 +63,9 @@ export default function SaveLabType({ lab, setLab }: Props) {
           id="publiclab"
           key={"publiclab"}
           label="Public Lab"
-          handleOnChange={() => setLab({ ...lab, type: "publiclab" })}
+          handleOnChange={() =>
+            setLab({ ...lab, type: "publiclab", category: "public" })
+          }
         />
         <Checkbox
           checked={lab.type === "readinesslab"}
@@ -70,10 +83,12 @@ export default function SaveLabType({ lab, setLab }: Props) {
               ? "You must be an admin or mentor to create a readiness lab."
               : "Use this to save lab as readiness lab."
           }
-          id="readinesslabs"
-          key={"readinesslabs"}
+          id="readinesslab"
+          key={"readinesslab"}
           label="Readiness Lab"
-          handleOnChange={() => setLab({ ...lab, type: "readinesslab" })}
+          handleOnChange={() =>
+            setLab({ ...lab, type: "readinesslab", category: "protected" })
+          }
         />
         <Checkbox
           checked={lab.type === "mockcase"}
@@ -94,7 +109,9 @@ export default function SaveLabType({ lab, setLab }: Props) {
           id="mockcase"
           key={"mockcase"}
           label="Mock Case"
-          handleOnChange={() => setLab({ ...lab, type: "mockcase" })}
+          handleOnChange={() =>
+            setLab({ ...lab, type: "mockcase", category: "protected" })
+          }
         />
       </div>
     </div>

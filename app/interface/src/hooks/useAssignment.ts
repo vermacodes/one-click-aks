@@ -4,7 +4,7 @@ import { Assignment, BulkAssignment, Lab } from "../dataStructures";
 import { authAxiosInstance } from "../utils/axios-interceptors";
 
 function getAssignments(): Promise<AxiosResponse<Assignment[]>> {
-  return authAxiosInstance("assignments");
+  return authAxiosInstance("assignment");
 }
 
 export function useGetAssignments() {
@@ -16,7 +16,7 @@ export function useGetAssignments() {
 }
 
 function getMyAssignments(): Promise<AxiosResponse<Assignment[]>> {
-  return authAxiosInstance("assignments/my");
+  return authAxiosInstance("assignment/my");
 }
 
 export function useGetMyAssignments() {
@@ -28,7 +28,7 @@ export function useGetMyAssignments() {
 }
 
 function createAssignments(bulkAssignment: BulkAssignment) {
-  return authAxiosInstance.post("assignments", bulkAssignment);
+  return authAxiosInstance.post("assignment", bulkAssignment);
 }
 
 export function useCreateAssignments() {
@@ -43,7 +43,7 @@ export function useCreateAssignments() {
 }
 
 function createMyAssignments(bulkAssignment: BulkAssignment) {
-  return authAxiosInstance.post("assignments/my", bulkAssignment);
+  return authAxiosInstance.post("assignment/my", bulkAssignment);
 }
 
 export function useCreateMyAssignments() {
@@ -58,7 +58,7 @@ export function useCreateMyAssignments() {
 }
 
 function deleteAssignment(bulkAssignment: string[]) {
-  return authAxiosInstance.delete(`assignments`, { data: bulkAssignment });
+  return authAxiosInstance.delete(`assignment`, { data: bulkAssignment });
 }
 
 export function useDeleteAssignment() {
@@ -73,7 +73,7 @@ export function useDeleteAssignment() {
 }
 
 function deleteMyAssignment(bulkAssignment: string[]) {
-  return authAxiosInstance.delete(`assignments/my`, { data: bulkAssignment });
+  return authAxiosInstance.delete(`assignment/my`, { data: bulkAssignment });
 }
 
 export function useDeleteMyAssignment() {
@@ -88,7 +88,7 @@ export function useDeleteMyAssignment() {
 }
 
 function getUserAssignedLabs(): Promise<AxiosResponse<Lab[]>> {
-  return authAxiosInstance.get("assignments/labs/my");
+  return authAxiosInstance.get("assignment/labs/my");
 }
 
 export function useGetUserAssignedLabs() {
@@ -104,7 +104,7 @@ export function useGetUserAssignedLabs() {
 function getAssignmentsByUserId(
   userId: string
 ): Promise<AxiosResponse<Assignment[]>> {
-  return authAxiosInstance.get(`assignments/user/${userId}`);
+  return authAxiosInstance.get(`assignment/user/${userId}`);
 }
 
 export function useGetAssignmentsByUserId(userId: string) {
@@ -124,7 +124,7 @@ export function useGetAssignmentsByUserId(userId: string) {
 function getAssignmentsByLabId(
   labId: string
 ): Promise<AxiosResponse<Assignment[]>> {
-  return authAxiosInstance.get(`assignments/lab/${labId}`);
+  return authAxiosInstance.get(`assignment/lab/${labId}`);
 }
 
 export function useGetAssignmentsByLabId(labId: string) {
@@ -142,7 +142,7 @@ export function useGetAssignmentsByLabId(labId: string) {
 }
 
 function getAllReadinessLabsRedacted(): Promise<AxiosResponse<Lab[]>> {
-  return authAxiosInstance.get("assignments/labs");
+  return authAxiosInstance.get("assignment/labs");
 }
 
 export function useGetAllReadinessLabsRedacted() {
@@ -162,7 +162,7 @@ export function useGetAllReadinessLabsRedacted() {
 function getReadinessLabsRedactedByUserId(
   userId: string
 ): Promise<AxiosResponse<Lab[]>> {
-  return authAxiosInstance.get(`assignments/labs/${userId}`);
+  return authAxiosInstance.get(`assignment/labs/${userId}`);
 }
 
 export function useGetReadinessLabsRedactedByUserId(userId: string) {

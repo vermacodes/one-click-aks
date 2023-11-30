@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Lab } from "../../../../dataStructures";
-import LabCard from "../../LabCard";
-import LabVersionsTable from "../LabVersionsTable";
-import LabVersionDiff from "../LabVersionDiff";
 import { useGetVersionsById } from "../../../../hooks/useBlobs";
+import LabCard from "../../LabCard";
+import LabVersionDiff from "../LabVersionDiff";
+import LabVersionsTable from "../LabVersionsTable";
 
 type Props = {
   lab: Lab;
@@ -17,11 +17,7 @@ export default function LabVersions({ lab }: Props) {
     data: labs,
     isLoading,
     isFetching,
-  } = useGetVersionsById(
-    lab.id,
-    lab.type,
-    lab.type === "publiclab" ? "public" : "protected"
-  );
+  } = useGetVersionsById(lab.id, lab.type, lab.category);
 
   useEffect(() => {
     setSelectedLab(lab);

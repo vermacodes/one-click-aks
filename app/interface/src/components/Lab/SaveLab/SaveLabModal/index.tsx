@@ -132,6 +132,7 @@ export default function SaveLabModal({ lab, showModal, setShowModal }: Props) {
                 !labDescriptionSchema.safeParse(labState.description).success
               }
               onClick={() => {
+                setLabState({ ...labState, id: "" }); // Clear the ID so it creates a new lab
                 labState.type === "template"
                   ? handleCreateMyLab()
                   : handleCreateLab();

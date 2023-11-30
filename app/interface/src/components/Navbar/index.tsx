@@ -8,12 +8,14 @@ import {
   FaFlask,
   FaKey,
   FaList,
-  FaPeopleCarry,
+  FaPuzzlePiece,
   FaRocket,
   FaShieldAlt,
   FaTimes,
   FaTools,
+  FaUser,
   FaUserGraduate,
+  FaUsers,
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useDefaultAccount } from "../../hooks/useDefaultAccount";
@@ -89,17 +91,27 @@ function Pages() {
           </Link>
         </li>
         <li>
-          <Link to={"/labs/publiclabs"}>
+          <Link to={"/labs/privatelab"}>
             <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
               <span>
-                <FaPeopleCarry />
+                <FaUser />
+              </span>
+              <span>Private Labs</span>
+            </button>
+          </Link>
+        </li>
+        <li>
+          <Link to={"/labs/publiclab"}>
+            <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
+              <span>
+                <FaUsers />
               </span>
               <span>Public Labs</span>
             </button>
           </Link>
         </li>
         <li>
-          <Link to={"/labs/assignments"}>
+          <Link to={"/labs/assignment"}>
             <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
               <span>
                 <FaUserGraduate />
@@ -111,7 +123,17 @@ function Pages() {
         {profile && profile.roles.includes("mentor") && (
           <>
             <li>
-              <Link to={"/labs/readinesslabs"}>
+              <Link to={"/labs/challengelab"}>
+                <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
+                  <span>
+                    <FaPuzzlePiece />
+                  </span>
+                  <span>Challenge Labs</span>
+                </button>
+              </Link>
+            </li>
+            <li>
+              <Link to={"/labs/readinesslab"}>
                 <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
                   <span>
                     <FaFlask />
@@ -121,7 +143,7 @@ function Pages() {
               </Link>
             </li>
             <li>
-              <Link to={"/labs/mockcases"}>
+              <Link to={"/labs/mockcase"}>
                 <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
                   <span>
                     <FaClipboard />

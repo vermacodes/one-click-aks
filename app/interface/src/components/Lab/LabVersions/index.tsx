@@ -1,17 +1,17 @@
-import { useEffect, useState } from "react";
-import { diffLines, Change } from "diff";
+import { Change, diffLines } from "diff";
 import { html as beautifyHtml } from "js-beautify";
+import { useEffect, useState } from "react";
+import { FaCheck } from "react-icons/fa";
+import { MdClose } from "react-icons/md";
+import { useQueryClient } from "react-query";
+import { toast } from "react-toastify";
 import { ButtonVariant, Lab } from "../../../dataStructures";
 import { useCreateLab, useGetVersionsById } from "../../../hooks/useBlobs";
-import ModalBackdrop from "../../UserInterfaceComponents/Modal/ModalBackdrop";
 import Button from "../../UserInterfaceComponents/Button";
-import { MdClose } from "react-icons/md";
-import { FaCheck } from "react-icons/fa";
-import { toast } from "react-toastify";
-import ConfirmationModal from "../../UserInterfaceComponents/Modal/ConfirmationModal";
-import { useQueryClient } from "react-query";
-import LabCard from "../LabCard";
 import Checkbox from "../../UserInterfaceComponents/Checkbox";
+import ConfirmationModal from "../../UserInterfaceComponents/Modal/ConfirmationModal";
+import ModalBackdrop from "../../UserInterfaceComponents/Modal/ModalBackdrop";
+import LabCard from "../LabCard";
 
 function formatDate(dateString: string) {
   const date = new Date(dateString);
@@ -31,24 +31,22 @@ export default function LabVersions({
 }: Props) {
   const [id, setId] = useState<string | undefined>(undefined);
   const [typeOfLab, setTypeOfLab] = useState<string | undefined>(undefined);
-  const [secure, setSecure] = useState<string | undefined>(undefined);
+  const [categoryOfLab, setCategoryOfLab] = useState<string | undefined>(
+    undefined
+  );
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showConfirmationModal, setShowConfirmationModal] =
     useState<boolean>(false);
   const { mutateAsync: createLab } = useCreateLab();
   const queryClient = useQueryClient();
 
-  const { data: labs } = useGetVersionsById(id, typeOfLab, secure);
+  const { data: labs } = useGetVersionsById(id, typeOfLab, categoryOfLab);
 
   useEffect(() => {
     if (parentLab) {
       setId(parentLab.id);
       setTypeOfLab(parentLab.type);
-      if (parentLab.type === "publiclab") {
-        setSecure("public");
-      } else {
-        setSecure("protected");
-      }
+      setCategoryOfLab(parentLab.category);
     }
   }, [parentLab]);
 
@@ -70,7 +68,7 @@ export default function LabVersions({
       queryClient.invalidateQueries("sharedLabs");
       queryClient.invalidateQueries("publicLabs");
       queryClient.invalidateQueries(
-        `versions-${parentLab.type}-${parentLab.id}-${secure}`
+        `versions-${parentLab.type}-${parentLab.id}-${categoryOfLab}`
       );
     });
   }

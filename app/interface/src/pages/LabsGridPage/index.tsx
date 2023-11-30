@@ -22,18 +22,21 @@ export default function LabsGridPage() {
   const { labs, isLoading } = getLabsByType({ labType: type });
 
   useEffect(() => {
-    if (type.endsWith("labs")) {
+    if (type.endsWith("lab")) {
       setPageHeading(
-        type.charAt(0).toUpperCase() + type.slice(1).replace(/labs$/, " Labs")
+        type.charAt(0).toUpperCase() + type.slice(1).replace(/lab$/, " Labs")
       );
     }
-    if (type.endsWith("cases")) {
+    if (type === "template") {
+      setPageHeading("My Labs (Deprecated)");
+    }
+    if (type.endsWith("case")) {
       setPageHeading(
-        type.charAt(0).toUpperCase() + type.slice(1).replace(/cases$/, " Cases")
+        type.charAt(0).toUpperCase() + type.slice(1).replace(/case$/, " Cases")
       );
     }
-    if (type.endsWith("assignments")) {
-      setPageHeading(type.charAt(0).toUpperCase() + type.slice(1));
+    if (type.endsWith("assignment")) {
+      setPageHeading("My Assignments");
     }
     document.title = "ACT Labs | " + pageHeading;
   }, [type, pageHeading]);
