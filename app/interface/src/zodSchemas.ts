@@ -28,6 +28,14 @@ export const labDescriptionSchema = z
     "Lab description must not exceed 5000 characters. Wanna write more? Add wiki page and link here."
   );
 
+//lab description
+export const labMessageSchema = z
+  .string()
+  .max(
+    5000,
+    "Lab description must not exceed 5000 characters. Wanna write more? Add wiki page and link here."
+  );
+
 //lab tag
 export const labTagSchema = z
   .string()

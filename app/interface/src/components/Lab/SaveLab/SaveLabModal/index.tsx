@@ -8,6 +8,7 @@ import { useGlobalStateContext } from "../../../Context/GlobalStateContext";
 import Button from "../../../UserInterfaceComponents/Button";
 import ConfirmationModal from "../../../UserInterfaceComponents/Modal/ConfirmationModal";
 import SaveLabDescription from "../SaveLabDescription";
+import SaveLabMessage from "../SaveLabMessage";
 import SaveLabName from "../SaveLabName";
 import SaveLabTags from "../SaveLabTags";
 import SaveLabType from "../SaveLabType";
@@ -103,6 +104,10 @@ export default function SaveLabModal({ lab, showModal, setShowModal }: Props) {
         <SaveLabName lab={labState} setLab={setLabState} />
         <SaveLabTags lab={labState} setLab={setLabState} />
         <SaveLabDescription lab={labState} setLab={setLabState} />
+        {(labState.type === "challengelab" ||
+          labState.type === "readinesslab") && (
+          <SaveLabMessage lab={labState} setLab={setLabState} />
+        )}
         <SaveLabType lab={labState} setLab={setLabState} />
         <div className="flex items-end justify-end gap-x-4">
           <Button
