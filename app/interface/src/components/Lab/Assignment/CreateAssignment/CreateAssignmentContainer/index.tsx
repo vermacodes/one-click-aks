@@ -1,24 +1,24 @@
 import { useState } from "react";
+import { useQueryClient } from "react-query";
+import { toast } from "react-toastify";
+import { BulkAssignment, Lab, Profile } from "../../../../../dataStructures";
+import { useCreateAssignments } from "../../../../../hooks/useAssignment";
 import Button from "../../../../UserInterfaceComponents/Button";
 import Container from "../../../../UserInterfaceComponents/Container";
-import { BulkAssignment, Lab } from "../../../../../dataStructures";
-import { useCreateAssignments } from "../../../../../hooks/useAssignment";
-import { toast } from "react-toastify";
-import { useQueryClient } from "react-query";
 import SelectLabsDropdown from "../SelectLabsDropdown";
-import SelectUsersDropdown from "../SelectUsersDropdown";
+import SelectProfilesDropdown from "../SelectProfilesDropdown";
 
 export default function CreateAssignmentContainer() {
   const { mutateAsync: createBulkAssignments } = useCreateAssignments();
   const queryClient = useQueryClient();
 
   const [selectedLabs, setSelectedLabs] = useState<Lab[]>([]);
-  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+  const [selectedProfiles, setSelectedProfiles] = useState<Profile[]>([]);
 
   function onAssignClick() {
     let bulkAssignments: BulkAssignment = {
       labIds: selectedLabs.map((lab) => lab.id),
-      userIds: selectedUsers,
+      userIds: selectedProfiles.map((profile) => profile.userPrincipal),
     };
 
     const response = toast.promise(createBulkAssignments(bulkAssignments), {
@@ -33,7 +33,7 @@ export default function CreateAssignmentContainer() {
       });
 
       // invalidate all user id queries.
-      selectedUsers.forEach((user) => {
+      selectedProfiles.forEach((user) => {
         queryClient.invalidateQueries(["get-assignments-by-user-id", user]);
         queryClient.invalidateQueries(["get-assignments-by-user-id", user]);
         queryClient.invalidateQueries([
@@ -48,7 +48,7 @@ export default function CreateAssignmentContainer() {
       });
 
       setSelectedLabs([]);
-      setSelectedUsers([]);
+      setSelectedProfiles([]);
     });
   }
 
@@ -59,9 +59,9 @@ export default function CreateAssignmentContainer() {
           selectedLabs={selectedLabs}
           setSelectedLabs={setSelectedLabs}
         />
-        <SelectUsersDropdown
-          selectedUsers={selectedUsers}
-          setSelectedUsers={setSelectedUsers}
+        <SelectProfilesDropdown
+          selectedProfiles={selectedProfiles}
+          setSelectedProfiles={setSelectedProfiles}
         />
         <div className="flex">
           <Button variant="primary-outline" onClick={onAssignClick}>

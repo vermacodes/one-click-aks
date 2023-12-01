@@ -12,7 +12,7 @@ import Button from "../../UserInterfaceComponents/Button";
 import Container from "../../UserInterfaceComponents/Container";
 import ModalBackdrop from "../../UserInterfaceComponents/Modal/ModalBackdrop";
 import Tooltip from "../../UserInterfaceComponents/Tooltip";
-import SelectUsersDropdown from "../Assignment/CreateAssignment/SelectUsersDropdown";
+import SelectUsersDropdown from "../Assignment/CreateAssignment/SelectProfilesDropdown";
 
 export type Props = {
   lab: Lab;
@@ -21,7 +21,7 @@ export type Props = {
 export default function LabProfiles({ lab, profileType }: Props) {
   const [filteredProfiles, setFilteredProfiles] = useState<Profile[]>([]);
   const [meOwner, setMeOwner] = useState<boolean>(false);
-  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+  const [selectedProfiles, setSelectedProfiles] = useState<Profile[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const { data: profiles } = useGetAllProfilesRedacted();
@@ -39,10 +39,8 @@ export default function LabProfiles({ lab, profileType }: Props) {
 
   useEffect(() => {
     if (filteredProfiles.length) {
-      const newSelectedUsers = filteredProfiles?.map(
-        (profile) => profile.userPrincipal
-      );
-      setSelectedUsers(newSelectedUsers);
+      const newSelectedProfiles = filteredProfiles?.map((profile) => profile);
+      setSelectedProfiles(newSelectedProfiles);
     }
   }, [filteredProfiles]);
 
@@ -98,8 +96,8 @@ export default function LabProfiles({ lab, profileType }: Props) {
           title={title}
           lab={lab}
           profileType={profileType}
-          selectedUsers={selectedUsers}
-          setSelectedUsers={setSelectedUsers}
+          selectedProfiles={selectedProfiles}
+          setSelectedProfiles={setSelectedProfiles}
           setShowModal={setShowModal}
         />
       )}
@@ -112,8 +110,8 @@ type ModalProps = {
   lab: Lab;
   profileType: "owners" | "editors" | "viewers";
   setShowModal: (showModal: boolean) => void;
-  selectedUsers: string[];
-  setSelectedUsers: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedProfiles: Profile[];
+  setSelectedProfiles: React.Dispatch<React.SetStateAction<Profile[]>>;
 };
 
 function Modal({
@@ -121,14 +119,14 @@ function Modal({
   lab,
   profileType,
   setShowModal,
-  selectedUsers,
-  setSelectedUsers,
+  selectedProfiles,
+  setSelectedProfiles,
 }: ModalProps) {
   const { mutateAsync: createLab } = useCreateLab();
 
   function onUpdate() {
     setShowModal(false);
-    lab[profileType] = selectedUsers;
+    lab[profileType] = selectedProfiles.map((profile) => profile.userPrincipal);
     toast.promise(createLab(lab), {
       pending: "Saving lab...",
       success: "Lab saved.",
@@ -165,8 +163,8 @@ function Modal({
         </div>
         <div className="flex h-[90%] w-full flex-col justify-between">
           <SelectUsersDropdown
-            selectedUsers={selectedUsers}
-            setSelectedUsers={setSelectedUsers}
+            selectedProfiles={selectedProfiles}
+            setSelectedProfiles={setSelectedProfiles}
           />
           <div className="flex flex-row justify-end gap-2">
             <Button variant="primary" onClick={onUpdate}>
