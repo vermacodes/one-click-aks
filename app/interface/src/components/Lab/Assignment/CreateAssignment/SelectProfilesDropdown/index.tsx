@@ -108,7 +108,7 @@ export default function SelectProfilesDropdown({
           <div className="flex h-fit items-center gap-2">
             <span>
               {profile.profilePhoto === "" ? (
-                <div className="flex h-12 max-h-12 w-12 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-800">
+                <div className="flex h-12 max-h-12 w-12 items-center justify-center rounded-full bg-slate-300 dark:bg-slate-900">
                   <FaUser />
                 </div>
               ) : (
