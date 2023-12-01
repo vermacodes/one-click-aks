@@ -239,11 +239,14 @@ export type Lab = {
 
 export type Assignment = {
   assignmentId: string;
+  assignmentType: "assignment" | "challenge";
   userId: string;
   labId: string;
-  createdOn: string;
   createdBy: string;
-  status: string;
+  createdOn: string;
+  acceptedOn: string;
+  completedOn: string;
+  status: "created" | "accepted" | "completed";
 };
 
 export type BulkAssignment = {
