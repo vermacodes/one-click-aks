@@ -26,15 +26,16 @@ export default function LabsGridPage() {
       setPageHeading(
         type.charAt(0).toUpperCase() + type.slice(1).replace(/lab$/, " Labs")
       );
-    }
-    if (type.endsWith("case")) {
+    } else if (type.endsWith("case")) {
       setPageHeading(
         type.charAt(0).toUpperCase() + type.slice(1).replace(/case$/, " Cases")
       );
-    }
-    if (type.endsWith("assignment")) {
+    } else if (type.endsWith("assignment")) {
       setPageHeading("My Assignments");
+    } else {
+      setPageHeading("My Saved Labs (Deprecated) - Use Private Labs");
     }
+
     document.title = "ACT Labs | " + pageHeading;
   }, [type, pageHeading]);
 
