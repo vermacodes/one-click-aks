@@ -111,6 +111,16 @@ function Pages() {
           </Link>
         </li>
         <li>
+          <Link to={"/labs/challengelab"}>
+            <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
+              <span>
+                <FaPuzzlePiece />
+              </span>
+              <span>Challenge Labs</span>
+            </button>
+          </Link>
+        </li>
+        <li>
           <Link to={"/labs/assignment"}>
             <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
               <span>
@@ -120,18 +130,18 @@ function Pages() {
             </button>
           </Link>
         </li>
+        <li>
+          <Link to={"/labs/challengelab"}>
+            <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
+              <span>
+                <FaPuzzlePiece />
+              </span>
+              <span>Challenges</span>
+            </button>
+          </Link>
+        </li>
         {profile && profile.roles.includes("mentor") && (
           <>
-            <li>
-              <Link to={"/labs/challengelab"}>
-                <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
-                  <span>
-                    <FaPuzzlePiece />
-                  </span>
-                  <span>Challenge Labs</span>
-                </button>
-              </Link>
-            </li>
             <li>
               <Link to={"/labs/readinesslab"}>
                 <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
