@@ -165,6 +165,9 @@ const defaultLab: Lab = {
   updatedBy: "",
   createdOn: "",
   updatedOn: "",
+  owners: [],
+  editors: [],
+  viewers: [],
   versionId: "",
   isCurrentVersion: true,
 };

@@ -1,0 +1,183 @@
+import { useEffect, useState } from "react";
+import { FaUser } from "react-icons/fa";
+import { MdClose } from "react-icons/md";
+import { toast } from "react-toastify";
+import { Lab, Profile } from "../../../dataStructures";
+import { useCreateLab } from "../../../hooks/useBlobs";
+import {
+  useGetAllProfilesRedacted,
+  useGetMyProfile,
+} from "../../../hooks/useProfile";
+import Button from "../../UserInterfaceComponents/Button";
+import Container from "../../UserInterfaceComponents/Container";
+import ModalBackdrop from "../../UserInterfaceComponents/Modal/ModalBackdrop";
+import Tooltip from "../../UserInterfaceComponents/Tooltip";
+import SelectUsersDropdown from "../Assignment/CreateAssignment/SelectUsersDropdown";
+
+export type Props = {
+  lab: Lab;
+  profileType: "owners" | "editors" | "viewers";
+};
+export default function LabProfiles({ lab, profileType }: Props) {
+  const [filteredProfiles, setFilteredProfiles] = useState<Profile[]>([]);
+  const [meOwner, setMeOwner] = useState<boolean>(false);
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+  const [showModal, setShowModal] = useState<boolean>(false);
+
+  const { data: profiles } = useGetAllProfilesRedacted();
+  const { data: myProfile } = useGetMyProfile();
+  const title = profileType.charAt(0).toUpperCase() + profileType.slice(1);
+
+  useEffect(() => {
+    if (profiles?.length) {
+      const filteredProfiles = profiles.filter((profile) => {
+        return lab[profileType]?.includes(profile.userPrincipal);
+      });
+      setFilteredProfiles(filteredProfiles);
+    }
+  }, [profiles, lab, profileType]);
+
+  useEffect(() => {
+    if (filteredProfiles.length) {
+      const newSelectedUsers = filteredProfiles?.map(
+        (profile) => profile.userPrincipal
+      );
+      setSelectedUsers(newSelectedUsers);
+    }
+  }, [filteredProfiles]);
+
+  useEffect(() => {
+    if (myProfile && lab) {
+      setMeOwner(lab.owners.includes(myProfile.userPrincipal));
+    }
+  }, [myProfile, lab, profileType]);
+
+  if (!filteredProfiles?.length && !meOwner) {
+    return null;
+  }
+
+  return (
+    <Container title={title} hoverEffect={false} additionalClasses="outline">
+      <div className="flex flex-row flex-wrap justify-between gap-2">
+        <div className="flex flex-row flex-wrap gap-2">
+          {filteredProfiles?.map((profile) => {
+            return (
+              <Tooltip
+                key={profile.objectId}
+                message={profile.displayName || profile.userPrincipal}
+                delay={1000}
+              >
+                {profile.profilePhoto === "" ? (
+                  <div className="flex h-8 max-h-8 w-8 items-center justify-center rounded-full bg-slate-300 dark:bg-slate-700">
+                    <FaUser />
+                  </div>
+                ) : (
+                  <img
+                    className="h-full max-h-8 rounded-full"
+                    src={profile.profilePhoto}
+                    alt="Profile Picture"
+                  />
+                )}
+              </Tooltip>
+            );
+          })}
+        </div>
+        {meOwner && (
+          <Tooltip message={"Add or Remove " + title} delay={1000}>
+            <Button
+              variant="primary-outline"
+              onClick={() => setShowModal(true)}
+            >
+              Update
+            </Button>
+          </Tooltip>
+        )}
+      </div>
+      {showModal && (
+        <Modal
+          title={title}
+          lab={lab}
+          profileType={profileType}
+          selectedUsers={selectedUsers}
+          setSelectedUsers={setSelectedUsers}
+          setShowModal={setShowModal}
+        />
+      )}
+    </Container>
+  );
+}
+
+type ModalProps = {
+  title: string;
+  lab: Lab;
+  profileType: "owners" | "editors" | "viewers";
+  setShowModal: (showModal: boolean) => void;
+  selectedUsers: string[];
+  setSelectedUsers: React.Dispatch<React.SetStateAction<string[]>>;
+};
+
+function Modal({
+  title,
+  lab,
+  profileType,
+  setShowModal,
+  selectedUsers,
+  setSelectedUsers,
+}: ModalProps) {
+  const { mutateAsync: createLab } = useCreateLab();
+
+  function onUpdate() {
+    setShowModal(false);
+    lab[profileType] = selectedUsers;
+    toast.promise(createLab(lab), {
+      pending: "Saving lab...",
+      success: "Lab saved.",
+      error: {
+        render(data: any) {
+          return `Lab creation failed: ${data.data.data}`;
+        },
+        autoClose: false,
+      },
+    });
+  }
+
+  return (
+    <ModalBackdrop
+      onClick={(e) => {
+        e.stopPropagation;
+        setShowModal(false);
+      }}
+    >
+      <div
+        className="my-20 h-[550px] w-1/3 divide-y divide-slate-300 overflow-y-auto rounded bg-slate-100 p-5 overflow-x-hidden scrollbar-thin  scrollbar-thumb-slate-400 dark:divide-slate-700 dark:bg-slate-900 dark:scrollbar-thumb-slate-600"
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
+        <div className="w-100 flex justify-between pb-2 ">
+          <h1 className="text-3xl">{"Add " + title}</h1>
+          <button
+            onClick={() => setShowModal(false)}
+            className="hover:text-sky-500"
+          >
+            <MdClose className="text-3xl" />
+          </button>
+        </div>
+        <div className="flex h-[90%] w-full flex-col justify-between">
+          <SelectUsersDropdown
+            selectedUsers={selectedUsers}
+            setSelectedUsers={setSelectedUsers}
+          />
+          <div className="flex flex-row justify-end gap-2">
+            <Button variant="primary" onClick={onUpdate}>
+              Update
+            </Button>
+            <Button variant="secondary" onClick={() => setShowModal(false)}>
+              Cancel
+            </Button>
+          </div>
+        </div>
+      </div>
+    </ModalBackdrop>
+  );
+}

@@ -4,13 +4,13 @@ import {
   FaClipboard,
   FaCog,
   FaComments,
-  FaFileCode,
   FaFlask,
   FaKey,
   FaList,
   FaPuzzlePiece,
   FaRocket,
   FaShieldAlt,
+  FaSuperpowers,
   FaTimes,
   FaTools,
   FaUser,
@@ -80,7 +80,7 @@ function Pages() {
             </button>
           </Link>
         </li>
-        <li>
+        {/* <li>
           <Link to={"/labs/mylabs"}>
             <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
               <span>
@@ -89,7 +89,7 @@ function Pages() {
               <span>My Saved Labs</span>
             </button>
           </Link>
-        </li>
+        </li> */}
         <li>
           <Link to={"/labs/privatelab"}>
             <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
@@ -134,9 +134,9 @@ function Pages() {
           <Link to={"/labs/challengelab"}>
             <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
               <span>
-                <FaPuzzlePiece />
+                <FaSuperpowers />
               </span>
-              <span>Challenges</span>
+              <span>My Challenges</span>
             </button>
           </Link>
         </li>

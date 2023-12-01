@@ -31,7 +31,7 @@ export default function LabsGridPage() {
         type.charAt(0).toUpperCase() + type.slice(1).replace(/case$/, " Cases")
       );
     } else if (type.endsWith("assignment")) {
-      setPageHeading("My Assignments");
+      setPageHeading("Assignments");
     } else {
       setPageHeading("My Saved Labs (Deprecated) - Use Private Labs");
     }
@@ -58,7 +58,7 @@ export default function LabsGridPage() {
   if (!labs?.length) {
     return (
       <PageLayout heading={pageHeading}>
-        <p className="text-4xl">No labs found!</p>
+        <p className="text-4xl">No {pageHeading.toLowerCase()} found!</p>
       </PageLayout>
     );
   }

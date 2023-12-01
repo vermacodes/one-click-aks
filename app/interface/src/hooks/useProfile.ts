@@ -29,6 +29,17 @@ export function useGetMyProfile() {
   });
 }
 
+function getAllProfilesRedacted(): Promise<Profile[]> {
+  return authAxiosInstance.get(`profilesRedacted`).then((res) => res.data);
+}
+
+export function useGetAllProfilesRedacted() {
+  return useQuery("allProfilesRedacted", getAllProfilesRedacted, {
+    staleTime: Infinity,
+    cacheTime: Infinity,
+  });
+}
+
 function getAllProfiles(): Promise<Profile[]> {
   return authAxiosInstance.get(`profiles`).then((res) => res.data);
 }

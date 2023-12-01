@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom";
-import { Lab } from "../../../dataStructures";
 import ReactHtmlParser from "html-react-parser";
 import {
   FaRegCalendarAlt,
@@ -7,8 +5,11 @@ import {
   FaUser,
   FaUserEdit,
 } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { Lab } from "../../../dataStructures";
 import { decodeIfEncoded } from "../../../utils/helpers";
 import LabActionButtons from "../LabActionButtons/LabActionButtons";
+import LabProfiles from "../LabProfiles";
 import LabVersionsButton from "../LabVersions/LabVersionsButton";
 
 type Props = {
@@ -32,6 +33,17 @@ export default function LabCard({
       <LabDescription lab={lab} fullPage={fullPage} />
       <LabTags tags={lab.tags} />
       <LabActionButtons lab={lab} />
+      {fullPage && (
+        <>
+          <LabProfiles lab={lab} profileType="owners" />
+          {(lab.category === "public" || lab.category === "private") && (
+            <LabProfiles lab={lab} profileType="editors" />
+          )}
+          {lab.category === "private" && (
+            <LabProfiles lab={lab} profileType="viewers" />
+          )}
+        </>
+      )}
       <LabCredits lab={lab} />
     </div>
   );

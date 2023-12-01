@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaUserNinja } from "react-icons/fa";
+import { FaUser } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { Profile, ProfileMutation } from "../../../../dataStructures";
 import { useAddRole, useRemoveRole } from "../../../../hooks/useProfile";
@@ -52,7 +52,9 @@ export default function ProfileComponent({ profile }: Props) {
       <div className="flex h-fit items-center gap-2">
         <span>
           {profile.profilePhoto === "" ? (
-            <FaUserNinja />
+            <div className="flex h-12 max-h-12 w-12 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-800">
+              <FaUser />
+            </div>
           ) : (
             <img
               className="h-full max-h-12 rounded-full"
