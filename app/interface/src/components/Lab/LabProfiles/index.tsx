@@ -80,7 +80,7 @@ export default function LabProfiles({ lab, profileType }: Props) {
             );
           })}
         </div>
-        {meOwner && (
+        {meOwner && lab.type !== "assignment" && lab.type !== "challenge" && (
           <Tooltip message={"Add or Remove " + title} delay={1000}>
             <Button
               variant="primary-outline"
