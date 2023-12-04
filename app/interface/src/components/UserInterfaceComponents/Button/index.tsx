@@ -36,6 +36,8 @@ const variantStyles: VariantStyles = {
     "border-1 rounded-full border-slate-50 py-2 px-2 hover:bg-sky-500 hover:bg-opacity-20 dark:border-slate-900",
   "secondary-icon":
     "border-1 rounded-full border-slate-50 py-2 px-2 hover:bg-slate-500 hover:bg-opacity-20 dark:border-slate-900",
+  "danger-icon":
+    "border-0 rounded-full border-slate-50 py-2 px-2 hover:bg-rose-500 hover:bg-opacity-50 dark:border-slate-900",
 };
 
 function getClassName(variant: ButtonVariant, hidden?: boolean) {

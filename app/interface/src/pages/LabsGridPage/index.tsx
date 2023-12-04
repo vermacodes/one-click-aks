@@ -32,6 +32,8 @@ export default function LabsGridPage() {
       );
     } else if (type.endsWith("assignment")) {
       setPageHeading("Assignments");
+    } else if (type.endsWith("challenge")) {
+      setPageHeading("Challenges");
     } else {
       setPageHeading("My Saved Labs (Deprecated) - Use Private Labs");
     }

@@ -10,6 +10,7 @@ import {
   useSharedTemplates,
   useTemplates,
 } from "./useBlobs";
+import { useGetMyChallengeLabsRedacted } from "./useChallenge";
 
 export function useGetLabs() {
   const [userId, setUserId] = useState<string>("my");
@@ -28,6 +29,7 @@ export function useGetLabs() {
     readinesslab: useReadinessLabs(),
     challengelab: useChallengeLabs(),
     assignment: useGetReadinessLabsRedactedByUserId(userId),
+    challenge: useGetMyChallengeLabsRedacted(),
   };
 
   type GetLabsByTypeProps = {

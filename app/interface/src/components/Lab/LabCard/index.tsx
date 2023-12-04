@@ -8,6 +8,7 @@ import {
 import { Link } from "react-router-dom";
 import { Lab } from "../../../dataStructures";
 import { decodeIfEncoded } from "../../../utils/helpers";
+import ChallengeProfiles from "../Challenge/ChallengeProfiles";
 import LabActionButtons from "../LabActionButtons/LabActionButtons";
 import LabProfiles from "../LabProfiles";
 import LabVersionsButton from "../LabVersions/LabVersionsButton";
@@ -41,6 +42,9 @@ export default function LabCard({
           )}
           {lab.category === "private" && (
             <LabProfiles lab={lab} profileType="viewers" />
+          )}
+          {(lab.type === "challengelab" || lab.type === "challenge") && (
+            <ChallengeProfiles lab={lab} />
           )}
         </>
       )}

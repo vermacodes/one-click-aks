@@ -7,11 +7,13 @@ import DropdownSelect from "../../../../UserInterfaceComponents/DropdownSelect";
 type Props = {
   selectedProfiles: Profile[];
   setSelectedProfiles: React.Dispatch<React.SetStateAction<Profile[]>>;
+  noShowProfiles?: Profile[]; // Profiles that should not be shown in the dropdown.
 };
 
 export default function SelectProfilesDropdown({
   selectedProfiles,
   setSelectedProfiles,
+  noShowProfiles,
 }: Props) {
   //const [uniqueProfiles, setUniqueProfiles] = useState<string[]>([]);
   const [uniqueProfiles, setUniqueProfiles] = useState<Profile[]>([]);
@@ -32,14 +34,6 @@ export default function SelectProfilesDropdown({
    */
   useEffect(() => {
     if (profiles) {
-      // const uniqueUserSet = new Set(uniqueProfiles);
-      // profiles.forEach((profile) => {
-      //   uniqueUserSet.add(profile.profilePrincipal);
-      // });
-      // if (uniqueProfiles.length !== uniqueUserSet.size) {
-      //   setUniqueProfiles([...uniqueUserSet]);
-      // }
-
       const uniqueProfileSet = new Set(uniqueProfiles);
       profiles.forEach((profile) => {
         uniqueProfileSet.add(profile);
@@ -147,6 +141,7 @@ export default function SelectProfilesDropdown({
           ...selectedProfiles,
           ...uniqueProfiles
             .filter((profile) => !selectedProfiles.includes(profile))
+            .filter((profile) => !noShowProfiles?.includes(profile))
             .filter((profile) =>
               JSON.stringify(profile)
                 .toLowerCase()

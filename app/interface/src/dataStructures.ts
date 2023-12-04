@@ -254,6 +254,17 @@ export type BulkAssignment = {
   labIds: string[];
 };
 
+export type Challenge = {
+  challengeId: string;
+  userId: string;
+  labId: string;
+  createdBy: string;
+  createdOn: string;
+  acceptedOn: string;
+  completedOn: string;
+  status: "created" | "accepted" | "completed";
+};
+
 export type Privilege = {
   user: string;
   isAdmin: boolean;
@@ -330,6 +341,7 @@ export type ButtonVariant =
   | "success-text"
   | "primary-icon"
   | "secondary-icon"
+  | "danger-icon"
   | "text";
 
 export type ButtonContainerObj = {
