@@ -131,7 +131,7 @@ function LabCredits({ lab }: LabCreditsProps) {
 
   return (
     <div className="flex flex-row justify-between gap-y-1 text-xs text-gray-500">
-      {lab.createdBy !== "" && lab.createdOn !== "" && (
+      {lab.createdBy !== "" && lab.createdOn !== "" && lab.updatedBy == "" && (
         <div className="flex flex-col gap-1">
           <span>Created on {lab.createdOn}</span>
           <div className="flex h-fit items-center gap-2">
