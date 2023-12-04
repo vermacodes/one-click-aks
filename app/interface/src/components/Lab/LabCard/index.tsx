@@ -37,10 +37,13 @@ export default function LabCard({
       {fullPage && (
         <>
           <LabProfiles lab={lab} profileType="owners" />
-          {(lab.category === "public" || lab.category === "private") && (
-            <LabProfiles lab={lab} profileType="editors" />
-          )}
-          {lab.category === "private" && (
+          {lab.type === "publiclab" ||
+            lab.type === "privatelab" ||
+            lab.type === "challengelab" ||
+            (lab.type === "challenge" && (
+              <LabProfiles lab={lab} profileType="editors" />
+            ))}
+          {lab.type === "privatelab" && (
             <LabProfiles lab={lab} profileType="viewers" />
           )}
           {(lab.type === "challengelab" || lab.type === "challenge") && (
