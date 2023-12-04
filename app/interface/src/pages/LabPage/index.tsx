@@ -47,7 +47,9 @@ export default function LabPage() {
       <LabCard
         lab={lab}
         fullPage={true}
-        showVersions={type !== "assignment" && type !== "template"}
+        showVersions={
+          type !== "assignment" && type !== "template" && type !== "challenge"
+        }
       />
       <Terminal />
     </PageLayout>
