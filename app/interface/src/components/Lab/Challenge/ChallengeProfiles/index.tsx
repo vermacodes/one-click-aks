@@ -13,6 +13,7 @@ import {
 } from "../../../../hooks/useProfile";
 import Button from "../../../UserInterfaceComponents/Button";
 import Container from "../../../UserInterfaceComponents/Container";
+import ConfirmationModal from "../../../UserInterfaceComponents/Modal/ConfirmationModal";
 import Tooltip from "../../../UserInterfaceComponents/Tooltip";
 import AddChallengesModal from "../AddChallengesModal";
 
@@ -26,6 +27,11 @@ export default function ChallengeProfiles({ lab }: Props) {
   const [meOwner, setMeOwner] = useState<boolean>(false);
   const [meChallenger, setMeChallenger] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [showConfirmDeleteModal, setShowConfirmDeleteModal] =
+    useState<boolean>(false);
+  const [challengeToBeDeleted, setChallengeToBeDeleted] = useState<Profile>(
+    {} as Profile
+  );
 
   const { mutateAsync: deleteChallenge } = useDeleteChallenge();
 
@@ -35,10 +41,17 @@ export default function ChallengeProfiles({ lab }: Props) {
 
   const queryClient = useQueryClient();
 
+  /**
+   * This useEffect hook is used to update the labId state whenever the lab prop changes.
+   */
   useEffect(() => {
     setLabId(lab.id);
   }, [lab]);
 
+  /**
+   * This useEffect hook is used to filter the profiles based on the challenges.
+   * It sets the challengers state to the profiles that have a corresponding challenge in the current lab.
+   */
   useEffect(() => {
     if (profiles && challenges) {
       const filteredProfiles = profiles.filter((profile) => {
@@ -53,6 +66,11 @@ export default function ChallengeProfiles({ lab }: Props) {
     }
   }, [profiles, challenges]);
 
+  /**
+   * This useEffect hook is used to check if the current user is an owner or a challenger of the lab.
+   * If the user's principal is included in the lab's owners, it sets meOwner to true.
+   * If there is a challenge for the user in the current lab, it sets meChallenger to true.
+   */
   useEffect(() => {
     if (myProfile && lab) {
       if (lab.owners.includes(myProfile.userPrincipal)) {
@@ -75,8 +93,25 @@ export default function ChallengeProfiles({ lab }: Props) {
       return;
     }
 
+    setChallengeToBeDeleted(profile);
+    setShowConfirmDeleteModal(true);
+  }
+
+  /**
+   * Deletes a challenge for a given profile.
+   * If the current user is not an owner and the profile is not the current user's profile, it does nothing.
+   * Otherwise, it calls the deleteChallenge function to delete the challenge.
+   * While the deleteChallenge function is running, it shows a toast with the message "Deleting Challenge...".
+   * If the deleteChallenge function succeeds, it shows a toast with the message "Challenge Deleted.".
+   * If the deleteChallenge function fails, it shows a toast with an error message.
+   * After the deleteChallenge function finishes, it invalidates the query for the challenges of the current lab.
+   * @param {Profile} profile - The profile for which the challenge should be deleted.
+   */
+  function onConfirmDeleteChallenge() {
+    setShowConfirmDeleteModal(false);
+
     const response = toast.promise(
-      deleteChallenge(`${profile.userPrincipal}+${lab.id}`),
+      deleteChallenge(`${challengeToBeDeleted.userPrincipal}+${lab.id}`),
       {
         pending: "Deleting Challenge...",
         success: "Challenge Deleted.",
@@ -111,8 +146,8 @@ export default function ChallengeProfiles({ lab }: Props) {
                 className={`${
                   (meOwner ||
                     profile.userPrincipal === myProfile?.userPrincipal) &&
-                  "hover:border-1 hover:w-20 hover:border-slate-500 dark:border-slate-900 dark:hover:border-slate-500 "
-                } group flex w-8 flex-row justify-between rounded-full border border-slate-50 transition-all `}
+                  "hover:border-1 hover:w-20 hover:border-slate-500  dark:hover:border-slate-500 "
+                } group flex w-8 flex-row justify-between rounded-full border border-slate-50 transition-all dark:border-slate-900 `}
               >
                 {profile.profilePhoto === "" ? (
                   <div className="flex h-8 max-h-8 w-8 items-center justify-center rounded-full bg-slate-300 dark:bg-slate-700">
@@ -172,6 +207,23 @@ export default function ChallengeProfiles({ lab }: Props) {
           challengers={[...challengers]}
           setShowModal={setShowModal}
         />
+      )}
+      {showConfirmDeleteModal && (
+        <ConfirmationModal
+          onClose={() => setShowConfirmDeleteModal(false)}
+          onConfirm={onConfirmDeleteChallenge}
+          title={"Confirm Delete Challenge"}
+        >
+          <p>
+            Are you sure you want to delete this challenge for{" "}
+            <strong>
+              {challengeToBeDeleted.displayName ||
+                challengeToBeDeleted.userPrincipal}
+            </strong>
+            ? Not only will lose access to the lab, their progress and credits
+            will be lost irreversibly.
+          </p>
+        </ConfirmationModal>
       )}
     </Container>
   );

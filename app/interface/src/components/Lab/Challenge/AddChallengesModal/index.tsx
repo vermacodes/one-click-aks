@@ -80,7 +80,9 @@ export default function AddChallengesModal({
       if (isProfileAdded()) {
         if (usersIChallenged.length >= 2) {
           setSelectedProfiles(prevSelectedProfilesRef.current);
-          toast.error("You can only create 2 challenges.");
+          toast.error("You can only create 2 challenges.", {
+            toastId: "create-challenge-error",
+          });
           return;
         }
         addChallengeForProfileAdded();
@@ -198,10 +200,21 @@ export default function AddChallengesModal({
     }
   }
 
+  /**
+   * Triggers the confirmation modal for updating challenges.
+   */
   function onUpdate() {
     setConfirmationModal(true);
   }
 
+  /**
+   * Confirms the update operation for the challenges.
+   * It hides the modal, then calls the upsertChallenge function to save the new challenges.
+   * While the upsertChallenge function is running, it shows a toast with the message "Creating challenges...".
+   * If the upsertChallenge function succeeds, it shows a toast with the message "Challenges created successfully!".
+   * If the upsertChallenge function fails, it shows a toast with an error message.
+   * After the upsertChallenge function finishes, it invalidates the query for the challenges of the current lab.
+   */
   function onConfirm() {
     setShowModal(false);
     const response = toast.promise(upsertChallenge(newChallenges), {
