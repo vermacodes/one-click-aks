@@ -61,7 +61,7 @@ export default function LabProfiles({ lab, profileType }: Props) {
           {filteredProfiles?.map((profile) => {
             return (
               <Tooltip
-                key={profile.objectId}
+                key={profile.userPrincipal}
                 message={profile.displayName || profile.userPrincipal}
                 delay={1000}
               >

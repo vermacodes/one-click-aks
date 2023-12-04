@@ -1,13 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { FaTimes, FaUser } from "react-icons/fa";
-import { MdClose } from "react-icons/md";
 import { useQueryClient } from "react-query";
 import { toast } from "react-toastify";
-import { Challenge, Lab, Profile } from "../../../../dataStructures";
+import { Lab, Profile } from "../../../../dataStructures";
 import {
   useDeleteChallenge,
   useGetChallengesByLabId,
-  useUpsertChallenges,
 } from "../../../../hooks/useChallenge";
 import {
   useGetAllProfilesRedacted,
@@ -15,9 +13,8 @@ import {
 } from "../../../../hooks/useProfile";
 import Button from "../../../UserInterfaceComponents/Button";
 import Container from "../../../UserInterfaceComponents/Container";
-import ModalBackdrop from "../../../UserInterfaceComponents/Modal/ModalBackdrop";
 import Tooltip from "../../../UserInterfaceComponents/Tooltip";
-import SelectProfilesDropdown from "../../Assignment/CreateAssignment/SelectProfilesDropdown";
+import AddChallengesModal from "../AddChallengesModal";
 
 type Props = {
   lab: Lab;
@@ -111,7 +108,6 @@ export default function ChallengeProfiles({ lab }: Props) {
               delay={300}
             >
               <div
-                key={`${profile.userPrincipal}-profile`}
                 className={`${
                   (meOwner ||
                     profile.userPrincipal === myProfile?.userPrincipal) &&
@@ -152,7 +148,9 @@ export default function ChallengeProfiles({ lab }: Props) {
             challenges &&
             myProfile &&
             challenges.filter(
-              (challenge) => challenge.createdBy === myProfile.userPrincipal
+              (challenge) =>
+                challenge.createdBy === myProfile.userPrincipal &&
+                challenge.labId === lab.id
             ).length < 2)) && (
           <Tooltip message={"Challenge Someone"} delay={1000}>
             <Button
@@ -165,7 +163,7 @@ export default function ChallengeProfiles({ lab }: Props) {
         )}
       </div>
       {showModal && (
-        <Modal
+        <AddChallengesModal
           title={"Challenge"}
           lab={lab}
           challenges={challenges}
@@ -176,219 +174,5 @@ export default function ChallengeProfiles({ lab }: Props) {
         />
       )}
     </Container>
-  );
-}
-
-type ModalProps = {
-  title: string;
-  lab: Lab;
-  challenges?: Challenge[];
-  meOwner: boolean;
-  meChallenger: boolean;
-  challengers: Profile[];
-  setShowModal: (showModal: boolean) => void;
-};
-
-function Modal({
-  title,
-  lab,
-  challenges,
-  meOwner,
-  meChallenger,
-  challengers,
-  setShowModal,
-}: ModalProps) {
-  //const [selectedProfile, setSelectedProfile] = useState<Profile>();
-  const [newChallenges, setNewChallenges] = useState<Challenge[]>([]);
-  //const [allChallenges, setAllChallenges] = useState<Challenge[]>([]);
-  const [selectedProfiles, setSelectedProfiles] = useState<Profile[]>([]);
-  const [usersIChallenged, setUsersIChallenged] = useState<string[]>([]);
-  const prevSelectedProfilesRef = useRef<Profile[]>([]);
-
-  const { data: myProfile } = useGetMyProfile();
-
-  const { mutateAsync: upsertChallenge } = useUpsertChallenges();
-
-  const queryClient = useQueryClient();
-
-  useEffect(() => {
-    console.log("Users I Challenged", usersIChallenged);
-  }, [usersIChallenged]);
-
-  // Count challenges I've created so far.
-  useEffect(() => {
-    if (challenges) {
-      let usersIChallengedSet = new Set<string>(usersIChallenged);
-      challenges.forEach((challenge) => {
-        if (
-          challenge.createdBy === myProfile?.userPrincipal &&
-          challenge.labId === lab.id
-        ) {
-          usersIChallengedSet.add(challenge.userId);
-        }
-      });
-      console.log("Users I Challenged Set", usersIChallengedSet);
-      setUsersIChallenged([...usersIChallengedSet]);
-    }
-  }, [challenges]);
-
-  useEffect(() => {
-    if (meChallenger && !meOwner) {
-      if (isProfileRemoved()) {
-        removeChallengeForProfileRemoved();
-      }
-      if (isProfileAdded()) {
-        if (usersIChallenged.length >= 2) {
-          setSelectedProfiles(prevSelectedProfilesRef.current);
-          toast.error("You can only create 2 challenges.");
-          return;
-        }
-        addChallengeForProfileAdded();
-      }
-    }
-    if (meOwner) {
-      if (isProfileRemoved()) {
-        removeChallengeForProfileRemoved();
-      }
-      if (isProfileAdded()) {
-        addChallengeForProfileAdded();
-      }
-    }
-    // Update the previous value of selectedProfiles
-    prevSelectedProfilesRef.current = selectedProfiles;
-  }, [selectedProfiles]);
-
-  function isProfileRemoved(): boolean {
-    return selectedProfiles.length < prevSelectedProfilesRef.current.length;
-  }
-
-  function isProfileAdded(): boolean {
-    return selectedProfiles.length > prevSelectedProfilesRef.current.length;
-  }
-
-  function removeChallengeForProfileRemoved() {
-    // find the removed profile
-    const removedProfile = prevSelectedProfilesRef.current.find(
-      (profile) =>
-        !selectedProfiles.some(
-          (selectedProfile) =>
-            selectedProfile.userPrincipal === profile.userPrincipal
-        )
-    );
-
-    // find the challenge for the removed profile
-    const challenge = newChallenges.find(
-      (challenge) => challenge.userId === removedProfile?.userPrincipal
-    );
-
-    // remove the challenge from newChallenges
-    if (challenge) {
-      setNewChallenges((prevChallenges) => [
-        ...prevChallenges.filter(
-          (prevChallenge) => prevChallenge.userId !== challenge.userId
-        ),
-      ]);
-    }
-
-    // add the user id to usersIChallenged
-    if (challenge && usersIChallenged.includes(challenge.userId)) {
-      setUsersIChallenged((prev) => [
-        ...prev.filter((user) => user !== challenge.userId),
-      ]);
-    }
-  }
-
-  function addChallengeForProfileAdded() {
-    // find the added profile
-    const addedProfile = selectedProfiles.find(
-      (profile) =>
-        !prevSelectedProfilesRef.current.some(
-          (prevProfile) => prevProfile.userPrincipal === profile.userPrincipal
-        )
-    );
-
-    // create a new challenge for the added profile
-    if (addedProfile) {
-      setNewChallenges((prevChallenges) => [
-        ...prevChallenges,
-        {
-          challengeId: "",
-          acceptedOn: "",
-          completedOn: "",
-          createdOn: "",
-          status: "created",
-          userId: addedProfile.userPrincipal,
-          labId: lab.id,
-          createdBy: "",
-        },
-      ]);
-    }
-
-    // add the user id to usersIChallenged
-    if (
-      addedProfile &&
-      !usersIChallenged.includes(addedProfile.userPrincipal)
-    ) {
-      setUsersIChallenged((prev) => [...prev, addedProfile.userPrincipal]);
-    }
-  }
-
-  function onUpdate() {
-    setShowModal(false);
-    const response = toast.promise(upsertChallenge(newChallenges), {
-      pending: "Saving lab...",
-      success: "Lab saved.",
-      error: {
-        render(data: any) {
-          return `Lab creation failed: ${data.data.data}`;
-        },
-        autoClose: false,
-      },
-    });
-
-    response.then(() => {
-      queryClient.invalidateQueries(["get-challenges-by-lab-id", lab.id]);
-    });
-  }
-
-  return (
-    <ModalBackdrop
-      onClick={(e) => {
-        e.stopPropagation;
-        setShowModal(false);
-      }}
-    >
-      <div
-        className="my-20 h-[550px] w-1/3 divide-y divide-slate-300 overflow-y-auto rounded bg-slate-100 p-5 overflow-x-hidden scrollbar-thin  scrollbar-thumb-slate-400 dark:divide-slate-700 dark:bg-slate-900 dark:scrollbar-thumb-slate-600"
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
-      >
-        <div className="w-100 flex justify-between pb-2 ">
-          <h1 className="text-3xl">{"Add " + title}</h1>
-          <button
-            onClick={() => setShowModal(false)}
-            className="hover:text-sky-500"
-          >
-            <MdClose className="text-3xl" />
-          </button>
-        </div>
-        <div className="flex h-[90%] w-full flex-col justify-between">
-          <SelectProfilesDropdown
-            selectedProfiles={selectedProfiles}
-            setSelectedProfiles={setSelectedProfiles}
-            noShowProfiles={challengers}
-          />
-          <div className="flex flex-row justify-end gap-2">
-            <Button variant="primary" onClick={onUpdate}>
-              Update
-            </Button>
-            <Button variant="secondary" onClick={() => setShowModal(false)}>
-              Cancel
-            </Button>
-          </div>
-        </div>
-      </div>
-    </ModalBackdrop>
   );
 }
