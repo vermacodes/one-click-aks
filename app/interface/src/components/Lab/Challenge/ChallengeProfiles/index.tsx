@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaUser } from "react-icons/fa";
+import { FaSuperpowers, FaUser } from "react-icons/fa";
 import { useQueryClient } from "react-query";
 import { toast } from "react-toastify";
 import { Challenge, Lab, Profile } from "../../../../dataStructures";
@@ -230,11 +230,8 @@ export default function ChallengeProfiles({ lab }: Props) {
                 challenge.status === "completed"
             ))) && (
           <Tooltip message={"Challenge Someone"} delay={1000}>
-            <Button
-              variant="primary-outline"
-              onClick={() => setShowModal(true)}
-            >
-              Challenge
+            <Button variant="primary" onClick={() => setShowModal(true)}>
+              <FaSuperpowers /> Challenge Others
             </Button>
           </Tooltip>
         )}
