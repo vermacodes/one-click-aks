@@ -6,6 +6,7 @@ import { Challenge, Lab, Profile } from "../../../../dataStructures";
 import {
   useDeleteChallenge,
   useGetChallengesByLabId,
+  useUpsertChallenges,
 } from "../../../../hooks/useChallenge";
 import {
   useGetAllProfilesRedacted,
@@ -21,7 +22,6 @@ type Props = {
 
 export default function SelectedChallengeProfile({ challenge, lab }: Props) {
   const [labId, setLabId] = useState("");
-  const [challengers, setChallengers] = useState<Profile[]>([]);
   const [challengerProfile, setChallengerProfile] = useState<Profile>(
     {} as Profile
   );
@@ -29,14 +29,16 @@ export default function SelectedChallengeProfile({ challenge, lab }: Props) {
     undefined
   );
   const [meOwner, setMeOwner] = useState<boolean>(false);
-  const [meChallenger, setMeChallenger] = useState<boolean>(false);
   const [showConfirmDeleteModal, setShowConfirmDeleteModal] =
+    useState<boolean>(false);
+  const [showConfirmCompleteModal, setShowConfirmCompleteModal] =
     useState<boolean>(false);
   const [challengeToBeDeleted, setChallengeToBeDeleted] = useState<Profile>(
     {} as Profile
   );
 
   const { mutateAsync: deleteChallenge } = useDeleteChallenge();
+  const { mutateAsync: upsertChallenge } = useUpsertChallenges();
 
   const { data: challenges } = useGetChallengesByLabId(labId);
   const { data: profiles } = useGetAllProfilesRedacted();
@@ -84,20 +86,24 @@ export default function SelectedChallengeProfile({ challenge, lab }: Props) {
       if (lab.owners.includes(myProfile.userPrincipal)) {
         setMeOwner(true);
       }
-      if (
-        challenges?.some(
-          (challenge) => challenge.userId === myProfile.userPrincipal
-        )
-      ) {
-        setMeChallenger(true);
-      }
+      // if (
+      //   challenges?.some(
+      //     (challenge) => challenge.userId === myProfile.userPrincipal
+      //   )
+      // ) {
+      //   setMeChallenger(true);
+      // }
     }
-  }, [myProfile, lab, challengers]);
+  }, [myProfile, lab, challenges]);
 
   function onDeleteChallenge(profile: Profile) {
     // Owner can delete any challenge
     // Challenger can delete their own challenge
-    if (!meOwner && profile.userPrincipal !== myProfile?.userPrincipal) {
+    if (
+      !meOwner &&
+      profile.userPrincipal !== myProfile?.userPrincipal &&
+      challenge?.createdBy !== myProfile?.userPrincipal
+    ) {
       return;
     }
 
@@ -136,6 +142,23 @@ export default function SelectedChallengeProfile({ challenge, lab }: Props) {
     });
   }
 
+  function onCompleteChallenge() {
+    if (!meOwner && challenge?.createdBy !== myProfile?.userPrincipal) {
+      return;
+    }
+
+    setShowConfirmCompleteModal(true);
+  }
+
+  function onConfirmCompleteChallenge() {
+    setShowConfirmCompleteModal(false);
+    if (challenge) {
+      challenge.status = "completed";
+      challenge.completedOn = new Date().toISOString();
+      upsertChallenge([challenge]);
+    }
+  }
+
   function renderStatus(challenge: Challenge) {
     if (challenge.status === "created") {
       return (
@@ -144,7 +167,10 @@ export default function SelectedChallengeProfile({ challenge, lab }: Props) {
             <FaCheckCircle />{" "}
           </span>
           Created
-          <span>{challenge.createdOn}</span>
+          <span>
+            {challenge.createdOn &&
+              new Date(challenge.createdOn).toLocaleString()}
+          </span>
         </div>
       );
     }
@@ -157,13 +183,20 @@ export default function SelectedChallengeProfile({ challenge, lab }: Props) {
               <FaCheckCircle />{" "}
             </span>
             Created
-            <span>{challenge.createdOn}</span>
+            <span>
+              {challenge.createdOn &&
+                new Date(challenge.createdOn).toLocaleString()}
+            </span>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-purple-500">
               <FaCheckCircle />{" "}
             </span>
             Accepted
+            <span>
+              {challenge.acceptedOn &&
+                new Date(challenge.acceptedOn).toLocaleString()}
+            </span>
           </div>
         </div>
       );
@@ -177,12 +210,20 @@ export default function SelectedChallengeProfile({ challenge, lab }: Props) {
               <FaCheckCircle />{" "}
             </span>
             Accepted
+            <span>
+              {challenge.acceptedOn &&
+                new Date(challenge.acceptedOn).toLocaleString()}
+            </span>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-green-500">
               <FaCheckCircle />{" "}
             </span>
             Completed
+            <span>
+              {challenge.createdOn &&
+                new Date(challenge.completedOn).toLocaleString()}
+            </span>
           </div>
         </div>
       );
@@ -209,7 +250,7 @@ export default function SelectedChallengeProfile({ challenge, lab }: Props) {
   }
 
   return (
-    <div className="mt-4 flex items-center justify-between">
+    <div className="mt-4 flex items-center justify-between border-t border-slate-500 pt-4">
       <div className="flex h-fit items-center gap-4">
         <div className="flex h-fit items-center gap-2">
           <span>
@@ -258,13 +299,40 @@ export default function SelectedChallengeProfile({ challenge, lab }: Props) {
         )}
       </div>
       <div className="flex items-center gap-2">{renderStatus(challenge)}</div>
-
-      <Button
-        variant="danger-icon"
-        onClick={() => onDeleteChallenge(challengerProfile)}
-      >
-        <FaTrash />
-      </Button>
+      {challenge.userId === myProfile?.userPrincipal &&
+        challenge.status === "created" && (
+          <Button
+            variant="primary"
+            tooltipMessage="Accept the challenge to start working on it."
+            onClick={() => {
+              challenge.status = "accepted";
+              challenge.acceptedOn = new Date().toISOString();
+              upsertChallenge([challenge]);
+            }}
+          >
+            <FaCheckCircle /> Accept
+          </Button>
+        )}
+      {challenge.createdBy === myProfile?.userPrincipal &&
+        challenge.status !== "completed" &&
+        challenge.status !== "created" && (
+          <Button
+            variant="primary-text"
+            tooltipMessage="Mark completed once your challenger solves the problem and Validation looks good."
+            onClick={onCompleteChallenge}
+          >
+            <FaCheckCircle /> Mark Completed
+          </Button>
+        )}
+      {(challenge.userId === myProfile?.userPrincipal ||
+        challenge.createdBy === myProfile?.userPrincipal) && (
+        <Button
+          variant="danger-icon"
+          onClick={() => onDeleteChallenge(challengerProfile)}
+        >
+          <FaTrash />
+        </Button>
+      )}
       {showConfirmDeleteModal && (
         <ConfirmationModal
           onClose={() => setShowConfirmDeleteModal(false)}
@@ -279,6 +347,22 @@ export default function SelectedChallengeProfile({ challenge, lab }: Props) {
             </strong>
             ? Not only they will lose access to the lab, their progress and
             credits will be lost irreversibly.
+          </p>
+        </ConfirmationModal>
+      )}
+      {showConfirmCompleteModal && (
+        <ConfirmationModal
+          onClose={() => setShowConfirmCompleteModal(false)}
+          onConfirm={onConfirmCompleteChallenge}
+          title={"Confirm Delete Challenge"}
+        >
+          <p>
+            Are you sure you want to mark this challenge complete for{" "}
+            <strong>
+              {challengeToBeDeleted.displayName ||
+                challengeToBeDeleted.userPrincipal}
+            </strong>
+            ? This is not reversible.
           </p>
         </ConfirmationModal>
       )}

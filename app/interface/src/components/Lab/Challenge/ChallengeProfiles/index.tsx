@@ -86,12 +86,12 @@ export default function ChallengeProfiles({ lab }: Props) {
         )
       ) {
         setMeChallenger(true);
-        // Enable this to set the selected challenge to the current user's challenge
-        // setSelectedChallenge(
-        //   challenges?.find(
-        //     (challenge) => challenge.userId === myProfile.userPrincipal
-        //   )
-        // );
+
+        setSelectedChallenge(
+          challenges?.find(
+            (challenge) => challenge.userId === myProfile.userPrincipal
+          )
+        );
       }
     }
   }, [myProfile, lab, challengers]);
@@ -222,7 +222,13 @@ export default function ChallengeProfiles({ lab }: Props) {
               (challenge) =>
                 challenge.createdBy === myProfile.userPrincipal &&
                 challenge.labId === lab.id
-            ).length < 2)) && (
+            ).length < 2 &&
+            challenges.some(
+              (challenge) =>
+                challenge.userId === myProfile.userPrincipal &&
+                challenge.labId === lab.id &&
+                challenge.status === "completed"
+            ))) && (
           <Tooltip message={"Challenge Someone"} delay={1000}>
             <Button
               variant="primary-outline"
