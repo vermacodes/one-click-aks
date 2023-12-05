@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaCheck, FaShare } from "react-icons/fa";
+import { FaCheck, FaCopy, FaShare } from "react-icons/fa";
 import { ButtonContainerObj, Lab } from "../../../../dataStructures";
 import { useGetMyProfile } from "../../../../hooks/useProfile";
 import ApplyButton from "../../../Terraform/ActionButtons/ApplyButton";
@@ -86,6 +86,23 @@ export default function ReadinessLabActionButtons({ lab }: Props) {
           </CopyLinkToLabButton>
         ),
       },
+      shareAssignmentButton: {
+        id: "shareAssignmentButton",
+        order: 6,
+        button: (
+          <CopyLinkToLabButton
+            key={"shareAssignmentButton"}
+            lab={lab}
+            labType="assignment"
+            variant="secondary-text"
+          >
+            <span>
+              <FaCopy />
+            </span>
+            Link to Assignment
+          </CopyLinkToLabButton>
+        ),
+      },
     };
 
     setButtons(initialButtons);
@@ -117,7 +134,7 @@ export default function ReadinessLabActionButtons({ lab }: Props) {
     if (profile?.roles.includes("mentor") || profile?.roles.includes("admin")) {
       const deleteButton: ButtonContainerObj = {
         id: "deleteLabButton",
-        order: 6,
+        order: 7,
         button: (
           <DeleteLabButton
             lab={lab}

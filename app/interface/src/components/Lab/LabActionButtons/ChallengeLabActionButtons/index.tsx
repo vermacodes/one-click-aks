@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaCheck, FaShare } from "react-icons/fa";
+import { FaCheck, FaCopy, FaShare } from "react-icons/fa";
 import { ButtonContainerObj, Lab } from "../../../../dataStructures";
 import { useGetMyProfile } from "../../../../hooks/useProfile";
 import ApplyButton from "../../../Terraform/ActionButtons/ApplyButton";
@@ -86,6 +86,23 @@ export default function ChallengeLabActionButtons({ lab }: Props) {
           </CopyLinkToLabButton>
         ),
       },
+      shareChallengeButton: {
+        id: "shareChallengeButton",
+        order: 5,
+        button: (
+          <CopyLinkToLabButton
+            key={"shareChallengeButton"}
+            lab={lab}
+            labType="challenge"
+            variant="secondary-text"
+          >
+            <span>
+              <FaCopy />
+            </span>
+            Link to Challenge
+          </CopyLinkToLabButton>
+        ),
+      },
     };
 
     setButtons(initialButtons);
@@ -117,7 +134,7 @@ export default function ChallengeLabActionButtons({ lab }: Props) {
     if (profile?.roles.includes("mentor") || profile?.roles.includes("admin")) {
       const deleteButton: ButtonContainerObj = {
         id: "deleteLabButton",
-        order: 6,
+        order: 7,
         button: (
           <DeleteLabButton
             lab={lab}
