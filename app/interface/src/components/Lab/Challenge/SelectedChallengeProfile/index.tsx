@@ -221,7 +221,7 @@ export default function SelectedChallengeProfile({ challenge, lab }: Props) {
             </span>
             Completed
             <span>
-              {challenge.createdOn &&
+              {challenge.completedOn &&
                 new Date(challenge.completedOn).toLocaleString()}
             </span>
           </div>

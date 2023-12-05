@@ -1,5 +1,6 @@
 import { Lab } from "../../../../dataStructures";
 import AssignmentActionButtons from "../AssignmentActionButtons";
+import ChallengeActionButtons from "../ChallengeActionButtons";
 import ChallengeLabActionButtons from "../ChallengeLabActionButtons";
 import MockCaseActionButtons from "../MockCaseActionButtons";
 import MySavedLabActionButtons from "../MySavedLabActionButtons";
@@ -17,7 +18,7 @@ const LAB_TYPE_COMPONENTS = {
   publiclab: PublicLabActionButtons,
   readinesslab: ReadinessLabActionButtons,
   challengelab: ChallengeLabActionButtons,
-  challenge: AssignmentActionButtons,
+  challenge: ChallengeActionButtons,
   assignment: AssignmentActionButtons,
   template: MySavedLabActionButtons,
 };

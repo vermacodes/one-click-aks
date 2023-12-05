@@ -14,10 +14,10 @@ export default function ChallengeActionButtons({ lab }: Props) {
       <ApplyButton variant="primary-outline" lab={lab}>
         Deploy
       </ApplyButton>
-      <ExtendButton lab={lab} variant="secondary-text" mode="extend-validate">
+      <ExtendButton lab={lab} variant="success-outline" mode="extend-validate">
         <FaCheck /> Validate
       </ExtendButton>
-      <DestroyButton variant="danger-text" lab={lab}>
+      <DestroyButton variant="danger-outline" lab={lab}>
         Destroy
       </DestroyButton>
     </div>
