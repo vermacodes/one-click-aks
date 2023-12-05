@@ -89,7 +89,9 @@ export default function ChallengeProfiles({ lab }: Props) {
 
         setSelectedChallenge(
           challenges?.find(
-            (challenge) => challenge.userId === myProfile.userPrincipal
+            (challenge) =>
+              challenge.userId === myProfile.userPrincipal &&
+              challenge.labId === lab.id
           )
         );
       }
