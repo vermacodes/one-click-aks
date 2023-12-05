@@ -262,7 +262,7 @@ export type Challenge = {
   createdOn: string;
   acceptedOn: string;
   completedOn: string;
-  status: "created" | "accepted" | "completed";
+  status: "created" | "accepted" | "completed" | "failed";
 };
 
 export type Privilege = {

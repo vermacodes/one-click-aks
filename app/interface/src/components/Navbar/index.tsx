@@ -41,7 +41,7 @@ function Title() {
     <div className="flex items-center justify-between pt-6 pb-2">
       <Link to={"/"}>
         <h1 className="flex flex-row items-center pl-8 text-2xl font-bold hover:text-sky-500">
-          <img src="/actlabs_logo.svg" className="mr-2 h-8 w-8"></img>
+          <img src="/actlabs_logo_rocket.svg" className="mr-2 h-8 w-8"></img>
           ACT Labs
         </h1>
       </Link>
