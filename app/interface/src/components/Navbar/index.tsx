@@ -1,10 +1,10 @@
 import { BsArrowUpRight } from "react-icons/bs";
 import {
   FaBook,
+  FaBookReader,
   FaClipboard,
   FaCog,
   FaComments,
-  FaFlask,
   FaKey,
   FaList,
   FaPuzzlePiece,
@@ -14,9 +14,9 @@ import {
   FaTimes,
   FaTools,
   FaUser,
-  FaUserGraduate,
   FaUsers,
 } from "react-icons/fa";
+import { MdAssignment } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { useDefaultAccount } from "../../hooks/useDefaultAccount";
 import { useGetMyProfile } from "../../hooks/useProfile";
@@ -124,7 +124,7 @@ function Pages() {
           <Link to={"/labs/assignment"}>
             <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
               <span>
-                <FaUserGraduate />
+                <MdAssignment />
               </span>
               <span>My Assignments</span>
             </button>
@@ -146,7 +146,7 @@ function Pages() {
               <Link to={"/labs/readinesslab"}>
                 <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
                   <span>
-                    <FaFlask />
+                    <FaBookReader />
                   </span>
                   <span>Readiness Labs</span>
                 </button>

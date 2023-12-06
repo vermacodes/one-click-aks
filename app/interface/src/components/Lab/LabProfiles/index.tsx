@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { FaUser } from "react-icons/fa";
-import { MdClose } from "react-icons/md";
+import { MdClose, MdManageAccounts } from "react-icons/md";
 import { toast } from "react-toastify";
 import { Lab, Profile } from "../../../dataStructures";
 import { useCreateLab } from "../../../hooks/useBlobs";
@@ -86,7 +86,7 @@ export default function LabProfiles({ lab, profileType }: Props) {
               variant="primary-outline"
               onClick={() => setShowModal(true)}
             >
-              Update
+              <MdManageAccounts /> Manage Access
             </Button>
           </Tooltip>
         )}
@@ -147,7 +147,7 @@ function Modal({
       }}
     >
       <div
-        className="my-20 h-[550px] w-1/3 divide-y divide-slate-300 overflow-y-auto rounded bg-slate-100 p-5 overflow-x-hidden scrollbar-thin  scrollbar-thumb-slate-400 dark:divide-slate-700 dark:bg-slate-900 dark:scrollbar-thumb-slate-600"
+        className="my-20 h-[550px] w-1/3 divide-y divide-slate-300 overflow-y-auto overflow-x-hidden rounded bg-slate-100 p-5 scrollbar-thin  scrollbar-thumb-slate-400 dark:divide-slate-700 dark:bg-slate-900 dark:scrollbar-thumb-slate-600"
         onClick={(e) => {
           e.stopPropagation();
         }}
