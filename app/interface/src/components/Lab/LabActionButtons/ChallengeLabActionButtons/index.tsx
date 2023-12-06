@@ -25,18 +25,31 @@ export default function ChallengeLabActionButtons({ lab }: Props) {
 
   useEffect(() => {
     const initialButtons: Record<string, ButtonContainerObj> = {
-      deployButton: {
-        id: "deployButton",
+      loadToBuilderButton: {
+        id: "loadToBuilderButton",
         order: 1,
         button: (
-          <ApplyButton key={"deployButton"} lab={lab} variant="primary-outline">
+          <LoadToBuilderButton
+            key={"loadToBuilderButton"}
+            lab={lab}
+            variant="primary-outline"
+          >
+            Open in Builder
+          </LoadToBuilderButton>
+        ),
+      },
+      deployButton: {
+        id: "deployButton",
+        order: 2,
+        button: (
+          <ApplyButton key={"deployButton"} lab={lab} variant="primary-text">
             Deploy
           </ApplyButton>
         ),
       },
       validateLabButton: {
         id: "validateLabButton",
-        order: 2,
+        order: 3,
         button: (
           <ExtendButton
             key={"validateLabButton"}
@@ -50,24 +63,11 @@ export default function ChallengeLabActionButtons({ lab }: Props) {
       },
       destroyButton: {
         id: "destroyButton",
-        order: 3,
+        order: 4,
         button: (
           <DestroyButton key={"destroyButton"} lab={lab} variant="danger-text">
             Destroy
           </DestroyButton>
-        ),
-      },
-      loadToBuilderButton: {
-        id: "loadToBuilderButton",
-        order: 4,
-        button: (
-          <LoadToBuilderButton
-            key={"loadToBuilderButton"}
-            lab={lab}
-            variant="secondary-text"
-          >
-            Open in Builder
-          </LoadToBuilderButton>
         ),
       },
       shareLabButton: {

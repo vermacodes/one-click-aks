@@ -10,8 +10,8 @@ type Props = {
 export default function PrivateLabActionButtons({ lab }: Props) {
   return (
     <div className="flex justify-start gap-1">
-      <LoadToBuilderButton lab={lab} variant="primary">
-        Open
+      <LoadToBuilderButton lab={lab} variant="primary-outline">
+        Open in Builder
       </LoadToBuilderButton>
       <ExportLabButton lab={lab} variant="secondary-text">
         Export

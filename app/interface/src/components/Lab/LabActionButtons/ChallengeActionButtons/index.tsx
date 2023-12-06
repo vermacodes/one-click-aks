@@ -11,13 +11,13 @@ type Props = {
 export default function ChallengeActionButtons({ lab }: Props) {
   return (
     <div className="flex justify-start gap-1">
-      <ApplyButton variant="primary-outline" lab={lab}>
+      <ApplyButton variant="primary-text" lab={lab}>
         Deploy
       </ApplyButton>
-      <ExtendButton lab={lab} variant="success-outline" mode="extend-validate">
+      <ExtendButton lab={lab} variant="success-text" mode="extend-validate">
         <FaCheck /> Validate
       </ExtendButton>
-      <DestroyButton variant="danger-outline" lab={lab}>
+      <DestroyButton variant="danger-text" lab={lab}>
         Destroy
       </DestroyButton>
     </div>

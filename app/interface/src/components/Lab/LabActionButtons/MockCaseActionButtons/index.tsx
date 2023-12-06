@@ -25,9 +25,22 @@ export default function MockCaseActionButtons({ lab }: Props) {
 
   useEffect(() => {
     const initialButtons: Record<string, ButtonContainerObj> = {
+      loadToBuilderButton: {
+        id: "loadToBuilderButton",
+        order: 1,
+        button: (
+          <LoadToBuilderButton
+            key={"loadToBuilderButton"}
+            lab={lab}
+            variant="primary-outline"
+          >
+            Open in Builder
+          </LoadToBuilderButton>
+        ),
+      },
       planButton: {
         id: "planButton",
-        order: 1,
+        order: 2,
         button: (
           <PlanButton key={"planButton"} lab={lab} variant="success-text">
             Plan
@@ -36,7 +49,7 @@ export default function MockCaseActionButtons({ lab }: Props) {
       },
       deployButton: {
         id: "deployButton",
-        order: 2,
+        order: 3,
         button: (
           <ApplyButton key={"deployButton"} lab={lab} variant="primary-text">
             Deploy
@@ -45,24 +58,11 @@ export default function MockCaseActionButtons({ lab }: Props) {
       },
       destroyButton: {
         id: "destroyButton",
-        order: 3,
+        order: 4,
         button: (
           <DestroyButton key={"destroyButton"} lab={lab} variant="danger-text">
             Destroy
           </DestroyButton>
-        ),
-      },
-      loadToBuilderButton: {
-        id: "loadToBuilderButton",
-        order: 4,
-        button: (
-          <LoadToBuilderButton
-            key={"loadToBuilderButton"}
-            lab={lab}
-            variant="secondary-text"
-          >
-            Open in Builder
-          </LoadToBuilderButton>
         ),
       },
       shareLabButton: {
