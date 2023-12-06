@@ -21,7 +21,7 @@ export default function Terminal() {
   const logContentRef = useRef<null | HTMLDivElement>(null);
 
   useEffect(() => {
-    if (autoScroll) {
+    if (autoScroll && actionStatus.inProgress) {
       logContainerRef.current?.scrollTo({
         top: logContentRef.current?.scrollHeight,
         behavior: "smooth",
