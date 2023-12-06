@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { FaBars } from "react-icons/fa";
 import { useGlobalStateContext } from "../../components/Context/GlobalStateContext";
 import Detectors from "../../components/Detectors/Detectors";
@@ -12,12 +13,20 @@ type Props = {
 export default function PageLayout({ heading, children }: Props) {
   const { darkMode, setDarkMode, navbarOpen, setNavbarOpen } =
     useGlobalStateContext();
-  // const { defaultAccount } = useDefaultAccount();
+  const headingRef = useRef<null | HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (headingRef.current !== null) {
+      headingRef.current.scrollIntoView();
+    }
+  }, [heading]);
+
   return (
     <div>
       <Detectors />
       {heading !== undefined && (
         <div
+          ref={headingRef}
           className={`${
             heading !== "" ? "mb-4 border-b-2 border-slate-500 py-4 " : "mt-6 "
           } flex items-center justify-between `}
