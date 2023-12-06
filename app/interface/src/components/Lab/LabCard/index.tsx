@@ -21,33 +21,50 @@ export default function LabCard({
   fullPage = false,
   showVersions = false,
 }: Props) {
+  function renderBody() {
+    if (lab === undefined) {
+      return <></>;
+    }
+    return (
+      <div className="flex h-fit w-full flex-col justify-between gap-4 rounded bg-slate-50 p-4 shadow-md outline-1 outline-slate-400 hover:shadow-lg hover:outline hover:outline-sky-500 dark:bg-slate-900 dark:outline-slate-600 dark:hover:outline-sky-500">
+        <LabHeader lab={lab} showVersions={showVersions} />
+        <LabCredits lab={lab} />
+        <LabDescription lab={lab} fullPage={fullPage} />
+        <LabTags tags={lab.tags} />
+        {/* {!fullPage && (
+          <Button variant="primary-outline">
+            <FaUpRightFromSquare />
+            Open
+          </Button>
+        )} */}
+        {fullPage && (
+          <>
+            <LabActionButtons lab={lab} />
+            <LabProfiles lab={lab} profileType="owners" />
+            {(lab.category === "public" || lab.category === "private") && (
+              <LabProfiles lab={lab} profileType="editors" />
+            )}
+            {lab.category === "private" && (
+              <LabProfiles lab={lab} profileType="viewers" />
+            )}
+            {(lab.type === "challengelab" || lab.type === "challenge") && (
+              <ChallengeProfiles lab={lab} />
+            )}
+          </>
+        )}
+        <p className="text-xs text-slate-200 dark:text-slate-800">{lab.id}</p>
+      </div>
+    );
+  }
+
   if (lab === undefined) {
     return <></>;
   }
 
-  return (
-    <div className="flex h-fit w-full flex-col justify-between gap-4 rounded bg-slate-50 p-4 shadow-md outline-1 outline-slate-400 hover:shadow-lg hover:outline hover:outline-sky-500 dark:bg-slate-900 dark:outline-slate-600 dark:hover:outline-sky-500">
-      <LabHeader lab={lab} showVersions={showVersions} />
-      <LabDescription lab={lab} fullPage={fullPage} />
-      <LabTags tags={lab.tags} />
-      <LabActionButtons lab={lab} />
-      {fullPage && (
-        <>
-          <LabProfiles lab={lab} profileType="owners" />
-          {(lab.category === "public" || lab.category === "private") && (
-            <LabProfiles lab={lab} profileType="editors" />
-          )}
-          {lab.category === "private" && (
-            <LabProfiles lab={lab} profileType="viewers" />
-          )}
-          {(lab.type === "challengelab" || lab.type === "challenge") && (
-            <ChallengeProfiles lab={lab} />
-          )}
-        </>
-      )}
-      <LabCredits lab={lab} />
-      <p className="text-xs text-slate-200 dark:text-slate-800">{lab.id}</p>
-    </div>
+  return fullPage ? (
+    renderBody()
+  ) : (
+    <Link to={"/lab/" + lab.type + "/" + lab.id}>{renderBody()}</Link>
   );
 }
 
@@ -56,14 +73,23 @@ type LabHeaderProps = {
   showVersions: boolean;
 };
 
+// function LabHeader({ lab, showVersions }: LabHeaderProps) {
+//   return (
+//     <div className="flex items-center justify-between">
+//       <Link to={"/lab/" + lab.type + "/" + lab.id}>
+//         <h1 className="whitespace-pre-line text-3xl hover:text-sky-500 hover:underline dark:border-slate-700">
+//           {lab.name}
+//         </h1>
+//       </Link>
+//       {showVersions && <LabVersionsButton lab={lab} />}
+//     </div>
+//   );
+// }
+
 function LabHeader({ lab, showVersions }: LabHeaderProps) {
   return (
     <div className="flex items-center justify-between">
-      <Link to={"/lab/" + lab.type + "/" + lab.id}>
-        <h1 className="whitespace-pre-line py-2 text-3xl hover:text-sky-500 hover:underline dark:border-slate-700">
-          {lab.name}
-        </h1>
-      </Link>
+      <h1 className="whitespace-pre-line text-3xl">{lab.name}</h1>
       {showVersions && <LabVersionsButton lab={lab} />}
     </div>
   );
