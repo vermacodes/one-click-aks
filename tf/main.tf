@@ -1,5 +1,5 @@
 data "http" "my_ip" {
-  url = "http://ipv4.icanhazip.com"
+  url = "https://api.ipify.org"
 }
 
 resource "random_string" "random" {
