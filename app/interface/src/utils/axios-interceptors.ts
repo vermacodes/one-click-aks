@@ -3,7 +3,7 @@ import {
   PublicClientApplication,
 } from "@azure/msal-browser";
 import axios, { AxiosError } from "axios";
-import { loginRequest, msalConfig } from "../authConfig";
+import { actLabsScope, msalConfig } from "../authConfig";
 
 const pca = new PublicClientApplication(msalConfig);
 
@@ -75,14 +75,14 @@ async function getAuthToken(): Promise<string> {
 
   try {
     const response = await pca.acquireTokenSilent({
-      ...loginRequest,
+      ...actLabsScope,
       account: account,
     });
     return response.accessToken;
   } catch (error) {
     if (error instanceof InteractionRequiredAuthError) {
       const response = await pca.acquireTokenPopup({
-        ...loginRequest,
+        ...actLabsScope,
         account: account,
       });
       return response.accessToken;

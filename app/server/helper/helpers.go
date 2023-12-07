@@ -63,7 +63,7 @@ func GetUserPrincipalFromMSALAuthToken(token string) (string, error) {
 		return "", err
 	}
 
-	userPrincipal, ok := tokenJSON["upn"].(string)
+	userPrincipal, ok := tokenJSON["preferred_username"].(string)
 	if !ok {
 		err := errors.New("user principal name not found in token")
 		slog.Error("user principal name not found in token", err)
