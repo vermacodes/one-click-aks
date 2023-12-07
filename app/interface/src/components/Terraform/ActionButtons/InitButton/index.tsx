@@ -1,9 +1,10 @@
-import Button from "../../../UserInterfaceComponents/Button";
-import { useLab } from "../../../../hooks/useLab";
 import { v4 as uuid } from "uuid";
-import { useWebSocketContext } from "../../../Context/WebSocketContext";
 import { ButtonVariant } from "../../../../dataStructures";
+import { useLab } from "../../../../hooks/useLab";
+import { useSelectedDeployment } from "../../../../hooks/useSelectedDeployment";
 import { useTerraformOperation } from "../../../../hooks/useTerraformOperation";
+import { useWebSocketContext } from "../../../Context/WebSocketContext";
+import Button from "../../../UserInterfaceComponents/Button";
 
 type Props = {
   variant: ButtonVariant;
@@ -13,6 +14,7 @@ type Props = {
 export default function InitButton({ variant, children }: Props) {
   const { actionStatus } = useWebSocketContext();
   const { data: lab } = useLab();
+  const { selectedDeployment } = useSelectedDeployment();
   const { onClickHandler } = useTerraformOperation();
 
   return (
@@ -22,6 +24,7 @@ export default function InitButton({ variant, children }: Props) {
         onClickHandler({
           operationType: "init",
           lab: lab,
+          deployment: selectedDeployment,
           operationId: uuid(),
         })
       }
