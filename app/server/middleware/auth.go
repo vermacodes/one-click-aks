@@ -21,6 +21,13 @@ func AuthRequired(authService entity.AuthService, logStream entity.LogStreamServ
 			return
 		}
 
+		isAADToken, err := helper.VerifyToken(authToken)
+		if err != nil || !isAADToken {
+			slog.Error("invalid auth token", err)
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid auth token" + err.Error()})
+			return
+		}
+
 		// Remove Bearer from the authToken
 		authToken = strings.Split(authToken, "Bearer ")[1]
 
@@ -35,7 +42,7 @@ func AuthRequired(authService entity.AuthService, logStream entity.LogStreamServ
 			return
 		}
 
-		// ensure user principal maches with the one in env
+		// ensure user principal matches with the one in env
 		if userPrincipal != os.Getenv("ARM_USER_PRINCIPAL_NAME") {
 			slog.Error("principal mismatch : token issued to "+userPrincipal+" but found user "+os.Getenv("ARM_USER_PRINCIPAL_NAME"), nil)
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "principal mismatch : token issued to " + userPrincipal + " but found user " + os.Getenv("ARM_USER_PRINCIPAL_NAME")})
