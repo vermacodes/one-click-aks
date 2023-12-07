@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
+import { MdArrowBack } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 import { Lab } from "../../../../dataStructures";
 import { useGetVersionsById } from "../../../../hooks/useBlobs";
+import Button from "../../../UserInterfaceComponents/Button";
 import LabCard from "../../LabCard";
 import LabVersionDiff from "../LabVersionDiff";
 import LabVersionsTable from "../LabVersionsTable";
@@ -18,6 +21,7 @@ export default function LabVersions({ lab }: Props) {
     isLoading,
     isFetching,
   } = useGetVersionsById(lab.id, lab.type, lab.category);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setSelectedLab(lab);
@@ -39,6 +43,11 @@ export default function LabVersions({ lab }: Props) {
 
   return (
     <div className="flex flex-col gap-4">
+      <div className="flex items-center text-lg">
+        <Button variant="text" onClick={() => navigate(-1)}>
+          <MdArrowBack /> Back
+        </Button>
+      </div>
       <LabVersionsTable
         labs={labs}
         parentLab={lab}

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { BsArrowUpRight } from "react-icons/bs";
 import {
   FaBook,
@@ -20,6 +21,7 @@ import { MdAssignment } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { useDefaultAccount } from "../../hooks/useDefaultAccount";
 import { useGetMyProfile } from "../../hooks/useProfile";
+import DefaultSubscription from "../../modals/DefaultSubscription";
 import LoginButton from "../Authentication/LoginButton";
 import { useGlobalStateContext } from "../Context/GlobalStateContext";
 import Button from "../UserInterfaceComponents/Button";
@@ -210,6 +212,7 @@ function Pages() {
 }
 
 function FixedPages() {
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const { defaultAccount } = useDefaultAccount();
 
   return (
@@ -222,7 +225,10 @@ function FixedPages() {
               delay={1000}
               direction="top"
             >
-              <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
+              <button
+                className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800"
+                onClick={() => setShowSubscriptionModal(true)}
+              >
                 <span className="-rotate-45">
                   <FaKey />
                 </span>{" "}
@@ -257,6 +263,9 @@ function FixedPages() {
           <LoginButton />
         </li>
       </ul>
+      {showSubscriptionModal && (
+        <DefaultSubscription onClick={() => setShowSubscriptionModal(false)} />
+      )}
     </div>
   );
 }
