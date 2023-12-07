@@ -25,8 +25,8 @@ export default function Landing() {
             {/* <div className="absolute -top-12 left-1/4 h-96 w-96 animate-blob rounded-full bg-purple-500 opacity-30 mix-blend-multiply blur-xl filter dark:mix-blend-color"></div>
               <div className="animation-delay-2000 absolute top-48 left-1/4 h-96 w-96 animate-blob rounded-full bg-green-500 opacity-30 mix-blend-multiply blur-xl filter dark:mix-blend-color"></div>
               <div className="animation-delay-4000 absolute left-1/3 top-24 h-96 w-96 animate-blob rounded-full bg-blue-500 opacity-30 mix-blend-multiply blur-xl filter dark:mix-blend-color"></div> */}
-            <div className="relative mx-8">
-              <div className="flex flex-col gap-20">
+            <div className="relative">
+              <div className="flex flex-col gap-y-20">
                 <h1 className="text text-9xl">Head start your lab repros</h1>
                 <p className="text-4xl text-slate-500">
                   Build and deploy labs in minutes ⌚ get a head start with labs
