@@ -1,13 +1,16 @@
+import { useState } from "react";
 import { UseQueryResult } from "react-query";
 import { Lab, LabType } from "../dataStructures";
+import { useGetReadinessLabsRedactedByUserId } from "./useAssignment";
 import {
+  useChallengeLabs,
+  usePrivateLabs,
   useReadinessLabs,
   useSharedMockCases,
   useSharedTemplates,
   useTemplates,
 } from "./useBlobs";
-import { useGetReadinessLabsRedactedByUserId } from "./useAssignment";
-import { useState } from "react";
+import { useGetMyChallengeLabsRedacted } from "./useChallenge";
 
 export function useGetLabs() {
   const [userId, setUserId] = useState<string>("my");
@@ -18,13 +21,15 @@ export function useGetLabs() {
   };
 
   const dataSources: DataSourcesType = {
-    publiclabs: useSharedTemplates(),
-    mockcases: useSharedMockCases(),
-    mylabs: useTemplates(),
-    templates: useTemplates(),
-    readinesslabs: useReadinessLabs(),
-    //readinesslabs: useSharedLabs(),
-    assignments: useGetReadinessLabsRedactedByUserId(userId),
+    privatelab: usePrivateLabs(),
+    publiclab: useSharedTemplates(),
+    mockcase: useSharedMockCases(),
+    mylabs: useTemplates(), // Deprecated
+    template: useTemplates(),
+    readinesslab: useReadinessLabs(),
+    challengelab: useChallengeLabs(),
+    assignment: useGetReadinessLabsRedactedByUserId(userId),
+    challenge: useGetMyChallengeLabsRedacted(),
   };
 
   type GetLabsByTypeProps = {
@@ -37,8 +42,7 @@ export function useGetLabs() {
       setUserId(userId);
     }
 
-    const dataSource =
-      dataSources[labType.endsWith("s") ? labType : labType + "s"];
+    const dataSource = dataSources[labType];
     const { data: labs, isLoading, isFetching } = dataSource;
     return {
       labs,

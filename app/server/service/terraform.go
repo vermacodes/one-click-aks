@@ -86,9 +86,9 @@ func (t *terraformService) Extend(lab entity.LabType, mode string) error {
 
 	// Getting back redacted values
 	if lab.ExtendScript == "redacted" {
-		lab, err := helperGetReadinessLabById(t, lab.Id)
+		lab, err := helperGetCompleteLabById(t, lab.Type, lab.Id)
 		if err != nil {
-			slog.Error("not able to find the readiness lab", err)
+			slog.Error("not able to find the complete lab", err)
 			return err
 		}
 		return helperExecuteScript(t, lab.ExtendScript, mode)
@@ -188,20 +188,27 @@ func helperExecuteScript(t *terraformService, script string, mode string) error 
 	return err
 }
 
-func helperGetReadinessLabById(t *terraformService, labId string) (entity.LabType, error) {
+func helperGetCompleteLabById(t *terraformService, labType string, labId string) (entity.LabType, error) {
 	lab := entity.LabType{}
 
-	readinessLabs, err := t.labService.GetPublicLabs("readinesslabs")
+	if labType == "assignment" {
+		labType = "readinesslab"
+	}
+	if labType == "challenge" {
+		labType = "challengelab"
+	}
+
+	completeLabs, err := t.labService.GetPublicLabs(labType)
 	if err != nil {
-		slog.Error("not able to get readiness labs", err)
+		slog.Error("not able to get complete labs", err)
 		return lab, err
 	}
 
-	for _, element := range readinessLabs {
+	for _, element := range completeLabs {
 		if element.Id == labId {
 			return element, nil
 		}
 	}
 
-	return lab, errors.New("readiness lab not found")
+	return lab, errors.New("complete lab not found")
 }

@@ -1,5 +1,5 @@
 import { Lab } from "../../../../dataStructures";
-import { useGetMyRoles } from "../../../../hooks/useAuth";
+import { useGetMyProfile } from "../../../../hooks/useProfile";
 import Checkbox from "../../../UserInterfaceComponents/Checkbox";
 
 type Props = {
@@ -8,9 +8,9 @@ type Props = {
 };
 
 export default function SaveLabType({ lab, setLab }: Props) {
-  const { data: roles } = useGetMyRoles();
+  const { data: profile } = useGetMyProfile();
 
-  if (roles === undefined) {
+  if (profile === undefined) {
     return null;
   }
 
@@ -21,30 +21,41 @@ export default function SaveLabType({ lab, setLab }: Props) {
       </label>
       <div className="flex items-center space-x-4">
         <Checkbox
-          checked={lab.type === "template"}
+          checked={lab.type === "privatelab"}
           disabled={false}
           tooltipMessage="This will be saved privately in your storage account."
-          id="template"
-          key={"template"}
-          label="My Lab"
+          id="privatelab"
+          key={"privatelab"}
+          label="Private Lab"
           handleOnChange={() => {
-            setLab({ ...lab, type: "template" });
+            setLab({ ...lab, type: "privatelab", category: "private" });
+          }}
+        />
+        <Checkbox
+          checked={lab.type === "challengelab"}
+          disabled={false}
+          tooltipMessage="This will be visible to you and other owners."
+          id="challengelab"
+          key={"challengelab"}
+          label="Challenge Lab"
+          handleOnChange={() => {
+            setLab({ ...lab, type: "challengelab", category: "private" });
           }}
         />
         <Checkbox
           checked={lab.type === "publiclab"}
           disabled={
             !(
-              roles.roles.includes("admin") ||
-              roles.roles.includes("mentor") ||
-              roles.roles.includes("contributor")
+              profile.roles.includes("admin") ||
+              profile.roles.includes("mentor") ||
+              profile.roles.includes("contributor")
             )
           }
           tooltipMessage={
             !(
-              roles.roles.includes("admin") ||
-              roles.roles.includes("mentor") ||
-              roles.roles.includes("contributor")
+              profile.roles.includes("admin") ||
+              profile.roles.includes("mentor") ||
+              profile.roles.includes("contributor")
             )
               ? "You must be an admin, mentor, or contributor to create a public lab."
               : "Public labs are visible to all users."
@@ -52,37 +63,55 @@ export default function SaveLabType({ lab, setLab }: Props) {
           id="publiclab"
           key={"publiclab"}
           label="Public Lab"
-          handleOnChange={() => setLab({ ...lab, type: "publiclab" })}
+          handleOnChange={() =>
+            setLab({ ...lab, type: "publiclab", category: "public" })
+          }
         />
         <Checkbox
           checked={lab.type === "readinesslab"}
           disabled={
-            !(roles.roles.includes("admin") || roles.roles.includes("mentor"))
+            !(
+              profile.roles.includes("admin") ||
+              profile.roles.includes("mentor")
+            )
           }
           tooltipMessage={
-            !(roles.roles.includes("admin") || roles.roles.includes("mentor"))
+            !(
+              profile.roles.includes("admin") ||
+              profile.roles.includes("mentor")
+            )
               ? "You must be an admin or mentor to create a readiness lab."
               : "Use this to save lab as readiness lab."
           }
-          id="readinesslabs"
-          key={"readinesslabs"}
+          id="readinesslab"
+          key={"readinesslab"}
           label="Readiness Lab"
-          handleOnChange={() => setLab({ ...lab, type: "readinesslab" })}
+          handleOnChange={() =>
+            setLab({ ...lab, type: "readinesslab", category: "protected" })
+          }
         />
         <Checkbox
           checked={lab.type === "mockcase"}
           disabled={
-            !(roles.roles.includes("admin") || roles.roles.includes("mentor"))
+            !(
+              profile.roles.includes("admin") ||
+              profile.roles.includes("mentor")
+            )
           }
           tooltipMessage={
-            !(roles.roles.includes("admin") || roles.roles.includes("mentor"))
+            !(
+              profile.roles.includes("admin") ||
+              profile.roles.includes("mentor")
+            )
               ? "You must be an admin or mentor to create a mock case."
               : "Use this to save the lab as a mock case."
           }
           id="mockcase"
           key={"mockcase"}
           label="Mock Case"
-          handleOnChange={() => setLab({ ...lab, type: "mockcase" })}
+          handleOnChange={() =>
+            setLab({ ...lab, type: "mockcase", category: "protected" })
+          }
         />
       </div>
     </div>

@@ -1,13 +1,13 @@
-import { FaCheck, FaShare } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { FaCheck, FaCopy, FaShare } from "react-icons/fa";
 import { ButtonContainerObj, Lab } from "../../../../dataStructures";
+import { useGetMyProfile } from "../../../../hooks/useProfile";
 import ApplyButton from "../../../Terraform/ActionButtons/ApplyButton";
 import DestroyButton from "../../../Terraform/ActionButtons/DestroyButton";
-import LoadToBuilderButton from "../../LoadToBuilderButton";
-import DeleteLabButton from "../../DeleteLabButton";
-import { useEffect, useState } from "react";
 import ExtendButton from "../../../Terraform/ActionButtons/ExtendButton";
-import { useGetMyRoles } from "../../../../hooks/useAuth";
 import CopyLinkToLabButton from "../../CopyLinkToLabButton";
+import DeleteLabButton from "../../DeleteLabButton";
+import LoadToBuilderButton from "../../LoadToBuilderButton";
 import ButtonContainer from "../ButtonContainer";
 
 type Props = {
@@ -15,7 +15,7 @@ type Props = {
 };
 
 export default function ReadinessLabActionButtons({ lab }: Props) {
-  const { data: roles } = useGetMyRoles();
+  const { data: profile } = useGetMyProfile();
   const [buttons, setButtons] = useState<Record<string, ButtonContainerObj>>(
     {}
   );
@@ -25,18 +25,31 @@ export default function ReadinessLabActionButtons({ lab }: Props) {
 
   useEffect(() => {
     const initialButtons: Record<string, ButtonContainerObj> = {
+      loadToBuilderButton: {
+        id: "loadToBuilderButton",
+        order: 4,
+        button: (
+          <LoadToBuilderButton
+            key={"loadToBuilderButton"}
+            lab={lab}
+            variant="primary-outline"
+          >
+            Open in Builder
+          </LoadToBuilderButton>
+        ),
+      },
       deployButton: {
         id: "deployButton",
-        order: 1,
+        order: 2,
         button: (
-          <ApplyButton key={"deployButton"} lab={lab} variant="primary-outline">
+          <ApplyButton key={"deployButton"} lab={lab} variant="primary-text">
             Deploy
           </ApplyButton>
         ),
       },
       validateLabButton: {
         id: "validateLabButton",
-        order: 2,
+        order: 3,
         button: (
           <ExtendButton
             key={"validateLabButton"}
@@ -50,24 +63,11 @@ export default function ReadinessLabActionButtons({ lab }: Props) {
       },
       destroyButton: {
         id: "destroyButton",
-        order: 3,
+        order: 4,
         button: (
           <DestroyButton key={"destroyButton"} lab={lab} variant="danger-text">
             Destroy
           </DestroyButton>
-        ),
-      },
-      loadToBuilderButton: {
-        id: "loadToBuilderButton",
-        order: 4,
-        button: (
-          <LoadToBuilderButton
-            key={"loadToBuilderButton"}
-            lab={lab}
-            variant="secondary-text"
-          >
-            Open in Builder
-          </LoadToBuilderButton>
         ),
       },
       shareLabButton: {
@@ -83,6 +83,23 @@ export default function ReadinessLabActionButtons({ lab }: Props) {
               <FaShare />
             </span>
             Share
+          </CopyLinkToLabButton>
+        ),
+      },
+      shareAssignmentButton: {
+        id: "shareAssignmentButton",
+        order: 6,
+        button: (
+          <CopyLinkToLabButton
+            key={"shareAssignmentButton"}
+            lab={lab}
+            labType="assignment"
+            variant="secondary-text"
+          >
+            <span>
+              <FaCopy />
+            </span>
+            Link to Assignment
           </CopyLinkToLabButton>
         ),
       },
@@ -114,10 +131,10 @@ export default function ReadinessLabActionButtons({ lab }: Props) {
   }
 
   useEffect(() => {
-    if (roles?.roles.includes("mentor") || roles?.roles.includes("admin")) {
+    if (profile?.roles.includes("mentor") || profile?.roles.includes("admin")) {
       const deleteButton: ButtonContainerObj = {
         id: "deleteLabButton",
-        order: 6,
+        order: 7,
         button: (
           <DeleteLabButton
             lab={lab}
@@ -133,7 +150,7 @@ export default function ReadinessLabActionButtons({ lab }: Props) {
     } else {
       deleteButton("deleteLabButton");
     }
-  }, [roles, lab]);
+  }, [profile, lab]);
 
   return (
     <div className="flex flex-wrap justify-start gap-2">

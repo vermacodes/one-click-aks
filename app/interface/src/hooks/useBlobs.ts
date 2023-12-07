@@ -4,7 +4,7 @@ import { Lab } from "../dataStructures";
 import { authAxiosInstance, axiosInstance } from "../utils/axios-interceptors";
 
 function getSharedMockCases(): Promise<AxiosResponse<Lab[]>> {
-  return authAxiosInstance("/lab/protected/mockcases");
+  return authAxiosInstance("/lab/protected/mockcase");
 }
 
 export function useSharedMockCases() {
@@ -32,7 +32,7 @@ export function useTemplates() {
 }
 
 function getSharedTemplates(): Promise<AxiosResponse<Lab[]>> {
-  return authAxiosInstance("lab/public/publiclabs");
+  return authAxiosInstance("lab/public/publiclab");
 }
 
 export function useSharedTemplates() {
@@ -45,22 +45,36 @@ export function useSharedTemplates() {
   });
 }
 
-// function getSharedLabs(): Promise<AxiosResponse<Lab[]>> {
-//   return authAxiosInstance.get("lab/protected/readinesslabs");
-// }
+function getPrivateLabs(): Promise<AxiosResponse<Lab[]>> {
+  return authAxiosInstance.get("lab/private/privatelab");
+}
 
-// export function useSharedLabs() {
-//   return useQuery("get-readinesslabs", getSharedLabs, {
-//     select: (data): Lab[] => {
-//       return data.data;
-//     },
-//     cacheTime: Infinity,
-//     staleTime: Infinity,
-//   });
-// }
+export function usePrivateLabs() {
+  return useQuery("get-privatelabs", getPrivateLabs, {
+    select: (data): Lab[] => {
+      return data.data;
+    },
+    cacheTime: Infinity,
+    staleTime: Infinity,
+  });
+}
+
+function getChallengeLabs(): Promise<AxiosResponse<Lab[]>> {
+  return authAxiosInstance.get("lab/private/challengelab");
+}
+
+export function useChallengeLabs() {
+  return useQuery("get-challengelabs", getChallengeLabs, {
+    select: (data): Lab[] => {
+      return data.data;
+    },
+    cacheTime: Infinity,
+    staleTime: Infinity,
+  });
+}
 
 function getReadinessLabs(): Promise<AxiosResponse<Lab[]>> {
-  return authAxiosInstance.get("lab/protected/readinesslabs");
+  return authAxiosInstance.get("lab/protected/readinesslab");
 }
 
 export function useReadinessLabs() {
@@ -74,7 +88,15 @@ export function useReadinessLabs() {
 }
 
 function createLab(lab: Lab): Promise<AxiosResponse<Lab[]>> {
-  return authAxiosInstance.post("/lab/protected", lab);
+  if (lab.type === "mockcase" || lab.type === "readinesslab") {
+    return authAxiosInstance.post("/lab/protected", lab);
+  }
+  if (lab.type === "challengelab" || lab.type === "privatelab") {
+    return authAxiosInstance.post("/lab/private", lab);
+  }
+
+  // Public Labs
+  return authAxiosInstance.post("/lab/public", lab);
 }
 
 // TODO: Optimistic updates
@@ -84,16 +106,18 @@ export function useCreateLab() {
   return useMutation(createLab, {
     onSuccess: () => {
       queryClient.invalidateQueries("my-templates");
+      queryClient.invalidateQueries("get-privatelabs");
       queryClient.invalidateQueries("get-publiclabs");
       queryClient.invalidateQueries("get-mockcases");
       queryClient.invalidateQueries("get-readinesslabs");
+      queryClient.invalidateQueries("get-challengelabs");
       queryClient.invalidateQueries("get-all-readiness-labs-redacted");
     },
   });
 }
 
 function deleteLab(lab: Lab) {
-  return authAxiosInstance.delete("lab/protected", { data: lab });
+  return authAxiosInstance.delete(`lab/${lab.category}/${lab.type}/${lab.id}`);
 }
 
 // TODO: Optimistic updates
@@ -102,13 +126,45 @@ export function useDeleteLab() {
   return useMutation(deleteLab, {
     onSuccess: () => {
       queryClient.invalidateQueries("my-templates");
+      queryClient.invalidateQueries("get-privatelabs");
       queryClient.invalidateQueries("get-publiclabs");
       queryClient.invalidateQueries("get-mockcases");
       queryClient.invalidateQueries("get-readinesslabs");
+      queryClient.invalidateQueries("get-challengelabs");
       queryClient.invalidateQueries("get-all-readiness-labs-redacted");
     },
   });
 }
+
+// function deletePublicLab(lab: Lab) {
+//   return authAxiosInstance.delete(`lab/public/${lab.type}/${lab.id}`);
+// }
+
+// // TODO: Optimistic updates
+// export function useDeletePublicLab() {
+//   const queryClient = useQueryClient();
+//   return useMutation(deletePublicLab, {
+//     onSuccess: () => {
+//       queryClient.invalidateQueries("get-publiclabs");
+//     },
+//   });
+// }
+
+// function deleteProtectedLab(lab: Lab) {
+//   return authAxiosInstance.delete(`lab/protected/${lab.type}/${lab.id}`);
+// }
+
+// // TODO: Optimistic updates
+// export function useDeleteProtectedLab() {
+//   const queryClient = useQueryClient();
+//   return useMutation(deleteProtectedLab, {
+//     onSuccess: () => {
+//       queryClient.invalidateQueries("get-mockcases");
+//       queryClient.invalidateQueries("get-readinesslabs");
+//       queryClient.invalidateQueries("get-all-readiness-labs-redacted");
+//     },
+//   });
+// }
 
 function createMyLab(lab: Lab): Promise<AxiosResponse<Lab[]>> {
   return axiosInstance.post("/lab", lab);
@@ -142,26 +198,26 @@ export function useDeleteMyLab() {
 function getVersionsByTypeAndId({
   id,
   typeOfLab,
-  classification,
+  categoryOfLab,
 }: {
   id: string | undefined;
   typeOfLab: string | undefined;
-  classification: string;
+  categoryOfLab: string;
 }): Promise<AxiosResponse<Lab[]>> {
   return authAxiosInstance.get(
-    `lab/${classification}/versions/${typeOfLab}s/${id}`
+    `lab/${categoryOfLab}/versions/${typeOfLab}/${id}`
   );
 }
 
 export function useGetVersionsById(
   id: string | undefined,
   typeOfLab: string | undefined,
-  classification: string = "public"
+  categoryOfLab: string = "public"
 ) {
-  const queryKey = ["lab-versions", id, typeOfLab, classification];
+  const queryKey = ["lab-versions", id, typeOfLab, categoryOfLab];
   return useQuery(
     queryKey,
-    () => getVersionsByTypeAndId({ id, typeOfLab, classification }),
+    () => getVersionsByTypeAndId({ id, typeOfLab, categoryOfLab }),
     {
       select: (data): Lab[] => {
         return data.data;

@@ -1,71 +1,143 @@
-import { useState } from "react";
-import { FaArrowRight } from "react-icons/fa";
-import { Lab } from "../../../../dataStructures";
+import { useEffect, useState } from "react";
+import { FaShare } from "react-icons/fa";
+import { ButtonContainerObj, Lab } from "../../../../dataStructures";
+import { useGetMyProfile } from "../../../../hooks/useProfile";
 import ApplyButton from "../../../Terraform/ActionButtons/ApplyButton";
 import DestroyButton from "../../../Terraform/ActionButtons/DestroyButton";
 import PlanButton from "../../../Terraform/ActionButtons/PlanButton";
-import Button from "../../../UserInterfaceComponents/Button";
+import CopyLinkToLabButton from "../../CopyLinkToLabButton";
 import DeleteLabButton from "../../DeleteLabButton";
-import ExportLabButton from "../../Export/ExportLabButton";
 import LoadToBuilderButton from "../../LoadToBuilderButton";
-import SaveLabButton from "../../SaveLab/SaveLabButton";
+import ButtonContainer from "../ButtonContainer";
 
 type Props = {
   lab: Lab;
 };
 
 export default function MockCaseActionButtons({ lab }: Props) {
-  const [more, setMore] = useState<string>("");
+  const { data: profile } = useGetMyProfile();
+  const [buttons, setButtons] = useState<Record<string, ButtonContainerObj>>(
+    {}
+  );
+  const [overflowButtons, setOverflowButtons] = useState<
+    Record<string, ButtonContainerObj>
+  >({});
 
-  function handleShowMore(lab: Lab) {
-    if (more !== lab.id) {
-      setMore(lab.id);
-    } else {
-      setMore("");
-    }
-  }
-  return (
-    <>
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex justify-start gap-2">
-          <PlanButton variant="primary" lab={lab}>
+  useEffect(() => {
+    const initialButtons: Record<string, ButtonContainerObj> = {
+      loadToBuilderButton: {
+        id: "loadToBuilderButton",
+        order: 1,
+        button: (
+          <LoadToBuilderButton
+            key={"loadToBuilderButton"}
+            lab={lab}
+            variant="primary-outline"
+          >
+            Open in Builder
+          </LoadToBuilderButton>
+        ),
+      },
+      planButton: {
+        id: "planButton",
+        order: 2,
+        button: (
+          <PlanButton key={"planButton"} lab={lab} variant="success-text">
             Plan
           </PlanButton>
-          <ApplyButton variant="primary-outline" lab={lab}>
+        ),
+      },
+      deployButton: {
+        id: "deployButton",
+        order: 3,
+        button: (
+          <ApplyButton key={"deployButton"} lab={lab} variant="primary-text">
             Deploy
           </ApplyButton>
-          <DestroyButton variant="danger-text" lab={lab}>
+        ),
+      },
+      destroyButton: {
+        id: "destroyButton",
+        order: 4,
+        button: (
+          <DestroyButton key={"destroyButton"} lab={lab} variant="danger-text">
             Destroy
           </DestroyButton>
-        </div>
-        <div
-          className={`${
-            more === lab.id && "rotate-90"
-          } transition-all duration-500`}
-        >
-          <Button variant="primary-icon" onClick={() => handleShowMore(lab)}>
-            <FaArrowRight />
-          </Button>
-        </div>
-      </div>
-      <div
-        className={`${
-          lab.id === more ? "max-h-40" : "max-h-0"
-        } flex flex-wrap justify-between gap-1 gap-x-1 overflow-hidden transition-all duration-500`}
-      >
-        <ExportLabButton lab={lab} variant="secondary-text">
-          Export
-        </ExportLabButton>
-        <SaveLabButton lab={lab} variant="secondary-text">
-          Edit
-        </SaveLabButton>
-        <LoadToBuilderButton variant="secondary-text" lab={lab}>
-          Open
-        </LoadToBuilderButton>
-        <DeleteLabButton lab={lab} variant="danger-text">
-          Delete
-        </DeleteLabButton>
-      </div>
-    </>
+        ),
+      },
+      shareLabButton: {
+        id: "shareLabButton",
+        order: 5,
+        button: (
+          <CopyLinkToLabButton
+            key={"shareLabButton"}
+            lab={lab}
+            variant="secondary-text"
+          >
+            <span>
+              <FaShare />
+            </span>
+            Share
+          </CopyLinkToLabButton>
+        ),
+      },
+    };
+
+    setButtons(initialButtons);
+  }, [lab]);
+
+  function upsertButton(button: ButtonContainerObj) {
+    if (overflowButtons[button.id]) {
+      setOverflowButtons((prevOverflowButtons) => {
+        return { ...prevOverflowButtons, [button.id]: button };
+      });
+      //add some delay do avoid flickering. This is not the best solution.
+      setTimeout(() => {}, 10);
+      return;
+    }
+
+    setButtons((prevButtons) => {
+      return { ...prevButtons, [button.id]: button };
+    });
+  }
+
+  function deleteButton(buttonId: string) {
+    setButtons((prevButtons) => {
+      const { [buttonId]: _, ...remainingButtons } = prevButtons;
+      return remainingButtons;
+    });
+  }
+
+  useEffect(() => {
+    if (profile?.roles.includes("mentor") || profile?.roles.includes("admin")) {
+      const deleteButton: ButtonContainerObj = {
+        id: "deleteLabButton",
+        order: 6,
+        button: (
+          <DeleteLabButton
+            lab={lab}
+            key={"deleteLabButton"}
+            variant="danger-text"
+          >
+            Delete
+          </DeleteLabButton>
+        ),
+      };
+
+      upsertButton(deleteButton);
+    } else {
+      deleteButton("deleteLabButton");
+    }
+  }, [profile, lab]);
+
+  return (
+    <div className="flex flex-wrap justify-start gap-2">
+      <ButtonContainer
+        buttons={buttons}
+        setButtons={setButtons}
+        overflowButtons={overflowButtons}
+        setOverflowButtons={setOverflowButtons}
+      />
+    </div>
   );
 }

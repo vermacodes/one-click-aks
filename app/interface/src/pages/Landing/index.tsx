@@ -78,7 +78,7 @@ export default function Landing() {
             </div>
             <div>
               <a
-                href="publiclabs"
+                href="labs/publiclab"
                 className="w-fit whitespace-nowrap rounded-full bg-slate-200 py-2 px-8 text-2xl text-blue-700 hover:bg-slate-300"
               >
                 Check Out

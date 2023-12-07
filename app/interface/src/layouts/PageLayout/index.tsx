@@ -1,8 +1,9 @@
-import Detectors from "../../components/Detectors/Detectors";
-import DarkModeSwitch from "../../components/UserInterfaceComponents/DarkModeSwitch";
-import { useGlobalStateContext } from "../../components/Context/GlobalStateContext";
+import { useEffect, useRef } from "react";
 import { FaBars } from "react-icons/fa";
+import { useGlobalStateContext } from "../../components/Context/GlobalStateContext";
+import Detectors from "../../components/Detectors/Detectors";
 import Button from "../../components/UserInterfaceComponents/Button";
+import DarkModeSwitch from "../../components/UserInterfaceComponents/DarkModeSwitch";
 
 type Props = {
   heading?: string;
@@ -12,20 +13,28 @@ type Props = {
 export default function PageLayout({ heading, children }: Props) {
   const { darkMode, setDarkMode, navbarOpen, setNavbarOpen } =
     useGlobalStateContext();
-  // const { defaultAccount } = useDefaultAccount();
+  const headingRef = useRef<null | HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (headingRef.current !== null) {
+      headingRef.current.scrollIntoView();
+    }
+  }, [heading]);
+
   return (
     <div>
       <Detectors />
       {heading !== undefined && (
         <div
+          ref={headingRef}
           className={`${
             heading !== "" ? "mb-4 border-b-2 border-slate-500 py-4 " : "mt-6 "
           } flex items-center justify-between `}
         >
-          <div className="flex items-center gap-2">
+          <div className="flex items-center">
             <Button
               variant="secondary-icon"
-              className="md p-4 text-2xl md:hidden"
+              className="mr-2 p-4 text-2xl md:mr-0 md:hidden md:p-0"
               onClick={() => setNavbarOpen(!navbarOpen)}
             >
               <FaBars className="text-slate-500" />

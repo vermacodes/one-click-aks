@@ -143,6 +143,12 @@ func (a *authService) GetAccounts() ([]entity.Account, error) {
 		return accounts, err
 	}
 
+	if len(accounts) == 0 {
+		err := errors.New("no account found")
+		slog.Error("no account found", err)
+		return accounts, err
+	}
+
 	// Set accounts in redis.
 	if err := a.authRepository.SetAccountsInRedis(out); err != nil {
 		slog.Error("not able to set accounts in redis.", err)

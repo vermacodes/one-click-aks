@@ -18,7 +18,6 @@ export default function Tooltip({
   let timer: NodeJS.Timeout;
 
   useEffect(() => {
-    console.log("Mouse On : ", message, mouseOn);
     if (mouseOn) {
       timer = setTimeout(() => setVisible(true), delay);
     }

@@ -1,24 +1,25 @@
 import { useState } from "react";
-import { RoleMutation, Roles } from "../../../../dataStructures";
-import { useAddRole, useRemoveRole } from "../../../../hooks/useAuth";
-import Button from "../../../UserInterfaceComponents/Button";
+import { FaUser } from "react-icons/fa";
 import { toast } from "react-toastify";
+import { Profile, ProfileMutation } from "../../../../dataStructures";
+import { useAddRole, useRemoveRole } from "../../../../hooks/useProfile";
+import Button from "../../../UserInterfaceComponents/Button";
 
 type Props = {
-  roleRecord: Roles;
+  profile: Profile;
 };
 
-export default function Role({ roleRecord }: Props) {
+export default function ProfileComponent({ profile }: Props) {
   const [addRoleFlag, setAddRoleFlag] = useState(false);
   const [selectedRole, setSelectedRole] = useState("user");
 
   const { mutateAsync: removeRole } = useRemoveRole();
   function handleRemoveRole(userPrincipal: string, role: string) {
-    let roleMutation: RoleMutation = {
+    let ProfileMutation: ProfileMutation = {
       userPrincipal: userPrincipal,
       role: role,
     };
-    toast.promise(removeRole(roleMutation), {
+    toast.promise(removeRole(ProfileMutation), {
       pending: "Removing Role...",
       success: "Role Removed.",
       error: {
@@ -31,11 +32,11 @@ export default function Role({ roleRecord }: Props) {
 
   const { mutateAsync: addRole } = useAddRole();
   function handleAddRole(userPrincipal: string, role: string) {
-    let roleMutation: RoleMutation = {
+    let ProfileMutation: ProfileMutation = {
       userPrincipal: userPrincipal,
       role: role,
     };
-    toast.promise(addRole(roleMutation), {
+    toast.promise(addRole(ProfileMutation), {
       pending: "Adding Role...",
       success: "Role Added.",
       error: {
@@ -48,16 +49,36 @@ export default function Role({ roleRecord }: Props) {
 
   return (
     <div className="flex flex-col justify-between gap-2 rounded bg-slate-50 p-4 shadow-md outline-1 outline-slate-400 hover:shadow-lg hover:outline hover:outline-sky-500 dark:bg-slate-900  dark:outline-slate-600 dark:hover:outline-sky-500 md:flex-row md:items-center">
-      <div className="text-xl">{roleRecord.userPrincipal}</div>
+      <div className="flex h-fit items-center gap-2">
+        <span>
+          {profile.profilePhoto === "" ? (
+            <div className="flex h-12 max-h-12 w-12 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-800">
+              <FaUser />
+            </div>
+          ) : (
+            <img
+              className="h-full max-h-12 rounded-full"
+              src={profile.profilePhoto}
+              alt="Profile Picture"
+            />
+          )}
+        </span>
+        <div className="flex flex-col">
+          <span>{profile.displayName}</span>
+          <span className="text-sm text-slate-600 dark:text-slate-400">
+            {profile.userPrincipal}
+          </span>
+        </div>
+      </div>
       <div className="flex flex-wrap justify-end gap-2">
-        {roleRecord.roles.map((role) => (
+        {profile.roles.map((role) => (
           <div
             key={role}
             className="flex items-center justify-between gap-4 rounded bg-slate-200 py-1 px-4 dark:bg-slate-800"
           >
             <div className="text-lg">{role}</div>
             <button
-              onClick={() => handleRemoveRole(roleRecord.userPrincipal, role)}
+              onClick={() => handleRemoveRole(profile.userPrincipal, role)}
             >
               ❌
             </button>
@@ -78,7 +99,7 @@ export default function Role({ roleRecord }: Props) {
           variant="success-outline"
           hidden={!addRoleFlag}
           onClick={() => {
-            handleAddRole(roleRecord.userPrincipal, selectedRole);
+            handleAddRole(profile.userPrincipal, selectedRole);
             setAddRoleFlag(false);
           }}
         >

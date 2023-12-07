@@ -1,7 +1,9 @@
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { MdArrowBack } from "react-icons/md";
+import { useNavigate, useParams } from "react-router-dom";
 import LabCard from "../../components/Lab/LabCard";
 import Terminal from "../../components/Terminal";
+import Button from "../../components/UserInterfaceComponents/Button";
 import { LabType } from "../../dataStructures";
 import { useGetLabs } from "../../hooks/useGetLabs";
 import PageLayout from "../../layouts/PageLayout";
@@ -9,6 +11,7 @@ import PageLayout from "../../layouts/PageLayout";
 export default function LabPage() {
   const { type, id } = useParams();
   const { getLabByTypeAndId } = useGetLabs();
+  const navigate = useNavigate();
 
   if (!type || !id) {
     return null;
@@ -44,10 +47,17 @@ export default function LabPage() {
 
   return (
     <PageLayout heading={lab.name}>
+      <div className="mb-4 flex items-center text-lg">
+        <Button variant="text" onClick={() => navigate(-1)}>
+          <MdArrowBack /> Back
+        </Button>
+      </div>
       <LabCard
         lab={lab}
         fullPage={true}
-        showVersions={type !== "assignment" && type !== "template"}
+        showVersions={
+          type !== "assignment" && type !== "template" && type !== "challenge"
+        }
       />
       <Terminal />
     </PageLayout>

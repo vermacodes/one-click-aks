@@ -20,9 +20,9 @@ const variantStyles: VariantStyles = {
   "secondary-outline":
     "border-1 border-slate-500 py-1 px-3 text-slate-500 disabled:border-slate-400 disabled:text-slate-400 hover:border-slate-500 hover:bg-slate-500  hover:text-slate-100 disabled:hover:border-slate-400 disabled:hover:bg-inherit disabled:hover:text-slate-400 dark:disabled:border-slate-700 dark:disabled:text-slate-500 ",
   "danger-outline":
-    "border-1 border-rose-500 py-1 px-3 text-rose-500 disabled:border-slate-400 disabled:text-slate-400 hover:border-rose-500 hover:bg-rose-500  hover:text-slate-100 disabled:hover:border-slate-400 disabled:hover:bg-inherit disabled:hover:text-slate-400 dark:disabled:border-slate-700 dark:disabled:text-slate-500 ",
+    "border-1 border-rose-500 py-1 px-3 text-rose-500 disabled:border-slate-400 disabled:text-slate-400 hover:border-rose-500 hover:bg-rose-700  hover:text-slate-100 disabled:hover:border-slate-400 disabled:hover:bg-inherit disabled:hover:text-slate-400 dark:disabled:border-slate-700 dark:disabled:text-slate-500 ",
   "success-outline":
-    "border-1 border-green-500 py-1 px-3 text-green-500 disabled:border-slate-400 disabled:text-slate-400 hover:border-green-500 hover:bg-green-500  hover:text-slate-100 disabled:hover:border-slate-400 disabled:hover:bg-inherit disabled:hover:text-slate-400 dark:disabled:border-slate-700 dark:disabled:text-slate-500 ",
+    "border-1 border-green-500 py-1 px-3 text-green-500 disabled:border-slate-400 disabled:text-slate-400 hover:border-green-500 hover:bg-green-700  hover:text-slate-100 disabled:hover:border-slate-400 disabled:hover:bg-inherit disabled:hover:text-slate-400 dark:disabled:border-slate-700 dark:disabled:text-slate-500 ",
   "primary-text":
     "border-1 border-slate-50 py-1 px-3 disabled:text-slate-400 hover:border-sky-500 hover:bg-sky-500 hover:bg-opacity-20 disabled:hover:border-slate-50 disabled:hover:bg-slate-50 dark:border-slate-900 dark:hover:border-sky-500 dark:disabled:hover:border-slate-900 dark:disabled:hover:bg-slate-900",
   "secondary-text":
@@ -36,6 +36,8 @@ const variantStyles: VariantStyles = {
     "border-1 rounded-full border-slate-50 py-2 px-2 hover:bg-sky-500 hover:bg-opacity-20 dark:border-slate-900",
   "secondary-icon":
     "border-1 rounded-full border-slate-50 py-2 px-2 hover:bg-slate-500 hover:bg-opacity-20 dark:border-slate-900",
+  "danger-icon":
+    "border-0 rounded-full border-slate-50 py-2 px-2 hover:bg-rose-500 hover:bg-opacity-50 dark:border-slate-900",
 };
 
 function getClassName(variant: ButtonVariant, hidden?: boolean) {

@@ -179,13 +179,42 @@ export type Preference = {
   terminalAutoScroll: boolean;
 };
 
-export type LabType =
-  | "template"
-  | "publiclab"
-  | "readinesslab"
-  | "assignment"
-  | "mockcase"
-  | "challengelab";
+// type LabCategory =
+//   | {
+//       category: "public";
+//       type: "publiclab";
+//     }
+//   | {
+//       category: "private";
+//       type: "privatelab" | "challengelab" | "challenge";
+//     }
+//   | {
+//       category: "protected";
+//       type: "readinesslab" | "assignment" | "mockcase";
+//     };
+
+export const LAB_CATEGORY = {
+  PUBLIC: "public",
+  PRIVATE: "private",
+  PROTECTED: "protected",
+} as const;
+
+type ObjectValues<T> = T[keyof T];
+
+export type LabCategory = ObjectValues<typeof LAB_CATEGORY>;
+
+export const LAB_TYPE = {
+  TEMPLATE: "template",
+  PUBLIC: "publiclab",
+  PRIVATE: "privatelab",
+  CHALLENGE: "challenge",
+  CHALLENGELAB: "challengelab",
+  READINESS: "readinesslab",
+  ASSIGNMENT: "assignment",
+  MOCKCASE: "mockcase",
+} as const;
+
+export type LabType = ObjectValues<typeof LAB_TYPE>;
 
 export type Lab = {
   id: string;
@@ -195,27 +224,45 @@ export type Lab = {
   template: TfvarConfigType | undefined;
   extendScript: string;
   message: string;
+  category: LabCategory;
   type: LabType;
   createdBy: string;
   createdOn: string;
   updatedBy: string;
   updatedOn: string;
+  owners: string[];
+  editors: string[];
+  viewers: string[];
   versionId: string;
   isCurrentVersion: boolean;
 };
 
 export type Assignment = {
   assignmentId: string;
+  assignmentType: "assignment" | "challenge";
   userId: string;
   labId: string;
-  createdOn: string;
   createdBy: string;
-  status: string;
+  createdOn: string;
+  acceptedOn: string;
+  completedOn: string;
+  status: "created" | "accepted" | "completed";
 };
 
 export type BulkAssignment = {
   userIds: string[];
   labIds: string[];
+};
+
+export type Challenge = {
+  challengeId: string;
+  userId: string;
+  labId: string;
+  createdBy: string;
+  createdOn: string;
+  acceptedOn: string;
+  completedOn: string;
+  status: "created" | "accepted" | "completed" | "failed";
 };
 
 export type Privilege = {
@@ -294,6 +341,7 @@ export type ButtonVariant =
   | "success-text"
   | "primary-icon"
   | "secondary-icon"
+  | "danger-icon"
   | "text";
 
 export type ButtonContainerObj = {
@@ -302,12 +350,15 @@ export type ButtonContainerObj = {
   button: React.ReactNode;
 };
 
-export type Roles = {
+export type Profile = {
+  objectId: string;
+  displayName: string;
+  profilePhoto: string;
   userPrincipal: string;
   roles: string[];
 };
 
-export type RoleMutation = {
+export type ProfileMutation = {
   userPrincipal: string;
   role: string;
 };

@@ -52,7 +52,7 @@ export function getDefaultAKSAddons(): TfvarAddonsType {
 }
 
 const defaultNodePool: TfvarDefaultNodepoolType = {
-  enableAutoScaling: true,
+  enableAutoScaling: false,
   minCount: 1,
   maxCount: 1,
 };
@@ -62,8 +62,8 @@ export function getDefaultNodePool(): TfvarDefaultNodepoolType {
 
 const defaultKubernetesCluster: TfvarKubernetesClusterType = {
   kubernetesVersion: "",
-  networkPlugin: "azure",
-  networkPolicy: "azure",
+  networkPlugin: "kubenet",
+  networkPolicy: "null",
   networkPluginMode: "null",
   outboundType: "loadBalancer",
   privateClusterEnabled: "false",
@@ -79,28 +79,7 @@ const defaultTfvarConfig: TfvarConfigType = {
   resourceGroup: {
     location: "East US",
   },
-  kubernetesClusters: [
-    {
-      kubernetesVersion: "",
-      networkPlugin: "kubenet",
-      networkPolicy: "null",
-      networkPluginMode: "null",
-      outboundType: "loadBalancer",
-      privateClusterEnabled: "false",
-      addons: {
-        appGateway: false,
-        microsoftDefender: false,
-        virtualNode: false,
-        httpApplicationRouting: false,
-        serviceMesh: defaultServiceMesh,
-      },
-      defaultNodePool: {
-        enableAutoScaling: false,
-        minCount: 1,
-        maxCount: 1,
-      },
-    },
-  ],
+  kubernetesClusters: [defaultKubernetesCluster],
   virtualNetworks: [
     {
       addressSpace: ["10.1.0.0/16"],
@@ -156,7 +135,8 @@ const defaultLab: Lab = {
   name: "",
   description: "",
   tags: [""],
-  type: "template",
+  category: "private",
+  type: "privatelab",
   template: defaultTfvarConfig,
   extendScript: "",
   message: "",
@@ -164,6 +144,9 @@ const defaultLab: Lab = {
   updatedBy: "",
   createdOn: "",
   updatedOn: "",
+  owners: [],
+  editors: [],
+  viewers: [],
   versionId: "",
   isCurrentVersion: true,
 };

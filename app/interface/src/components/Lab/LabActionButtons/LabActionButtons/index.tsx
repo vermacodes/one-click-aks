@@ -1,7 +1,10 @@
 import { Lab } from "../../../../dataStructures";
 import AssignmentActionButtons from "../AssignmentActionButtons";
+import ChallengeActionButtons from "../ChallengeActionButtons";
+import ChallengeLabActionButtons from "../ChallengeLabActionButtons";
 import MockCaseActionButtons from "../MockCaseActionButtons";
 import MySavedLabActionButtons from "../MySavedLabActionButtons";
+import PrivateLabActionButtons from "../PrivateLabActionButtons";
 import PublicLabActionButtons from "../PublicLabActionButtons";
 import ReadinessLabActionButtons from "../ReadinessLabActionButtons";
 
@@ -9,25 +12,22 @@ type Props = {
   lab: Lab;
 };
 
+const LAB_TYPE_COMPONENTS = {
+  mockcase: MockCaseActionButtons,
+  privatelab: PrivateLabActionButtons,
+  publiclab: PublicLabActionButtons,
+  readinesslab: ReadinessLabActionButtons,
+  challengelab: ChallengeLabActionButtons,
+  challenge: ChallengeActionButtons,
+  assignment: AssignmentActionButtons,
+  template: MySavedLabActionButtons,
+};
+
 export default function LabActionButtons({ lab }: Props) {
-  if (lab.type === "mockcase") {
-    return <MockCaseActionButtons lab={lab} />;
-  }
+  const Component = LAB_TYPE_COMPONENTS[lab.type];
 
-  if (lab.type === "publiclab") {
-    return <PublicLabActionButtons lab={lab} />;
-  }
-
-  if (lab.type === "readinesslab") {
-    return <ReadinessLabActionButtons lab={lab} />;
-  }
-
-  if (lab.type === "assignment") {
-    return <AssignmentActionButtons lab={lab} />;
-  }
-
-  if (lab.type === "template") {
-    return <MySavedLabActionButtons lab={lab} />;
+  if (Component) {
+    return <Component lab={lab} />;
   }
 
   return null;

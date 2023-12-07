@@ -1,22 +1,25 @@
+import { BsArrowUpRight } from "react-icons/bs";
 import {
+  FaBook,
+  FaBookReader,
   FaClipboard,
   FaCog,
   FaComments,
-  FaExternalLinkAlt,
-  FaFileCode,
-  FaFlask,
   FaKey,
   FaList,
-  FaPeopleCarry,
+  FaPuzzlePiece,
   FaRocket,
   FaShieldAlt,
+  FaSuperpowers,
   FaTimes,
   FaTools,
-  FaUserGraduate,
+  FaUser,
+  FaUsers,
 } from "react-icons/fa";
+import { MdAssignment } from "react-icons/md";
 import { Link } from "react-router-dom";
-import { useGetMyRoles } from "../../hooks/useAuth";
 import { useDefaultAccount } from "../../hooks/useDefaultAccount";
+import { useGetMyProfile } from "../../hooks/useProfile";
 import LoginButton from "../Authentication/LoginButton";
 import { useGlobalStateContext } from "../Context/GlobalStateContext";
 import Button from "../UserInterfaceComponents/Button";
@@ -38,7 +41,7 @@ function Title() {
     <div className="flex items-center justify-between pt-6 pb-2">
       <Link to={"/"}>
         <h1 className="flex flex-row items-center pl-8 text-2xl font-bold hover:text-sky-500">
-          <img src="/actlabs_logo.svg" className="mr-2 h-8 w-8"></img>
+          <img src="/actlabs_logo_rocket.svg" className="mr-2 h-8 w-8"></img>
           ACT Labs
         </h1>
       </Link>
@@ -53,7 +56,7 @@ function Title() {
 }
 
 function Pages() {
-  const { data: roles } = useGetMyRoles();
+  const { data: profile } = useGetMyProfile();
   return (
     <div className="h-9/10 mt-2 flex w-full flex-col overflow-y-scroll border-b border-slate-300 px-4 scrollbar-thin scrollbar-thumb-slate-400 scrollbar-thumb-rounded-full dark:border-slate-700 dark:scrollbar-thumb-slate-600">
       <ul className="md:text-l flex w-full flex-col justify-start gap-y-1 py-2 text-sm lg:text-xl">
@@ -77,7 +80,7 @@ function Pages() {
             </button>
           </Link>
         </li>
-        <li>
+        {/* <li>
           <Link to={"/labs/mylabs"}>
             <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
               <span>
@@ -86,41 +89,71 @@ function Pages() {
               <span>My Saved Labs</span>
             </button>
           </Link>
-        </li>
+        </li> */}
         <li>
-          <Link to={"/labs/publiclabs"}>
+          <Link to={"/labs/privatelab"}>
             <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
               <span>
-                <FaPeopleCarry />
+                <FaUser />
+              </span>
+              <span>Private Labs</span>
+            </button>
+          </Link>
+        </li>
+        <li>
+          <Link to={"/labs/publiclab"}>
+            <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
+              <span>
+                <FaUsers />
               </span>
               <span>Public Labs</span>
             </button>
           </Link>
         </li>
         <li>
-          <Link to={"/labs/assignments"}>
+          <Link to={"/labs/challengelab"}>
             <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
               <span>
-                <FaUserGraduate />
+                <FaPuzzlePiece />
+              </span>
+              <span>Challenge Labs</span>
+            </button>
+          </Link>
+        </li>
+        <li>
+          <Link to={"/labs/assignment"}>
+            <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
+              <span>
+                <MdAssignment />
               </span>
               <span>My Assignments</span>
             </button>
           </Link>
         </li>
-        {roles && roles.roles.includes("mentor") && (
+        <li>
+          <Link to={"/labs/challenge"}>
+            <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
+              <span>
+                <FaSuperpowers />
+              </span>
+              <span>My Challenges</span>
+            </button>
+          </Link>
+        </li>
+        {profile && profile.roles.includes("mentor") && (
           <>
             <li>
-              <Link to={"/labs/readinesslabs"}>
+              <Link to={"/labs/readinesslab"}>
                 <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
                   <span>
-                    <FaFlask />
+                    <FaBookReader />
                   </span>
                   <span>Readiness Labs</span>
                 </button>
               </Link>
             </li>
             <li>
-              <Link to={"/labs/mockcases"}>
+              <Link to={"/labs/mockcase"}>
                 <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
                   <span>
                     <FaClipboard />
@@ -141,7 +174,7 @@ function Pages() {
             </li>
           </>
         )}
-        {roles && roles.roles.includes("admin") && (
+        {profile && profile.roles.includes("admin") && (
           <>
             <li>
               <Link to={"/rbac"}>
@@ -162,9 +195,12 @@ function Pages() {
           >
             <button className="flex h-full w-full items-center justify-start gap-2 rounded py-3 px-4 text-left text-base hover:bg-slate-200 dark:hover:bg-slate-800">
               <span>
-                <FaExternalLinkAlt />
+                <FaBook />
               </span>
               <span>ACT Labs Docs</span>
+              <span>
+                <BsArrowUpRight />
+              </span>
             </button>
           </a>
         </li>

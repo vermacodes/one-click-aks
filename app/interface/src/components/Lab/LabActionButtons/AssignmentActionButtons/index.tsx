@@ -14,7 +14,7 @@ export default function AssignmentActionButtons({ lab }: Props) {
       <ApplyButton variant="primary-outline" lab={lab}>
         Deploy
       </ApplyButton>
-      <ExtendButton lab={lab} variant="secondary-text" mode="extend-validate">
+      <ExtendButton lab={lab} variant="success-text" mode="extend-validate">
         <FaCheck /> Validate
       </ExtendButton>
       <DestroyButton variant="danger-text" lab={lab}>

@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
+import { FaFilter } from "react-icons/fa";
 import { useParams } from "react-router-dom";
-import PageLayout from "../../layouts/PageLayout";
-import LabCard from "../../components/Lab/LabCard";
-import LabGridLayout from "../../layouts/LabGridLayout";
 import SelectedDeployment from "../../components/Deployments/SelectedDeployment";
+import LabCard from "../../components/Lab/LabCard";
 import Terminal from "../../components/Terminal";
-import { useGetLabs } from "../../hooks/useGetLabs";
 import { LabType } from "../../dataStructures";
+import { useGetLabs } from "../../hooks/useGetLabs";
+import LabGridLayout from "../../layouts/LabGridLayout";
+import PageLayout from "../../layouts/PageLayout";
 
 export default function LabsGridPage() {
   const { type } = useParams<{ type: LabType }>();
@@ -21,19 +22,22 @@ export default function LabsGridPage() {
   const { labs, isLoading } = getLabsByType({ labType: type });
 
   useEffect(() => {
-    if (type.endsWith("labs")) {
+    if (type.endsWith("lab")) {
       setPageHeading(
-        type.charAt(0).toUpperCase() + type.slice(1).replace(/labs$/, " Labs")
+        type.charAt(0).toUpperCase() + type.slice(1).replace(/lab$/, " Labs")
       );
-    }
-    if (type.endsWith("cases")) {
+    } else if (type.endsWith("case")) {
       setPageHeading(
-        type.charAt(0).toUpperCase() + type.slice(1).replace(/cases$/, " Cases")
+        type.charAt(0).toUpperCase() + type.slice(1).replace(/case$/, " Cases")
       );
+    } else if (type.endsWith("assignment")) {
+      setPageHeading("Assignments");
+    } else if (type.endsWith("challenge")) {
+      setPageHeading("Challenges");
+    } else {
+      setPageHeading("My Saved Labs (Deprecated) - Use Private Labs");
     }
-    if (type.endsWith("assignments")) {
-      setPageHeading(type.charAt(0).toUpperCase() + type.slice(1));
-    }
+
     document.title = "ACT Labs | " + pageHeading;
   }, [type, pageHeading]);
 
@@ -56,7 +60,7 @@ export default function LabsGridPage() {
   if (!labs?.length) {
     return (
       <PageLayout heading={pageHeading}>
-        <p className="text-4xl">No labs found!</p>
+        <p className="text-4xl">No {pageHeading.toLowerCase()} found!</p>
       </PageLayout>
     );
   }
@@ -64,14 +68,17 @@ export default function LabsGridPage() {
   return (
     <PageLayout heading={pageHeading}>
       <SelectedDeployment />
-      <input
-        type="text"
-        aria-label="Search"
-        placeholder={`Search ${pageHeading.toLowerCase()}`}
-        value={searchTerm}
-        onChange={handleSearchChange}
-        className="mb-4 w-full rounded border bg-slate-50 p-2 text-lg shadow focus:outline-none focus:ring-2 focus:ring-sky-500 hover:border-sky-500 dark:border-slate-700 dark:bg-slate-900 dark:hover:border-sky-500"
-      />
+      <div className="relative mb-4 w-full">
+        <input
+          type="text"
+          aria-label="Search"
+          placeholder={`Filter ${pageHeading.toLowerCase()}`}
+          value={searchTerm}
+          onChange={handleSearchChange}
+          className="w-full rounded border bg-slate-50 p-2 pl-10 text-lg shadow focus:outline-none focus:ring-2 focus:ring-sky-500 hover:border-sky-500 dark:border-slate-700 dark:bg-slate-900 dark:hover:border-sky-500"
+        />
+        <FaFilter className="absolute left-3 top-1/2 -translate-y-1/2 transform text-gray-400" />
+      </div>
       <LabGridLayout>
         {filteredLabs?.map((lab) => (
           <LabCard lab={lab} key={lab.id} />

@@ -1,16 +1,16 @@
 import { Route, Routes } from "react-router-dom";
+import { useGlobalStateContext } from "../../components/Context/GlobalStateContext";
 import Navbar from "../../components/Navbar";
 import AccessControl from "../../pages/AccessControl";
 import Assignments from "../../pages/Assignments";
+import Deployments from "../../pages/Deployments";
+import Feedback from "../../pages/Feedback";
 import LabBuilder from "../../pages/LabBuilder";
+import LabPage from "../../pages/LabPage";
+import LabVersionsPage from "../../pages/LabVersionsPage";
+import LabsGridPage from "../../pages/LabsGridPage";
 import Landing from "../../pages/Landing";
 import Settings from "../../pages/Settings";
-import Deployments from "../../pages/Deployments";
-import LabsGridPage from "../../pages/LabsGridPage";
-import LabPage from "../../pages/LabPage";
-import Feedback from "../../pages/Feedback";
-import LabVersionsPage from "../../pages/LabVersionsPage";
-import { useGlobalStateContext } from "../../components/Context/GlobalStateContext";
 
 export default function MainLayout() {
   const { navbarOpen, setNavbarOpen } = useGlobalStateContext();

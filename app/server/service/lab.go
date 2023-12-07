@@ -270,7 +270,7 @@ func (l *labService) HelperDefaultLab() (entity.LabType, error) {
 	var defaultLab = entity.LabType{
 		Tags:         []string{},
 		Template:     defaultTfvar,
-		Type:         "template",
+		Type:         "privatelab",
 		ExtendScript: extendScript,
 	}
 

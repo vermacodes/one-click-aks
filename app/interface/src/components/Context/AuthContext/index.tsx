@@ -1,12 +1,13 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { GraphData, Profile } from "../../../dataStructures";
+import { useCreateProfile } from "../../../hooks/useProfile";
 import AuthenticatingFullScreen from "../../Authentication/AuthenticatingFullScreen";
-import { GraphData } from "../../../dataStructures";
 
 interface AuthContextData {
   graphResponse: GraphData | undefined;
   setGraphResponse: React.Dispatch<React.SetStateAction<GraphData | undefined>>;
-  profilePhotoUrl: string | undefined;
-  setProfilePhotoUrl: React.Dispatch<React.SetStateAction<string | undefined>>;
+  profilePhoto: string | undefined;
+  setProfilePhoto: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 const AuthContext = createContext<AuthContextData | undefined>(undefined);
@@ -17,15 +18,31 @@ type Props = {
 
 export function AuthProvider({ children }: Props) {
   const [graphResponse, setGraphResponse] = useState<GraphData | undefined>();
-  const [profilePhotoUrl, setProfilePhotoUrl] = useState<string | undefined>();
+  const [profilePhoto, setProfilePhoto] = useState<string | undefined>();
+
+  const { mutate: createProfile } = useCreateProfile();
+
+  useEffect(() => {
+    if (graphResponse && profilePhoto) {
+      let profile: Profile = {
+        displayName: graphResponse.displayName,
+        objectId: graphResponse.id,
+        userPrincipal: graphResponse.userPrincipalName,
+        profilePhoto: profilePhoto,
+        roles: [],
+      };
+
+      createProfile(profile);
+    }
+  }, [graphResponse, profilePhoto]);
 
   return (
     <AuthContext.Provider
       value={{
         graphResponse,
         setGraphResponse,
-        profilePhotoUrl,
-        setProfilePhotoUrl,
+        profilePhoto,
+        setProfilePhoto,
       }}
     >
       {graphResponse ? (
@@ -34,8 +51,8 @@ export function AuthProvider({ children }: Props) {
         <AuthenticatingFullScreen
           graphResponse={graphResponse}
           setGraphResponse={setGraphResponse}
-          profilePhotoUrl={profilePhotoUrl}
-          setProfilePhotoUrl={setProfilePhotoUrl}
+          profilePhoto={profilePhoto}
+          setProfilePhoto={setProfilePhoto}
         />
       )}
     </AuthContext.Provider>
