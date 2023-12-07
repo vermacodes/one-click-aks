@@ -385,6 +385,8 @@ export ARM_CLIENT_SECRET=$(az keyvault secret show --name "arm-client-secret" --
 export ARM_SUBSCRIPTION_ID=$(az account show --query "id" -o tsv)
 export ARM_TENANT_ID=$(az account show --query "tenantId" -o tsv)
 export ARM_USER_PRINCIPAL_NAME=$(az account show --query "user.name" -o tsv)
+export AUTH_TOKEN_ISS="https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0"
+export AUTH_TOKEN_AUD="00399ddd-434c-4b8a-84be-d096cff4f494"
 
 # delete existing docker container
 log "deleting existing docker container"
@@ -402,7 +404,7 @@ fi
 
 # Start docker container and set environment variables
 log "starting docker container"
-docker run --pull=always -d --restart unless-stopped -it -e LOG_LEVEL -e ARM_CLIENT_ID -e ARM_CLIENT_SECRET -e ARM_SUBSCRIPTION_ID -e ARM_TENANT_ID -e ARM_USER_PRINCIPAL_NAME --name actlabs -p 8880:80 -v ${HOME}/.azure:/root/.azure ashishvermapu/repro:${TAG}
+docker run --pull=always -d --restart unless-stopped -it -e LOG_LEVEL -e ARM_CLIENT_ID -e ARM_CLIENT_SECRET -e ARM_SUBSCRIPTION_ID -e ARM_TENANT_ID -e ARM_USER_PRINCIPAL_NAME -e AUTH_TOKEN_AUD -e AUTH_TOKEN_ISS --name actlabs -p 8880:80 -v ${HOME}/.azure:/root/.azure ashishvermapu/repro:${TAG}
 if [ $? -ne 0 ]; then
     err "Failed to start docker container"
     exit 1

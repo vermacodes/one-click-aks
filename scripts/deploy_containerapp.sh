@@ -329,7 +329,7 @@ function deploy_containerapp() {
     --min-replicas 1 \
     --max-replicas 1 \
     --target-port 80 \
-    --env-vars "ARM_CLIENT_ID=$ARM_CLIENT_ID" "ARM_CLIENT_SECRET=secretref:arm-client-secret" "ARM_SUBSCRIPTION_ID=$ARM_SUBSCRIPTION_ID" "ARM_TENANT_ID=$ARM_TENANT_ID" "ARM_USER_PRINCIPAL_NAME=$ARM_USER_PRINCIPAL_NAME" "LOG_LEVEL=$LOG_LEVEL" \
+    --env-vars "ARM_CLIENT_ID=$ARM_CLIENT_ID" "ARM_CLIENT_SECRET=secretref:arm-client-secret" "ARM_SUBSCRIPTION_ID=$ARM_SUBSCRIPTION_ID" "ARM_TENANT_ID=$ARM_TENANT_ID" "ARM_USER_PRINCIPAL_NAME=$ARM_USER_PRINCIPAL_NAME" "LOG_LEVEL=$LOG_LEVEL" "AUTH_TOKEN_ISS=https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0", "AUTH_TOKEN_AUD=00399ddd-434c-4b8a-84be-d096cff4f494" \
     --secrets "arm-client-secret=$ARM_CLIENT_SECRET"
 
 }
