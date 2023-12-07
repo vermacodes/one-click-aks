@@ -25,7 +25,9 @@ export default function DefaultSubscription({ onClick }: Props) {
           </button>
         </div>
         <div className="flex flex-col justify-between gap-y-12 pt-4">
-          <pre>{JSON.stringify(defaultAccount, null, 4)}</pre>
+          <pre className="whitespace-pre-wrap break-words text-sm">
+            {JSON.stringify(defaultAccount, null, 4)}
+          </pre>
         </div>
         <p className="mt-4 py-4 text-lg">
           Want to change subscription? Please follow these{" "}
