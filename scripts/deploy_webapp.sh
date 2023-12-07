@@ -410,6 +410,8 @@ function deploy_webapp() {
     ARM_TENANT_ID=$ARM_TENANT_ID \
     ARM_USER_PRINCIPAL_NAME=$ARM_USER_PRINCIPAL_NAME \
     LOG_LEVEL=$LOG_LEVEL \
+    AUTH_TOKEN_ISS="https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0" \
+    AUTH_TOKEN_AUD="00399ddd-434c-4b8a-84be-d096cff4f494" \
     WEBSITES_PORT=80 >/dev/null 2>&1
 
   if [ $? -ne 0 ]; then

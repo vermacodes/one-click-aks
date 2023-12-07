@@ -1,6 +1,6 @@
 import { useMsal } from "@azure/msal-react";
 import { useEffect, useState } from "react";
-import { loginRequest } from "../../../authConfig";
+import { graphAPIScope } from "../../../authConfig";
 import { GraphData } from "../../../dataStructures";
 
 type Props = {
@@ -17,26 +17,31 @@ export default function AuthenticatingFullScreen({
   setProfilePhoto,
 }: Props) {
   const { instance, accounts } = useMsal();
-  const [accessToken, setAccessToken] = useState<string>("");
-  const [tokenAcquired, setTokenAcquired] = useState<boolean>(false);
+  const [graphAPIAccessToken, setGraphAPIAccessToken] = useState<string>("");
+  const [graphAPITokenAcquired, setGraphAPITokenAcquired] =
+    useState<boolean>(false);
+  // const [actLabsAccessToken, setActLabsAccessToken] = useState<string>("");
+  // const [actLabsTokenAcquired, setActLabsTokenAcquired] =
+  //   useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // call RequestAccessToken after the component has mounted
+  // request access tokens after the component has mounted
   useEffect(() => {
-    RequestAccessToken();
+    RequestGraphAPIAccessToken();
+    // RequestActLabsAccessToken();
   }, []);
 
   useEffect(() => {
-    if (tokenAcquired || accessToken !== "") {
+    if (graphAPITokenAcquired && graphAPIAccessToken !== "") {
       getGraphData();
       getProfilePhoto();
     }
-  }, [tokenAcquired, accessToken]);
+  }, [graphAPITokenAcquired, graphAPIAccessToken]);
 
   async function getGraphData() {
     fetch("https://graph.microsoft.com/v1.0/me", {
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${graphAPIAccessToken}`,
       },
     }).then((response) => {
       if (response.ok) {
@@ -51,7 +56,7 @@ export default function AuthenticatingFullScreen({
   async function getProfilePhoto() {
     fetch("https://graph.microsoft.com/v1.0/me/photo/$value", {
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${graphAPIAccessToken}`,
       },
     }).then((response) => {
       if (response.ok) {
@@ -74,10 +79,10 @@ export default function AuthenticatingFullScreen({
     });
   }
 
-  async function RequestAccessToken() {
+  async function RequestGraphAPIAccessToken() {
     await instance.handleRedirectPromise();
     const request = {
-      ...loginRequest,
+      ...graphAPIScope,
       account: accounts[0],
     };
 
@@ -85,13 +90,32 @@ export default function AuthenticatingFullScreen({
     instance
       .acquireTokenSilent(request)
       .then((response) => {
-        setAccessToken(response.accessToken);
-        setTokenAcquired(true);
+        setGraphAPIAccessToken(response.accessToken);
+        setGraphAPITokenAcquired(true);
       })
       .catch((e) => {
         instance.acquireTokenRedirect(request);
       });
   }
+
+  // async function RequestActLabsAccessToken() {
+  //   await instance.handleRedirectPromise();
+  //   const request = {
+  //     ...actLabsScope,
+  //     account: accounts[0],
+  //   };
+
+  //   // Silently acquires an access token which is then attached to a request for Microsoft Graph data
+  //   instance
+  //     .acquireTokenSilent(request)
+  //     .then((response) => {
+  //       setActLabsAccessToken(response.accessToken);
+  //       setActLabsTokenAcquired(true);
+  //     })
+  //     .catch((e) => {
+  //       instance.acquireTokenRedirect(request);
+  //     });
+  // }
 
   if (loading) {
     return (
