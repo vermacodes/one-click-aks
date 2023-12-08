@@ -12,8 +12,6 @@ export default function Landing() {
 
   return (
     <PageLayout heading="">
-      {/* <div className="fixed inset-0 min-h-screen bg-slate-100 dark:bg-slate-900 ">
-        <div className="h-full items-center justify-center overflow-auto p-10"> */}
       <div className="flex flex-col gap-20 py-4">
         <div className="flex items-center justify-center">
           <div className="relative w-full">
@@ -21,10 +19,6 @@ export default function Landing() {
             <div className="animation-delay-2000 absolute top-48 left-24 h-[70vh] w-[70vh] animate-blob rounded-full bg-emerald-600 opacity-30 mix-blend-multiply blur-xl filter dark:mix-blend-color"></div>
             <div className="animation-delay-4000 absolute top-24 right-24 h-[70vh] w-[70vh] animate-blob rounded-full bg-sky-600 opacity-30 mix-blend-multiply blur-xl filter dark:mix-blend-color"></div>
             <div className="animation-delay-2000 absolute -top-48 right-24 h-[70vh] w-[70vh] animate-blob rounded-full bg-yellow-600 opacity-30 mix-blend-multiply blur-xl filter dark:mix-blend-color"></div>
-
-            {/* <div className="absolute -top-12 left-1/4 h-96 w-96 animate-blob rounded-full bg-purple-500 opacity-30 mix-blend-multiply blur-xl filter dark:mix-blend-color"></div>
-              <div className="animation-delay-2000 absolute top-48 left-1/4 h-96 w-96 animate-blob rounded-full bg-green-500 opacity-30 mix-blend-multiply blur-xl filter dark:mix-blend-color"></div>
-              <div className="animation-delay-4000 absolute left-1/3 top-24 h-96 w-96 animate-blob rounded-full bg-blue-500 opacity-30 mix-blend-multiply blur-xl filter dark:mix-blend-color"></div> */}
             <div className="relative">
               <div className="flex flex-col gap-y-20">
                 <h1 className="text text-9xl">Head start your lab repros</h1>
@@ -32,14 +26,6 @@ export default function Landing() {
                   Build and deploy labs in minutes ⌚ get a head start with labs
                   built and tested by AKS Ninjas 🥷
                 </p>
-                {/* <button
-                  className="flex animate-bounce justify-center text-2xl hover:text-purple-500"
-                  onClick={() =>
-                    optionsRef.current?.scrollIntoView({ behavior: "smooth" })
-                  }
-                >
-                  ↓
-                </button> */}
               </div>
             </div>
           </div>
@@ -112,26 +98,15 @@ export default function Landing() {
             →
           </h1>
           <div className="flex flex-col gap-4 rounded bg-gradient-to-r from-blue-600 to-purple-600 p-4 pb-10">
-            <h2 className="text-2xl">WebApp</h2>
+            <h2 className="text-2xl text-slate-50">WebApp</h2>
             <DeployWebAppCommand />
           </div>
           <div className="flex flex-col gap-4 rounded bg-gradient-to-r from-blue-600 to-purple-600 p-4 pb-10">
-            <h2 className="text-2xl">Docker</h2>
+            <h2 className="text-2xl text-slate-50">Docker</h2>
             <StartCommand />
           </div>
         </div>
       </div>
-      {/* <div className="flex h-screen min-w-full flex-col gap-4">
-          <h1 className="text-3xl">
-            Checkout out video about getting started →
-          </h1>
-          <iframe
-            className="h-full min-w-full"
-            src="https://microsoft-my.sharepoint.com/personal/ashisverma_microsoft_com/_layouts/15/embed.aspx?UniqueId=c9027db6-c445-4e18-aad7-2486dfe87147&embed=%7B%22af%22%3Atrue%2C%22hvm%22%3Atrue%2C%22ust%22%3Atrue%7D&referrer=StreamWebApp&referrerScenario=EmbedDialog.Create"
-            allowFullScreen
-            title="02 - ACT Labs - Run Server and Login.mp4"
-          ></iframe>
-        </div> */}
     </PageLayout>
   );
 }
