@@ -89,7 +89,7 @@ export default function PublicLabActionButtons({ lab }: Props) {
   }
 
   useEffect(() => {
-    if (profile?.roles.includes("admin")) {
+    if (profile && lab.owners.includes(profile.userPrincipal)) {
       const deleteButton: ButtonContainerObj = {
         id: "deleteLabButton",
         order: 4,
