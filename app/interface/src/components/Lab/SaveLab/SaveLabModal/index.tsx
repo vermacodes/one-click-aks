@@ -32,7 +32,7 @@ export default function SaveLabModal({ lab, showModal, setShowModal }: Props) {
       success: "Lab saved.",
       error: {
         render(data: any) {
-          return `Lab creation failed: ${data.data.data}`;
+          return `Lab creation failed: ${data.data.response.data.error}`;
         },
         autoClose: false,
       },
@@ -59,7 +59,7 @@ export default function SaveLabModal({ lab, showModal, setShowModal }: Props) {
       success: "Lab saved.",
       error: {
         render(data: any) {
-          return `Lab creation failed: ${data.data.data}`;
+          return `Lab creation failed: ${data.data.response.data.error}`;
         },
         autoClose: false,
       },
