@@ -350,7 +350,7 @@ function deploy_webapp() {
       --resource-group $RESOURCE_GROUP \
       --subscription $ARM_SUBSCRIPTION_ID \
       --sku B3 \
-      --is-linux 2>&1
+      --is-linux --debug 2>&1
 
     if [ $? -ne 0 ]; then
       err "Failed to create App Service Plan"
@@ -364,7 +364,7 @@ function deploy_webapp() {
     --resource-group $RESOURCE_GROUP \
     --subscription $ARM_SUBSCRIPTION_ID \
     --plan $APP_SERVICE_PLAN_NAME \
-    --deployment-container-image-name $DOCKER_IMAGE 2>&1
+    --deployment-container-image-name $DOCKER_IMAGE --debug 2>&1
 
   # sleep 30s
 
