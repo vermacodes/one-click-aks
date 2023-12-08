@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { MdArrowBack } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
+import SelectedDeployment from "../../components/Deployments/SelectedDeployment";
 import LabCard from "../../components/Lab/LabCard";
 import Terminal from "../../components/Terminal";
 import Button from "../../components/UserInterfaceComponents/Button";
@@ -47,6 +48,7 @@ export default function LabPage() {
 
   return (
     <PageLayout heading={lab.name}>
+      <SelectedDeployment />
       <div className="mb-4 flex items-center text-lg">
         <Button variant="text" onClick={() => navigate(-1)}>
           <MdArrowBack /> Back
