@@ -322,7 +322,7 @@ function deploy_webapp() {
     az webapp delete \
       --name $WEBAPP_NAME \
       --resource-group $RESOURCE_GROUP \
-      --subscription $ARM_SUBSCRIPTION_ID >/dev/null 2>&1
+      --subscription $ARM_SUBSCRIPTION_ID 2>&1
     if [ $? -ne 0 ]; then
       err "Failed to delete existing WebApp"
       return 1
@@ -350,7 +350,7 @@ function deploy_webapp() {
       --resource-group $RESOURCE_GROUP \
       --subscription $ARM_SUBSCRIPTION_ID \
       --sku B3 \
-      --is-linux >/dev/null 2>&1
+      --is-linux 2>&1
 
     if [ $? -ne 0 ]; then
       err "Failed to create App Service Plan"
@@ -364,7 +364,7 @@ function deploy_webapp() {
     --resource-group $RESOURCE_GROUP \
     --subscription $ARM_SUBSCRIPTION_ID \
     --plan $APP_SERVICE_PLAN_NAME \
-    --deployment-container-image-name $DOCKER_IMAGE >/dev/null 2>&1
+    --deployment-container-image-name $DOCKER_IMAGE 2>&1
 
   # sleep 30s
 
@@ -412,7 +412,7 @@ function deploy_webapp() {
     LOG_LEVEL=$LOG_LEVEL \
     AUTH_TOKEN_ISS="https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0" \
     AUTH_TOKEN_AUD="00399ddd-434c-4b8a-84be-d096cff4f494" \
-    WEBSITES_PORT=80 >/dev/null 2>&1
+    WEBSITES_PORT=80 2>&1
 
   if [ $? -ne 0 ]; then
     err "Failed to add Application Settings"
