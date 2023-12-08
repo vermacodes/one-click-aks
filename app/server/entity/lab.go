@@ -94,23 +94,30 @@ type EnumerationResults struct {
 }
 
 type LabType struct {
-	Id           string          `json:"id"`
-	Name         string          `json:"name"`
-	Description  string          `json:"description"`
-	Tags         []string        `json:"tags"`
-	Template     TfvarConfigType `json:"template"`
-	ExtendScript string          `json:"extendScript"`
-	Message      string          `json:"message"`
-	Type         string          `json:"type"`
-	CreatedBy    string          `json:"createdBy"`
-	CreatedOn    string          `json:"createdOn"`
-	UpdatedBy    string          `json:"updatedBy"`
-	UpdatedOn    string          `json:"updatedOn"`
+	Id               string          `json:"id"`
+	Name             string          `json:"name"`
+	Description      string          `json:"description"`
+	Tags             []string        `json:"tags"`
+	Template         TfvarConfigType `json:"template"`
+	ExtendScript     string          `json:"extendScript"`
+	Message          string          `json:"message"`
+	Category         string          `json:"category"`
+	Type             string          `json:"type"`
+	CreatedBy        string          `json:"createdBy"`
+	CreatedOn        string          `json:"createdOn"`
+	UpdatedBy        string          `json:"updatedBy"`
+	UpdatedOn        string          `json:"updatedOn"`
+	Owners           []string        `json:"owners"`
+	Editors          []string        `json:"editors"`
+	Viewers          []string        `json:"viewers"`
+	VersionId        string          `json:"versionId"`
+	IsCurrentVersion bool            `json:"isCurrentVersion"`
 }
 
 type BlobType struct {
-	Name string `json:"name"`
-	Url  string `json:"url"`
+	Name      string `json:"name"`
+	Url       string `json:"url"`
+	VersionId string `json:"versionId"`
 }
 
 type LabService interface {
