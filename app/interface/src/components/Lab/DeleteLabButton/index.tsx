@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import { FaTrash } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { ButtonVariant, Lab } from "../../../dataStructures";
 import { useDeleteLab, useDeleteMyLab } from "../../../hooks/useBlobs";
@@ -17,10 +18,8 @@ export default function DeleteLabButton({ variant, children, lab }: Props) {
   const { actionStatus } = useContext(WebSocketContext);
   const { mutateAsync: deleteMyLab } = useDeleteMyLab();
   const { mutateAsync: deleteLab } = useDeleteLab();
-  // const { mutateAsync: deletePrivateLab } = useDeletePrivateLab();
-  // const { mutateAsync: deletePublicLab } = useDeletePublicLab();
-  // const { mutateAsync: deleteProtectedLab } = useDeleteProtectedLab();
   const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
 
   function onClickHandler() {
     setShowModal(true);
@@ -40,7 +39,7 @@ export default function DeleteLabButton({ variant, children, lab }: Props) {
           },
         });
       } else {
-        toast.promise(deleteLab(lab), {
+        const response = toast.promise(deleteLab(lab), {
           pending: "Deleting Lab...",
           success: "Lab Deleted.",
           error: {
@@ -49,40 +48,11 @@ export default function DeleteLabButton({ variant, children, lab }: Props) {
             },
           },
         });
+
+        response.then(() => {
+          navigate(`/labs/${lab.type}`);
+        });
       }
-      // if (lab.type === "publiclab") {
-      //   toast.promise(deletePublicLab(lab), {
-      //     pending: "Deleting Lab...",
-      //     success: "Lab Deleted.",
-      //     error: {
-      //       render(data: any) {
-      //         return `Failed to delete lab. ${data.data.response.data.error}`;
-      //       },
-      //     },
-      //   });
-      // }
-      // if (lab.type === "readinesslab") {
-      //   toast.promise(deleteProtectedLab(lab), {
-      //     pending: "Deleting Lab...",
-      //     success: "Lab Deleted.",
-      //     error: {
-      //       render(data: any) {
-      //         return `Failed to delete lab. ${data.data.response.data.error}`;
-      //       },
-      //     },
-      //   });
-      // }
-      // if (lab.type === "mockcase") {
-      //   toast.promise(deleteProtectedLab(lab), {
-      //     pending: "Deleting Lab...",
-      //     success: "Lab Deleted.",
-      //     error: {
-      //       render(data: any) {
-      //         return `Failed to delete lab. ${data.data.response.data.error}`;
-      //       },
-      //     },
-      //   });
-      // }
     }
   }
 
