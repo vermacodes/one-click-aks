@@ -67,7 +67,7 @@ export default function LabsGridPage() {
 
   return (
     <PageLayout heading={pageHeading}>
-      <SelectedDeployment />
+      <SelectedDeployment sticky={false} />
       <div className="relative mb-4 w-full">
         <input
           type="text"

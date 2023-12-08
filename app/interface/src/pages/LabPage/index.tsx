@@ -48,7 +48,7 @@ export default function LabPage() {
 
   return (
     <PageLayout heading={lab.name}>
-      <SelectedDeployment />
+      <SelectedDeployment sticky={false} />
       <div className="mb-4 flex items-center text-lg">
         <Button variant="text" onClick={() => navigate(-1)}>
           <MdArrowBack /> Back
