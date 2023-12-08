@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import DropdownSelect from "../../../../UserInterfaceComponents/DropdownSelect";
 import { FaTimes } from "react-icons/fa";
 import { Lab } from "../../../../../dataStructures";
 import { useGetAllReadinessLabsRedacted } from "../../../../../hooks/useAssignment";
+import DropdownSelect from "../../../../UserInterfaceComponents/DropdownSelect";
+import FilterTextBox from "../../../../UserInterfaceComponents/FilterTextBox";
 
 type Props = {
   selectedLabs: Lab[];
@@ -49,13 +50,18 @@ export default function SelectLabsDropdown({
   const labSearchInput = () => {
     return (
       <div className="relative">
-        <input
+        <FilterTextBox
+          placeHolderText="Filter by lab name"
+          value={labsSearchTerm}
+          onChange={(value: string) => setLabsSearchTerm(value)}
+        />
+        {/* <input
           type="text"
           placeholder="Search..."
           value={labsSearchTerm}
           onChange={(e) => setLabsSearchTerm(e.target.value)}
           className="w-full rounded px-2 py-1 dark:bg-slate-700 dark:text-slate-100"
-        />
+        /> */}
         {labsSearchTerm && (
           <FaTimes
             className="absolute right-2 top-1/2 -translate-y-1/2 transform cursor-pointer"

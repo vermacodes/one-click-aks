@@ -3,6 +3,7 @@ import { FaTimes, FaUser } from "react-icons/fa";
 import { Profile } from "../../../../../dataStructures";
 import { useGetAllProfilesRedacted } from "../../../../../hooks/useProfile";
 import DropdownSelect from "../../../../UserInterfaceComponents/DropdownSelect";
+import FilterTextBox from "../../../../UserInterfaceComponents/FilterTextBox";
 
 type Props = {
   selectedProfiles: Profile[];
@@ -52,12 +53,10 @@ export default function SelectProfilesDropdown({
   const profileSearchInput = () => {
     return (
       <div className="relative">
-        <input
-          type="text"
-          placeholder="Search..."
+        <FilterTextBox
+          placeHolderText="Filter by name or alias"
           value={profileSearchTerm}
-          onChange={(e) => setProfileSearchTerm(e.target.value)}
-          className="w-full rounded px-2 py-1 dark:bg-slate-700 dark:text-slate-100"
+          onChange={(value: string) => setProfileSearchTerm(value)}
         />
         {profileSearchTerm && (
           <FaTimes

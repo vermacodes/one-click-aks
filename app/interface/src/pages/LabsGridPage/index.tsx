@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { FaFilter } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import SelectedDeployment from "../../components/Deployments/SelectedDeployment";
 import LabCard from "../../components/Lab/LabCard";
 import Terminal from "../../components/Terminal";
+import FilterTextBox from "../../components/UserInterfaceComponents/FilterTextBox";
 import { LabType } from "../../dataStructures";
 import { useGetLabs } from "../../hooks/useGetLabs";
 import LabGridLayout from "../../layouts/LabGridLayout";
@@ -41,8 +41,7 @@ export default function LabsGridPage() {
     document.title = "ACT Labs | " + pageHeading;
   }, [type, pageHeading]);
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setSearchTerm(event.target.value);
+  const handleSearchChange = (value: string) => setSearchTerm(value);
 
   const filteredLabs = labs?.filter((lab) =>
     Object.values(lab).some((value) =>
@@ -68,17 +67,11 @@ export default function LabsGridPage() {
   return (
     <PageLayout heading={pageHeading}>
       <SelectedDeployment sticky={false} />
-      <div className="relative mb-4 w-full">
-        <input
-          type="text"
-          aria-label="Search"
-          placeholder={`Filter ${pageHeading.toLowerCase()}`}
-          value={searchTerm}
-          onChange={handleSearchChange}
-          className="w-full rounded border bg-slate-50 p-2 pl-10 text-lg shadow focus:outline-none focus:ring-2 focus:ring-sky-500 hover:border-sky-500 dark:border-slate-700 dark:bg-slate-900 dark:hover:border-sky-500"
-        />
-        <FaFilter className="absolute left-3 top-1/2 -translate-y-1/2 transform text-gray-400" />
-      </div>
+      <FilterTextBox
+        value={searchTerm}
+        onChange={(value: string) => handleSearchChange(value)}
+        placeHolderText={`Filter ${pageHeading.toLowerCase()}`}
+      />
       <LabGridLayout>
         {filteredLabs?.map((lab) => (
           <LabCard lab={lab} key={lab.id} />
