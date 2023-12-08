@@ -5,6 +5,7 @@ import SelectedDeployment from "../../components/Deployments/SelectedDeployment"
 import LabCard from "../../components/Lab/LabCard";
 import Terminal from "../../components/Terminal";
 import Button from "../../components/UserInterfaceComponents/Button";
+import NoContent from "../../components/UserInterfaceComponents/NoContent";
 import { LabType } from "../../dataStructures";
 import { useGetLabs } from "../../hooks/useGetLabs";
 import PageLayout from "../../layouts/PageLayout";
@@ -20,15 +21,17 @@ export default function LabPage() {
   });
 
   useEffect(() => {
-    if (!lab) {
-      navigate(-1); // navigate to some other page
-    } else {
+    if (lab) {
       document.title = "ACT Labs | " + lab.name;
     }
-  }, [lab, navigate]);
+  }, [lab]);
 
   if (!type || !id || isLoading || isFetching || !lab) {
-    return null;
+    return (
+      <PageLayout heading="Lab">
+        <NoContent message="We can't find the lab you are looking for. You got the correct link?" />
+      </PageLayout>
+    );
   }
 
   if (isLoading || isFetching) {
