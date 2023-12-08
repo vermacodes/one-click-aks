@@ -20,6 +20,7 @@ export default function BreakBlobLease({ deployment, buttonVariant }: Props) {
   const { data: deployments } = useGetMyDeployments();
   const { data: terraformWorkspaces } = useTerraformWorkspace();
   const { actionStatus } = useContext(WebSocketContext);
+  const { selectedDeployment } = useSelectedDeployment();
 
   async function handleBreakBlobLease() {
     // Generate a unique ID for the toast
@@ -51,8 +52,6 @@ export default function BreakBlobLease({ deployment, buttonVariant }: Props) {
   if (deployments === undefined || terraformWorkspaces === undefined) {
     return null;
   }
-
-  const { selectedDeployment } = useSelectedDeployment();
 
   const disabled =
     actionStatus.inProgress ||

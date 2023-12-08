@@ -14,18 +14,22 @@ export default function LabPage() {
   const { getLabByTypeAndId } = useGetLabs();
   const navigate = useNavigate();
 
-  if (!type || !id) {
-    return null;
-  }
-
   const { lab, isLoading, isFetching } = getLabByTypeAndId({
     labType: type as LabType,
     labId: id,
   });
 
   useEffect(() => {
-    document.title = "ACT Labs | " + lab?.name;
-  }, [lab]);
+    if (!lab) {
+      navigate(-1); // navigate to some other page
+    } else {
+      document.title = "ACT Labs | " + lab.name;
+    }
+  }, [lab, navigate]);
+
+  if (!type || !id || isLoading || isFetching || !lab) {
+    return null;
+  }
 
   if (isLoading || isFetching) {
     return (

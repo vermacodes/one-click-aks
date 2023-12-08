@@ -52,10 +52,18 @@ export function useGetLabs() {
   };
 
   type GetLabByTypeAndIdProps = {
-    labType: LabType;
-    labId: string;
+    labType?: LabType;
+    labId?: string;
   };
   const getLabByTypeAndId = ({ labType, labId }: GetLabByTypeAndIdProps) => {
+    if (!labType || !labId) {
+      return {
+        lab: undefined,
+        isLoading: false,
+        isFetching: false,
+      };
+    }
+
     const { labs, isLoading, isFetching } = getLabsByType({ labType });
     const lab = labs?.find((lab) => lab.id === labId);
     return {
