@@ -24,7 +24,7 @@ export default function ProfileComponent({ profile }: Props) {
       success: "Role Removed.",
       error: {
         render(data: any) {
-          return `Failed to remove role. ${data.data.data}`;
+          return `Failed to remove role. ${data.data.response.data.error}`;
         },
       },
     });
@@ -41,7 +41,7 @@ export default function ProfileComponent({ profile }: Props) {
       success: "Role Added.",
       error: {
         render(data: any) {
-          return `Failed to add role. ${data.data.data}`;
+          return `Failed to add role. ${data.data.response.data.error}`;
         },
       },
     });

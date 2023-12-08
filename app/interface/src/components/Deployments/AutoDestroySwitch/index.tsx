@@ -41,7 +41,7 @@ export default function AutoDestroySwitch({
         success: "Deployment updated.",
         error: {
           render(data: any) {
-            return `Failed to update deployment. ${data.data.data}`;
+            return `Failed to update deployment. ${data.data.response.data.error}`;
           },
           autoClose: 5000,
         },

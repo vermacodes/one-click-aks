@@ -35,7 +35,7 @@ export default function DeleteLabButton({ variant, children, lab }: Props) {
           success: "Lab Deleted.",
           error: {
             render(data: any) {
-              return `Failed to delete lab. ${data.data.data}`;
+              return `Failed to delete lab. ${data.data.response.data.error}`;
             },
           },
         });
@@ -45,7 +45,7 @@ export default function DeleteLabButton({ variant, children, lab }: Props) {
           success: "Lab Deleted.",
           error: {
             render(data: any) {
-              return `Failed to delete lab. ${data.data.data}`;
+              return `Failed to delete lab. ${data.data.response.data.error}`;
             },
           },
         });
@@ -56,7 +56,7 @@ export default function DeleteLabButton({ variant, children, lab }: Props) {
       //     success: "Lab Deleted.",
       //     error: {
       //       render(data: any) {
-      //         return `Failed to delete lab. ${data.data.data}`;
+      //         return `Failed to delete lab. ${data.data.response.data.error}`;
       //       },
       //     },
       //   });
@@ -67,7 +67,7 @@ export default function DeleteLabButton({ variant, children, lab }: Props) {
       //     success: "Lab Deleted.",
       //     error: {
       //       render(data: any) {
-      //         return `Failed to delete lab. ${data.data.data}`;
+      //         return `Failed to delete lab. ${data.data.response.data.error}`;
       //       },
       //     },
       //   });
@@ -78,7 +78,7 @@ export default function DeleteLabButton({ variant, children, lab }: Props) {
       //     success: "Lab Deleted.",
       //     error: {
       //       render(data: any) {
-      //         return `Failed to delete lab. ${data.data.data}`;
+      //         return `Failed to delete lab. ${data.data.response.data.error}`;
       //       },
       //     },
       //   });

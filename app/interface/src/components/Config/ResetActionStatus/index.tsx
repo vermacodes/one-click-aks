@@ -18,7 +18,7 @@ export default function ResetActionStatus({}: Props) {
         },
         error: {
           render(data: any) {
-            return `Action status reset failed: ${data.data.data}`;
+            return `Action status reset failed: ${data.data.response.data.error}`;
           },
           autoClose: 5000,
         },

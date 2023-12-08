@@ -1,8 +1,8 @@
 import { useContext } from "react";
-import { WebSocketContext } from "../../Context/WebSocketContext";
-import { useResetServerCache } from "../../../hooks/useServerCache";
-import Button from "../../UserInterfaceComponents/Button";
 import { toast } from "react-toastify";
+import { useResetServerCache } from "../../../hooks/useServerCache";
+import { WebSocketContext } from "../../Context/WebSocketContext";
+import Button from "../../UserInterfaceComponents/Button";
 
 type Props = {};
 
@@ -16,7 +16,7 @@ export default function ResetServerCache({}: Props) {
       success: "Server Cache Reset.",
       error: {
         render(data: any) {
-          return `Failed to reset server cache. ${data.data.data}`;
+          return `Failed to reset server cache. ${data.data.response.data.error}`;
         },
       },
     });

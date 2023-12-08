@@ -1,10 +1,10 @@
-import { FaChevronDown, FaRedo } from "react-icons/fa";
-import { useAccount, useSetAccount } from "../../../hooks/useAccount";
 import { useContext, useState } from "react";
+import { FaChevronDown, FaRedo } from "react-icons/fa";
+import { toast } from "react-toastify";
+import { useAccount, useSetAccount } from "../../../hooks/useAccount";
+import { useResetServerCache } from "../../../hooks/useServerCache";
 import { WebSocketContext } from "../../Context/WebSocketContext";
 import Button from "../../UserInterfaceComponents/Button";
-import { useResetServerCache } from "../../../hooks/useServerCache";
-import { toast } from "react-toastify";
 
 export default function AzureSubscription() {
   const [subscriptionMenu, setSubscriptionMenu] = useState<boolean>(false);
@@ -20,7 +20,7 @@ export default function AzureSubscription() {
       success: "Server Cache Reset.",
       error: {
         render(data: any) {
-          return `Failed to reset server cache. ${data.data.data}`;
+          return `Failed to reset server cache. ${data.data.response.data.error}`;
         },
       },
     });

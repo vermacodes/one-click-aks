@@ -131,7 +131,7 @@ export default function SelectedChallengeProfile({ challenge, lab }: Props) {
         success: "Challenge Deleted.",
         error: {
           render(data: any) {
-            return `Failed to delete challenge. ${data.data.data}`;
+            return `Failed to delete challenge. ${data.data.response.data.error}`;
           },
         },
       }

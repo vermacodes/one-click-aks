@@ -1,12 +1,12 @@
-import { Lab } from "../../../../dataStructures";
-import Button from "../../../UserInterfaceComponents/Button";
-import { FaCheck } from "react-icons/fa";
-import ConfirmationModal from "../../../UserInterfaceComponents/Modal/ConfirmationModal";
-import Checkbox from "../../../UserInterfaceComponents/Checkbox";
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import { useCreateLab } from "../../../../hooks/useBlobs";
+import { FaCheck } from "react-icons/fa";
 import { useQueryClient } from "react-query";
+import { toast } from "react-toastify";
+import { Lab } from "../../../../dataStructures";
+import { useCreateLab } from "../../../../hooks/useBlobs";
+import Button from "../../../UserInterfaceComponents/Button";
+import Checkbox from "../../../UserInterfaceComponents/Checkbox";
+import ConfirmationModal from "../../../UserInterfaceComponents/Modal/ConfirmationModal";
 
 type Props = {
   parentLab: Lab;
@@ -68,7 +68,7 @@ export default function LabVersionsTable({
       success: "Lab saved.",
       error: {
         render(data: any) {
-          return `Lab creation failed: ${data.data.data}`;
+          return `Lab creation failed: ${data.data.response.data.error}`;
         },
         autoClose: false,
       },

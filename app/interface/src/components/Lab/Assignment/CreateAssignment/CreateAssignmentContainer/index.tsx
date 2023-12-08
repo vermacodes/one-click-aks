@@ -24,7 +24,12 @@ export default function CreateAssignmentContainer() {
     const response = toast.promise(createBulkAssignments(bulkAssignments), {
       pending: "Creating assignments...",
       success: "Assignments created!",
-      error: "Error creating assignments.",
+      error: {
+        render(data: any) {
+          return `Error creating assignments. ${data.data.response.data.error}`;
+        },
+        autoClose: 5000,
+      },
     });
     response.finally(() => {
       // invalidate all lab id queries.

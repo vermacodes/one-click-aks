@@ -1,7 +1,7 @@
+import { toast } from "react-toastify";
 import { DeploymentType } from "../../../dataStructures";
 import { usePatchDeployment } from "../../../hooks/useDeployments";
 import { calculateNewEpochTimeForDeployment } from "../../../utils/helpers";
-import { toast } from "react-toastify";
 import DropdownSelect from "../../UserInterfaceComponents/DropdownSelect";
 
 type DeploymentLifespanProps = {
@@ -53,7 +53,7 @@ export default function DeploymentLifespan({
         },
         error: {
           render(data: any) {
-            return `Failed to update deployment. ${data.data.data}`;
+            return `Failed to update deployment. ${data.data.response.data.error}`;
           },
           autoClose: 5000,
         },

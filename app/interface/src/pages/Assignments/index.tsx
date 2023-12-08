@@ -57,7 +57,7 @@ export default function Assignments({}: Props) {
       success: "Assignments Deleted.",
       error: {
         render(data: any) {
-          return `Failed to delete assignments. ${data.data.data}`;
+          return `Failed to delete assignments. ${data.data.response.data.error}`;
         },
       },
     });

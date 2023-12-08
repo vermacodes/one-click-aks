@@ -222,7 +222,7 @@ export default function AddChallengesModal({
       success: "Challenges created successfully!",
       error: {
         render(data: any) {
-          return `Challenge creation failed: ${data.data.data}`;
+          return `Challenge creation failed: ${data.data.response.data.error}`;
         },
         autoClose: false,
       },

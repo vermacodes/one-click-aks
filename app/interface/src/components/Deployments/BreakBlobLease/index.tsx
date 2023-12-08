@@ -1,14 +1,14 @@
+import { useContext } from "react";
 import { FaUnlock } from "react-icons/fa";
+import { toast } from "react-toastify";
 import { ButtonVariant, DeploymentType } from "../../../dataStructures";
 import { useGetMyDeployments } from "../../../hooks/useDeployments";
+import { useSelectedDeployment } from "../../../hooks/useSelectedDeployment";
 import { useBreakBlobLease } from "../../../hooks/useStorageAccount";
 import { useTerraformWorkspace } from "../../../hooks/useWorkspace";
-import Button from "../../UserInterfaceComponents/Button";
 import { WebSocketContext } from "../../Context/WebSocketContext";
-import { useContext } from "react";
+import Button from "../../UserInterfaceComponents/Button";
 import Tooltip from "../../UserInterfaceComponents/Tooltip";
-import { toast } from "react-toastify";
-import { useSelectedDeployment } from "../../../hooks/useSelectedDeployment";
 
 type Props = {
   deployment: DeploymentType;
@@ -37,7 +37,7 @@ export default function BreakBlobLease({ deployment, buttonVariant }: Props) {
         },
         error: {
           render(data: any) {
-            return `Failed to unlock state file. ${data.data.data}`;
+            return `Failed to unlock state file. ${data.data.response.data.error}`;
           },
           autoClose: 5000,
         },

@@ -20,7 +20,7 @@ export default function DeleteAssignment({ assignment }: Props) {
       success: "Assignment Deleted.",
       error: {
         render(data: any) {
-          return `Failed to delete assignment. ${data.data.data}`;
+          return `Failed to delete assignment. ${data.data.response.data.error}`;
         },
       },
     });
