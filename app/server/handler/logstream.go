@@ -40,7 +40,7 @@ func (l *logStreamHandler) GetLogs(c *gin.Context) {
 func (l *logStreamHandler) AppendLogs(c *gin.Context) {
 	var logs string
 	if err := c.Bind(&logs); err != nil {
-		c.Status(http.StatusBadRequest)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -54,7 +54,7 @@ func (l *logStreamHandler) AppendLogs(c *gin.Context) {
 
 func (l *logStreamHandler) DeleteLogs(c *gin.Context) {
 	if err := l.logStreamService.ClearLogs(); err != nil {
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -64,7 +64,7 @@ func (l *logStreamHandler) DeleteLogs(c *gin.Context) {
 func (l *logStreamHandler) SetLogs(c *gin.Context) {
 	logStream := entity.LogStream{}
 	if err := c.Bind(&logStream); err != nil {
-		c.Status(http.StatusBadRequest)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 

@@ -43,7 +43,7 @@ func (t *terraformHandler) Init(c *gin.Context) {
 	}
 
 	if err := t.actionStatusService.SetServerNotification(notification); err != nil {
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 
 	// Start the long-running operation in a goroutine
@@ -71,7 +71,7 @@ func (t *terraformHandler) Init(c *gin.Context) {
 func (t *terraformHandler) Plan(c *gin.Context) {
 	deployment := entity.Deployment{}
 	if err := c.Bind(&deployment); err != nil {
-		c.Status(http.StatusBadRequest)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -114,7 +114,7 @@ func (t *terraformHandler) Apply(c *gin.Context) {
 
 	deployment := entity.Deployment{}
 	if err := c.Bind(&deployment); err != nil {
-		c.Status(http.StatusBadRequest)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -168,7 +168,7 @@ func (t *terraformHandler) Extend(c *gin.Context) {
 
 	deployment := entity.Deployment{}
 	if err := c.Bind(&deployment); err != nil {
-		c.Status(http.StatusBadRequest)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -216,7 +216,7 @@ func (t *terraformHandler) Extend(c *gin.Context) {
 // 	lab := entity.LabType{}
 // 	mode := c.Param("mode")
 // 	if err := c.Bind(&lab); err != nil {
-// 		c.Status(http.StatusBadRequest)
+// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 // 		return
 // 	}
 
@@ -237,7 +237,7 @@ func (t *terraformHandler) Extend(c *gin.Context) {
 func (t *terraformHandler) Destroy(c *gin.Context) {
 	deployment := entity.Deployment{}
 	if err := c.Bind(&deployment); err != nil {
-		c.Status(http.StatusBadRequest)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 

@@ -26,7 +26,7 @@ func NewLabHandler(r *gin.RouterGroup, labService entity.LabService) {
 func (l *labHandler) GetLabFromRedis(c *gin.Context) {
 	lab, err := l.labService.GetLabFromRedis()
 	if err != nil {
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -37,12 +37,12 @@ func (l *labHandler) SetLabInRedis(c *gin.Context) {
 	lab := entity.LabType{}
 
 	if err := c.Bind(&lab); err != nil {
-		c.Status(http.StatusBadRequest)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	if err := l.labService.SetLabInRedis(lab); err != nil {
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -51,7 +51,7 @@ func (l *labHandler) SetLabInRedis(c *gin.Context) {
 
 func (l *labHandler) DeleteLabFromRedis(c *gin.Context) {
 	if err := l.labService.DeleteLabFromRedis(); err != nil {
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -61,7 +61,7 @@ func (l *labHandler) DeleteLabFromRedis(c *gin.Context) {
 func (l *labHandler) GetMyLabs(c *gin.Context) {
 	labs, err := l.labService.GetMyLabs()
 	if err != nil {
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -71,12 +71,12 @@ func (l *labHandler) GetMyLabs(c *gin.Context) {
 func (l *labHandler) AddMyLab(c *gin.Context) {
 	lab := entity.LabType{}
 	if err := c.Bind(&lab); err != nil {
-		c.Status(http.StatusBadRequest)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	if err := l.labService.AddMyLab(lab); err != nil {
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -86,12 +86,12 @@ func (l *labHandler) AddMyLab(c *gin.Context) {
 func (l *labHandler) DeleteMyLab(c *gin.Context) {
 	lab := entity.LabType{}
 	if err := c.Bind(&lab); err != nil {
-		c.Status(http.StatusBadRequest)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	if err := l.labService.DeleteMyLab(lab); err != nil {
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 

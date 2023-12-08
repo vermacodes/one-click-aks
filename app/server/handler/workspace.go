@@ -23,7 +23,7 @@ func NewWorkspaceHandler(r *gin.RouterGroup, service entity.WorkspaceService) {
 func (w *WorkspaceHandler) ListWorkspaces(c *gin.Context) {
 	workspaces, err := w.WorkspaceService.List()
 	if err != nil {
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.IndentedJSON(http.StatusOK, workspaces)
@@ -32,7 +32,7 @@ func (w *WorkspaceHandler) ListWorkspaces(c *gin.Context) {
 func (w *WorkspaceHandler) GetResources(c *gin.Context) {
 	resources, err := w.WorkspaceService.Resources()
 	if err != nil {
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 

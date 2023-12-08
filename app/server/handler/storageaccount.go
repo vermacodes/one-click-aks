@@ -33,22 +33,22 @@ func (s *StorageAccountHandler) GetStorageAccountConfiguration(c *gin.Context) {
 	configuration := entity.StateConfiguration{}
 	storageAccountName, err := s.storageAccountService.GetStorageAccountName()
 	if err != nil {
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	resourceGroup, err := s.storageAccountService.GetResourceGroup()
 	if err != nil {
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	storageAccount, err := s.storageAccountService.GetStorageAccount(storageAccountName)
 	if err != nil {
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	blobContainer, err := s.storageAccountService.GetBlobContainer(storageAccountName, "tfstate")
 	if err != nil {
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -64,19 +64,19 @@ func (s *StorageAccountHandler) ConfigureStorageAccount(c *gin.Context) {
 
 	resourceGroup, err := s.storageAccountService.CreateResourceGroup()
 	if err != nil {
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	storageAccount, err := s.storageAccountService.CreateStorageAccount(helper.Generate(12))
 	if err != nil {
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	blobContainer, err := s.storageAccountService.CreateBlobContainer(storageAccount.Name, "tfstate")
 	if err != nil {
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -94,19 +94,19 @@ func (s *StorageAccountHandler) BreakBlobLease(c *gin.Context) {
 
 	workspaceName := c.Param("workspaceName")
 	if workspaceName == "" {
-		c.Status(http.StatusBadRequest)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "workspaceName is required"})
 		return
 	}
 
 	storageAccountName, err := s.storageAccountService.GetStorageAccountName()
 	if err != nil {
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	err = s.storageAccountService.BreakBlobLease(storageAccountName, "tfstate", workspaceName)
 	if err != nil {
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 

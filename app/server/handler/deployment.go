@@ -59,7 +59,7 @@ func (d *deploymentHandler) GetMyDeployments(c *gin.Context) {
 
 	deployments, err := d.deploymentService.GetMyDeployments(userPrincipal)
 	if err != nil {
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -72,7 +72,7 @@ func (d *deploymentHandler) GetDeployment(c *gin.Context) {
 	subscriptionId := c.Param("subscriptionId")
 	deployment, err := d.deploymentService.GetDeployment(userId, workspace, subscriptionId)
 	if err != nil {
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -82,12 +82,12 @@ func (d *deploymentHandler) GetDeployment(c *gin.Context) {
 func (d *deploymentHandler) SelectDeployment(c *gin.Context) {
 	deployment := entity.Deployment{}
 	if err := c.Bind(&deployment); err != nil {
-		c.Status(http.StatusBadRequest)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	if err := d.deploymentService.SelectDeployment(deployment); err != nil {
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -97,7 +97,7 @@ func (d *deploymentHandler) SelectDeployment(c *gin.Context) {
 func (d *deploymentHandler) UpsertDeployment(c *gin.Context) {
 	deployment := entity.Deployment{}
 	if err := c.Bind(&deployment); err != nil {
-		c.Status(http.StatusBadRequest)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -110,7 +110,7 @@ func (d *deploymentHandler) UpsertDeployment(c *gin.Context) {
 	deployment.DeploymentUserId = userPrincipal
 
 	if err := d.deploymentService.UpsertDeployment(deployment); err != nil {
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -131,7 +131,7 @@ func (d *deploymentHandler) DeleteDeployment(c *gin.Context) {
 
 	deployment, err := d.deploymentService.GetDeployment(userPrincipal, workspace, subscriptionId)
 	if err != nil {
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -146,7 +146,7 @@ func (d *deploymentHandler) DeleteDeployment(c *gin.Context) {
 
 	if err := d.actionStatusService.SetTerraformOperation(terraformOperation); err != nil {
 		slog.Error("error setting terraform operation ", err)
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 
 	// Start the long-running operation in a goroutine

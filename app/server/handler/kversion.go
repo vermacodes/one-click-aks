@@ -23,7 +23,7 @@ func NewKVersionHandler(r *gin.RouterGroup, service entity.KVersionService) {
 func (k *kVerisonHandler) GetOrchestrator(c *gin.Context) {
 	kubernetesOrchestrator, err := k.kVersionService.GetOrchestrator()
 	if err != nil {
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -34,7 +34,7 @@ func (k *kVerisonHandler) GetOrchestrator(c *gin.Context) {
 func (k *kVerisonHandler) GetDefaultVersion(c *gin.Context) {
 	defaultVersion := k.kVersionService.GetDefaultVersion()
 	if defaultVersion == "" {
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "not able to get default version"})
 		return
 	}
 

@@ -38,7 +38,7 @@ func NewAuthWithActionStatusHandler(r *gin.RouterGroup, service entity.AuthServi
 func (a *authHandler) ServicePrincipalLogin(c *gin.Context) {
 	LoginStatus, err := a.authService.ServicePrincipalLogin()
 	if err != nil {
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.IndentedJSON(http.StatusOK, LoginStatus)
@@ -47,7 +47,7 @@ func (a *authHandler) ServicePrincipalLogin(c *gin.Context) {
 func (a *authHandler) ServicePrincipalLoginStatus(c *gin.Context) {
 	LoginStatus, err := a.authService.ServicePrincipalLoginStatus()
 	if err != nil {
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.IndentedJSON(http.StatusOK, LoginStatus)
@@ -56,7 +56,7 @@ func (a *authHandler) ServicePrincipalLoginStatus(c *gin.Context) {
 func (a *authHandler) GetAccounts(c *gin.Context) {
 	accounts, err := a.authService.GetAccounts()
 	if err != nil {
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -67,12 +67,12 @@ func (a *authHandler) SetAccount(c *gin.Context) {
 	account := entity.Account{}
 	if err := c.BindJSON(&account); err != nil {
 		slog.Error("not able to bind payload to Account in SetAccount ", err)
-		c.Status(http.StatusBadRequest)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	if err := a.authService.SetAccount(account); err != nil {
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 

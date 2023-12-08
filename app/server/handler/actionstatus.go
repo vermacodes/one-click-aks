@@ -45,7 +45,7 @@ func NewAuthActionStatusHandler(r *gin.RouterGroup, service entity.ActionStatusS
 func (a *actionStatusHandler) GetActionStatus(c *gin.Context) {
 	actionStatus, err := a.actionStatusService.GetActionStatus()
 	if err != nil {
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -55,7 +55,7 @@ func (a *actionStatusHandler) GetActionStatus(c *gin.Context) {
 func (a *actionStatusHandler) SetActionStatus(c *gin.Context) {
 	actionStatus := entity.ActionStatus{}
 	if err := c.Bind(&actionStatus); err != nil {
-		c.Status(http.StatusBadRequest)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -66,7 +66,7 @@ func (a *actionStatusHandler) SetActionStatus(c *gin.Context) {
 func (a *actionStatusHandler) GetTerraformOperationStatus(c *gin.Context) {
 	terraformOperation, err := a.actionStatusService.GetTerraformOperation()
 	if err != nil {
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
