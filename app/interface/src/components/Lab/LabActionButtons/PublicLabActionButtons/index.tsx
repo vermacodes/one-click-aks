@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaShare } from "react-icons/fa";
+import { FaCopy } from "react-icons/fa";
 import { ButtonContainerObj, Lab } from "../../../../dataStructures";
 import { useGetMyProfile } from "../../../../hooks/useProfile";
 import CopyLinkToLabButton from "../../CopyLinkToLabButton";
@@ -42,9 +42,9 @@ export default function PublicLabActionButtons({ lab }: Props) {
         button: (
           <CopyLinkToLabButton key={"shareLabButton"} lab={lab}>
             <span>
-              <FaShare />
+              <FaCopy />
             </span>
-            Share
+            Link to Lab
           </CopyLinkToLabButton>
         ),
       },

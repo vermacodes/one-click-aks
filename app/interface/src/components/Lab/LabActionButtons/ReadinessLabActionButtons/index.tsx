@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaCheck, FaCopy, FaShare } from "react-icons/fa";
+import { FaCheck, FaCopy } from "react-icons/fa";
 import { ButtonContainerObj, Lab } from "../../../../dataStructures";
 import { useGetMyProfile } from "../../../../hooks/useProfile";
 import ApplyButton from "../../../Terraform/ActionButtons/ApplyButton";
@@ -80,9 +80,9 @@ export default function ReadinessLabActionButtons({ lab }: Props) {
             variant="secondary-text"
           >
             <span>
-              <FaShare />
+              <FaCopy />
             </span>
-            Share
+            Link to Lab
           </CopyLinkToLabButton>
         ),
       },
