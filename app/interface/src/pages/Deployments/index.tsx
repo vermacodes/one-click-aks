@@ -1,17 +1,17 @@
+import { useEffect } from "react";
+import { FaPlus, FaTools } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import CreateNewDeployment from "../../components/Deployments/CreateNewDeployment";
 import Deployment from "../../components/Deployments/Deployment";
+import Terminal from "../../components/Terminal";
+import Button from "../../components/UserInterfaceComponents/Button";
 import { DeploymentType } from "../../dataStructures";
 import { useGetMyDeployments } from "../../hooks/useDeployments";
-import PageLayout from "../../layouts/PageLayout";
-import Button from "../../components/UserInterfaceComponents/Button";
-import Terminal from "../../components/Terminal";
-import CreateNewDeployment from "../../components/Deployments/CreateNewDeployment";
-import { useTerraformWorkspace } from "../../hooks/useWorkspace";
-import { FaPlus, FaTools } from "react-icons/fa";
-import { useServerStatus } from "../../hooks/useServerStatus";
-import ServerError from "../ServerError";
-import { useEffect } from "react";
 import { useSelectedDeployment } from "../../hooks/useSelectedDeployment";
+import { useServerStatus } from "../../hooks/useServerStatus";
+import { useTerraformWorkspace } from "../../hooks/useWorkspace";
+import PageLayout from "../../layouts/PageLayout";
+import ServerError from "../ServerError";
 
 export default function Deployments() {
   const { data: deployments } = useGetMyDeployments();
@@ -28,7 +28,11 @@ export default function Deployments() {
   }
 
   if (deployments === undefined || workspaces === undefined) {
-    return <></>;
+    return (
+      <PageLayout heading="Deployments">
+        <p className="text-4xl">Loading...</p>
+      </PageLayout>
+    );
   }
 
   return (
