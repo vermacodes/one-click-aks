@@ -1,7 +1,13 @@
+import * as msal from "@azure/msal-browser";
 import { useMsal } from "@azure/msal-react";
 import { useEffect, useState } from "react";
 import { graphAPIScope } from "../../../authConfig";
 import { GraphData } from "../../../dataStructures";
+
+type TokenRequest = {
+  scopes: string[];
+  account: msal.AccountInfo;
+};
 
 type Props = {
   graphResponse: GraphData | undefined;
@@ -11,24 +17,18 @@ type Props = {
 };
 
 export default function AuthenticatingFullScreen({
-  graphResponse,
   setGraphResponse,
-  profilePhoto,
   setProfilePhoto,
 }: Props) {
-  const { instance, accounts } = useMsal();
+  const { instance } = useMsal();
   const [graphAPIAccessToken, setGraphAPIAccessToken] = useState<string>("");
   const [graphAPITokenAcquired, setGraphAPITokenAcquired] =
     useState<boolean>(false);
-  // const [actLabsAccessToken, setActLabsAccessToken] = useState<string>("");
-  // const [actLabsTokenAcquired, setActLabsTokenAcquired] =
-  //   useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
 
   // request access tokens after the component has mounted
   useEffect(() => {
     RequestGraphAPIAccessToken();
-    // RequestActLabsAccessToken();
   }, []);
 
   useEffect(() => {
@@ -81,41 +81,38 @@ export default function AuthenticatingFullScreen({
 
   async function RequestGraphAPIAccessToken() {
     await instance.handleRedirectPromise();
+
+    const accounts = instance.getAllAccounts();
     const request = {
       ...graphAPIScope,
       account: accounts[0],
     };
 
-    // Silently acquires an access token which is then attached to a request for Microsoft Graph data
-    instance
-      .acquireTokenSilent(request)
-      .then((response) => {
-        setGraphAPIAccessToken(response.accessToken);
-        setGraphAPITokenAcquired(true);
-      })
-      .catch((e) => {
-        instance.acquireTokenRedirect(request);
-      });
+    if (accounts.length > 0) {
+      try {
+        await acquireTokenSilently(request);
+      } catch (e) {
+        if (e instanceof msal.InteractionRequiredAuthError) {
+          acquireTokenByRedirect(request);
+        } else {
+          console.error(e);
+        }
+      }
+    } else {
+      console.log("No accounts detected");
+      acquireTokenByRedirect(request);
+    }
   }
 
-  // async function RequestActLabsAccessToken() {
-  //   await instance.handleRedirectPromise();
-  //   const request = {
-  //     ...actLabsScope,
-  //     account: accounts[0],
-  //   };
+  async function acquireTokenSilently(request: TokenRequest) {
+    const response = await instance.acquireTokenSilent(request);
+    setGraphAPIAccessToken(response.accessToken);
+    setGraphAPITokenAcquired(true);
+  }
 
-  //   // Silently acquires an access token which is then attached to a request for Microsoft Graph data
-  //   instance
-  //     .acquireTokenSilent(request)
-  //     .then((response) => {
-  //       setActLabsAccessToken(response.accessToken);
-  //       setActLabsTokenAcquired(true);
-  //     })
-  //     .catch((e) => {
-  //       instance.acquireTokenRedirect(request);
-  //     });
-  // }
+  function acquireTokenByRedirect(request: TokenRequest) {
+    instance.acquireTokenRedirect(request);
+  }
 
   if (loading) {
     return (
