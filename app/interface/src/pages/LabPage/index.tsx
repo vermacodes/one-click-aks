@@ -26,7 +26,15 @@ export default function LabPage() {
     }
   }, [lab]);
 
-  if (!type || !id || isLoading || isFetching || !lab) {
+  if (isLoading || isFetching) {
+    return (
+      <PageLayout heading="Lab">
+        <p className="text-3xl">Loading...</p>
+      </PageLayout>
+    );
+  }
+
+  if (!type || !id || !lab) {
     return (
       <PageLayout heading="Lab">
         <NoContent message="We can't find the lab you are looking for. You got the correct link?" />
