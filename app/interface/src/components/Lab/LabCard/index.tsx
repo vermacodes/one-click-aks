@@ -41,9 +41,7 @@ export default function LabCard({
           <>
             <LabActionButtons lab={lab} />
             <LabProfiles lab={lab} profileType="owners" />
-            {(lab.category === "public" || lab.category === "private") && (
-              <LabProfiles lab={lab} profileType="editors" />
-            )}
+            <LabProfiles lab={lab} profileType="editors" />
             {lab.category === "private" && (
               <LabProfiles lab={lab} profileType="viewers" />
             )}
