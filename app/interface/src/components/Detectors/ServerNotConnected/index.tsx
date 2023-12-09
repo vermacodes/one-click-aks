@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useServerStatus } from "../../../hooks/useServerStatus";
 
 export default function ServerNotConnected() {
@@ -20,9 +21,9 @@ export default function ServerNotConnected() {
           Follow these instructions to host your own server
         </a>{" "}
         and check your{" "}
-        <a href="/settings" className="cursor-pointer text-sky-600 underline">
+        <Link to="/settings" className="cursor-pointer text-sky-600 underline">
           Settings
-        </a>{" "}
+        </Link>{" "}
         to make sure the <a className="underline">Server Endpoint</a> is
         correct.{" "}
       </div>

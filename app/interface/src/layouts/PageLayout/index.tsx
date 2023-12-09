@@ -13,20 +13,19 @@ type Props = {
 export default function PageLayout({ heading, children }: Props) {
   const { darkMode, setDarkMode, navbarOpen, setNavbarOpen } =
     useGlobalStateContext();
-  const headingRef = useRef<null | HTMLDivElement>(null);
+  const outerDivRef = useRef<null | HTMLDivElement>(null);
 
   useEffect(() => {
-    if (headingRef.current !== null) {
-      headingRef.current.scrollIntoView();
+    if (outerDivRef.current !== null) {
+      outerDivRef.current.scrollIntoView();
     }
   }, [heading]);
 
   return (
-    <div>
+    <div ref={outerDivRef}>
       <Detectors />
       {heading !== undefined && (
         <div
-          ref={headingRef}
           className={`${
             heading !== "" ? "mb-4 border-b-2 border-slate-500 py-4 " : "mt-6 "
           } flex items-center justify-between `}
