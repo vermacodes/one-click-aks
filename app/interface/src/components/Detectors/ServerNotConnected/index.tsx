@@ -23,7 +23,8 @@ export default function ServerNotConnected() {
         <a href="/settings" className="cursor-pointer text-sky-600 underline">
           Settings
         </a>{" "}
-        to make sure the <strong>Server Endpoint</strong> is correct.{" "}
+        to make sure the <a className="underline">Server Endpoint</a> is
+        correct.{" "}
       </div>
     </div>
   );
