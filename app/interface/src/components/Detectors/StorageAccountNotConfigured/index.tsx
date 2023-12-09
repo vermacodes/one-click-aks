@@ -1,9 +1,11 @@
+import { useServerStatus } from "../../../hooks/useServerStatus";
 import {
   useConfigureStorageAccount,
   useGetStorageAccount,
 } from "../../../hooks/useStorageAccount";
 
 export default function StorageAccountNotConfigured() {
+  const { data: serverStatus } = useServerStatus();
   const {
     data: storageAccount,
     isLoading: getStorageAccountLoading,
@@ -14,6 +16,10 @@ export default function StorageAccountNotConfigured() {
     refetch: configureStorageAccount,
     isLoading: configureStorageAccountLoading,
   } = useConfigureStorageAccount();
+
+  if (serverStatus?.status !== "OK") {
+    return null;
+  }
 
   if (
     configureStorageAccountLoading ||

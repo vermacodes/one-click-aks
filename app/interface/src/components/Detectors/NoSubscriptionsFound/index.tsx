@@ -1,6 +1,8 @@
 import { useAccount } from "../../../hooks/useAccount";
+import { useServerStatus } from "../../../hooks/useServerStatus";
 
 export default function NoSubscriptionsFound() {
+  const { data: serverStatus } = useServerStatus();
   const {
     data: accounts,
     refetch: getAccounts,
@@ -13,6 +15,10 @@ export default function NoSubscriptionsFound() {
     accountsLoading ||
     accountsFetching
   ) {
+    return null;
+  }
+
+  if (serverStatus?.status !== "OK") {
     return null;
   }
 

@@ -14,7 +14,15 @@ export default function VersionCheck() {
     return versionNumber >= 20231208;
   }
 
-  if (data === undefined || isFetching || versionCheck(data.version)) {
+  if (data === undefined || isFetching) {
+    return <></>;
+  }
+
+  if (data.status !== "OK") {
+    return <></>;
+  }
+
+  if (versionCheck(data.version)) {
     return <></>;
   }
 

@@ -1,7 +1,9 @@
 import { useContext, useEffect, useState } from "react";
+import { useServerStatus } from "../../../hooks/useServerStatus";
 import { WebSocketContext } from "../../Context/WebSocketContext";
 
 export default function WebSocketConnectionStatus() {
+  const { data: serverStatus } = useServerStatus();
   const { actionStatusConnected, logStreamConnected } =
     useContext(WebSocketContext);
   const [showWarning, setShowWarning] = useState(false);
@@ -21,6 +23,11 @@ export default function WebSocketConnectionStatus() {
     // Clear the timeout if the component unmounts or if the connections change
     return () => clearTimeout(timeoutId);
   }, [actionStatusConnected, logStreamConnected]);
+
+  // If server is not running, don't show the warning
+  if (serverStatus?.status !== "OK") {
+    return null;
+  }
 
   if (!showWarning) {
     return null;
