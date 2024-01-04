@@ -21,6 +21,9 @@ systemctl enable redis-server
 # Install Azure CLI
 curl -sL https://aka.ms/InstallAzureCLIDeb | bash
 
+# Suppress Azure CLI warnings.
+az config set core.only_show_errors=true
+
 # Install Terraform
 apt-get update && apt-get install -y gnupg software-properties-common
 wget -O- https://apt.releases.hashicorp.com/gpg |

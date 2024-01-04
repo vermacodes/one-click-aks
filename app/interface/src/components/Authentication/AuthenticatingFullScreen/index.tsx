@@ -67,9 +67,9 @@ export default function AuthenticatingFullScreen({
           img.onload = function () {
             const canvas = document.createElement("canvas");
             const ctx = canvas.getContext("2d");
-            canvas.width = 256; // cant store bigger image in DB.
-            canvas.height = 256;
-            ctx?.drawImage(img, 0, 0, 256, 256);
+            canvas.width = 200; // cant store bigger image in DB.
+            canvas.height = 200;
+            ctx?.drawImage(img, 0, 0, 200, 200);
             const base64String = canvas.toDataURL("image/jpeg");
             setProfilePhoto(base64String);
           };
